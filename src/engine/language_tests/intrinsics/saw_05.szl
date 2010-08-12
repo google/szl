@@ -1,0 +1,126 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+#desc: "rest" keyword use in saw, sawn, sawzall.
+
+#inst: rest keyword use in saw operation.
+
+arr: array of string;
+arrLen: int;
+
+url: string = "http://www.google.com/search?q=Google";
+
+DEBUG("print", `url (before modification by rest) = "%s"`, url);
+DEBUG("print", "\n");
+
+arr = saw(url, 
+          `\w+`, skip `://`, `[\w.]+`, rest url);
+
+DEBUG("print", `url (after modification by rest) = "%s"`, url);
+DEBUG("print", "\n\n");
+
+
+DEBUG("print", `saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)`);
+DEBUG("print", "\n");
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+DEBUG("print", "Protocol = %s\n", arr[0]);
+DEBUG("print", "Domain = %s\n", arr[1]);
+DEBUG("print", "\n");
+
+
+#inst: rest can be anywhere in saw operation.
+
+url = "http://www.google.com/search?q=Google";
+
+arr = saw(url, 
+          `\w+`, rest url, skip `://`, rest url, `[\w.]+`, rest url);
+
+DEBUG("print", `url (after modification by rest) = "%s"`, url);
+DEBUG("print", "\n\n");
+
+
+DEBUG("print", `saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)`);
+DEBUG("print", "\n");
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+DEBUG("print", "Protocol = %s\n", arr[0]);
+DEBUG("print", "Domain = %s\n", arr[1]);
+DEBUG("print", "\n");
+
+
+# second instance of above...
+url = "http://www.google.com/search?q=Google";
+url_rest1: string;
+url_rest2: string;
+url_rest3: string;
+
+arr = saw(url, 
+          `\w+`, rest url_rest1, 
+          skip `://`, rest url_rest2, 
+          `[\w.]+`, rest url_rest3);
+
+DEBUG("print", `(after modification by rest) url_rest1 = "%s", url_rest2 = "%s", url_rest3 = "%s"`, url_rest1, url_rest2, url_rest3);
+DEBUG("print", "\n\n");
+
+DEBUG("print", `saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)`);
+DEBUG("print", "\n");
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+DEBUG("print", "Protocol = %s\n", arr[0]);
+DEBUG("print", "Domain = %s\n", arr[1]);
+DEBUG("print", "\n");
+
+
+#inst: use of rest in sawn and sawall.
+data: string;
+
+arr = sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`, rest data);
+
+DEBUG("print", `sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",", rest data)`);
+DEBUG("print", "\n");
+
+DEBUG("print", `data = "%s" (after rest operation)`, data); 
+DEBUG("print", "\n");
+
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+#inst: use of rest in sawzall.
+arr = sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`, rest data);
+
+DEBUG("print", `sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",", rest data)`);
+DEBUG("print", "\n");
+
+DEBUG("print", `data = "%s" (after rest operation)`, data); 
+DEBUG("print", "\n");
+
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");

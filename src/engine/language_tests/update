@@ -1,0 +1,310 @@
+#!/bin/bash
+
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+if [[ "$0" == */* ]] ; then
+  cd "${0%/*}/"
+fi
+
+source ./setpaths
+
+# Need to be in Pacific timezone to pass some tests
+TZ=PST8PDT; export TZ
+
+RFLAG=""  # -R: put stdout/stderr in $SZL_TMP, not testdata
+NFLAG=""  # -N: native code gen
+UFLAG=""  # -U: do not run optimizer
+CFLAG=""  # -C: test cloning
+
+while true; do
+  case "$1" in
+    -X)
+      # specify a unique tag for file names to avoid collisions
+      shift
+      UNIQUER=$1
+      ;;
+    -R)
+      RFLAG=$1
+      ;;
+    -N)
+      NFLAG=$1
+      ;;
+    -NU|-UN)
+      NFLAG=$1
+      UFLAG=$1
+      ;;
+    -U)
+      UFLAG=$1
+      ;;
+    -C)
+      CFLAG=$1
+      ;;
+    -)
+      # default flags.  (can't use empty string; shell has trouble)
+       ;;
+    *)
+      break  # exits "while" loop
+       ;;
+  esac
+  shift
+done
+
+
+if test -z "$*"; then
+  rm -f *.out *.err
+  args=$(echo *.szl*)
+else
+  args=$*
+fi
+
+
+for i in $args; do
+  case $i in
+    *szl)
+      dir=$(echo $i | sed 's/\/.*//')
+      base=$(echo $i | sed 's/\.szl.*//')
+      if [ "$RFLAG" ]; then
+        out="$SZL_TMP"/$USER-sawzall-out-$UNIQUER
+        err="$SZL_TMP"/$USER-sawzall-err-$UNIQUER
+      else
+        out=$base.out
+        err=$base.err
+      fi
+
+      flags="--logfile=/dev/null"
+      if [ "$NFLAG" ]; then
+        flags="$flags --native"
+      else
+        flags="$flags --nonative"
+      fi
+      if [ "$UFLAG" ]; then
+        flags="$flags --nooptimize_sawzall_code"
+      else
+        flags="$flags --optimize_sawzall_code"
+      fi
+      if [ "$CFLAG" ]; then
+        flags="$flags --test_function_cloning"
+      fi
+
+      # Suppress warnings about multiple inclusion caused by .proto files.
+      flags="$flags --noshow_multiple_inclusion_warnings"
+
+      export SAW_ARG=""
+
+      sources=$i
+      files=''
+      if [ "$dir" == 'base' ];  then
+        flags="$flags --print_source"
+      fi
+
+      # A separate flags variable that quotes flags differently because they
+      # contain spaces.
+      flags_with_spaces=()
+      case $i in
+        base/assert.szl)
+          flags="$flags --print_rewritten_source"
+          ;;
+        base/badindex.szl)
+          flags="$flags -ignore_undefs"
+          ;;
+        base/badnew.szl)
+          flags="$flags -ignore_undefs"
+          ;;
+        base/defleak.szl)
+          flags="$flags -ignore_undefs"
+          ;;
+        base/constantfolding.szl|base/constantfolding[234].szl)
+          flags="$flags -optimize_sawzall_code"
+          ;;
+        base/defness.szl)
+          flags="$flags -optimize_sawzall_code"
+          ;;
+        base/defness-U.szl)
+          flags="$flags -nooptimize_sawzall_code"
+          ;;
+        base/defness2.szl)
+          flags="$flags -optimize_sawzall_code -noignore_undefs"
+          flags="$flags --noremove_unreachable_functions"
+          ;;
+        base/defness3.szl)
+          flags="$flags -optimize_sawzall_code -ignore_undefs"
+          flags="$flags --noremove_unreachable_functions"
+          ;;
+        base/defness4.szl)
+          flags="$flags -optimize_sawzall_code"
+          flags="$flags --noremove_unreachable_functions"
+          ;;
+        base/intrinsic_good.szl|base/goodlit.szl|base/indexable.szl)
+          flags="$flags -noexecute"
+          ;;
+         base/goodout.szl)
+          flags="$flags --table_output=*"
+          ;;
+         base/grep.szl)
+          files=base/passwd
+          ;;
+        base/fnesting.szl)
+          flags="$flags -ignore_undefs"
+          ;;
+        base/limit_recursion-32.szl|base/limit_recursion-64.szl)
+          # run all stack overflow tests in interpreted mode only
+          flags="$flags --nonative"
+          ;;
+        base/stackoverflow-32.szl|base/stackoverflow-64.szl)
+          flags="$flags --nonative --optimize_sawzall_code"
+          ;;
+        base/stackoverflow-U-32.szl|base/stackoverflow-U-64.szl)
+          flags="$flags --nonative --nooptimize_sawzall_code"
+          ;;
+        base/include.szl)
+          flags="$flags --show_multiple_inclusion_warnings"
+          ;;
+        base/include_b.szl)
+          sources="base/include_dir/a.szl $sources"
+          ;;
+        base/line_directives.szl|base/line_directives3.szl)
+          flags="$flags --noprint_source --print_raw_source"
+          ;;
+        base/print_tables.szl)
+          flags="$flags --noprint_source --print_tables --test_backend_type_conversion"
+          ;;
+        base/proto_keyword_good.szl|base/proto_keyword_bad.szl)
+          flags="$flags --print_proto_clauses"
+          ;;
+        base/proto6.szl)
+          flags="$flags --print_input_proto_name
+                 --print_referenced_tuple_field_names=<all>"
+          ;;
+        base/proto8.szl)
+          flags="$flags --print_input_proto_name
+                 --print_referenced_tuple_field_names=<input>"
+          ;;
+        base/printtree.szl)
+          flags="$flags --print_source --print_tree --noexecute"
+          ;;
+        base/stackoverflow_b-32.szl)
+          flags="$flags --stack_size=0 --nonative"
+          ;;
+        base/stackoverflow_c-32.szl)
+          flags="$flags --stack_size=0 --nonative"
+          ;;
+        base/stackoverflow_d-32.szl)
+          flags="$flags --stack_size=0 --nonative"
+          ;;
+        base/garbagecollection1.szl)
+          files=base/garbagecollection1.in
+          # set memory_limit last to override default setting
+          flags="$flags --memory_limit=200"
+          ;;
+        base/garbagecollection[23].szl)
+          # set memory_limit last to override default setting
+          flags="$flags --memory_limit=200 --nonative"
+          ;;
+        base/valuepropagation.szl)
+          flags="$flags --optimize_sawzall_code"
+          ;;
+        base/valuepropagation2.szl)
+          flags="$flags --optimize_sawzall_code --ignore_undefs"
+          ;;
+        base/valuepropagation[35].szl)
+          if [ ! "$RFLAG" ] ; then
+            echo "Update $i using base/valuepropagation{3-4,5-6}.sh" 1>&2
+            exit 1
+          fi
+          flags="$flags --noprint_source --optimize_sawzall_code"
+          flags="$flags --noremove_unreachable_functions"
+          ;;
+        base/valuepropagation[46].szl)
+          if [ ! "$RFLAG" ] ; then
+            echo "Update $i using base/valuepropagation{3-4,5-6}.sh" 1>&2
+            exit 1
+          fi
+          flags="$flags --noprint_source --optimize_sawzall_code --ignore_undefs"
+          flags="$flags --noremove_unreachable_functions"
+          ;;
+        emitter/tables*.szl)
+          flags="$flags --bootstrapsum_seed=bootsum --table_output=*"
+          ;;
+        intrinsics/resourcestats*.szl)
+          # set memory_limit last to override default setting
+          flags="$flags --memory_limit=-1"  # prevent GC from going off in Alloc
+          ;;
+        fixed_crashes/crash7.szl)
+          flags="$flags --memory_limit=50"
+          ;;
+        fixed_crashes/crash21.szl)
+          # verify that ELF file generation succeeds
+          flags="$flags --gen_elf=/dev/null"
+          ;;
+        fixed_crashes/crash23.szl)
+          flags="$flags --ignore_undefs"
+          files=fixed_crashes/crash23.in
+          ;;
+        type_declarations/outputType_good.szl)
+          # print the source with table parameters folded
+          flags="$flags --print_source"
+          ;;
+        type_declarations/outputType_bad_restrict.szl)
+          flags="$flags --restrict"
+          ;;
+        unreachable/unused_fields.szl)
+          # Check functions are removed and fields are unused.
+          flags="$flags --remove_unreachable_functions --print_rewritten_source"
+          flags="$flags --ignore_undefs"
+          flags="$flags --print_referenced_tuple_field_names=<all>"
+          ;;
+        unreachable/*.szl)
+          # Check functions are removed in rewritten source.
+          flags="$flags --remove_unreachable_functions --print_rewritten_source"
+          ;;
+        *)
+          ;;
+      esac
+      if ! "$SZL" --protocol_compiler="$PROTOCOL_COMPILER" \
+          --protocol_compiler_plugin="$PROTOCOL_COMPILER_PLUGIN" \
+	  --protocol_compiler_temp="$PROTOCOL_COMPILER_TMP" \
+	  $flags $sources $files "${flags_with_spaces[@]}" > $out 2> $err; then
+        echo 2>& 1 szl failed on $i
+      fi
+      # Filter timestamps and filename/line numbers from error messages.
+      # Also ignore <nil> entries in stack trace
+      sed -e '/SSLAgentClientHelper/d
+              /protocol-compiler: warning: /d
+              /^     <nil>: /d
+              /^### COMMAND/d
+              /^WARNING: Logging before InitGoogle/d
+              /^\[WARNING .*Using weak random seed for poisson dice/d
+              /^W.*\] UncompressChunkOrAll: Error: -3 avail_out: 81/d
+              s|\(undefined value at \).*/\(intrinsics/runszl\)|\1\2|
+              s/^[IEWF][0-9]\{4\} [0-9:.]\{15\} .*] \(.*\)/\1/' $err > $err.tmp
+      mv -f $err.tmp $err
+      # Also ignore the exact path of the protocol-compiler and plugin
+      sed -e 's/^### COMMAND: .*protoc /### COMMAND: protocol-compiler /
+              /^### /s/--plugin=.*protoc-gen-szl/--plugin=protoc-gen-szl/' \
+        $out > $out.tmp
+      if [[ "$i" == "emitter/tables_misc_good.szl" ]] ; then
+        # Special case: output order varies, so keep output in sorted order.
+        sort $out.tmp > $out
+      else
+        mv -f $out.tmp $out
+      fi
+      chmod g+w $out $err 2>/dev/null
+      ;;
+    *)
+      echo 2>&1 usage: update foo.szl
+      ;;
+  esac
+done

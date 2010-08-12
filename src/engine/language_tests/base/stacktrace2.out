@@ -1,0 +1,14 @@
+type T = proto {x: int, y: int, z: int};
+type U = proto {x: int, y: int, z: int};
+type V = proto {x: int, y: int, z: int};
+t: T = {1, 2, 3};
+b: bytes = convert(bytes, t);
+u: U = convert(U, b);
+u.x + u.z;
+s: string = convert(string, u);
+v: V = convert(V, b);
+v.x + v.z;
+a: int;
+a = 1 / nrand(1);
+emit _undef_cnt <- 1;
+emit _undef_details["base/stacktrace2.szl:35: a = 1 / nrand(1); (divide by zero error: 1 / 0)"] <- 1;

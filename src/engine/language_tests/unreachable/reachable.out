@@ -1,0 +1,67 @@
+reachable1: function() {
+	reachable2: function() 	{
+	}
+;
+	reachable2();
+}
+;
+reachable1();
+reachable3: function(n: int) {
+	if (n > 0)
+	{
+		reachable3(n - 1);
+	}
+}
+;
+reachable3(4);
+fun_array: array of function() = {function() {
+	emit stdout <- "fun_in_array";
+}
+};
+fun_array[0]();
+fun_map: map [name: string] of fun: function() = {"reachable": function() {
+	emit stdout <- "reachable fun_in_map";
+}
+};
+fun_map["reachable"]();
+used_fun_map: map [name: string] of fun: function() = {"used": function() {
+	emit stdout <- "used fun_in_map";
+}
+};
+call_arg_fun: function(fun_arg: function()) {
+	fun_arg();
+}
+;
+call_arg_fun(function() {
+	emit stdout <- "reachable function argument";
+}
+);
+ignore_arg_fun: function(fun_arg: function()) {
+}
+;
+ignore_arg_fun(function() {
+	emit stdout <- "used function argument";
+}
+);
+fun_to_return: function() {
+	emit stdout <- "returned function";
+}
+;
+return_fun: function(): function() {
+	return fun_to_return;
+}
+;
+return_fun()();
+function() {
+	emit stdout <- "a reachable function literal";
+}
+();
+function() {
+	emit stdout <- "a used function literal";
+}
+;
+fun_in_array
+reachable fun_in_map
+reachable function argument
+returned function
+a reachable function literal

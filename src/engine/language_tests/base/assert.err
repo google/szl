@@ -1,0 +1,23 @@
+assertion failed: this should print a stack trace
+Stack trace:
+  0. f: function(i: int)
+     i: int = 23
+
+  1. g: function(i: int)
+     i: int = 23
+
+  2. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     f: function(i: int) = f
+     g: function(i: int) = g
+     const_msg: string = <undefined>
+     bool_var: bool = <undefined>
+     string_var: string = <undefined>
+     bool_fun: function(): bool = <undefined>
+     string_fun: function(): string = <undefined>
+     true_string_fun: function(): string = <undefined>
+     t1: {condition: bool} = <undefined>
+     t2: {message: string} = <undefined>
+
+szl: fatal: assertion failed at base/assert.szl:17: assert(false, "this should print a stack trace")

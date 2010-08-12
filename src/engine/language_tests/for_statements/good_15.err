@@ -1,0 +1,2 @@
+for_statements/good_15.szl:23: identifier expected; found '12'
+for_statements/good_15.szl:29: identifier expected; found '10.23'

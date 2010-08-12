@@ -1,0 +1,48 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env  szl
+
+#desc:  Conversion of basic type to composite type 
+
+# Conversion to array
+
+ai0:array of int = 10;			#int
+ai1:array of int = 10.32;		#float
+ai2:array of int = "Hello World";	#string
+ai3:array of int = true;		#bool
+ai4:array of int = fingerprint(10);	#fingerprint
+ai5:array of int = trunctohour(now());	#time
+
+
+# Conversion to map
+
+mii0:map[int] of int = 10;			#int
+mii1:map[int] of int = 10.32;			#float
+mii2:map[int] of int = "Hello World";		#string
+mii3:map[int] of int = true;			#bool
+mii4:map[int] of int = fingerprint(10);		#fingerprint
+mii5:map[int] of int = trunctohour(now());	#time
+
+
+# Conversion to tuple
+
+tup0:{int,string} = 10;			#int
+tup1:{int,string} = 10.32;		#float
+tup2:{int,string} = "Hello World";	#string
+tup3:{int,string} = true;		#bool
+tup4:{int,string} = fingerprint(10);	#fingerprint
+tup5:{int,string} = trunctohour(now());	#time
+

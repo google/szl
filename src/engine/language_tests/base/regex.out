@@ -1,0 +1,44 @@
+si: string = "1 -1 234 077 +0x89ab";
+asi: array of string = sawzall(si, regex(int));
+ai: array of int = convert(array of int, sawzall(si, regex(int)));
+assert((len(asi) == 5) && (len(ai) == 5));
+expecti: map [string] of int = {"1": 1, "-1": -1, "234": 234, "077": 63, "+0x89ab": 35243};
+for (i: int = 0; i < len(ai); i++)
+	assert(expecti[asi[i]] == ai[i]);
+sf: string = "1 1.2 .54 -1.2E3 +.3e+3";
+asf: array of string = sawzall(sf, regex(float));
+af: array of float = convert(array of float, sawzall(sf, regex(float)));
+assert((len(asf) == 5) && (len(af) == 5));
+expectf: map [string] of float = {"1": 1.0, "1.2": 1.2, ".54": 0.54, "-1.2E3": -1200.0, "+.3e+3": 300.0};
+for (i: int = 0; i < len(ai); i++)
+	assert(expectf[asf[i]] == af[i]);
+itab: array of {s: string, i: int, ok: bool} = {{"1", 1, true}, {"-1", -1, true}, {"+1", 1, true}, {"10", 10, true}, {"010", 8, true}, {"0x1ab", 427, true}, {"07", 7, true}, {"", 1, false}, {"-", 1, false}, {"+", 1, false}, {" 1 ", 1, false}, {" abc ", 1, false}, {" 1234456 ", 1, false}, {" -1234456 ", 1, false}};
+for (i: int = 0; i < len(itab); i++)
+{
+	v: array of int = convert(array of int, saw(itab[i].s, ("^" + regex(int)) + "$"));
+	assert((len(v) == 1) == itab[i].ok);
+	assert((!itab[i].ok) || (v[0] == itab[i].i));
+}
+{
+	a: array of string = sawzall("038", regex(int));
+	assert(((len(a) == 2) && (a[0] == "03")) && (a[1] == "8"));
+}
+ftab: array of {s: string, f: float, ok: bool} = {{"1", 1.0, true}, {"-1", -1.0, true}, {"+1", 1.0, true}, {"1.0", 1.0, true}, {"1.05", 1.05, true}, {"1.05e0", 1.05, true}, {"1.05e1", 10.5, true}, {".05", 0.05, true}, {"1e3", 1000.0, true}, {"1.e3", 1000.0, true}, {"1.02e3", 1020.0, true}, {"1.02e-3", 0.00102, true}, {"1.02E-3", 0.00102, true}, {"1.02E+3", 1020.0, true}, {".02E+3", 20.0, true}, {"-", 1.0, false}, {"+", 1.0, false}, {" 1 ", 1.0, false}, {" abc ", 1.0, false}, {"e4", 1.0, false}, {" 1234.456 ", 1.0, false}, {" -1234.456 ", 1.0, false}};
+for (i: int = 0; i < len(ftab); i++)
+{
+	v: array of float = convert(array of float, saw(ftab[i].s, ("^" + regex(float)) + "$"));
+	assert((len(v) == 1) == ftab[i].ok);
+	assert((!ftab[i].ok) || (v[0] == ftab[i].f));
+}
+assert(regex(int) == regex(int, 0));
+s: string = "0123456789abcdef";
+signs: array of string = {"", "-", "+"};
+for (i: int = 0; i < len(signs); i++)
+{
+	t: string = signs[i] + s;
+	assert(matchstrs(regex(int), t)[0] == (signs[i] + s[0 : 8]));
+	assert(matchstrs(regex(int, 0), t)[0] == (signs[i] + s[0 : 8]));
+	assert(matchstrs(regex(int, 8), t)[0] == (signs[i] + s[0 : 8]));
+	assert(matchstrs(regex(int, 10), t)[0] == (signs[i] + s[0 : 10]));
+	assert(matchstrs(regex(int, 16), t)[0] == (signs[i] + s[0 : 16]));
+}

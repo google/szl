@@ -1,0 +1,25 @@
+s: string = "abcx1234ab1234xtt";
+p: string = "(x.)(.*)(.x)";
+s_by_p: array of string = {"x1234ab1234x", "x1", "234ab123", "4x"};
+assert(match(p, s));
+a: array of string = matchstrs(p, s);
+assert(len(a) == 4);
+assert(a == s_by_p);
+l: array of int = matchposns(p, s);
+assert(len(l) == 8);
+for (i: int = 0; i < len(l); i = i + 2)
+	assert(s[l[i] : l[i + 1]] == s_by_p[i / 2]);
+s = "abc日本語xyz";
+r: string = "";
+for (i: int = 0; i < len(s); i++)
+	r = r + "(.)";
+ai: array of int = matchposns(r, s);
+assert(len(ai) == (2 * (1 + len(s))));
+assert((ai[0] == 0) && (ai[1] == len(s)));
+for (i: int = 0; i < len(s); i++)
+	assert((ai[2 + (2 * i)] == i) && (ai[(2 + (2 * i)) + 1] == (i + 1)));
+a = matchstrs(r, s);
+assert(len(a) == (1 + len(s)));
+assert(a[0] == s);
+for (i: int = 0; i < len(s); i++)
+	assert(a[1 + i] == s[i : i + 1]);

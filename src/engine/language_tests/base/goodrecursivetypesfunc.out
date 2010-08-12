@@ -1,0 +1,38 @@
+type F = function(f: F, m: int, n: int): int;
+ackerman: function(f: F, m: int, n: int): int {
+	if (m == 0)
+		return n + 1;
+	else
+		if (n == 0)
+			return f(f, m - 1, 1);
+		else
+			return f(f, m - 1, f(f, m, n - 1));
+}
+;
+assert(ackerman(ackerman, 3, 4) == 125);
+type T1 = {x: function(y: T1)};
+t1: T1 = {function(x: T1) {
+}
+};
+type T2 = array of function(x: T2);
+t2: T2 = {function(x: T2) {
+}
+};
+type T3 = map [int] of function(x: T3);
+t3: T3 = {1: function(x: T3) {
+}
+};
+type T4 = function(x: {y: T4});
+t4: function(x: {y: T4}) {
+}
+;
+type T5 = function(x: array of T5);
+t5: function(x: array of T5) {
+}
+;
+type FF = function(): FF;
+foo: function(): FF {
+	return foo;
+}
+;
+foo();

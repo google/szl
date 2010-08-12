@@ -1,0 +1,87 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# NaN comparison tests.
+
+n1: float = NaN;
+n2: float = NaN;
+y: float = 2.0;
+
+# Equality tests should all report false.
+isEq: function(a: float, b: float): bool {
+  return a == b;
+};
+assert(!(n1 == y));
+assert(!(y  == n2));
+assert(!(n1 == n2));
+assert(!isEq(n1, y));
+assert(!isEq(y,  n2));
+assert(!isEq(n1, n2));
+
+# Inequality tests should all report true.
+isNeq: function(a: float, b: float): bool {
+  return a != b;
+};
+assert(n1 != y);
+assert(y  != n2);
+assert(n1 != n2);
+assert(isNeq(n1, y));
+assert(isNeq(y,  n2));
+assert(isNeq(n1, n2));
+
+# Less than tests should all report false.
+isLt: function(a: float, b: float): bool {
+  return a < b;
+};
+assert(!(n1 < y));
+assert(!(y  < n2));
+assert(!(n1 < n2));
+assert(!isLt(n1, y));
+assert(!isLt(y,  n2));
+assert(!isLt(n1, n2));
+
+# Less than or equal tests should all report false.
+isLeq: function(a: float, b: float): bool {
+  return a <= b;
+};
+assert(!(n1 <= y));
+assert(!(y  <= n2));
+assert(!(n1 <= n2));
+assert(!isLeq(n1, y));
+assert(!isLeq(y,  n2));
+assert(!isLeq(n1, n2));
+
+# Greater than tests should all report false.
+isGt: function(a: float, b: float): bool {
+  return a > b;
+};
+assert(!(n1 > y));
+assert(!(y  > n2));
+assert(!(n1 > n2));
+assert(!isGt(n1, y));
+assert(!isGt(y,  n2));
+assert(!isGt(n1, n2));
+
+# Greater than or equal tests should all report false.
+isGeq: function(a: float, b: float): bool {
+  return a >= b;
+};
+assert(!(n1 >= y));
+assert(!(y  >= n2));
+assert(!(n1 >= n2));
+assert(!isGeq(n1, y));
+assert(!isGeq(y,  n2));
+assert(!isGeq(n1, n2));
+

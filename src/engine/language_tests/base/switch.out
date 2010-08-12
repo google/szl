@@ -1,0 +1,88 @@
+b: bytes = input;
+found_int: bool = false;
+switch (b) {
+	case input:
+		{
+found_int = true;
+break;
+}
+	default:
+		{
+;
+}
+}
+assert(found_int);
+f: float = 3.14;
+found_float: bool = false;
+switch (f) {
+	case 3.13:
+		{
+assert(false);
+}
+	case 3.14:
+		{
+found_float = true;
+}
+	default:
+		{
+assert(false);
+break;
+}
+}
+assert(found_float);
+fp: fingerprint = convert(fingerprint, "0x12345");
+found_fg: bool = false;
+switch (fp) {
+	case convert(fingerprint, "0"):
+		{
+assert(false);
+}
+	case convert(fingerprint, "0x12345"):
+		{
+found_fg = true;
+}
+	default:
+		{
+assert(false);
+}
+}
+assert(found_fg);
+s: string = "";
+for (i: int = 0; i < 10; i++)
+{
+	switch (i) {
+		case 0:
+			{
+s = s + "null ";
+}
+		case 1:
+			{
+s = s + "one ";
+break;
+s = s + "1 ";
+}
+		case 2, 8, 9:
+			{
+s = s + format("%d ", i);
+}
+		case 2:
+			{
+s = s + "2 ";
+}
+		case 3:
+			{
+s = s + "3 ";
+}
+		case 4:
+			{
+s = s + "4 ";
+}
+		default:
+			{
+j: int = i + 100;
+s = s + format("default(%d) ", j);
+break;
+}
+	}
+}
+assert(s == "null one 2 3 4 default(105) default(106) default(107) 8 9 ");

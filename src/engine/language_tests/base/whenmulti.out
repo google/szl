@@ -1,0 +1,79 @@
+a: string = "abcdefgabcdefgabcdefg";
+b: string = "zxcvzxcvzxcv";
+g: string = "eeee";
+expected: array of string;
+actual: array of string;
+expected = {"some 0 8 7"};
+actual = {};
+when (
+	i: some int;
+	j: some int;
+	k: some int;
+	((((a[i] == 97) && (a[j] == 98)) && (b[j] != 120)) && (a[k] == a[i])) && (k > i)
+)
+	actual = actual + {format("some %d %d %d", i, j, k)};
+assert(expected == actual);
+expected = {"each 0 8 7", "each 0 8 14", "each 7 8 14"};
+actual = {};
+when (
+	i: each int;
+	j: each int;
+	k: each int;
+	((((a[i] == 97) && (a[j] == 98)) && (b[j] != 120)) && (a[k] == a[i])) && (k > i)
+)
+	actual = actual + {format("each %d %d %d", i, j, k)};
+assert(expected == actual);
+x: string = "xxxx";
+y: string = "yyyy";
+z: string = "xxxz";
+success: bool = false;
+when (
+	i: all int;
+	j: all int;
+	(x[i] == 120) && (y[j] == 121)
+)
+	success = true;
+assert(success);
+when (
+	i: all int;
+	j: all int;
+	(z[i] == 120) && (y[j] == 121)
+)
+	success = false;
+assert(success);
+expected = {"2 2", "2 6", "2 10"};
+actual = {};
+when (
+	i: some int;
+	j: each int;
+	a[i] == b[j]
+)
+	actual = actual + {format("%d %d", i, j)};
+assert(expected == actual);
+expected = {"2 2", "9 2", "16 2"};
+actual = {};
+when (
+	i: each int;
+	j: some int;
+	a[i] == b[j]
+)
+	actual = actual + {format("%d %d", i, j)};
+assert(expected == actual);
+expected = {"5 f"};
+actual = {};
+when (
+	i: some int;
+	j: all int;
+	a[i] > g[j]
+)
+	actual = actual + {format("%d %c", i, a[i])};
+assert(expected == actual);
+expected = {"5 f", "6 g", "12 f", "13 g", "19 f", "20 g"};
+actual = {};
+when (
+	i: each int;
+	j: all int;
+	a[i] > g[j]
+)
+	actual = actual + {format("%d %c", i, a[i])};
+assert(expected == actual);

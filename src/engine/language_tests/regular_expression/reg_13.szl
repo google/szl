@@ -1,0 +1,65 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Character classes, special characters and escape sequences.
+
+s0: string;
+matchArray: array of string;
+
+s0 = "char is abbrev for character.\nabbrev is abbrev for abbreviation.";
+
+#inst: \b escape sequence.
+matchArray = matchstrs(`.*char\b`, s0);
+if (matchArray[0] != "char")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs(".*char\b", "%s") Failed !!!`, s0);
+}
+
+#inst: \B escape sequence.
+matchArray = matchstrs(`.*char\B`, s0);
+if (matchArray[0] != "char is abbrev for char")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs(".*char\B", "%s") Failed !!!`, s0);
+}
+
+#inst: \A escape sequence.
+matchArray = matchstrs(`\Achar`, s0);
+if (matchArray[0] != "char")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\Achar", "%s") Failed !!!`, s0);
+}
+
+# RE2 does not support \Z
+# #inst: \Z escape sequence.
+# matchArray = matchstrs(`.*\.\Z`, s0);
+# if (matchArray[0] != "abbrev is abbrev for abbreviation.")
+# {
+#     emit stdout <- matchArray[0];
+#     emit stdout <- format(`matchstrs(".*\.\Z", "%s") Failed !!!`, s0);
+# }
+
+#inst: \z escape sequence.
+matchArray = matchstrs(`.*\.\z`, s0);
+if (matchArray[0] != "abbrev is abbrev for abbreviation.")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs(".*\.\z", "%s") Failed !!!`, s0);
+}

@@ -1,0 +1,183 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+#desc: Testing comparison operators
+
+#desc: Added tests for !=
+
+#Comparison operators are:
+#	==
+#	!=
+#	<
+#	<=
+#	>
+#	>=
+
+b1: bool = true;
+b2: bool = false;
+by1: bytes = bytes("abc");
+by2: bytes = bytes("abcdef");
+i1: int = 5;
+i2: int = 10;
+p1: fingerprint = fingerprint(0);
+p2: fingerprint = fingerprint(100);
+f1: float = 5.0;
+f2: float = 10.0;
+s1: string = "abc";
+s2: string = "abcdef";
+t1: time = HOUR;
+t2: time = time(24*int(HOUR));
+
+x:int;
+
+#inst: Testing comparison operators for booleans
+if (true != (b1 == b1)) x = DEBUG("print", "true  b1 == b1 %b\n", b1 == b1);
+if (false != (b1 != b1)) x = DEBUG("print", "false  b1 != b1 %b\n", b1 != b1);
+if (false != (b1 == b2)) x = DEBUG("print", "false  b1 == b2 %b\n", b1 == b2);
+if (true != (b1 != b2)) x = DEBUG("print", "true  b1 != b2 %b\n", b1 != b2);
+
+#inst: Testing comparison operators for integers
+if (false != (i1 < i1)) x = DEBUG("print", "false  i1 < i1 %b\n", i1 < i1);
+if (true != (i1 < i2)) x = DEBUG("print", "true  i1 < i2 %b\n", i1 < i2);
+if (false != (i2 < i1)) x = DEBUG("print", "false  i2 < i1 %b\n", i2 < i1);
+
+if (true != (i1 <= i1)) x = DEBUG("print", "true  i1 <= i1 %b\n", i1 <= i1);
+if (true != (i1 <= i2)) x = DEBUG("print", "true  i1 <= i2 %b\n", i1 <= i2);
+if (false != (i2 <= i1)) x = DEBUG("print", "false  i2 <= i1 %b\n", i2 <= i1);
+
+if (true != (i1 == i1)) x = DEBUG("print", "true  i1 == i1 %b\n", i1 == i1);
+if (false != (i1 == i2)) x = DEBUG("print", "false  i1 == i2 %b\n", i1 == i2);
+if (false != (i2 == i1)) x = DEBUG("print", "false  i2 == i1 %b\n", i2 == i1);
+
+if (true == (i1 != i1)) x = DEBUG("print", "false  i1 != i1 %b\n", i1 != i1);
+if (false == (i1 != i2)) x = DEBUG("print", "true  i1 != i2 %b\n", i1 != i2);
+if (false == (i2 != i1)) x = DEBUG("print", "true  i2 != i1 %b\n", i2 != i1);
+
+if (false != (i1 > i1)) x = DEBUG("print", "false  i1 > i1 %b\n", i1 > i1);
+if (false != (i1 > i2)) x = DEBUG("print", "false  i1 > i2 %b\n", i1 > i2);
+if (true != (i2 > i1)) x = DEBUG("print", "true  i2 > i1 %b\n", i2 > i1);
+
+if (true != (i1 >= i1)) x = DEBUG("print", "true  i1 >= i1 %b\n", i1 >= i1);
+if (false != (i1 >= i2)) x = DEBUG("print", "false  i1 >= i2 %b\n", i1 >= i2);
+if (true != (i2 >= i1)) x = DEBUG("print", "true  i2 >= i1 %b\n", i2 >= i1);
+
+#inst: Testing comparison operators for fingerprints
+if (true != (p1 == p1)) x = DEBUG("print", "true  p1 == p1 %b\n", p1 == p1);
+if (false != (p1 != p1)) x = DEBUG("print", "false  p1 != p1 %b\n", p1 != p1);
+if (false != (p1 == p2)) x = DEBUG("print", "false  p1 == p2 %b\n", p1 == p2);
+if (true != (p1 != p2)) x = DEBUG("print", "true  p1 != p2 %b\n", p1 != p2);
+
+#inst: Testing comparison operators for floats
+if (false != (f1 < f1)) x = DEBUG("print", "false  f1 < f1 %b\n", f1 < f1);
+if (true != (f1 < f2)) x = DEBUG("print", "true  f1 < f2 %b\n", f1 < f2);
+if (false != (f2 < f1)) x = DEBUG("print", "false  f2 < f1 %b\n", f2 < f1);
+
+if (true != (f1 <= f1)) x = DEBUG("print", "true  f1 <= f1 %b\n", f1 <= f1);
+if (true != (f1 <= f2)) x = DEBUG("print", "true  f1 <= f2 %b\n", f1 <= f2);
+if (false != (f2 <= f1)) x = DEBUG("print", "false  f2 <= f1 %b\n", f2 <= f1);
+
+if (true != (f1 == f1)) x = DEBUG("print", "true  f1 == f1 %b\n", f1 == f1);
+if (false != (f1 == f2)) x = DEBUG("print", "false  f1 == f2 %b\n", f1 == f2);
+if (false != (f2 == f1)) x = DEBUG("print", "false  f2 == f1 %b\n", f2 == f1);
+
+if (true == (f1 != f1)) x = DEBUG("print", "false  f1 != f1 %b\n", f1 != f1);
+if (false == (f1 != f2)) x = DEBUG("print", "true  f1 != f2 %b\n", f1 != f2);
+if (false == (f2 != f1)) x = DEBUG("print", "true  f2 != f1 %b\n", f2 != f1);
+
+if (false != (f1 > f1)) x = DEBUG("print", "false  f1 > f1 %b\n", f1 > f1);
+if (false != (f1 > f2)) x = DEBUG("print", "false  f1 > f2 %b\n", f1 > f2);
+if (true != (f2 > f1)) x = DEBUG("print", "true  f2 > f1 %b\n", f2 > f1);
+
+if (true != (f1 >= f1)) x = DEBUG("print", "true  f1 >= f1 %b\n", f1 >= f1);
+if (false != (f1 >= f2)) x = DEBUG("print", "false  f1 >= f2 %b\n", f1 >= f2);
+if (true != (f2 >= f1)) x = DEBUG("print", "true  f2 >= f1 %b\n", f2 >= f1);
+
+#inst: Testing comparison operators for strings
+if (false != (s1 < s1)) x = DEBUG("print", "false  s1 < s1 %b\n", s1 < s1);
+if (true != (s1 < s2)) x = DEBUG("print", "true  s1 < s2 %b\n", s1 < s2);
+if (false != (s2 < s1)) x = DEBUG("print", "false  s2 < s1 %b\n", s2 < s1);
+
+if (true != (s1 <= s1)) x = DEBUG("print", "true  s1 <= s1 %b\n", s1 <= s1);
+if (true != (s1 <= s2)) x = DEBUG("print", "true  s1 <= s2 %b\n", s1 <= s2);
+if (false != (s2 <= s1)) x = DEBUG("print", "false  s2 <= s1 %b\n", s2 <= s1);
+
+if (true != (s1 == s1)) x = DEBUG("print", "true  s1 == s1 %b\n", s1 == s1);
+if (false != (s1 == s2)) x = DEBUG("print", "false  s1 == s2 %b\n", s1 == s2);
+if (false != (s2 == s1)) x = DEBUG("print", "false  s2 == s1 %b\n", s2 == s1);
+
+if (true == (s1 != s1)) x = DEBUG("print", "false  s1 != s1 %b\n", s1 != s1);
+if (false == (s1 != s2)) x = DEBUG("print", "true  s1 != s2 %b\n", s1 != s2);
+if (false == (s2 != s1)) x = DEBUG("print", "true  s2 != s1 %b\n", s2 != s1);
+
+if (false != (s1 > s1)) x = DEBUG("print", "false  s1 > s1 %b\n", s1 > s1);
+if (false != (s1 > s2)) x = DEBUG("print", "false  s1 > s2 %b\n", s1 > s2);
+if (true != (s2 > s1)) x = DEBUG("print", "true  s2 > s1 %b\n", s2 > s1);
+
+if (true != (s1 >= s1)) x = DEBUG("print", "true  s1 >= s1 %b\n", s1 >= s1);
+if (false != (s1 >= s2)) x = DEBUG("print", "false  s1 >= s2 %b\n", s1 >= s2);
+if (true != (s2 >= s1)) x = DEBUG("print", "true  s2 >= s1 %b\n", s2 >= s1);
+
+#inst: Testing comparison operators for times
+if (false != (t1 < t1)) x = DEBUG("print", "false  t1 < t1 %b\n", t1 < t1);
+if (true != (t1 < t2)) x = DEBUG("print", "true  t1 < t2 %b\n", t1 < t2);
+if (false != (t2 < t1)) x = DEBUG("print", "false  t2 < t1 %b\n", t2 < t1);
+
+if (true != (t1 <= t1)) x = DEBUG("print", "true  t1 <= t1 %b\n", t1 <= t1);
+if (true != (t1 <= t2)) x = DEBUG("print", "true  t1 <= t2 %b\n", t1 <= t2);
+if (false != (t2 <= t1)) x = DEBUG("print", "false  t2 <= t1 %b\n", t2 <= t1);
+
+if (true != (t1 == t1)) x = DEBUG("print", "true  t1 == t1 %b\n", t1 == t1);
+if (false != (t1 == t2)) x = DEBUG("print", "false  t1 == t2 %b\n", t1 == t2);
+if (false != (t2 == t1)) x = DEBUG("print", "false  t2 == t1 %b\n", t2 == t1);
+
+if (true == (t1 != t1)) x = DEBUG("print", "false  t1 != t1 %b\n", t1 != t1);
+if (false == (t1 != t2)) x = DEBUG("print", "true  t1 != t2 %b\n", t1 != t2);
+if (false == (t2 != t1)) x = DEBUG("print", "true  t2 != t1 %b\n", t2 != t1);
+
+if (false != (t1 > t1)) x = DEBUG("print", "false  t1 > t1 %b\n", t1 > t1);
+if (false != (t1 > t2)) x = DEBUG("print", "false  t1 > t2 %b\n", t1 > t2);
+if (true != (t2 > t1)) x = DEBUG("print", "true  t2 > t1 %b\n", t2 > t1);
+
+if (true != (t1 >= t1)) x = DEBUG("print", "true  t1 >= t1 %b\n", t1 >= t1);
+if (false != (t1 >= t2)) x = DEBUG("print", "false  t1 >= t2 %b\n", t1 >= t2);
+if (true != (t2 >= t1)) x = DEBUG("print", "true  t2 >= t1 %b\n", t2 >= t1);
+
+#inst: Testing comparison operators for bytes
+if (false != (by1 < by1)) x = DEBUG("print", "false  by1 < by1 %b\n", by1 < by1);
+if (true != (by1 < by2)) x = DEBUG("print", "true  by1 < by2 %b\n", by1 < by2);
+if (false != (by2 < by1)) x = DEBUG("print", "false  by2 < by1 %b\n", by2 < by1);
+
+if (true != (by1 <= by1)) x = DEBUG("print", "true  by1 <= by1 %b\n", by1 <= by1);
+if (true != (by1 <= by2)) x = DEBUG("print", "true  by1 <= by2 %b\n", by1 <= by2);
+if (false != (by2 <= by1)) x = DEBUG("print", "false  by2 <= by1 %b\n", by2 <= by1);
+
+if (true != (by1 == by1)) x = DEBUG("print", "true  by1 == by1 %b\n", by1 == by1);
+if (false != (by1 == by2)) x = DEBUG("print", "false  by1 == by2 %b\n", by1 == by2);
+if (false != (by2 == by1)) x = DEBUG("print", "false  by2 == by1 %b\n", by2 == by1);
+
+if (true == (by1 != by1)) x = DEBUG("print", "false  by1 != by1 %b\n", by1 != by1);
+if (false == (by1 != by2)) x = DEBUG("print", "true  by1 != by2 %b\n", by1 != by2);
+if (false == (by2 != by1)) x = DEBUG("print", "true  by2 != by1 %b\n", by2 != by1);
+
+if (false != (by1 > by1)) x = DEBUG("print", "false  by1 > by1 %b\n", by1 > by1);
+if (false != (by1 > by2)) x = DEBUG("print", "false  by1 > by2 %b\n", by1 > by2);
+if (true != (by2 > by1)) x = DEBUG("print", "true  by2 > by1 %b\n", by2 > by1);
+
+if (true != (by1 >= by1)) x = DEBUG("print", "true  by1 >= by1 %b\n", by1 >= by1);
+if (false != (by1 >= by2)) x = DEBUG("print", "false  by1 >= by2 %b\n", by1 >= by2);
+if (true != (by2 >= by1)) x = DEBUG("print", "true  by2 >= by1 %b\n", by2 >= by1);

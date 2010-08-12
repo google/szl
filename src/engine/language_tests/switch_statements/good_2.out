@@ -1,0 +1,17 @@
+int case 0
+string case 0
+int case 1
+string case ""+string(i)
+int  case 2
+string case ""+string(i)
+int case j-1
+string case ""+string(i)
+int case 2+f0()
+string case ""+string(i)
+int case i/i*i
+string case ""+string(i)
+int case 1+j
+string case ""+string(i)
+i is not equal to j
+i is equal to j
+i is not equal to j

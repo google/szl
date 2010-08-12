@@ -1,0 +1,8 @@
+base/proto_keyword_bad.szl:28: proto expects a file name
+base/proto_keyword_bad.szl:29: proto expects a file name
+base/proto_keyword_bad.szl:30: proto expects a file name
+base/proto_keyword_bad.szl:31: proto expects a file name
+base/proto_keyword_bad.szl:32: proto expects a file name
+base/proto_keyword_bad.szl:38: type expected; string literal found
+base/proto_keyword_bad.szl:40: type expected; string literal found
+base/proto_keyword_bad.szl:41: tuple type expected; found BadType

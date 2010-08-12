@@ -1,0 +1,19 @@
+type U = {m: int @ 1, n: array of U @ 2};
+type T = {x: int @ 1, y: array of T @ 2, z: {a: int @ 3} @ 4, w: array of {b: int @ 5} @ 6, u: U @ 7};
+t: T = convert(T, input);
+t = {1, {}, {2}, {{3}}, {4, {}}};
+t.x;
+c: int = t.z.a;
+a: int = t.w[0].b;
+d: int = t.u.m;
+Protocol buffer type associated with input: "T"
+Fields referenced in tuple "T":
+  "x"
+  "z"
+  "z.a"
+  "w"
+  "w.b"
+  "u"
+  "u.m"
+Fields referenced in tuple "U":
+  "m"

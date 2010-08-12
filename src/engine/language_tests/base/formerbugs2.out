@@ -1,0 +1,9 @@
+m: map [int] of function(x: int) = {:};
+x: int = 0;
+when (
+	i: each int;
+	def(m[i])
+)
+{
+	m[i](x);
+}

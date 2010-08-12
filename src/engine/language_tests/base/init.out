@@ -1,0 +1,6 @@
+b: array of bool = {true, true, false, true, false, true};
+assert(((((b[0] && b[1]) && (!b[2])) && b[3]) && (!b[4])) && b[5]);
+s: string = {26085, 26412, 35486};
+assert(s == "日本語");
+x: bytes = {97, 98, 99};
+assert(x == B"abc");

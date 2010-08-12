@@ -1,0 +1,3 @@
+proto/proto_tuple_bad_6.szl:24: expected int literal in tag expression; found ','
+proto/proto_tuple_bad_6.szl:25: expected int literal in tag expression; found ','
+proto/proto_tuple_bad_6.szl:27: expected int literal in tag expression; found '}'

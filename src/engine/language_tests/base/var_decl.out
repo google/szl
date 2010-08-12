@@ -1,0 +1,23 @@
+x: int = 3;
+xi: int = 3;
+assert(x == xi);
+static y: float = 3.14;
+static yi: float = 3.14;
+assert(y == yi);
+f: function(n: int): int {
+	return n;
+}
+;
+fi: function(n: int): int {
+	return n;
+}
+;
+assert(f(0) == fi(0));
+type T = {x: int, y: float};
+t: T = {0, 0.0};
+ti: T = convert(T, {0, 0.0});
+assert(t == ti);
+type P = proto {x: int, y: float};
+p: P = {0, 0.0};
+pi: P = convert(P, {0, 0.0});
+assert(p == pi);

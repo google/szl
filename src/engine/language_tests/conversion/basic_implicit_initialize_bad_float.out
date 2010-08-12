@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["conversion/basic_implicit_initialize_bad_float.szl:23: DEBUG(\"print\",\"%f\",f0) (probably because \"f0\" was undefined due to an error at conversion/basic_implicit_initialize_bad_float.szl:22: \"Hello World\" + empty (string \"Hello World\" contains no float))"] <- 1;

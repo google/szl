@@ -1,0 +1,22 @@
+if (nrand(5) == 17)
+{
+	1 / (convert(int, "45678"[3 : $], 10) - 79);
+	1 / (convert(int, "45678"[3 : $], 10) - 78);
+	1 / ("abcde"[3] - 101);
+	1 / ("abcde"[3] - 100);
+	1 / ("abcde"[5] - 100);
+	1 / convert(int, new(string, 3, 120) == "xxx");
+	1 / convert(int, new(string, 3, 120) != "xxx");
+	1 / convert(int, new(string, -1, 120) != "xxx");
+	1 / convert(int, "abcde"[2 : 4] == "cd");
+	1 / convert(int, "abcde"[2 : 4] != "cd");
+	1 / convert(int, "abcde"[2 : 6] != "cd");
+	x: int = -2;
+	x++;
+	x++;
+	1 / x;
+	y: int = 2;
+	y--;
+	y--;
+	1 / y;
+}

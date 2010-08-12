@@ -1,0 +1,217 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: format intrinsic function call.
+
+#inst: special treatment to the name "format" by statement productions.
+format("abc");
+
+#inst: not using the usual syntax of function calling.
+emit stdout <- format;
+
+#inst: no argument to format.
+emit stdout <- format();
+
+#inst: less number of arguments than the format modifiers in format string.
+emit stdout <- format("%s");
+emit stdout <- format("%s and %d", "abc");
+emit stdout <- format("%s and %d");
+
+#inst: more number of arguments than the format modifiers in format string.
+emit stdout <- format("abc", "def");
+emit stdout <- format("%s", "abc", "def");
+emit stdout <- format("%s and %d", "abc", 123, "def");
+
+#inst: type incompatible arguments to format.
+b0: bool = true;
+i0: int = 10;
+f0: float = 10.2;
+by0: bytes = "abc";
+s0: string = "abc";
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+fg0: fingerprint = fingerprint("abc");
+
+a0: array of int = { 1, 2, 3 };
+m0: map [key: string] of int = { "A" : 65, "B" : 66 };
+p0: { x: int, y: string } = { 65, "A"};
+
+emit stdout <- format(b0);
+emit stdout <- format(i0);
+emit stdout <- format(f0);
+emit stdout <- format(by0);
+emit stdout <- format(t0);
+emit stdout <- format(fg0);
+emit stdout <- format(a0);
+emit stdout <- format(m0);
+emit stdout <- format(p0);
+
+emit stdout <- format("%c", b0);
+emit stdout <- format("%s", b0);
+emit stdout <- format("%d", b0);
+emit stdout <- format("%o", b0);
+emit stdout <- format("%x", b0);
+emit stdout <- format("%i", b0);
+emit stdout <- format("%e", b0);
+emit stdout <- format("%f", b0);
+emit stdout <- format("%g", b0);
+emit stdout <- format("%E", b0);
+emit stdout <- format("%F", b0);
+emit stdout <- format("%G", b0);
+
+emit stdout <- format("%b", i0);
+emit stdout <- format("%s", i0);
+emit stdout <- format("%e", i0);
+emit stdout <- format("%f", i0);
+emit stdout <- format("%g", i0);
+emit stdout <- format("%E", i0);
+emit stdout <- format("%F", i0);
+emit stdout <- format("%G", i0);
+
+emit stdout <- format("%b", f0);
+emit stdout <- format("%c", f0);
+emit stdout <- format("%s", f0);
+emit stdout <- format("%d", f0);
+emit stdout <- format("%o", f0);
+emit stdout <- format("%x", f0);
+emit stdout <- format("%i", f0);
+
+emit stdout <- format("%b", by0);
+emit stdout <- format("%c", by0);
+emit stdout <- format("%s", by0);
+emit stdout <- format("%d", by0);
+emit stdout <- format("%o", by0);
+emit stdout <- format("%x", by0);
+emit stdout <- format("%i", by0);
+emit stdout <- format("%e", by0);
+emit stdout <- format("%f", by0);
+emit stdout <- format("%g", by0);
+emit stdout <- format("%E", by0);
+emit stdout <- format("%F", by0);
+emit stdout <- format("%G", by0);
+
+emit stdout <- format("%b", s0);
+emit stdout <- format("%c", s0);
+emit stdout <- format("%d", s0);
+emit stdout <- format("%o", s0);
+emit stdout <- format("%x", s0);
+emit stdout <- format("%i", s0);
+emit stdout <- format("%e", s0);
+emit stdout <- format("%f", s0);
+emit stdout <- format("%g", s0);
+emit stdout <- format("%E", s0);
+emit stdout <- format("%F", s0);
+emit stdout <- format("%G", s0);
+
+emit stdout <- format("%b", t0);
+emit stdout <- format("%c", t0);
+emit stdout <- format("%s", t0);
+emit stdout <- format("%d", t0);
+emit stdout <- format("%o", t0);
+emit stdout <- format("%x", t0);
+emit stdout <- format("%i", t0);
+emit stdout <- format("%e", t0);
+emit stdout <- format("%f", t0);
+emit stdout <- format("%g", t0);
+emit stdout <- format("%E", t0);
+emit stdout <- format("%F", t0);
+emit stdout <- format("%G", t0);
+
+emit stdout <- format("%b", fg0);
+emit stdout <- format("%c", fg0);
+emit stdout <- format("%s", fg0);
+emit stdout <- format("%d", fg0);
+emit stdout <- format("%o", fg0);
+emit stdout <- format("%x", fg0);
+emit stdout <- format("%i", fg0);
+emit stdout <- format("%e", fg0);
+emit stdout <- format("%f", fg0);
+emit stdout <- format("%g", fg0);
+emit stdout <- format("%E", fg0);
+emit stdout <- format("%F", fg0);
+emit stdout <- format("%G", fg0);
+
+emit stdout <- format("%b", a0);
+emit stdout <- format("%c", a0);
+emit stdout <- format("%s", a0);
+emit stdout <- format("%d", a0);
+emit stdout <- format("%o", a0);
+emit stdout <- format("%x", a0);
+emit stdout <- format("%i", a0);
+emit stdout <- format("%e", a0);
+emit stdout <- format("%f", a0);
+emit stdout <- format("%g", a0);
+emit stdout <- format("%E", a0);
+emit stdout <- format("%F", a0);
+emit stdout <- format("%G", a0);
+
+emit stdout <- format("%b", m0);
+emit stdout <- format("%c", m0);
+emit stdout <- format("%s", m0);
+emit stdout <- format("%d", m0);
+emit stdout <- format("%o", m0);
+emit stdout <- format("%x", m0);
+emit stdout <- format("%i", m0);
+emit stdout <- format("%e", m0);
+emit stdout <- format("%f", m0);
+emit stdout <- format("%g", m0);
+emit stdout <- format("%E", m0);
+emit stdout <- format("%F", m0);
+emit stdout <- format("%G", m0);
+
+emit stdout <- format("%b", p0);
+emit stdout <- format("%c", p0);
+emit stdout <- format("%s", p0);
+emit stdout <- format("%d", p0);
+emit stdout <- format("%o", p0);
+emit stdout <- format("%x", p0);
+emit stdout <- format("%i", p0);
+emit stdout <- format("%e", p0);
+emit stdout <- format("%f", p0);
+emit stdout <- format("%g", p0);
+emit stdout <- format("%E", p0);
+emit stdout <- format("%F", p0);
+emit stdout <- format("%G", p0);
+
+emit stdout <- format("%t", b0);
+emit stdout <- format("%t", i0);
+emit stdout <- format("%t", f0);
+emit stdout <- format("%t", by0);
+emit stdout <- format("%t", s0);
+emit stdout <- format("%t", fg0);
+emit stdout <- format("%t", a0);
+emit stdout <- format("%t", m0);
+emit stdout <- format("%t", p0);
+
+emit stdout <- format(getenv("NOTHING"));
+
+static var := "%d";
+emit stdout <- format(var);
+var0 := "";
+var0 = "%d";
+emit stdout <- format(var0);
+emit stdout <- format(var0, 5);
+var1 := "5" + "6";
+emit stdout <- format(var1);
+var2 := string(56);
+emit stdout <- format(var2);
+var3 := lowercase("ABC");
+emit stdout <- format(var3);
+var4 := new(string, 5, 'i');
+emit stdout <- format(var4);
+var5 := "abcde"[2:4];
+emit stdout <- format(var5);

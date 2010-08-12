@@ -1,0 +1,18 @@
+conversion/basic_implicit_initialize_bad.szl:20: cannot convert convert(bytes, {10, 11, 12, 13, 14}) (type bytes) to int
+conversion/basic_implicit_initialize_bad.szl:22: cannot convert true (type bool) to float
+conversion/basic_implicit_initialize_bad.szl:23: cannot convert convert(bytes, {10, 11, 12, 13, 14}) (type bytes) to float
+conversion/basic_implicit_initialize_bad.szl:24: cannot convert convert(fingerprint, 100) (type fingerprint) to float
+conversion/basic_implicit_initialize_bad.szl:25: cannot convert now() (type time) to float
+conversion/basic_implicit_initialize_bad.szl:27: cannot convert 10 (type int) to bool
+conversion/basic_implicit_initialize_bad.szl:28: cannot convert convert(bytes, {10, 11, 12, 13, 14}) (type bytes) to bool
+conversion/basic_implicit_initialize_bad.szl:29: cannot convert convert(fingerprint, 100) (type fingerprint) to bool
+conversion/basic_implicit_initialize_bad.szl:30: cannot convert 10.32 (type float) to bool
+conversion/basic_implicit_initialize_bad.szl:31: cannot convert now() (type time) to bool
+conversion/basic_implicit_initialize_bad.szl:33: cannot convert 10 (type int) to bytes
+conversion/basic_implicit_initialize_bad.szl:34: cannot convert true (type bool) to bytes
+conversion/basic_implicit_initialize_bad.szl:36: cannot convert 10.32 (type float) to bytes
+conversion/basic_implicit_initialize_bad.szl:37: cannot convert now() (type time) to bytes
+conversion/basic_implicit_initialize_bad.szl:39: cannot convert true (type bool) to time
+conversion/basic_implicit_initialize_bad.szl:40: cannot convert convert(bytes, {10, 11, 12, 13, 14}) (type bytes) to time
+conversion/basic_implicit_initialize_bad.szl:41: cannot convert convert(fingerprint, 100) (type fingerprint) to time
+conversion/basic_implicit_initialize_bad.szl:42: cannot convert 10.32 (type float) to time

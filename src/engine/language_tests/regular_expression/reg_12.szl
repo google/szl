@@ -1,0 +1,189 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Character classes, special characters and escape sequences.
+
+s0: string;
+matchArray: array of string;
+
+#inst: first two characters are UTF-8 (non-ascii)
+#inst: string contains all types of characters.
+s0 = "\u0777\u01FFabcdABCD1234_;,.!@#$(}[]-+-~ \t\n\b";
+
+#inst: alpha character class.
+matchArray = matchstrs(`[[:alpha:]]+`, s0);
+if (matchArray[0] != "abcdABCD")
+{
+    emit stdout <- format(`matchstrs("[[:alpha:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: alnum character class.
+matchArray = matchstrs(`[[:alnum:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234")
+{
+    emit stdout <- format(`matchstrs("[[:alnum:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: ascii character class.
+matchArray = matchstrs(`[[:ascii:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234_;,.!@#$(}[]-+-~ \t\n\b")
+{
+    emit stdout <- format(`matchstrs("[[:ascii:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: blank character class.
+matchArray = matchstrs(`[[:blank:]]+`, s0);
+if (matchArray[0] != " \t")
+{
+    emit stdout <- format(`matchstrs("[[:blank:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: cntrl character class.
+matchArray = matchstrs(`[[:cntrl:]]+`, s0);
+if (matchArray[0] != "\t\n\b")
+{
+    emit stdout <- format(`matchstrs("[[:cntrl:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: digit character class.
+matchArray = matchstrs(`[[:digit:]]+`, s0);
+if (matchArray[0] != "1234")
+{
+    emit stdout <- format(`matchstrs("[[:digit:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: graph character class.
+matchArray = matchstrs(`[[:graph:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234_;,.!@#$(}[]-+-~")
+{
+    emit stdout <- format(`matchstrs("[[:graph:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: lower character class.
+matchArray = matchstrs(`[[:lower:]]+`, s0);
+if (matchArray[0] != "abcd")
+{
+    emit stdout <- format(`matchstrs("[[:lower:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: print character class.
+matchArray = matchstrs(`[[:print:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234_;,.!@#$(}[]-+-~ ")
+{
+    emit stdout <- format(`matchstrs("[[:print:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: punct character class.
+matchArray = matchstrs(`[[:punct:]]+`, s0);
+if (matchArray[0] != "_;,.!@#$(}[]-+-~")
+{
+    emit stdout <- format(`matchstrs("[[:punct:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: space character class.
+matchArray = matchstrs(`[[:space:]]+`, s0);
+if (matchArray[0] != " \t\n")
+{
+    emit stdout <- format(`matchstrs("[[:space:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: upper character class.
+matchArray = matchstrs(`[[:upper:]]+`, s0);
+if (matchArray[0] != "ABCD")
+{
+    emit stdout <- format(`matchstrs("[[:upper:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: word character class.
+matchArray = matchstrs(`[[:word:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234_")
+{
+    emit stdout <- format(`matchstrs("[[:word:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: xdigit character class.
+matchArray = matchstrs(`[[:xdigit:]]+`, s0);
+if (matchArray[0] != "abcdABCD1234")
+{
+    emit stdout <- format(`matchstrs("[[:xdigit:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: negating a character class.
+# RE2 would match "_;,.!@#$(}[]-+-~ \t\n\b"
+matchArray = matchstrs(`[[:^xdigit:]]+`, s0);
+if (matchArray[0] != "\u0777\u01FF")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("[[:^xdigit:]]+", "%s") Failed !!!`, s0);
+}
+
+#inst: \w escape sequence.
+matchArray = matchstrs(`\w+`, s0);
+if (matchArray[0] != "abcdABCD1234_")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\w+", "%s") Failed !!!`, s0);
+}
+
+#inst: \W escape sequence.
+matchArray = matchstrs(`\W+`, s0);
+if (matchArray[0] != "\u0777\u01FF")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\W+", "%s") Failed !!!`, s0);
+}
+
+#inst: \s escape sequence.
+matchArray = matchstrs(`\s+`, s0);
+if (matchArray[0] != " \t\n")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\s+", "%s") Failed !!!`, s0);
+}
+
+#inst: \S escape sequence.
+matchArray = matchstrs(`\S+`, s0);
+if (matchArray[0] != "\u0777\u01FFabcdABCD1234_;,.!@#$(}[]-+-~")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\S+", "%s") Failed !!!`, s0);
+}
+
+#inst: \d escape sequence.
+matchArray = matchstrs(`\d+`, s0);
+if (matchArray[0] != "1234")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\d+", "%s") Failed !!!`, s0);
+}
+
+#inst: \D escape sequence.
+matchArray = matchstrs(`\D+`, s0);
+if (matchArray[0] != "\u0777\u01FFabcdABCD")
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\D+", "%s") Failed !!!`, s0);
+}
+
+#inst: \C escape sequence.
+matchArray = matchstrs(`\C+`, s0);
+if (matchArray[0] != s0)
+{
+    emit stdout <- matchArray[0];
+    emit stdout <- format(`matchstrs("\C+", "%s") Failed !!!`, s0);
+}

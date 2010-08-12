@@ -1,0 +1,9 @@
+base/badnew2.szl:19: warning: declaration of "output" hides the Sawzall predefined identifier "output"
+base/badnew2.szl:21: type bool cannot be dynamically allocated
+base/badnew2.szl:22: type fingerprint cannot be dynamically allocated
+base/badnew2.szl:23: type float cannot be dynamically allocated
+base/badnew2.szl:24: type int cannot be dynamically allocated
+base/badnew2.szl:25: type time cannot be dynamically allocated
+base/badnew2.szl:26: type tuple cannot be dynamically allocated
+base/badnew2.szl:27: output type (output) not allowed in this context
+base/badnew2.szl:28: type function() cannot be dynamically allocated

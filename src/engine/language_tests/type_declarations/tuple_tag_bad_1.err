@@ -1,0 +1,1 @@
+type_declarations/tuple_tag_bad_1.szl:26: only some fields contain protocol buffer tags; tags must be consistently defined

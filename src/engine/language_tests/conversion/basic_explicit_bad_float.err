@@ -1,0 +1,8 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     empty: string = ""
+     f0: float = <undefined>
+
+szl: fatal: undefined value at conversion/basic_explicit_bad_float.szl:22: f0 = float("Hello World" + empty); (string "Hello World" contains no float)

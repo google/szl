@@ -1,0 +1,5 @@
+Stack trace:
+  0. no symbolic frame information (initialization frame?)
+     (use --v=1 for more details)
+
+szl: fatal: undefined value at base/statics3.szl:19: load("no such file") (can't open no such file: No such file or directory)

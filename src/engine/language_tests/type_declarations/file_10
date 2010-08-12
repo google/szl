@@ -1,0 +1,25 @@
+10 #!/bin/env szl
+10 
+10 #szl_options 
+10 
+10 #szl_input outputType_bad_format_file.szl
+10 
+10 #szl_output file_11
+10 #NOTE: szl_output points to names of all files related to the output variables
+10 #NOTE: used by the script. So it is mandatory to keep the filename in sync with
+10 #NOTE: the one specified in the output variable declaration
+10 
+10 
+10 #desc: For the issue where non-static variables are referred to in 
+10 #desc: file and format attributes of output types
+10 
+10 #inst: Collection that uses non-static variables in format and file
+10 str1: string = "10";
+10 static str2: string = "11";
+10 
+10 ocs1: table collection of s:string format("%s %s\n", str1, s) file("file_%s", str1);
+10 ocs2: table collection of s:string format("%s %s\n", str2, s) file("file_%s", str2);
+10 
+10 emit ocs1 <- string(input);
+10 emit ocs2 <- string(input);
+10 

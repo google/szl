@@ -1,0 +1,291 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# for more output type and output variable tests see:
+#   base/emit_bad.szl
+#   type_declarations/outputType_bad.szl
+#   emitter/*bad*
+
+# output variable names must be unique accross different scopes
+
+{ out1: table collection of int; }
+{ out1: table collection of float; }
+function() { out1: table sum of int; };
+
+# output elements referenced in formats must be in the immediate scope
+
+t5: table collection of i: int
+    file("/dev/stdout") format("%d", function(): int { return i; }() );
+
+# when non-static variables are referenced in format or file/proc attributes,
+# the output variable cannot be declared or used in static scope
+
+j: int = nrand(7);
+dev_stdout := "/dev/stdout";
+t6: table collection of i: int file("/dev/stdout") format("%d", j);
+t7: table collection of i: int file("%s", dev_stdout) format("");
+type T6 = table collection of i: int file("/dev/stdout") format("%d", j);
+type T7 = table collection of i: int file("%s", dev_stdout) format("");
+t6t: T6;
+t7t: T7;
+static f1: function() {
+  emit t6 <- 0;
+  emit t7 <- 0;
+  emit t6t <- 0;
+  emit t7t <- 0;
+};
+function() {
+  static f2: function() {
+    emit t6 <- 0;
+    emit t7 <- 0;
+    emit t6t <- 0;
+    emit t7t <- 0;
+  };
+};
+static f3: function() {
+  function() {
+    emit t6 <- 0;
+    emit t7 <- 0;
+    emit t6t <- 0;
+    emit t7t <- 0;
+  };
+};
+static f4: function() {
+  k: int = nrand(7);
+  sleep_0 := "sleep 0";
+  t8: table collection of i: int proc("sleep 0") format("%d", k);
+  t9: table collection of i: int proc("%s", sleep_0) format("");
+  type T8 = table collection of i: int proc("sleep 0") format("%d", k);
+  type T9 = table collection of i: int proc("%s", sleep_0) format("");
+  t8t: T8;
+  t9t: T9;
+  emit t8 <- 1;
+  emit t9 <- 1;
+  emit t8t <- 1;
+  emit t9t <- 1;
+};
+
+# parameters cannot reference non-static variables in any scope
+i: int = 10;
+t10: table sample(i) of int;
+type T10 = table sample(i) of int;
+f5: function() {
+  j: int = 10;
+  t11: table sample(j) of int;
+  type T11 = table sample(j) of int;
+};
+static f6: function() {
+  k: int = 10;
+  t12: table sample(k) of int;
+  type T12 = table sample(k) of int;
+};
+
+
+# output type equality checks: the argument list is not compatible
+
+# Note: default i, e, w identifiers for index, element, weight indicate the
+# fields that don't affect the test case
+
+# kinds don't match
+tCOek: table collection of e: int;
+function(t: table sum of e: int) {}(tCOek);
+function(t: table text of e: string) {}(tCOek);
+function(t: table mrcounter of e: int) {}(tCOek);
+tSAek: table sample(10) of e: int;
+function(t: table set(10) of e: int) {}(tSAek);
+function(t: table quantile(10) of e: int) {}(tSAek);
+function(t: table unique(10) of e: int) {}(tSAek);
+function(t: table recordio(10) of e: int) {}(tSAek);
+tTOek: table top(10) of e: int weight w: int;
+function(t: table maximum(10) of e: int weight w: int) {}(tTOek);
+function(t: table minimum(10) of e: int weight w: int) {}(tTOek);
+function(t: table distinctsample(10) of e: int weight w: int) {}(tTOek);
+function(t: table inversehistogram(10) of e: int weight w: int) {}(tTOek);
+function(t: table weightedsample(10) of e: int weight w: int) {}(tTOek);
+
+# params don't match
+tSEepl: table set(10) of e: int;
+function(t: table set(100) of e: int) {}(tSEepl);
+
+# index types don't match (identifiers matter)
+tSUeii: table sum[i: int] of e: int;
+function(t: table sum[i: uint] of e: int) {}(tSUeii);
+function(t: table sum[int] of e: int) {}(tSUeii);
+function(t: table sum[x: int] of e: int) {}(tSUeii);
+tSUeiA: table sum[A: array of int] of e: int;
+function(t: table sum[A: array of uint] of e: int) {}(tSUeiA);
+function(t: table sum[array of int] of e: int) {}(tSUeiA);
+function(t: table sum[x: array of int] of e: int) {}(tSUeiA);
+tSUeiM: table sum[M: map[string] of int] of e: int;
+function(t: table sum[M: map[string] of uint] of e: int) {}(tSUeiM);
+function(t: table sum[map[string] of int] of e: int) {}(tSUeiM);
+function(t: table sum[x: map[string] of int] of e: int) {}(tSUeiM);
+tSUeiT: table sum[T: { i: int, f: float}] of e: int;
+function(t: table sum[T: proto { i: int, f: float}] of e: int) {}(tSUeiT);
+function(t: table sum[{ i: int, f: float}] of e: int) {}(tSUeiT);
+function(t: table sum[x: { i: int, f: float}] of e: int) {}(tSUeiT);
+tSUeiP: table sum[P: { i: int @1, f: float @2 }] of e: int;
+function(t: table sum[P: { i: int @2, f: float @3 }] of e: int) {}(tSUeiP);
+function(t: table sum[P: parsedmessage { i: int @1, f: float @2 }] of e: int
+	) {}(tSUeiP);
+function(t: table sum[P: proto { i: int, f: float }] of e: int) {}(tSUeiP);
+function(t: table sum[{ i: int @1, f: float @2 }] of e: int) {}(tSUeiP);
+function(t: table sum[x: { i: int @1, f: float @2 }] of e: int) {}(tSUeiP);
+tSUei3: table sum[int][float][array of string] of e: int;
+function(t: table sum[array of string][float][int] of e: int) {}(tSUei3);
+function(t: table sum[i: int][f: float][A: array of string] of e: int
+	) {}(tSUei3);
+
+# element types don't match (identifiers matter)
+tSAeei: table sample(10) of i: int;
+function(t: table sample(10) of i: uint) {}(tSAeei);
+function(t: table sample(10) of int) {}(tSAeei);
+function(t: table sample(10) of x: int) {}(tSAeei);
+tSAeeA: table sample(10) of A: array of int;
+function(t: table sample(10) of A: array of uint) {}(tSAeeA);
+function(t: table sample(10) of array of int) {}(tSAeeA);
+function(t: table sample(10) of x: array of int) {}(tSAeeA);
+tSAeeM: table sample(10) of M: map[string] of int;
+function(t: table sample(10) of M: map[string] of uint) {}(tSAeeM);
+function(t: table sample(10) of map[string] of int) {}(tSAeeM);
+function(t: table sample(10) of x: map[string] of int) {}(tSAeeM);
+tSAeeT: table sample(10) of T: { i: int, f: float };
+function(t: table sample(10) of T: proto { i: int, f: float }) {}(tSAeeT);
+function(t: table sample(10) of { i: int, f: float }) {}(tSAeeT);
+function(t: table sample(10) of x: { i: int, f: float }) {}(tSAeeT);
+tSAeeP: table sample(10) of P: { i: int @1, f: float @2 };
+function(t: table sample(10) of P: { i: int @2, f: float @3 }) {}(tSAeeP);
+function(t: table sample(10) of P: parsedmessage { i: int @1, f: float @2 }
+	) {}(tSAeeP);
+function(t: table sample(10) of P: proto { i: int, f: float }) {}(tSAeeP);
+function(t: table sample(10) of { i: int @1, f: float @2 }) {}(tSAeeP);
+function(t: table sample(10) of x: { i: int @1, f: float @2 }) {}(tSAeeP);
+
+# weight types (ignoring identifiers) don't match (identifiers don't matter)
+tTOewi: table top(3) of e: int weight i: int;
+function(t: table top(3) of e: int weight i: uint) {}(tTOewi);
+tTOewA: table top(3) of e: int weight A: array of i: int;
+function(t: table top(3) of e: int weight A: array of i: uint) {}(tTOewA);
+tTOewM: table top(3) of e: int weight M: map[int] of int;
+function(t: table top(3) of e: int weight M: map[int] of uint) {}(tTOewM);
+tTOewT: table top(3) of e: int weight T: { i: int, f: float };
+function(t: table top(3) of e: int weight T: proto { i: int, f: float }
+	) {}(tTOewT);
+tTOewP: table top(3) of e: int weight P: { i: int @1, f: float @2 };
+function(t: table top(3) of e: int weight P: { i: uint @2, f: float @3 }
+	) {}(tTOewP);
+function(t: table top(3) of e: int
+	weight P: parsedmessage { i: uint @1, f: float @2 }) {}(tTOewP);
+function(t: table top(3) of e: int weight P: proto { i: uint, f: float }
+	) {}(tTOewP);
+
+# file/proc index formats don't match
+tCOefli: table collection[i: { j: int, f: float }] of e: bytes
+  file("/tmp/i%d%f", i.j, i.f);
+function(t: table collection[i: { j: int, f: float }] of e: bytes
+         file("/tmp/i%f%d", i.f, i.j)) {}(tCOefli);
+function(t: table collection[i: { j: int, f: float }] of e: bytes) {}(tCOefli);
+tCOepci: table collection[i: { j: int, f: float }] of e: bytes
+  proc("echo %d%f", i.j, i.f);
+function(t: table collection[i: { j: int, f: float }] of e: bytes
+         proc("echo %f%d", i.f, i.j)) {}(tCOepci);
+function(t: table collection[i: { j: int, f: float }] of e: bytes) {}(tCOepci);
+
+# element formats don't match
+tUNefme: table unique(7) of e: { i: int, f: float } format("%d%f", e.i, e.f);
+function(t: table unique(7) of e: { i: int, f: float }
+         format("%f%d", e.f, e.i)) {}(tUNefme);
+function(t: table unique(7) of e: { i: int, f: float }) {}(tUNefme);
+
+
+# output variables are not yet 1st class objects
+
+tSU: table sum of int;
+
+# cannot have tables as fields/elements of composite structures - yet?
+static kTableMap: map[name: string] of t: table sum of int = {:};
+static kTableArray: array of t: table sum of int = {};
+static kTableTuple: { name: string, t: table sum of int } = { "count", tSU };
+
+table_map: map[name: string] of t: table sum of int;
+table_array:  array of t: table sum of int;
+table_tuple: { name: string, t: table sum of int };
+
+# cannot get a fingerprint of a table - yet?
+fingerprintof(tSU);
+
+# cannot initialize tables with other tables - yet?
+tSU1 := tSU;
+
+# cannot return tables from functions - yet?
+function(): table sum of int {
+  return tSU;
+};
+
+# cannot assign tables to other tables (like any static variable)
+tSU2: table sum of int;
+tSU2 = tSU;
+
+# unimplemented assignment to local table references (i.e. function args)
+function(t1: table sum of int, t2: table sum of int) {
+  t1 = t2;    # reference = reference
+  t1 = tSU;   # reference = table
+  tSU2 = t1;  # table = reference (illegal assignment to a static variable)
+};
+
+# cannot have proto tuples with tables (like strings, functions, etc)
+static kTableProto: proto { t: table sum of int } = { tSU };
+table_proto: proto { t: table sum of int };
+
+# cannot have tables in conversions (like functions)
+# from
+int(tSU);
+uint(tSU);
+float(tSU);
+string(tSU); # yet?
+time(tSU);
+bytes(tSU);
+bool(tSU);
+fingerprint(tSU);
+convert(map[int] of int, tSU);
+convert(array of int, tSU);
+convert({ i: int, j: int }, tSU);
+convert(proto { i: int, j: int }, tSU);
+convert(function(), tSU);
+# to
+convert(table sum of int, 1);
+convert(table sum of int, 1U);
+convert(table sum of int, 1.0);
+convert(table sum of int, "1");
+convert(table sum of int, T"Jan 1 PDT 2001");
+convert(table sum of int, B"1");
+convert(table sum of int, true);
+convert(table sum of int, 1P);
+convert(table sum of int, new(array of int, 1, 1));
+m: map[int] of int = {:};
+convert(table sum of int, m);
+t: { i: int, j: int } = { 1, 2 };
+convert(table sum of int, t);
+p: proto { i: int, j: int } = { 1, 2 };
+convert(table sum of int, p);
+f: function() {};
+convert(table sum of int, f);
+
+# cannot get a regex of a table type
+regex(table sum of int);
+
+# cannot use as a quantifier variable
+when (t: each table sum of int; def(t));
+

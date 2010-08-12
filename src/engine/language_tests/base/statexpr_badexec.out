@@ -1,0 +1,18 @@
+for (i: int = 0; i < 5; i++)
+{
+	result: int = ?{
+	switch (i) {
+		case 0, 1, 2, 3:
+			{
+result i;
+}
+		default:
+			{
+break;
+}
+	}
+}
+;
+	assert((result == i) && (i <= 3));
+}
+assert(false);

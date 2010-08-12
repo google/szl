@@ -1,0 +1,224 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# sort regression tests
+# TODO: add some error cases
+
+static max32: int = 2147483647;
+static max64: int = 9223372036854775807;
+static umax32: int = 4294967295;
+static umax64: int = ~0; # 18446744073709551615;
+
+icmp: function (x: int, y: int): int {
+  if (x < y)
+    return -1;
+  else if (x > y)
+    return 1;
+  else
+    return 0;
+};
+
+fcmp: function (x: float, y: float): int {
+  if (x < y)
+    return -1;
+  else if (x > y)
+    return 1;
+  else
+    return 0;
+};
+
+scmp: function (x: string, y: string): int {
+  if (x < y)
+    return -1;
+  else if (x > y)
+    return 1;
+  else
+    return 0;
+};
+
+bcmp: function (x: bytes, y: bytes): int {
+  if (x < y)
+    return -1;
+  else if (x > y)
+    return 1;
+  else
+    return 0;
+};
+
+
+static data1: array of { a: array of int, s: array of int, i: array of int } = {
+  { {},
+    {},
+    {},
+  },
+  { { 0 },
+    { 0 },
+    { 0 },
+  },
+  { { 1 },
+    { 1 },
+    { 0 },
+  },
+  { { max64, 1 },
+    { 1, max64 },
+    { 1, 0 },
+  },
+  { { -max64-1, 1, 0 },
+    { -max64-1, 0, 1 },
+    { 0, 2, 1 },
+  },
+  { { max64, -max64-1 },
+    { -max64-1, max64 },
+    { 1, 0 },
+  },
+  { { 1, 2, 3, 4, 4, 3, 2, 1 },
+    { 1, 1, 2, 2, 3, 3, 4, 4 },
+    { 0, 7, 1, 6, 2, 5, 3, 4 },
+  },
+  { { 1, 1, 1, 1, 1, 1, 1 },
+    { 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 1, 2, 3, 4, 5, 6 },
+  },
+};
+
+static data2: array of { a: array of float, s: array of float, i: array of int } = {
+  { {},
+    {},
+    {},
+  },
+  { { 0.0 },
+    { 0.0 },
+    { 0   },
+  },
+  { { 1.0 },
+    { 1.0 },
+    { 0   },
+  },
+  { { float(max64), 1.0 },
+    { 1.0, float(max64) },
+    { 1, 0 },
+  },
+  { { float(-max64-1), 1.0, 0.0 },
+    { float(-max64-1), 0.0, 1.0 },
+    { 0, 2, 1 },
+  },
+  { { float(max64), float(-max64-1) },
+    { float(-max64-1), float(max64) },
+    { 1, 0 },
+  },
+  { { 1.0, 2.0, 3.0, 4.0, 4.0, 3.0, 2.0, 1.0 },
+    { 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0 },
+    { 0, 7, 1, 6, 2, 5, 3, 4 },
+  },
+  { { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 },
+    { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 },
+    { 0, 1, 2, 3, 4, 5, 6 },
+  },
+};
+
+static data3: array of { a: array of string, s: array of string, i: array of int } = {
+  { {},
+    {},
+    {},
+  },
+  { { "a", "aa", "aaa", "b", "bb", "bbb", "zonker", "", "_" },
+    { "", "_", "a", "aa", "aaa", "b", "bb", "bbb", "zonker" },
+    { 7, 8, 0, 1, 2, 3, 4, 5, 6 }
+  },
+};
+
+static data4: array of { a: array of bytes, s: array of bytes, i: array of int } = {
+  { {},
+    {},
+    {},
+  },
+  { { bytes("a"), bytes("aa"), bytes("aaa"), bytes("b"), bytes("bb"), bytes("bbb"), bytes("zonker"), bytes(""), bytes("_") },
+    { bytes(""), bytes("_"), bytes("a"), bytes("aa"), bytes("aaa"), bytes("b"), bytes("bb"), bytes("bbb"), bytes("zonker") },
+    { 7, 8, 0, 1, 2, 3, 4, 5, 6 }
+  },
+};
+
+
+# test int
+when (i: each int; def(data1[i])) {
+  if (data1[i].s != sort(data1[i].a))
+    emit stdout <- format("1.1.1 %d\n%s\n%s\n",
+                    i, string(data1[i].s), string(sort(data1[i].a)));
+  if (data1[i].s != sort(data1[i].a, icmp))
+    emit stdout <- format("1.1.2 %d\n%s\n%s\n",
+                    i, string(data1[i].s), string(sort(data1[i].a, icmp)));
+  if (data1[i].s != sort(sort(sort(data1[i].a))))
+    emit stdout <- format("1.1.3 %d\n%s\n%s\n",
+                    i, string(data1[i].s), string(sort(sort(sort(data1[i].a)))));
+
+  if (data1[i].i != sortx(data1[i].a))
+    emit stdout <- format("1.2.1 %d\n%s\n%s\n",
+                    i, string(data1[i].i), string(sortx(data1[i].a)));
+  if (data1[i].i != sortx(data1[i].a, icmp))
+    emit stdout <- format("1.2.2 %d\n%s\n%s\n",
+                    i, string(data1[i].i), string(sortx(data1[i].a, icmp)));
+}
+
+# test float
+when (i: each int; def(data2[i])) {
+  if (data2[i].s != sort(data2[i].a))
+    emit stdout <- format("2.1.1 %d\n%s\n%s\n",
+                    i, string(data2[i].s), string(sort(data2[i].a)));
+  if (data2[i].s != sort(data2[i].a, fcmp))
+    emit stdout <- format("2.1.2 %d\n%s\n%s\n",
+                    i, string(data2[i].s), string(sort(data2[i].a, fcmp)));
+
+  if (data2[i].i != sortx(data2[i].a))
+    emit stdout <- format("2.2.1 %d\n%s\n%s\n",
+                    i, string(data2[i].i), string(sortx(data2[i].a)));
+  if (data2[i].i != sortx(data2[i].a, fcmp))
+    emit stdout <- format("2.2.2 %d\n%s\n%s\n",
+                    i, string(data2[i].i), string(sortx(data2[i].a, fcmp)));
+}
+
+# test string
+when (i: each int; def(data3[i])) {
+  if (data3[i].s != sort(data3[i].a))
+    emit stdout <- format("3.1.1 %d\n%s\n%s\n",
+                    i, string(data3[i].s), string(sort(data3[i].a)));
+  if (data3[i].s != sort(data3[i].a, scmp))
+    emit stdout <- format("3.1.2 %d\n%s\n%s\n",
+                    i, string(data3[i].s), string(sort(data3[i].a, scmp)));
+
+  if (data3[i].i != sortx(data3[i].a))
+    emit stdout <- format("3.2.1 %d\n%s\n%s\n",
+                    i, string(data3[i].i), string(sortx(data3[i].a)));
+  if (data3[i].i != sortx(data3[i].a, scmp))
+    emit stdout <- format("3.2.2 %d\n%s\n%s\n",
+                    i, string(data3[i].i), string(sortx(data3[i].a, scmp)));
+}
+
+# test bytes
+when (i: each int; def(data4[i])) {
+  if (data4[i].s != sort(data4[i].a))
+    emit stdout <- format("3.1.1 %d\n%s\n%s\n",
+                    i, string(data4[i].s), string(sort(data4[i].a)));
+  if (data4[i].s != sort(data4[i].a, bcmp))
+    emit stdout <- format("3.1.2 %d\n%s\n%s\n",
+                    i, string(data4[i].s), string(sort(data4[i].a, bcmp)));
+
+  if (data4[i].i != sortx(data4[i].a))
+    emit stdout <- format("3.2.1 %d\n%s\n%s\n",
+                    i, string(data4[i].i), string(sortx(data4[i].a)));
+  if (data4[i].i != sortx(data4[i].a, bcmp))
+    emit stdout <- format("3.2.2 %d\n%s\n%s\n",
+                    i, string(data4[i].i), string(sortx(data4[i].a, bcmp)));
+}
+

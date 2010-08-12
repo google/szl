@@ -1,0 +1,70 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+type T0 = {
+    # try various legal combinations
+    a: int @ 1 : int32,
+    b: int @ 2 : uint64,
+    c: int = 32 @ 3 : int64,
+    d: float @ 4 : float,
+    e: float @ 5 : double,
+    f: int @ 6 : fixed64,
+    g: int @ 7 : fixed32,
+    h: bool = false @ 8 : bool,
+    i: bool @ 9 : boolean,
+    j: bytes @ 10 : string,
+
+    # for arrays, the underlying type is for the element type
+    k: array of int @ 11 : uint64,
+    l: array of bytes @ 12 : string,
+    m: array of float @ 13 : float,
+ 
+    # underlying type declaration is optional for now
+    n: int @ 14,
+    o: float @ 15,
+    p: array of {
+         q: int @ 16,
+         r: bytes @ 17 } @ 18
+};
+
+# type mismatch
+type T1 = {
+    a: int @ 1 : float
+};
+
+# syntax error
+type T2 = {
+    a: int @ 1 :
+};
+
+# invalid proto buffer type
+type T3 = {
+    a: int @ 1 : int256
+};
+
+# not a proto buffer
+type T4 = {
+    a: int : int32
+};
+
+# declaring underlying type for non-basic type
+type T5 = {
+    a: T0 @ 1 : int32,
+    b: { c: int @ 2 } @ 3 : int32,
+    d: array of array of int @ 2 : int32
+};
+

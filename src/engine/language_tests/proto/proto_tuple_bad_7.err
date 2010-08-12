@@ -1,0 +1,1 @@
+proto/proto_tuple_bad_7.szl:22: only some fields contain protocol buffer tags; tags must be consistently defined

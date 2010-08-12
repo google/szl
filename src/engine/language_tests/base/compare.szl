@@ -1,0 +1,198 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+b1: bool = true;
+b2: bool = false;
+i1: int = 5;
+i2: int = 10;
+p1: fingerprint = fingerprint(0);
+p2: fingerprint = fingerprint(100);
+f1: float = 5.0;
+f2: float = 10.0;
+s1: string = "abc";
+s2: string = "abcdef";
+t1: time = HOUR;
+t2: time = time(24 * int(HOUR));
+a1: array of string = { "one", "two", "three" };
+a2: array of string = { "one", "three", "two" };
+m1: map[string] of int = { "one": 1, "two": 2 };
+m2: map[string] of int = { "two": 2, "three": 3 };
+m1r: map[string] of int = { "two": 2, "one": 1 };
+m1k: map[string] of int = { "one": 2, "two": 2 };
+m1v: map[string] of int = { "two": 1, "one": 2 };
+M1: map[int] of string = { 1: "one", 2: "two" };
+M2: map[int] of string = { 2: "two", 3: "three" };
+M1r: map[int] of string = { 2: "two", 1: "one" };
+M1k: map[int] of string = { 2: "one", 2: "two" };
+M1v: map[int] of string = { 1: "two", 2: "one" };
+type TT = { int, string };
+type T = { TT, map[string] of int };
+T1: T = { { 1, "one" }, m1 };
+T2: T = { { 2, "two" }, m1 };
+T3: T = { { 1, "two" }, m1 };
+T4: T = { { 2, "one" }, m1 };
+T5: T = { { 1, "one" }, m2 };
+c1: function() { };
+c2: function() { };
+
+# booleans
+assert(true == (b1 == b1));
+assert(false == (b1 != b1));
+assert(false == (b1 == b2));
+assert(true == (b1 != b2));
+
+# integers
+assert(false == (i1 < i1));
+assert(true == (i1 < i2));
+assert(false == (i2 < i1));
+
+assert(true == (i1 <= i1));
+assert(true == (i1 <= i2));
+assert(false == (i2 <= i1));
+
+assert(true == (i1 == i1));
+assert(false == (i1 == i2));
+assert(false == (i2 == i1));
+
+assert(false == (i1 > i1));
+assert(false == (i1 > i2));
+assert(true == (i2 > i1));
+
+assert(true == (i1 >= i1));
+assert(false == (i1 >= i2));
+assert(true == (i2 >= i1));
+
+# fingerprints
+assert(true == (p1 == p1));
+assert(false == (p1 != p1));
+assert(false == (p1 == p2));
+assert(true == (p1 != p2));
+
+# floats
+assert(false == (f1 < f1));
+assert(true == (f1 < f2));
+assert(false == (f2 < f1));
+
+assert(true == (f1 <= f1));
+assert(true == (f1 <= f2));
+assert(false == (f2 <= f1));
+
+assert(true == (f1 == f1));
+assert(false == (f1 == f2));
+assert(false == (f2 == f1));
+
+assert(false == (f1 > f1));
+assert(false == (f1 > f2));
+assert(true == (f2 > f1));
+
+assert(true == (f1 >= f1));
+assert(false == (f1 >= f2));
+assert(true == (f2 >= f1));
+
+# strings
+assert(false == (s1 < s1));
+assert(true == (s1 < s2));
+assert(false == (s2 < s1));
+
+assert(true == (s1 <= s1));
+assert(true == (s1 <= s2));
+assert(false == (s2 <= s1));
+
+assert(true == (s1 == s1));
+assert(false == (s1 == s2));
+assert(false == (s2 == s1));
+
+assert(false == (s1 > s1));
+assert(false == (s1 > s2));
+assert(true == (s2 > s1));
+
+assert(true == (s1 >= s1));
+assert(false == (s1 >= s2));
+assert(true == (s2 >= s1));
+
+# times
+assert(false == (t1 < t1));
+assert(true == (t1 < t2));
+assert(false == (t2 < t1));
+
+assert(true == (t1 <= t1));
+assert(true == (t1 <= t2));
+assert(false == (t2 <= t1));
+
+assert(true == (t1 == t1));
+assert(false == (t1 == t2));
+assert(false == (t2 == t1));
+
+assert(false == (t1 > t1));
+assert(false == (t1 > t2));
+assert(true == (t2 > t1));
+
+assert(true == (t1 >= t1));
+assert(false == (t1 >= t2));
+assert(true == (t2 >= t1));
+
+
+# arrays
+
+assert(true == (a1 == a1));
+assert(false == (a1 != a1));
+assert(true == (a1 != a2));
+assert(false == (a1 == a2));
+
+
+# maps
+
+assert(true == (m1 == m1));
+assert(false == (m1 != m1));
+assert(true == (m1 == m1r));
+assert(false == (m1 != m1r));
+assert(true == (m1 != m2));
+assert(false == (m1 == m2));
+assert(true == (m1 != m1k));
+assert(false == (m1 == m1k));
+assert(true == (m1 != m1v));
+assert(false == (m1 == m1v));
+assert(true == (M1 == M1));
+assert(false == (M1 != M1));
+assert(true == (M1 == M1r));
+assert(false == (M1 != M1r));
+assert(true == (M1 != M2));
+assert(false == (M1 == M2));
+assert(true == (M1 != M1k));
+assert(false == (M1 == M1k));
+assert(true == (M1 != M1v));
+assert(false == (M1 == M1v));
+
+
+# tuples
+
+assert(true == (T1 == T1));
+assert(false == (T1 != T1));
+assert(true == (T1 != T2));
+assert(false == (T1 == T2));
+assert(true == (T1 != T3));
+assert(false == (T1 == T3));
+assert(true == (T1 != T4));
+assert(false == (T1 == T4));
+assert(true == (T1 != T5));
+assert(false == (T1 == T5));
+
+
+# closures
+
+assert(true == (c1 == c1));
+assert(false == (c1 != c1));
+assert(true == (c1 != c2));
+assert(false == (c1 == c2));

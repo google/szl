@@ -1,0 +1,4 @@
+expressions/boolean_good.szl:36: warning: 'or' operator is deprecated; use '||' instead
+expressions/boolean_good.szl:36: warning: 'and' operator is deprecated; use '&&' instead
+expressions/boolean_good.szl:42: warning: 'or' operator is deprecated; use '||' instead
+expressions/boolean_good.szl:43: warning: 'and' operator is deprecated; use '&&' instead

@@ -1,0 +1,33 @@
+f: function(): int {
+	x: int;
+	return x;
+}
+;
+g: function() {
+	y: int;
+	h: function(): int 	{
+		return y;
+	}
+;
+}
+;
+h: function(): int {
+	z: int;
+	z = 1;
+	return z;
+}
+;
+i: function(): int {
+	w: int = 1;
+	___undefine(w);
+	return w;
+}
+;
+j: function(): int {
+	v: int = 1 / nrand(1);
+	if (def(v))
+		return v;
+	else
+		return v;
+}
+;

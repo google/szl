@@ -1,0 +1,10 @@
+sort/sort_bad_01.szl:62: sort: data3[i].a with element type {} is not sortable
+sort/sort_bad_01.szl:64: sort: data3[i].a with element type {} is not sortable
+sort/sort_bad_01.szl:69: sort: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:71: sort: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:72: sort: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:74: sort: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:76: sortx: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:78: sortx: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:79: sortx: data5[i].a with element type {i: int, s: string} is not sortable
+sort/sort_bad_01.szl:81: sortx: data5[i].a with element type {i: int, s: string} is not sortable

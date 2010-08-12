@@ -1,0 +1,30 @@
+s: string = "merry go round";
+expected: string = (((((((((((("erry go roundm" + "rry go roundme") + "ry go roundmer") + "y go roundmerr") + " go roundmerry") + "go roundmerry ") + "o roundmerry g") + " roundmerry go") + "roundmerry go ") + "oundmerry go r") + "undmerry go ro") + "ndmerry go rou") + "dmerry go roun") + "merry go round";
+actual: string = "";
+for (i: int = 0; i < len(s); i++)
+{
+	t: int = s[0];
+	s[0 : $ - 1] = s[1 : $];
+	s[$ - 1] = t;
+	actual = actual + s;
+}
+assert(expected == actual);
+rangelimit: function(low: int, i: int, high: int): int {
+	if (i < low)
+		return low;
+	if (i > high)
+		return high;
+	return i;
+}
+;
+s = "0123456789";
+n: int = len(s);
+for (i: int = -n; i < (2 * n); i++)
+{
+	for (j: int = -n; j < (2 * n); j++)
+	{
+		ii: int = rangelimit(0, i, n);
+		jj: int = rangelimit(ii, j, n);
+		assert(s[i : j] == s[ii : jj]);
+	}
+}

@@ -1,0 +1,33 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# sort regression tests
+# functions aren't allowed
+
+type F = function(s: int): int;
+f: F  { return 1; };
+g: F  { return 1; };
+
+data3: array of { a: array of F, s: array of F, i: array of int } = {
+  { {}, {}, {}, },
+  { { f }, { f }, { 0 }, },
+  { { f,g }, { f,g }, { 0,1 }, },
+};
+
+when (i: each int; def(data3[i])) {
+   x: array of F = sort(data3[i].a);
+   # unfortunately we can't check for equality!
+   emit stdout <- string(def(x));
+}

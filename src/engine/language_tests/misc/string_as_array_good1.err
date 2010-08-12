@@ -1,0 +1,2 @@
+misc/string_as_array_good1.szl:45: binary operator '==' cannot be applied to {97, 98, 99} (type incomplete)
+misc/string_as_array_good1.szl:47: type mismatch: by (type bytes) == {97, 98, 99} (type incomplete)

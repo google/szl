@@ -1,0 +1,144 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options  -noexecute
+
+#desc: Declaring 
+
+# Composite types
+
+type TAI = { array of int };
+type TAS = { array of string };
+type TAF = { array of float };
+type TAFG = { array of fingerprint };
+type TAB = { array of bool };
+type TABY = { array of bytes };
+type TAT = { array of time };
+
+type TMII = { map[int] of int };
+type TMIS = { map[int] of string };
+type TMIF = { map[int] of float };
+type TMIFG = { map[int] of fingerprint };
+type TMIB = { map[int] of bool };
+type TMIBY = { map[int] of bytes };
+type TMIT = { map [int] of time };
+
+
+type TMSI = { map[string] of int };
+type TMSS = { map[string] of string };
+type TMSF = { map[string] of float };
+type TMSFG = { map[string] of fingerprint };
+type TMSB = { map[string] of bool };
+type TMSBY = { map[string] of bytes };
+type TMST = { map [string] of time };
+
+type TMFI = { map[float] of int };
+type TMFS = { map[float] of string };
+type TMFF = { map[float] of float };
+type TMFFG = { map[float] of fingerprint };
+type TMFB = { map[float] of bool };
+type TMFBY = { map[float] of bytes };
+type TMFT = { map [float] of time };
+
+type TMFGI = { map[fingerprint] of int };
+type TMFGS = { map[fingerprint] of string };
+type TMFGF = { map[fingerprint] of float };
+type TMFGFG = { map[fingerprint] of fingerprint };
+type TMFGB = { map[fingerprint] of bool };
+type TMFGBY = { map[fingerprint] of bytes };
+type TMFGT = { map [fingerprint] of time };
+
+type TMBI = { map[bool] of int };
+type TMBS = { map[bool] of string };
+type TMBF = { map[bool] of float };
+type TMBFG = { map[bool] of fingerprint };
+type TMBB = { map[bool] of bool };
+type TMBBY = { map[bool] of bytes };
+type TMBT = { map [bool] of time };
+
+type TMBYI = { map[bytes] of int };
+type TMBYS = { map[bytes] of string };
+type TMBYF = { map[bytes] of float };
+type TMBYFG = { map[bytes] of fingerprint };
+type TMBYB = { map[bytes] of bool };
+type TMBYBY = { map[bytes] of bytes };
+type TMBYT = { map [bytes] of time };
+
+type TMTI = { map[time] of int };
+type TMTS = { map[time] of string };
+type TMTF = { map[time] of float };
+type TMTFG = { map[time] of fingerprint };
+type TMTB = { map[time] of bool };
+type TMTBY = { map[time] of bytes };
+type TMTT = { map [time] of time };
+
+type TTII = { {i0:int,i:int} };
+type TTIS = { {i0:int,s:string} };
+type TTIF = { {i0:int,f:float} };
+type TTIFG = { {i0:int,fg:fingerprint} };
+type TTIB = { {i0:int,b:bool} };
+type TTIBY = { {i0:int,by:bytes} };
+type TTIT = { {i0:int,t:time} };
+
+type TTSI = { {s0:string,i:int} };
+type TTSS = { {s0:string,s:string} };
+type TTSF = { {s0:string,f:float} };
+type TTSFG = { {s0:string,fg:fingerprint} };
+type TTSB = { {s0:string,b:bool} };
+type TTSBY = { {s0:string,by:bytes} };
+type TTST = { {s0:string,t:time} };
+
+type TTFI = { {f0:float,i:int} };
+type TTFS = { {f0:float,s:string} };
+type TTFF = { {f0:float,f:float} };
+type TTFFG = { {f0:float,fg:fingerprint} };
+type TTFB = { {f0:float,b:bool} };
+type TTFBY = { {f0:float,by:bytes} };
+type TTFT = { {f0:float,t:time} };
+
+type TTFGI = { {fg0:fingerprint,i:int} };
+type TTFGS = { {fg0:fingerprint,s:string} };
+type TTFGF = { {fg0:fingerprint,f:float} };
+type TTFGFG = { {fg0:fingerprint,fg:fingerprint} };
+type TTFGB = { {fg0:fingerprint,b:bool} };
+type TTFGBY = { {fg0:fingerprint,by:bytes} };
+type TTFGT = { {fg0:fingerprint,t:time} };
+
+type TTBI = { {b0:bool,i:int} };
+type TTBS = { {b0:bool,s:string} };
+type TTBF = { {b0:bool,f:float} };
+type TTBFG = { {b0:bool,fg:fingerprint} };
+type TTBB = { {b0:bool,b:bool} };
+type TTBBY = { {b0:bool,by:bytes} };
+type TTBT = { {b0:bool,t:time} };
+
+type TTBYI = { {by0:bytes,i:int} };
+type TTBYS = { {by0:bytes,s:string} };
+type TTBYF = { {by0:bytes,f:float} };
+type TTBYFG = { {by0:bytes,fg:fingerprint} };
+type TTBYB = { {by0:bytes,b:bool} };
+type TTBYBY = { {by0:bytes,by:bytes} };
+type TTBYT = { {by0:bytes,t:time} };
+
+type TTTI = { {t0:time,i:int} };
+type TTTS = { {t0:time,s:string} };
+type TTTF = { {t0:time,f:float} };
+type TTTFG = { {t0:time,fg:fingerprint} };
+type TTTB = { {t0:time,b:bool} };
+type TTTBY = { {t0:time,by:bytes} };
+type TTTT = { {t0:time,t:time} };
+

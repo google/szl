@@ -1,0 +1,15 @@
+substring: function(a: string, b: string, n: int): int {
+	when (
+		i0: some int;
+		i1: some int;
+		j0: some int;
+		j1: some int;
+		(i1 >= (i0 + n)) && (a[i0 : i1] == b[j0 : j1])
+	)
+		return i0;
+	return -1;
+}
+;
+assert(substring("abc", "bc", 2) == 1);
+assert(substring("abcdefghijkl", "zxvdefg234", 4) == 3);
+assert(substring("abc", "def", 1) == -1);

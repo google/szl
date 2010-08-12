@@ -1,0 +1,350 @@
+type_declarations/outputType_bad.szl:28: 'collection' does not accept a parameter
+type_declarations/outputType_bad.szl:29: 'sum' does not accept a parameter
+type_declarations/outputType_bad.szl:31: 'text' does not accept a parameter
+type_declarations/outputType_bad.szl:32: 'mrcounter' does not accept a parameter
+type_declarations/outputType_bad.szl:35: 'sample' must have an int parameter
+type_declarations/outputType_bad.szl:36: 'top' must have an int parameter
+type_declarations/outputType_bad.szl:37: 'maximum' must have an int parameter
+type_declarations/outputType_bad.szl:38: 'minimum' must have an int parameter
+type_declarations/outputType_bad.szl:39: 'unique' must have an int parameter
+type_declarations/outputType_bad.szl:40: 'set' must have an int parameter
+type_declarations/outputType_bad.szl:41: 'quantile' must have an int parameter
+type_declarations/outputType_bad.szl:42: 'distinctsample' must have an int parameter
+type_declarations/outputType_bad.szl:43: 'inversehistogram' must have an int parameter
+type_declarations/outputType_bad.szl:44: 'weightedsample' must have an int parameter
+type_declarations/outputType_bad.szl:45: 'recordio' must have an int parameter
+type_declarations/outputType_bad.szl:48: factor expected, found ')'
+type_declarations/outputType_bad.szl:49: factor expected, found ')'
+type_declarations/outputType_bad.szl:50: factor expected, found ')'
+type_declarations/outputType_bad.szl:51: factor expected, found ')'
+type_declarations/outputType_bad.szl:52: factor expected, found ')'
+type_declarations/outputType_bad.szl:53: factor expected, found ')'
+type_declarations/outputType_bad.szl:54: factor expected, found ')'
+type_declarations/outputType_bad.szl:55: factor expected, found ')'
+type_declarations/outputType_bad.szl:56: factor expected, found ')'
+type_declarations/outputType_bad.szl:57: factor expected, found ')'
+type_declarations/outputType_bad.szl:58: factor expected, found ')'
+type_declarations/outputType_bad.szl:62: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:63: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:64: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:65: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:66: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:67: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:68: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:69: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:70: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:71: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:72: non-static variable i may not be accessed in an initializer for a static variable
+type_declarations/outputType_bad.szl:76: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:77: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:78: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:79: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:80: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:81: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:82: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:83: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:84: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:85: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:86: table parameter must be positive; value is '-10'
+type_declarations/outputType_bad.szl:90: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:91: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:92: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:93: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:94: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:95: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:96: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:97: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:98: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:99: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:100: overflow in table parameter '2147483648'
+type_declarations/outputType_bad.szl:103: table parameter must be an integer; type is 'float'
+type_declarations/outputType_bad.szl:104: table parameter must be an integer; type is 'uint'
+type_declarations/outputType_bad.szl:105: table parameter must be an integer; type is 'fingerprint'
+type_declarations/outputType_bad.szl:106: table parameter must be an integer; type is 'time'
+type_declarations/outputType_bad.szl:107: table parameter must be an integer; type is 'bytes'
+type_declarations/outputType_bad.szl:108: table parameter must be an integer; type is 'fingerprint'
+type_declarations/outputType_bad.szl:109: table parameter must be an integer; type is 'bool'
+type_declarations/outputType_bad.szl:110: table parameter must be an integer; type is 'array of int'
+type_declarations/outputType_bad.szl:111: table parameter must be an integer; type is 'map [int] of int'
+type_declarations/outputType_bad.szl:112: table parameter must be an integer; type is 'map [int] of int'
+type_declarations/outputType_bad.szl:113: table parameter must be an integer; type is '{int}'
+type_declarations/outputType_bad.szl:116: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:117: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:118: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:119: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:120: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:121: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:122: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:123: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:124: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:125: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:126: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:127: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:129: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:130: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:131: table index type 'function()' must not be a function
+type_declarations/outputType_bad.szl:134: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:135: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:136: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:137: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:138: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:139: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:140: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:141: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:142: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:143: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:144: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:145: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:147: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:148: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:149: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:152: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:153: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:154: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:155: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:156: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:157: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:158: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:159: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:160: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:161: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:162: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:163: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:165: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:166: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:167: table element type 'function()' must not be a function
+type_declarations/outputType_bad.szl:170: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:171: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:172: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:173: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:174: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:175: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:176: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:177: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:178: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:179: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:180: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:181: output type (table top(1) of int weight int) not allowed in this context
+type_declarations/outputType_bad.szl:183: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:184: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:185: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:188: type expected; '(' found
+type_declarations/outputType_bad.szl:189: type expected; '(' found
+type_declarations/outputType_bad.szl:190: type expected; '(' found
+type_declarations/outputType_bad.szl:191: type expected; '(' found
+type_declarations/outputType_bad.szl:192: type expected; '(' found
+type_declarations/outputType_bad.szl:193: type expected; '(' found
+type_declarations/outputType_bad.szl:194: type expected; '(' found
+type_declarations/outputType_bad.szl:195: type expected; '(' found
+type_declarations/outputType_bad.szl:196: type expected; '(' found
+type_declarations/outputType_bad.szl:197: type expected; '(' found
+type_declarations/outputType_bad.szl:198: type expected; '(' found
+type_declarations/outputType_bad.szl:199: type expected; '(' found
+type_declarations/outputType_bad.szl:201: type expected; '(' found
+type_declarations/outputType_bad.szl:202: type expected; '(' found
+type_declarations/outputType_bad.szl:203: type expected; '(' found
+type_declarations/outputType_bad.szl:206: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:207: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:208: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:209: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:210: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:211: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:212: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:213: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:214: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:215: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:216: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:217: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:219: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:220: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:221: 'of' expected; found 'e'
+type_declarations/outputType_bad.szl:224: 'collection' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:225: 'sample' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:226: 'sum' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:227: 'unique' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:228: 'set' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:229: 'quantile' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:231: 'recordio' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:232: 'text' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:233: 'mrcounter' does not allow 'weight' specification
+type_declarations/outputType_bad.szl:236: 'top' must have 'weight' specification
+type_declarations/outputType_bad.szl:237: 'maximum' must have 'weight' specification
+type_declarations/outputType_bad.szl:238: 'minimum' must have 'weight' specification
+type_declarations/outputType_bad.szl:239: 'distinctsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:240: 'inversehistogram' must have 'weight' specification
+type_declarations/outputType_bad.szl:241: 'weightedsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:244: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:245: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:246: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:247: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:248: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:249: table weight type 'function()' must not be a function
+type_declarations/outputType_bad.szl:252: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:253: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:254: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:255: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:256: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:257: output type (table sum of int) not allowed in this context
+type_declarations/outputType_bad.szl:260: type expected; '(' found
+type_declarations/outputType_bad.szl:261: type expected; '(' found
+type_declarations/outputType_bad.szl:262: type expected; '(' found
+type_declarations/outputType_bad.szl:263: type expected; '(' found
+type_declarations/outputType_bad.szl:264: type expected; '(' found
+type_declarations/outputType_bad.szl:265: type expected; '(' found
+type_declarations/outputType_bad.szl:268: 'top' must have 'weight' specification
+type_declarations/outputType_bad.szl:269: 'maximum' must have 'weight' specification
+type_declarations/outputType_bad.szl:270: 'minimum' must have 'weight' specification
+type_declarations/outputType_bad.szl:271: 'distinctsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:272: 'inversehistogram' must have 'weight' specification
+type_declarations/outputType_bad.szl:273: 'weightedsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:294: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:295: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:296: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:297: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:298: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:299: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:300: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:301: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:302: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:303: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:304: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:305: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:307: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:308: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:309: first argument of 'format' specification must be a string literal; is e (type int)
+type_declarations/outputType_bad.szl:312: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:313: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:314: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:315: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:316: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:317: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:318: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:319: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:320: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:321: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:322: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:323: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:325: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:326: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:327: first argument of 'format' specification must be a string literal; is "e=" + "%s" (type string)
+type_declarations/outputType_bad.szl:330: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:331: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:332: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:333: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:334: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:335: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:336: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:337: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:338: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:339: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:340: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:341: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:343: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:344: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:345: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:348: not enough arguments for format string
+type_declarations/outputType_bad.szl:349: not enough arguments for format string
+type_declarations/outputType_bad.szl:350: print expression e (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:351: not enough arguments for format string
+type_declarations/outputType_bad.szl:352: not enough arguments for format string
+type_declarations/outputType_bad.szl:353: not enough arguments for format string
+type_declarations/outputType_bad.szl:354: not enough arguments for format string
+type_declarations/outputType_bad.szl:355: not enough arguments for format string
+type_declarations/outputType_bad.szl:356: not enough arguments for format string
+type_declarations/outputType_bad.szl:357: not enough arguments for format string
+type_declarations/outputType_bad.szl:358: not enough arguments for format string
+type_declarations/outputType_bad.szl:359: not enough arguments for format string
+type_declarations/outputType_bad.szl:361: not enough arguments for format string
+type_declarations/outputType_bad.szl:362: not enough arguments for format string
+type_declarations/outputType_bad.szl:363: not enough arguments for format string
+type_declarations/outputType_bad.szl:366: duplicate 'format' specification
+type_declarations/outputType_bad.szl:367: duplicate 'format' specification
+type_declarations/outputType_bad.szl:368: duplicate 'format' specification
+type_declarations/outputType_bad.szl:369: duplicate 'format' specification
+type_declarations/outputType_bad.szl:370: duplicate 'format' specification
+type_declarations/outputType_bad.szl:371: duplicate 'format' specification
+type_declarations/outputType_bad.szl:372: duplicate 'format' specification
+type_declarations/outputType_bad.szl:373: duplicate 'format' specification
+type_declarations/outputType_bad.szl:374: duplicate 'format' specification
+type_declarations/outputType_bad.szl:375: duplicate 'format' specification
+type_declarations/outputType_bad.szl:376: duplicate 'format' specification
+type_declarations/outputType_bad.szl:377: duplicate 'format' specification
+type_declarations/outputType_bad.szl:379: duplicate 'format' specification
+type_declarations/outputType_bad.szl:380: duplicate 'format' specification
+type_declarations/outputType_bad.szl:381: duplicate 'format' specification
+type_declarations/outputType_bad.szl:384: first argument of 'file' specification must be a string literal; is i (type int)
+type_declarations/outputType_bad.szl:387: first argument of 'file' specification must be a string literal; is "/tmp/" + "foo" (type string)
+type_declarations/outputType_bad.szl:390: e undeclared
+type_declarations/outputType_bad.szl:393: element type must be bytes when file() or proc() attribute specified without format() attribute; is int
+type_declarations/outputType_bad.szl:396: print expression i (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:399: duplicate 'file' specification
+type_declarations/outputType_bad.szl:402: unimplemented file() or proc() with 'sample' output variables
+type_declarations/outputType_bad.szl:403: unimplemented file() or proc() with 'sum' output variables
+type_declarations/outputType_bad.szl:404: unimplemented file() or proc() with 'top' output variables
+type_declarations/outputType_bad.szl:405: unimplemented file() or proc() with 'maximum' output variables
+type_declarations/outputType_bad.szl:406: unimplemented file() or proc() with 'minimum' output variables
+type_declarations/outputType_bad.szl:407: unimplemented file() or proc() with 'unique' output variables
+type_declarations/outputType_bad.szl:408: unimplemented file() or proc() with 'set' output variables
+type_declarations/outputType_bad.szl:409: unimplemented file() or proc() with 'quantile' output variables
+type_declarations/outputType_bad.szl:410: unimplemented file() or proc() with 'distinctsample' output variables
+type_declarations/outputType_bad.szl:411: unimplemented file() or proc() with 'inversehistogram' output variables
+type_declarations/outputType_bad.szl:412: unimplemented file() or proc() with 'weightedsample' output variables
+type_declarations/outputType_bad.szl:414: unimplemented file() or proc() with 'recordio' output variables
+type_declarations/outputType_bad.szl:415: unimplemented file() or proc() with 'text' output variables
+type_declarations/outputType_bad.szl:416: unimplemented file() or proc() with 'mrcounter' output variables
+type_declarations/outputType_bad.szl:419: first argument of 'proc' specification must be a string literal; is i (type int)
+type_declarations/outputType_bad.szl:422: first argument of 'proc' specification must be a string literal; is "echo " + "foo" (type string)
+type_declarations/outputType_bad.szl:425: e undeclared
+type_declarations/outputType_bad.szl:428: element type must be bytes when file() or proc() attribute specified without format() attribute; is int
+type_declarations/outputType_bad.szl:431: print expression i (type int) not compatible with format %s
+type_declarations/outputType_bad.szl:434: duplicate 'proc' specification
+type_declarations/outputType_bad.szl:437: unimplemented file() or proc() with 'sample' output variables
+type_declarations/outputType_bad.szl:438: unimplemented file() or proc() with 'sum' output variables
+type_declarations/outputType_bad.szl:439: unimplemented file() or proc() with 'top' output variables
+type_declarations/outputType_bad.szl:440: unimplemented file() or proc() with 'maximum' output variables
+type_declarations/outputType_bad.szl:441: unimplemented file() or proc() with 'minimum' output variables
+type_declarations/outputType_bad.szl:442: unimplemented file() or proc() with 'unique' output variables
+type_declarations/outputType_bad.szl:443: unimplemented file() or proc() with 'set' output variables
+type_declarations/outputType_bad.szl:444: unimplemented file() or proc() with 'quantile' output variables
+type_declarations/outputType_bad.szl:445: unimplemented file() or proc() with 'distinctsample' output variables
+type_declarations/outputType_bad.szl:446: unimplemented file() or proc() with 'inversehistogram' output variables
+type_declarations/outputType_bad.szl:447: unimplemented file() or proc() with 'weightedsample' output variables
+type_declarations/outputType_bad.szl:449: unimplemented file() or proc() with 'recordio' output variables
+type_declarations/outputType_bad.szl:450: unimplemented file() or proc() with 'text' output variables
+type_declarations/outputType_bad.szl:451: unimplemented file() or proc() with 'mrcounter' output variables
+type_declarations/outputType_bad.szl:454: 'of' expected; found '('
+type_declarations/outputType_bad.szl:455: 'of' expected; found '('
+type_declarations/outputType_bad.szl:456: 'of' expected; found '('
+type_declarations/outputType_bad.szl:457: 'of' expected; found '('
+type_declarations/outputType_bad.szl:458: 'of' expected; found '('
+type_declarations/outputType_bad.szl:459: 'of' expected; found '('
+type_declarations/outputType_bad.szl:460: 'of' expected; found '('
+type_declarations/outputType_bad.szl:461: 'of' expected; found '('
+type_declarations/outputType_bad.szl:462: 'of' expected; found '('
+type_declarations/outputType_bad.szl:463: 'of' expected; found '('
+type_declarations/outputType_bad.szl:464: 'of' expected; found '('
+type_declarations/outputType_bad.szl:467: ';' expected; found '['
+type_declarations/outputType_bad.szl:468: ';' expected; found '['
+type_declarations/outputType_bad.szl:469: ';' expected; found '['
+type_declarations/outputType_bad.szl:470: 'top' must have 'weight' specification
+type_declarations/outputType_bad.szl:471: 'maximum' must have 'weight' specification
+type_declarations/outputType_bad.szl:472: 'minimum' must have 'weight' specification
+type_declarations/outputType_bad.szl:473: ';' expected; found '['
+type_declarations/outputType_bad.szl:474: ';' expected; found '['
+type_declarations/outputType_bad.szl:475: ';' expected; found '['
+type_declarations/outputType_bad.szl:476: 'distinctsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:477: 'inversehistogram' must have 'weight' specification
+type_declarations/outputType_bad.szl:478: 'weightedsample' must have 'weight' specification
+type_declarations/outputType_bad.szl:480: ';' expected; found '['
+type_declarations/outputType_bad.szl:481: ';' expected; found '['
+type_declarations/outputType_bad.szl:482: ';' expected; found '['
+type_declarations/outputType_bad.szl:485: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:486: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:487: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:488: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:489: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:490: 'of' expected; found 'weight'
+type_declarations/outputType_bad.szl:493: 'of' expected; found 'format'
+type_declarations/outputType_bad.szl:494: 'of' expected; found 'file'
+type_declarations/outputType_bad.szl:495: 'of' expected; found 'proc'
+type_declarations/outputType_bad.szl:498: UndeclaredType undeclared

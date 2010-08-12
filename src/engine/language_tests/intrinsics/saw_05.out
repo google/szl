@@ -1,0 +1,32 @@
+url (before modification by rest) = "http://www.google.com/search?q=Google"
+url (after modification by rest) = "/search?q=Google"
+
+saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)
+Array length = 2
+Protocol = http
+Domain = www.google.com
+
+url (after modification by rest) = "/search?q=Google"
+
+saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)
+Array length = 2
+Protocol = http
+Domain = www.google.com
+
+(after modification by rest) url_rest1 = "://www.google.com/search?q=Google", url_rest2 = "www.google.com/search?q=Google", url_rest3 = "/search?q=Google"
+
+saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+", rest url)
+Array length = 2
+Protocol = http
+Domain = www.google.com
+
+sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",", rest data)
+data = " Belgium : Brussels" (after rest operation)
+Array length = 4
+arr[0] = Afghanistan arr[1] = Kabul arr[2] = Algeria arr[3] = Algiers 
+
+sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",", rest data)
+data = "" (after rest operation)
+Array length = 6
+arr[0] = Afghanistan arr[1] = Kabul arr[2] = Algeria arr[3] = Algiers arr[4] = Belgium arr[5] = Brussels 
+

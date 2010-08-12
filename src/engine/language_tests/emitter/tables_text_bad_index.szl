@@ -1,0 +1,37 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Text tables with invalid indices that fail with --table_output:
+#   "failed to create emitter for table OTEiX: text tables cannot be indexed".
+#
+# Note: this program will die after the first bad emitter, but all causing
+#       the same error are listed here for documentation purposes.
+
+OTEis: table text[s: string] of e: int;
+OTEii: table text[i: int] of e: int;
+OTEif: table text[f: float] of e: int;
+OTEip: table text[p: fingerprint] of e: int;
+OTEit: table text[t: time] of e: int;
+OTEix: table text[x: bytes] of e: int;
+OTEib: table text[b: bool] of e: int;
+OTEiT: table text[T: { s: string, i: int, f: float }] of e: int;
+OTEiP: table text[P: proto { b: bytes, i: int, f: float }] of e: int;
+OTEiA: table text[A: array of int] of e: int;
+OTEiM: table text[M: map[string] of int] of e: int;
+

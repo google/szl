@@ -1,0 +1,152 @@
+intrinsics/format_bad_01.szl:25: intrinsic function 'format' cannot be used as value
+intrinsics/format_bad_01.szl:28: format() needs at least one argument
+intrinsics/format_bad_01.szl:31: not enough arguments for format string
+intrinsics/format_bad_01.szl:32: not enough arguments for format string
+intrinsics/format_bad_01.szl:33: not enough arguments for format string
+intrinsics/format_bad_01.szl:36: too many arguments for format string
+intrinsics/format_bad_01.szl:37: too many arguments for format string
+intrinsics/format_bad_01.szl:38: too many arguments for format string
+intrinsics/format_bad_01.szl:53: format() argument must be a string; type is 'bool'
+intrinsics/format_bad_01.szl:54: format() argument must be a string; type is 'int'
+intrinsics/format_bad_01.szl:55: format() argument must be a string; type is 'float'
+intrinsics/format_bad_01.szl:56: format() argument must be a string; type is 'bytes'
+intrinsics/format_bad_01.szl:57: format() argument must be a string; type is 'time'
+intrinsics/format_bad_01.szl:58: format() argument must be a string; type is 'fingerprint'
+intrinsics/format_bad_01.szl:59: format() argument must be a string; type is 'array of int'
+intrinsics/format_bad_01.szl:60: format() argument must be a string; type is 'map [key: string] of int'
+intrinsics/format_bad_01.szl:61: format() argument must be a string; type is '{x: int, y: string}'
+intrinsics/format_bad_01.szl:63: print expression b0 (type bool) not compatible with format %c
+intrinsics/format_bad_01.szl:64: print expression b0 (type bool) not compatible with format %s
+intrinsics/format_bad_01.szl:65: print expression b0 (type bool) not compatible with format %d
+intrinsics/format_bad_01.szl:66: print expression b0 (type bool) not compatible with format %o
+intrinsics/format_bad_01.szl:67: print expression b0 (type bool) not compatible with format %x
+intrinsics/format_bad_01.szl:68: print expression b0 (type bool) not compatible with format %i
+intrinsics/format_bad_01.szl:69: print expression b0 (type bool) not compatible with format %e
+intrinsics/format_bad_01.szl:70: print expression b0 (type bool) not compatible with format %f
+intrinsics/format_bad_01.szl:71: print expression b0 (type bool) not compatible with format %g
+intrinsics/format_bad_01.szl:72: print expression b0 (type bool) not compatible with format %E
+intrinsics/format_bad_01.szl:73: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:74: print expression b0 (type bool) not compatible with format %G
+intrinsics/format_bad_01.szl:76: print expression i0 (type int) not compatible with format %b
+intrinsics/format_bad_01.szl:77: print expression i0 (type int) not compatible with format %s
+intrinsics/format_bad_01.szl:78: print expression i0 (type int) not compatible with format %e
+intrinsics/format_bad_01.szl:79: print expression i0 (type int) not compatible with format %f
+intrinsics/format_bad_01.szl:80: print expression i0 (type int) not compatible with format %g
+intrinsics/format_bad_01.szl:81: print expression i0 (type int) not compatible with format %E
+intrinsics/format_bad_01.szl:82: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:83: print expression i0 (type int) not compatible with format %G
+intrinsics/format_bad_01.szl:85: print expression f0 (type float) not compatible with format %b
+intrinsics/format_bad_01.szl:86: print expression f0 (type float) not compatible with format %c
+intrinsics/format_bad_01.szl:87: print expression f0 (type float) not compatible with format %s
+intrinsics/format_bad_01.szl:88: print expression f0 (type float) not compatible with format %d
+intrinsics/format_bad_01.szl:89: print expression f0 (type float) not compatible with format %o
+intrinsics/format_bad_01.szl:90: print expression f0 (type float) not compatible with format %x
+intrinsics/format_bad_01.szl:91: print expression f0 (type float) not compatible with format %i
+intrinsics/format_bad_01.szl:93: print expression by0 (type bytes) not compatible with format %b
+intrinsics/format_bad_01.szl:94: print expression by0 (type bytes) not compatible with format %c
+intrinsics/format_bad_01.szl:95: print expression by0 (type bytes) not compatible with format %s
+intrinsics/format_bad_01.szl:96: print expression by0 (type bytes) not compatible with format %d
+intrinsics/format_bad_01.szl:97: print expression by0 (type bytes) not compatible with format %o
+intrinsics/format_bad_01.szl:98: print expression by0 (type bytes) not compatible with format %x
+intrinsics/format_bad_01.szl:99: print expression by0 (type bytes) not compatible with format %i
+intrinsics/format_bad_01.szl:100: print expression by0 (type bytes) not compatible with format %e
+intrinsics/format_bad_01.szl:101: print expression by0 (type bytes) not compatible with format %f
+intrinsics/format_bad_01.szl:102: print expression by0 (type bytes) not compatible with format %g
+intrinsics/format_bad_01.szl:103: print expression by0 (type bytes) not compatible with format %E
+intrinsics/format_bad_01.szl:104: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:105: print expression by0 (type bytes) not compatible with format %G
+intrinsics/format_bad_01.szl:107: print expression s0 (type string) not compatible with format %b
+intrinsics/format_bad_01.szl:108: print expression s0 (type string) not compatible with format %c
+intrinsics/format_bad_01.szl:109: print expression s0 (type string) not compatible with format %d
+intrinsics/format_bad_01.szl:110: print expression s0 (type string) not compatible with format %o
+intrinsics/format_bad_01.szl:111: print expression s0 (type string) not compatible with format %x
+intrinsics/format_bad_01.szl:112: print expression s0 (type string) not compatible with format %i
+intrinsics/format_bad_01.szl:113: print expression s0 (type string) not compatible with format %e
+intrinsics/format_bad_01.szl:114: print expression s0 (type string) not compatible with format %f
+intrinsics/format_bad_01.szl:115: print expression s0 (type string) not compatible with format %g
+intrinsics/format_bad_01.szl:116: print expression s0 (type string) not compatible with format %E
+intrinsics/format_bad_01.szl:117: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:118: print expression s0 (type string) not compatible with format %G
+intrinsics/format_bad_01.szl:120: print expression t0 (type time) not compatible with format %b
+intrinsics/format_bad_01.szl:121: print expression t0 (type time) not compatible with format %c
+intrinsics/format_bad_01.szl:122: print expression t0 (type time) not compatible with format %s
+intrinsics/format_bad_01.szl:123: print expression t0 (type time) not compatible with format %d
+intrinsics/format_bad_01.szl:124: print expression t0 (type time) not compatible with format %o
+intrinsics/format_bad_01.szl:125: print expression t0 (type time) not compatible with format %x
+intrinsics/format_bad_01.szl:126: print expression t0 (type time) not compatible with format %i
+intrinsics/format_bad_01.szl:127: print expression t0 (type time) not compatible with format %e
+intrinsics/format_bad_01.szl:128: print expression t0 (type time) not compatible with format %f
+intrinsics/format_bad_01.szl:129: print expression t0 (type time) not compatible with format %g
+intrinsics/format_bad_01.szl:130: print expression t0 (type time) not compatible with format %E
+intrinsics/format_bad_01.szl:131: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:132: print expression t0 (type time) not compatible with format %G
+intrinsics/format_bad_01.szl:134: print expression fg0 (type fingerprint) not compatible with format %b
+intrinsics/format_bad_01.szl:135: print expression fg0 (type fingerprint) not compatible with format %c
+intrinsics/format_bad_01.szl:136: print expression fg0 (type fingerprint) not compatible with format %s
+intrinsics/format_bad_01.szl:137: print expression fg0 (type fingerprint) not compatible with format %d
+intrinsics/format_bad_01.szl:138: print expression fg0 (type fingerprint) not compatible with format %o
+intrinsics/format_bad_01.szl:139: print expression fg0 (type fingerprint) not compatible with format %x
+intrinsics/format_bad_01.szl:140: print expression fg0 (type fingerprint) not compatible with format %i
+intrinsics/format_bad_01.szl:141: print expression fg0 (type fingerprint) not compatible with format %e
+intrinsics/format_bad_01.szl:142: print expression fg0 (type fingerprint) not compatible with format %f
+intrinsics/format_bad_01.szl:143: print expression fg0 (type fingerprint) not compatible with format %g
+intrinsics/format_bad_01.szl:144: print expression fg0 (type fingerprint) not compatible with format %E
+intrinsics/format_bad_01.szl:145: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:146: print expression fg0 (type fingerprint) not compatible with format %G
+intrinsics/format_bad_01.szl:148: print expression a0 (type array of int) not compatible with format %b
+intrinsics/format_bad_01.szl:149: print expression a0 (type array of int) not compatible with format %c
+intrinsics/format_bad_01.szl:150: print expression a0 (type array of int) not compatible with format %s
+intrinsics/format_bad_01.szl:151: print expression a0 (type array of int) not compatible with format %d
+intrinsics/format_bad_01.szl:152: print expression a0 (type array of int) not compatible with format %o
+intrinsics/format_bad_01.szl:153: print expression a0 (type array of int) not compatible with format %x
+intrinsics/format_bad_01.szl:154: print expression a0 (type array of int) not compatible with format %i
+intrinsics/format_bad_01.szl:155: print expression a0 (type array of int) not compatible with format %e
+intrinsics/format_bad_01.szl:156: print expression a0 (type array of int) not compatible with format %f
+intrinsics/format_bad_01.szl:157: print expression a0 (type array of int) not compatible with format %g
+intrinsics/format_bad_01.szl:158: print expression a0 (type array of int) not compatible with format %E
+intrinsics/format_bad_01.szl:159: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:160: print expression a0 (type array of int) not compatible with format %G
+intrinsics/format_bad_01.szl:162: print expression m0 (type map [key: string] of int) not compatible with format %b
+intrinsics/format_bad_01.szl:163: print expression m0 (type map [key: string] of int) not compatible with format %c
+intrinsics/format_bad_01.szl:164: print expression m0 (type map [key: string] of int) not compatible with format %s
+intrinsics/format_bad_01.szl:165: print expression m0 (type map [key: string] of int) not compatible with format %d
+intrinsics/format_bad_01.szl:166: print expression m0 (type map [key: string] of int) not compatible with format %o
+intrinsics/format_bad_01.szl:167: print expression m0 (type map [key: string] of int) not compatible with format %x
+intrinsics/format_bad_01.szl:168: print expression m0 (type map [key: string] of int) not compatible with format %i
+intrinsics/format_bad_01.szl:169: print expression m0 (type map [key: string] of int) not compatible with format %e
+intrinsics/format_bad_01.szl:170: print expression m0 (type map [key: string] of int) not compatible with format %f
+intrinsics/format_bad_01.szl:171: print expression m0 (type map [key: string] of int) not compatible with format %g
+intrinsics/format_bad_01.szl:172: print expression m0 (type map [key: string] of int) not compatible with format %E
+intrinsics/format_bad_01.szl:173: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:174: print expression m0 (type map [key: string] of int) not compatible with format %G
+intrinsics/format_bad_01.szl:176: print expression p0 (type {x: int, y: string}) not compatible with format %b
+intrinsics/format_bad_01.szl:177: print expression p0 (type {x: int, y: string}) not compatible with format %c
+intrinsics/format_bad_01.szl:178: print expression p0 (type {x: int, y: string}) not compatible with format %s
+intrinsics/format_bad_01.szl:179: print expression p0 (type {x: int, y: string}) not compatible with format %d
+intrinsics/format_bad_01.szl:180: print expression p0 (type {x: int, y: string}) not compatible with format %o
+intrinsics/format_bad_01.szl:181: print expression p0 (type {x: int, y: string}) not compatible with format %x
+intrinsics/format_bad_01.szl:182: print expression p0 (type {x: int, y: string}) not compatible with format %i
+intrinsics/format_bad_01.szl:183: print expression p0 (type {x: int, y: string}) not compatible with format %e
+intrinsics/format_bad_01.szl:184: print expression p0 (type {x: int, y: string}) not compatible with format %f
+intrinsics/format_bad_01.szl:185: print expression p0 (type {x: int, y: string}) not compatible with format %g
+intrinsics/format_bad_01.szl:186: print expression p0 (type {x: int, y: string}) not compatible with format %E
+intrinsics/format_bad_01.szl:187: unrecognized format specifier %F
+intrinsics/format_bad_01.szl:188: print expression p0 (type {x: int, y: string}) not compatible with format %G
+intrinsics/format_bad_01.szl:190: print expression b0 (type bool) not compatible with format %t
+intrinsics/format_bad_01.szl:191: print expression i0 (type int) not compatible with format %t
+intrinsics/format_bad_01.szl:192: print expression f0 (type float) not compatible with format %t
+intrinsics/format_bad_01.szl:193: print expression by0 (type bytes) not compatible with format %t
+intrinsics/format_bad_01.szl:194: print expression s0 (type string) not compatible with format %t
+intrinsics/format_bad_01.szl:195: print expression fg0 (type fingerprint) not compatible with format %t
+intrinsics/format_bad_01.szl:196: print expression a0 (type array of int) not compatible with format %t
+intrinsics/format_bad_01.szl:197: print expression m0 (type map [key: string] of int) not compatible with format %t
+intrinsics/format_bad_01.szl:198: print expression p0 (type {x: int, y: string}) not compatible with format %t
+intrinsics/format_bad_01.szl:200: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:203: not enough arguments for format string
+intrinsics/format_bad_01.szl:206: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:207: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:209: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:211: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:213: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:215: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:217: format() argument must be a string constant expression

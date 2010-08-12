@@ -1,0 +1,184 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#
+# prime numbers, closure style
+#
+
+
+# ------------------------------------------------------------------------------
+# control structures
+
+type predicate = function(): bool;
+type action = function();
+
+
+if_true: function(cond: predicate, then: action) {
+  if (cond())
+    then();
+};
+
+
+while_true: function(cond: predicate, body: action) {
+  if_true(
+    cond,
+    action {
+      body();
+      while_true(cond, body);
+    }
+  );
+};
+
+
+# ------------------------------------------------------------------------------
+# comparisons & logical
+
+type T = int;
+
+eql: function(x: T, y: T): bool {
+  return x == y;
+};
+
+
+lss: function(x: T, y: T): bool {
+  return x < y;
+};
+
+
+not_: function(x: bool): bool {
+  return !x;
+};
+
+
+and_: function(x: predicate, y: predicate): bool {
+  result: bool = false;
+  if_true(
+    x,
+    action { result = y(); }
+  );
+  return result;
+};
+
+
+# ------------------------------------------------------------------------------
+# arithmetics
+# reduce everything to addition and subtraction of 1
+# (except for mod()...)
+
+add1: function(x: T): T {
+  return x + 1;
+};
+
+
+sub1: function(x: T): T {
+  return x - 1;
+};
+
+
+add: function(x: T, y: T): T {
+  result: T = y;
+  if_true(
+    predicate { return lss(0, x); },
+    action { result = add1(add(sub1(x), y)); }
+  );
+  return result;
+};
+
+
+mul: function(x: T, y: T): T {
+  result: T = 0;
+  if_true(
+    predicate { return lss(0, x); },
+    action { result = add(mul(sub1(x), y), y); }
+  );
+  return result;
+};
+
+
+mod: function(x: T, y: T): T {
+  return x % y;
+};
+
+
+# ------------------------------------------------------------------------------
+# is_prime() predicate
+# reduce all arithmetics and control flow to function calls
+
+is_prime: function(x: int): bool {
+  result: bool = eql(x, 2);
+  if_true(
+    predicate { return not_(eql(mod(x, 2), 0)); },
+    action {
+      d: int = 3;
+      while_true(
+        predicate {
+          return and_(
+            predicate { return not_(lss(x, mul(d, d))); },
+            predicate { return not_(eql(mod(x, d), 0)); }
+          );
+        },
+        action { d = add(d, 2); }
+      );
+      # d*d > x || x % d == 0
+      result = lss(x, mul(d, d));
+    }
+  );
+  return result;
+};
+
+
+# ------------------------------------------------------------------------------
+# prime enumeration
+
+i: int = 2;
+n: int = 200;
+
+expected_primes: array of int = {
+  2, 3, 5, 7,
+  11, 13, 17, 19,
+  23, 29,
+  31, 37,
+  41, 43, 47,
+  53, 59,
+  61, 67,
+  71, 73, 79,
+  83, 89,
+  97,
+  101, 103, 107, 109,
+  113,
+  127,
+  131, 137,
+  139,
+  149,
+  151, 157,
+  163, 167,
+  173, 179,
+  181,
+  191, 193, 197, 199,
+};
+actual_primes: array of int = {};
+
+while_true(
+  predicate { return lss(i, n); },
+  action {
+    if_true(
+      predicate { return is_prime(i); },
+      action { actual_primes = actual_primes + { i }; }
+    );
+    i = add1(i);
+  }
+);
+
+assert(expected_primes == actual_primes);

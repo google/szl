@@ -1,0 +1,48 @@
+base/intrinsic_bad.szl:29: 4 (type int) not a suitable argument for len()
+base/intrinsic_bad.szl:30: 2.7 (type float) not a suitable argument for len()
+base/intrinsic_bad.szl:31: wrong number of arguments to len()
+base/intrinsic_bad.szl:32: wrong number of arguments to len()
+base/intrinsic_bad.szl:33: type mismatch in assignment: b (type bytes) = len("hi") (type int)
+base/intrinsic_bad.szl:34: intrinsic function 'len' cannot be used as value
+base/intrinsic_bad.szl:38: incompatible argument list for load("hello", 4): candidates are:
+    load: function(variable: string): bytes
+base/intrinsic_bad.szl:39: incompatible argument list for load(4): candidates are:
+    load: function(variable: string): bytes
+base/intrinsic_bad.szl:40: type mismatch in assignment: a (type array of int) = lowercase(s) (type string)
+base/intrinsic_bad.szl:41: type mismatch in assignment: l (type int) = regex(int) (type string)
+base/intrinsic_bad.szl:42: intrinsic function 'regex' cannot be used as value
+base/intrinsic_bad.szl:44: argument "[0-9]+" for 'rest' must be l-value
+base/intrinsic_bad.szl:45: source argument of saw is 7 (type int); should be string
+base/intrinsic_bad.szl:46: sawn() is missing string and regular expression arguments
+base/intrinsic_bad.szl:47: sawzall() is missing string and regular expression arguments
+base/intrinsic_bad.szl:48: intrinsic function 'sawzall' cannot be used as value
+base/intrinsic_bad.szl:51: incompatible argument list for now(7): candidates are:
+    now: function(): time
+base/intrinsic_bad.szl:52: DEBUG needs a literal string argument
+base/intrinsic_bad.szl:53: incompatible argument list for dayofmonth(): candidates are:
+    dayofmonth: function(t: time): int
+base/intrinsic_bad.szl:54: incompatible argument list for dayofweek(): candidates are:
+    dayofweek: function(t: time): int
+base/intrinsic_bad.szl:55: incompatible argument list for dayofyear(): candidates are:
+    dayofyear: function(t: time): int
+base/intrinsic_bad.szl:56: incompatible argument list for hourof(): candidates are:
+    hourof: function(t: time): int
+base/intrinsic_bad.szl:57: wrong number of arguments to len()
+base/intrinsic_bad.szl:58: incompatible argument list for minuteof(): candidates are:
+    minuteof: function(t: time): int
+base/intrinsic_bad.szl:59: incompatible argument list for monthof(): candidates are:
+    monthof: function(t: time): int
+base/intrinsic_bad.szl:60: secondsof undeclared
+base/intrinsic_bad.szl:61: incompatible argument list for yearof(): candidates are:
+    yearof: function(t: time): int
+base/intrinsic_bad.szl:63: unknown DEBUG command "unknown"
+base/intrinsic_bad.szl:64: DEBUG "ref" needs a value as 2nd argument
+base/intrinsic_bad.szl:66: DEBUG "ref" needs a value as 2nd argument
+base/intrinsic_bad.szl:68: incompatible argument list for dayofmonth(1): candidates are:
+    dayofmonth: function(t: time): int
+base/intrinsic_bad.szl:72: l-value r for 'rest' must not be static
+base/intrinsic_bad.szl:75: no trailing comma allowed in argument list
+base/intrinsic_bad.szl:78: wrong number of arguments to inproto()
+base/intrinsic_bad.szl:79: l not a suitable argument for inproto();field selector (form: tuple.field) expected
+base/intrinsic_bad.szl:80: wrong number of arguments to inproto()
+base/intrinsic_bad.szl:82: inproto() expects a proto tuple field; t (type {x: int}) is not of proto tuple type

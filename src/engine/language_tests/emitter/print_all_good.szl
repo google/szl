@@ -1,0 +1,1515 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Collection tables that work with the default printing emitter.
+#
+# The tests are organized like so:
+#
+# Tables by kind (in alphabetical order)
+#   Parameter: test compile-time and run-time evaluatable expressions
+#   Index: test different basic and composite types
+#   Element: test different basic and composite types
+#   Weight: test different basic and composite types
+#   Format: test formatting of different element types
+#
+# NOTE: - please keep the tests in alphabetical order
+#       - if adding more tests, please add them to tables_all_good as well
+
+#-----------------------------------------------------------------
+# Bootstrapsum(1) tables that work with default printing emitter.
+
+# Index
+static kNoBucketWeight := fingerprint(0);
+
+OBOis: table bootstrapsum(1)[s: string] of e: int weight w: fingerprint;
+emit OBOis[""] <- 0 weight kNoBucketWeight;
+OBOii: table bootstrapsum(1)[i: int] of e: int weight w: fingerprint;
+emit OBOii[0] <- 0 weight kNoBucketWeight;
+OBOif: table bootstrapsum(1)[f: float] of e: int weight w: fingerprint;
+emit OBOif[0.0] <- 0 weight kNoBucketWeight;
+OBOip: table bootstrapsum(1)[p: fingerprint] of e: int weight w: fingerprint;
+emit OBOip[0P] <- 0 weight kNoBucketWeight;
+OBOit: table bootstrapsum(1)[t: time] of e: int weight w: fingerprint;
+emit OBOit[0T] <- 0 weight kNoBucketWeight;
+OBOix: table bootstrapsum(1)[x: bytes] of e: int weight w: fingerprint;
+emit OBOix[B""] <- 0 weight kNoBucketWeight;
+OBOib: table bootstrapsum(1)[b: bool] of e: int weight w: fingerprint;
+emit OBOib[true] <- 0 weight kNoBucketWeight;
+OBOiT: table bootstrapsum(1)[T: { s: string, i: int, f: float }] of
+    e: int weight w: fingerprint;
+emit OBOiT[{ "", 0, 0.0 }] <- 0 weight kNoBucketWeight;
+OBOiP: table bootstrapsum(1)[P: proto { b: bytes, i: int, f: float }] of
+     e: int weight w: fingerprint;
+emit OBOiP[{ B"", 0, 0.0 }] <- 0 weight kNoBucketWeight;
+OBOiA: table bootstrapsum(1)[A: array of int] of e: int weight w: fingerprint;
+emit OBOiA[{}] <- 0 weight kNoBucketWeight;
+OBOiM: table bootstrapsum(1)[M: map[string] of int] of
+    e: int weight w: fingerprint;
+emit OBOiM[{:}] <- 0 weight kNoBucketWeight;
+
+# Element
+OBOes: table bootstrapsum(1) of s: string weight w: fingerprint;
+emit OBOes <- "" weight kNoBucketWeight;
+OBOei: table bootstrapsum(1) of i: int weight w: fingerprint;
+emit OBOei <- 0 weight kNoBucketWeight;
+OBOef: table bootstrapsum(1) of f: float weight w: fingerprint;
+emit OBOef <- 0.0 weight kNoBucketWeight;
+OBOep: table bootstrapsum(1) of p: fingerprint weight w: fingerprint;
+emit OBOep <- 0P weight kNoBucketWeight;
+OBOet: table bootstrapsum(1) of t: time weight w: fingerprint;
+emit OBOet <- 0T weight kNoBucketWeight;
+OBOex: table bootstrapsum(1) of x: bytes weight w: fingerprint;
+emit OBOex <- B"" weight kNoBucketWeight;
+OBOeb: table bootstrapsum(1) of b: bool weight w: fingerprint;
+emit OBOeb <- true weight kNoBucketWeight;
+OBOeT: table bootstrapsum(1) of
+    T: { s: string, i: int, f: float } weight w: fingerprint;
+emit OBOeT <- { "", 0, 0.0 } weight kNoBucketWeight;
+OBOeP: table bootstrapsum(1) of
+    P: proto { b: bytes, i: int, f: float } weight w: fingerprint;
+emit OBOeP <- { B"", 0, 0.0 } weight kNoBucketWeight;
+OBOeA: table bootstrapsum(1) of
+    A: array of int weight w: fingerprint;
+emit OBOeA <- {} weight kNoBucketWeight;
+OBOeM: table bootstrapsum(1) of
+    M: map[string] of int weight w: fingerprint;
+emit OBOeM <- {:} weight kNoBucketWeight;
+
+# Format
+OBOfms: table bootstrapsum(1) of s: string weight w: fingerprint format("%s", s);
+emit OBOfms <- "" weight kNoBucketWeight;
+OBOfmi: table bootstrapsum(1) of i: int weight w: fingerprint format("%d", i);
+emit OBOfmi <- 0 weight kNoBucketWeight;
+OBOfmf: table bootstrapsum(1) of f: float weight w: fingerprint format("%f", f);
+emit OBOfmf <- 0.0 weight kNoBucketWeight;
+OBOfmp: table bootstrapsum(1) of
+    p: fingerprint weight w: fingerprint format("%p", p);
+emit OBOfmp <- 0P weight kNoBucketWeight;
+OBOfmt: table bootstrapsum(1) of t: time weight w: fingerprint format("%t", t);
+emit OBOfmt <- 0T weight kNoBucketWeight;
+OBOfmx: table bootstrapsum(1) of x: bytes weight w: fingerprint format("%T", x);
+emit OBOfmx <- B"" weight kNoBucketWeight;
+OBOfmb: table bootstrapsum(1) of b: bool weight w: fingerprint format("%b", b);
+emit OBOfmb <- true weight kNoBucketWeight;
+OBOfmT: table bootstrapsum(1) of T: { s: string, i: int, f: float } weight w: fingerprint format("%T", T);
+emit OBOfmT <- { "", 0, 0.0 } weight kNoBucketWeight;
+OBOfmP: table bootstrapsum(1) of
+    P: proto { b: bytes, i: int, f: float }
+    weight w: fingerprint format("%T", P);
+emit OBOfmP <- { B"", 0, 0.0 } weight kNoBucketWeight;
+OBOfmA: table bootstrapsum(1) of
+    A: array of int weight w: fingerprint format("%T", A);
+emit OBOfmA <- {} weight kNoBucketWeight;
+OBOfmM: table bootstrapsum(1) of
+    M: map[string] of int weight w: fingerprint format("%T", M);
+emit OBOfmM <- {:} weight kNoBucketWeight;
+
+#----------------------------------------------------------------
+# Collection tables that work with the default printing emitter.
+
+# Index
+OCOis: table collection[s: string] of e: int;
+emit OCOis[""] <- 0;
+OCOii: table collection[i: int] of e: int;
+emit OCOii[0] <- 0;
+OCOif: table collection[f: float] of e: int;
+emit OCOif[0.0] <- 0;
+OCOip: table collection[p: fingerprint] of e: int;
+emit OCOip[0P] <- 0;
+OCOit: table collection[t: time] of e: int;
+emit OCOit[0T] <- 0;
+OCOix: table collection[x: bytes] of e: int;
+emit OCOix[B""] <- 0;
+OCOib: table collection[b: bool] of e: int;
+emit OCOib[true] <- 0;
+OCOiT: table collection[T: { s: string, i: int, f: float }] of e: int;
+emit OCOiT[{ "", 0, 0.0 }] <- 0;
+OCOiP: table collection[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OCOiP[{ B"", 0, 0.0 }] <- 0;
+OCOiA: table collection[A: array of int] of e: int;
+emit OCOiA[{}] <- 0;
+OCOiM: table collection[M: map[string] of int] of e: int;
+emit OCOiM[{:}] <- 0;
+
+# Element
+OCOes: table collection of s: string;
+emit OCOes <- "";
+OCOei: table collection of i: int;
+emit OCOei <- 0;
+OCOef: table collection of f: float;
+emit OCOef <- 0.0;
+OCOep: table collection of p: fingerprint;
+emit OCOep <- 0P;
+OCOet: table collection of t: time;
+emit OCOet <- 0T;
+OCOex: table collection of x: bytes;
+emit OCOex <- B"";
+OCOeb: table collection of b: bool;
+emit OCOeb <- true;
+OCOeT: table collection of T: { s: string, i: int, f: float };
+emit OCOeT <- { "", 0, 0.0 };
+OCOeP: table collection of P: proto { b: bytes, i: int, f: float };
+emit OCOeP <- { B"", 0, 0.0 };
+OCOeA: table collection of A: array of int;
+emit OCOeA <- {};
+OCOeM: table collection of M: map[string] of int;
+emit OCOeM <- {:};
+
+# Format
+OCOfms: table collection of s: string format("%s", s);
+emit OCOfms <- "";
+OCOfmi: table collection of i: int format("%d", i);
+emit OCOfmi <- 0;
+OCOfmf: table collection of f: float format("%f", f);
+emit OCOfmf <- 0.0;
+OCOfmp: table collection of p: fingerprint format("%p", p);
+emit OCOfmp <- 0P;
+OCOfmt: table collection of t: time format("%t", t);
+emit OCOfmt <- 0T;
+OCOfmx: table collection of x: bytes format("%T", x);
+emit OCOfmx <- B"";
+OCOfmb: table collection of b: bool format("%b", b);
+emit OCOfmb <- true;
+OCOfmT: table collection of T: { s: string, i: int, f: float } format("%T", T);
+emit OCOfmT <- { "", 0, 0.0 };
+OCOfmP: table collection of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OCOfmP <- { B"", 0, 0.0 };
+OCOfmA: table collection of A: array of int format("%T", A);
+emit OCOfmA <- {};
+OCOfmM: table collection of M: map[string] of int format("%T", M);
+emit OCOfmM <- {:};
+
+#--------------------------------------------------------------------
+# Distinctsample tables that work with the default printing emitter.
+
+# Parameter
+ODIpl: table distinctsample(0) of e: int weight w: int;  # const literal
+emit ODIpl <- 0 weight 1;
+static kDIParam := 0;
+ODIpv: table distinctsample(kDIParam) of e: int weight w: int;  # const var
+emit ODIpv <- 0 weight 1;
+ODIpe: table distinctsample(kDIParam * 1) of e: int weight w: int;  # const expr
+emit ODIpe <- 0 weight 1;
+ODIpr: table distinctsample(min(kDIParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit ODIpr <- 0 weight 1;
+ODIpf: table distinctsample(function(): int { return 0; }()) of e: int weight w: int;  # run-time function call
+emit ODIpf <- 0 weight 1;
+
+# Index
+ODIis: table distinctsample(10)[s: string] of e: int weight w: int;
+emit ODIis[""] <- 0 weight 1;
+ODIii: table distinctsample(10)[i: int] of e: int weight w: int;
+emit ODIii[0] <- 0 weight 1;
+ODIif: table distinctsample(10)[f: float] of e: int weight w: int;
+emit ODIif[0.0] <- 0 weight 1;
+ODIip: table distinctsample(10)[p: fingerprint] of e: int weight w: int;
+emit ODIip[0P] <- 0 weight 1;
+ODIit: table distinctsample(10)[t: time] of e: int weight w: int;
+emit ODIit[0T] <- 0 weight 1;
+ODIix: table distinctsample(10)[x: bytes] of e: int weight w: int;
+emit ODIix[B""] <- 0 weight 1;
+ODIib: table distinctsample(10)[b: bool] of e: int weight w: int;
+emit ODIib[true] <- 0 weight 1;
+ODIiT: table distinctsample(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit ODIiT[{ "", 0, 0.0 }] <- 0 weight 1;
+ODIiP: table distinctsample(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit ODIiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+ODIiA: table distinctsample(10)[A: array of int] of e: int weight w: int;
+emit ODIiA[{}] <- 0 weight 1;
+ODIiM: table distinctsample(10)[M: map[string] of int] of e: int weight w: int;
+emit ODIiM[{:}] <- 0 weight 1;
+
+# Element
+ODIes: table distinctsample(10) of s: string weight w: int;
+emit ODIes <- "" weight 1;
+ODIei: table distinctsample(10) of i: int weight w: int;
+emit ODIei <- 0 weight 1;
+ODIef: table distinctsample(10) of f: float weight w: int;
+emit ODIef <- 0.0 weight 1;
+ODIep: table distinctsample(10) of p: fingerprint weight w: int;
+emit ODIep <- 0P weight 1;
+ODIet: table distinctsample(10) of t: time weight w: int;
+emit ODIet <- 0T weight 1;
+ODIex: table distinctsample(10) of x: bytes weight w: int;
+emit ODIex <- B"" weight 1;
+ODIeb: table distinctsample(10) of b: bool weight w: int;
+emit ODIeb <- true weight 1;
+ODIeT: table distinctsample(10) of T: { s: string, i: int, f: float } weight w: int;
+emit ODIeT <- { "", 0, 0.0 } weight 1;
+ODIeP: table distinctsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit ODIeP <- { B"", 0, 0.0 } weight 1;
+ODIeA: table distinctsample(10) of A: array of int weight w: int;
+emit ODIeA <- {} weight 1;
+ODIeM: table distinctsample(10) of M: map[string] of int weight w: int;
+emit ODIeM <- {:} weight 1;
+
+# Weight
+ODIws: table distinctsample(10) of e: int weight s: string;
+emit ODIws <- 0 weight "";
+ODIwi: table distinctsample(10) of e: int weight i: int;
+emit ODIwi <- 0 weight 0;
+ODIwf: table distinctsample(10) of e: int weight f: float;
+emit ODIwf <- 0 weight 0.0;
+ODIwp: table distinctsample(10) of e: int weight p: fingerprint;
+emit ODIwp <- 0 weight 0P;
+ODIwt: table distinctsample(10) of e: int weight t: time;
+emit ODIwt <- 0 weight 0T;
+ODIwx: table distinctsample(10) of e: int weight x: bytes;
+emit ODIwx <- 0 weight B"";
+ODIwb: table distinctsample(10) of e: int weight b: bool;
+emit ODIwb <- 0 weight true;
+ODIwT: table distinctsample(10) of e: int weight T: { s: string, i: int, f: float };
+emit ODIwT <- 0 weight { "", 0, 0.0 };
+ODIwP: table distinctsample(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+emit ODIwP <- 0 weight { B"", 0, 0.0 };
+ODIwA: table distinctsample(10) of e: int weight A: array of int;
+emit ODIwA <- 0 weight {};
+ODIwM: table distinctsample(10) of e: int weight M: map[string] of int;
+emit ODIwM <- 0 weight {:};
+
+# Format
+ODIfms: table distinctsample(10) of s: string weight w: int format("%s", s);
+emit ODIfms <- "" weight 1;
+ODIfmi: table distinctsample(10) of i: int weight w: int format("%d", i);
+emit ODIfmi <- 0 weight 1;
+ODIfmf: table distinctsample(10) of f: float weight w: int format("%f", f);
+emit ODIfmf <- 0.0 weight 1;
+ODIfmp: table distinctsample(10) of p: fingerprint weight w: int format("%p", p);
+emit ODIfmp <- 0P weight 1;
+ODIfmt: table distinctsample(10) of t: time weight w: int format("%t", t);
+emit ODIfmt <- 0T weight 1;
+ODIfmx: table distinctsample(10) of x: bytes weight w: int format("%T", x);
+emit ODIfmx <- B"" weight 1;
+ODIfmb: table distinctsample(10) of b: bool weight w: int format("%b", b);
+emit ODIfmb <- true weight 1;
+ODIfmT: table distinctsample(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit ODIfmT <- { "", 0, 0.0 } weight 1;
+ODIfmP: table distinctsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit ODIfmP <- { B"", 0, 0.0 } weight 1;
+ODIfmA: table distinctsample(10) of A: array of int weight w: int format("%T", A);
+emit ODIfmA <- {} weight 1;
+ODIfmM: table distinctsample(10) of M: map[string] of int weight w: int format("%T", M);
+emit ODIfmM <- {:} weight 1;
+
+#----------------------------------------------------------------------
+# Inversehistogram tables that work with the default printing emitter.
+
+# Parameter
+OINpl: table inversehistogram(0) of e: int weight w: int;  # const literal
+emit OINpl <- 0 weight 1;
+static kINParam := 0;
+OINpv: table inversehistogram(kINParam) of e: int weight w: int;  # const var
+emit OINpv <- 0 weight 1;
+OINpe: table inversehistogram(kINParam * 1) of e: int weight w: int;  # const expr
+emit OINpe <- 0 weight 1;
+OINpr: table inversehistogram(min(kINParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit OINpr <- 0 weight 1;
+OINpf: table inversehistogram(function(): int { return 0; }()) of e: int weight w: int;  # run-time function call
+emit OINpf <- 0 weight 1;
+
+# Index
+OINis: table inversehistogram(10)[s: string] of e: int weight w: int;
+emit OINis[""] <- 0 weight 1;
+OINii: table inversehistogram(10)[i: int] of e: int weight w: int;
+emit OINii[0] <- 0 weight 1;
+OINif: table inversehistogram(10)[f: float] of e: int weight w: int;
+emit OINif[0.0] <- 0 weight 1;
+OINip: table inversehistogram(10)[p: fingerprint] of e: int weight w: int;
+emit OINip[0P] <- 0 weight 1;
+OINit: table inversehistogram(10)[t: time] of e: int weight w: int;
+emit OINit[0T] <- 0 weight 1;
+OINix: table inversehistogram(10)[x: bytes] of e: int weight w: int;
+emit OINix[B""] <- 0 weight 1;
+OINib: table inversehistogram(10)[b: bool] of e: int weight w: int;
+emit OINib[true] <- 0 weight 1;
+OINiT: table inversehistogram(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit OINiT[{ "", 0, 0.0 }] <- 0 weight 1;
+OINiP: table inversehistogram(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit OINiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+OINiA: table inversehistogram(10)[A: array of int] of e: int weight w: int;
+emit OINiA[{}] <- 0 weight 1;
+OINiM: table inversehistogram(10)[M: map[string] of int] of e: int weight w: int;
+emit OINiM[{:}] <- 0 weight 1;
+
+# Element
+OINes: table inversehistogram(10) of s: string weight w: int;
+emit OINes <- "" weight 1;
+OINei: table inversehistogram(10) of i: int weight w: int;
+emit OINei <- 0 weight 1;
+OINef: table inversehistogram(10) of f: float weight w: int;
+emit OINef <- 0.0 weight 1;
+OINep: table inversehistogram(10) of p: fingerprint weight w: int;
+emit OINep <- 0P weight 1;
+OINet: table inversehistogram(10) of t: time weight w: int;
+emit OINet <- 0T weight 1;
+OINex: table inversehistogram(10) of x: bytes weight w: int;
+emit OINex <- B"" weight 1;
+OINeb: table inversehistogram(10) of b: bool weight w: int;
+emit OINeb <- true weight 1;
+OINeT: table inversehistogram(10) of T: { s: string, i: int, f: float } weight w: int;
+emit OINeT <- { "", 0, 0.0 } weight 1;
+OINeP: table inversehistogram(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit OINeP <- { B"", 0, 0.0 } weight 1;
+OINeA: table inversehistogram(10) of A: array of int weight w: int;
+emit OINeA <- {} weight 1;
+OINeM: table inversehistogram(10) of M: map[string] of int weight w: int;
+emit OINeM <- {:} weight 1;
+
+# Weight
+OINws: table inversehistogram(10) of e: int weight s: string;
+emit OINws <- 0 weight "";
+OINwi: table inversehistogram(10) of e: int weight i: int;
+emit OINwi <- 0 weight 0;
+OINwf: table inversehistogram(10) of e: int weight f: float;
+emit OINwf <- 0 weight 0.0;
+OINwp: table inversehistogram(10) of e: int weight p: fingerprint;
+emit OINwp <- 0 weight 0P;
+OINwt: table inversehistogram(10) of e: int weight t: time;
+emit OINwt <- 0 weight 0T;
+OINwx: table inversehistogram(10) of e: int weight x: bytes;
+emit OINwx <- 0 weight B"";
+OINwb: table inversehistogram(10) of e: int weight b: bool;
+emit OINwb <- 0 weight true;
+OINwT: table inversehistogram(10) of e: int weight T: { s: string, i: int, f: float };
+emit OINwT <- 0 weight { "", 0, 0.0 };
+OINwP: table inversehistogram(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+emit OINwP <- 0 weight { B"", 0, 0.0 };
+OINwA: table inversehistogram(10) of e: int weight A: array of int;
+emit OINwA <- 0 weight {};
+OINwM: table inversehistogram(10) of e: int weight M: map[string] of int;
+emit OINwM <- 0 weight {:};
+
+# Format
+OINfms: table inversehistogram(10) of s: string weight w: int format("%s", s);
+emit OINfms <- "" weight 1;
+OINfmi: table inversehistogram(10) of i: int weight w: int format("%d", i);
+emit OINfmi <- 0 weight 1;
+OINfmf: table inversehistogram(10) of f: float weight w: int format("%f", f);
+emit OINfmf <- 0.0 weight 1;
+OINfmp: table inversehistogram(10) of p: fingerprint weight w: int format("%p", p);
+emit OINfmp <- 0P weight 1;
+OINfmt: table inversehistogram(10) of t: time weight w: int format("%t", t);
+emit OINfmt <- 0T weight 1;
+OINfmx: table inversehistogram(10) of x: bytes weight w: int format("%T", x);
+emit OINfmx <- B"" weight 1;
+OINfmb: table inversehistogram(10) of b: bool weight w: int format("%b", b);
+emit OINfmb <- true weight 1;
+OINfmT: table inversehistogram(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit OINfmT <- { "", 0, 0.0 } weight 1;
+OINfmP: table inversehistogram(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit OINfmP <- { B"", 0, 0.0 } weight 1;
+OINfmA: table inversehistogram(10) of A: array of int weight w: int format("%T", A);
+emit OINfmA <- {} weight 1;
+OINfmM: table inversehistogram(10) of M: map[string] of int weight w: int format("%T", M);
+emit OINfmM <- {:} weight 1;
+
+#-------------------------------------------------------------
+# Maximum tables that work with the default printing emitter.
+
+# Parameter
+OMApl: table maximum(0) of e: int weight w: int;  # const literal
+emit OMApl <- 0 weight 1;
+static kMAParam := 0;
+OMApv: table maximum(kMAParam) of e: int weight w: int;  # const var
+emit OMApv <- 0 weight 1;
+OMApe: table maximum(kMAParam * 1) of e: int weight w: int;  # const expr
+emit OMApe <- 0 weight 1;
+OMApr: table maximum(min(kMAParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit OMApr <- 0 weight 1;
+OMApf: table maximum(function(): int { return 0; }()) of e: int weight w: int;  # run-time function call
+emit OMApf <- 0 weight 1;
+
+# Index
+OMAis: table maximum(10)[s: string] of e: int weight w: int;
+emit OMAis[""] <- 0 weight 1;
+OMAii: table maximum(10)[i: int] of e: int weight w: int;
+emit OMAii[0] <- 0 weight 1;
+OMAif: table maximum(10)[f: float] of e: int weight w: int;
+emit OMAif[0.0] <- 0 weight 1;
+OMAip: table maximum(10)[p: fingerprint] of e: int weight w: int;
+emit OMAip[0P] <- 0 weight 1;
+OMAit: table maximum(10)[t: time] of e: int weight w: int;
+emit OMAit[0T] <- 0 weight 1;
+OMAix: table maximum(10)[x: bytes] of e: int weight w: int;
+emit OMAix[B""] <- 0 weight 1;
+OMAib: table maximum(10)[b: bool] of e: int weight w: int;
+emit OMAib[true] <- 0 weight 1;
+OMAiT: table maximum(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit OMAiT[{ "", 0, 0.0 }] <- 0 weight 1;
+OMAiP: table maximum(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit OMAiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+OMAiA: table maximum(10)[A: array of int] of e: int weight w: int;
+emit OMAiA[{}] <- 0 weight 1;
+OMAiM: table maximum(10)[M: map[string] of int] of e: int weight w: int;
+emit OMAiM[{:}] <- 0 weight 1;
+
+# Element
+OMAes: table maximum(10) of s: string weight w: int;
+emit OMAes <- "" weight 1;
+OMAei: table maximum(10) of i: int weight w: int;
+emit OMAei <- 0 weight 1;
+OMAef: table maximum(10) of f: float weight w: int;
+emit OMAef <- 0.0 weight 1;
+OMAep: table maximum(10) of p: fingerprint weight w: int;
+emit OMAep <- 0P weight 1;
+OMAet: table maximum(10) of t: time weight w: int;
+emit OMAet <- 0T weight 1;
+OMAex: table maximum(10) of x: bytes weight w: int;
+emit OMAex <- B"" weight 1;
+OMAeb: table maximum(10) of b: bool weight w: int;
+emit OMAeb <- true weight 1;
+OMAeT: table maximum(10) of T: { s: string, i: int, f: float } weight w: int;
+emit OMAeT <- { "", 0, 0.0 } weight 1;
+OMAeP: table maximum(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit OMAeP <- { B"", 0, 0.0 } weight 1;
+OMAeA: table maximum(10) of A: array of int weight w: int;
+emit OMAeA <- {} weight 1;
+OMAeM: table maximum(10) of M: map[string] of int weight w: int;
+emit OMAeM <- {:} weight 1;
+
+# Weight
+OMAws: table maximum(10) of e: int weight s: string;
+emit OMAws <- 0 weight "";
+OMAwi: table maximum(10) of e: int weight i: int;
+emit OMAwi <- 0 weight 0;
+OMAwf: table maximum(10) of e: int weight f: float;
+emit OMAwf <- 0 weight 0.0;
+OMAwp: table maximum(10) of e: int weight p: fingerprint;
+emit OMAwp <- 0 weight 0P;
+OMAwt: table maximum(10) of e: int weight t: time;
+emit OMAwt <- 0 weight 0T;
+OMAwx: table maximum(10) of e: int weight x: bytes;
+emit OMAwx <- 0 weight B"";
+OMAwb: table maximum(10) of e: int weight b: bool;
+emit OMAwb <- 0 weight true;
+OMAwT: table maximum(10) of e: int weight T: { s: string, i: int, f: float };
+emit OMAwT <- 0 weight { "", 0, 0.0 };
+OMAwP: table maximum(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+emit OMAwP <- 0 weight { B"", 0, 0.0 };
+OMAwA: table maximum(10) of e: int weight A: array of int;
+emit OMAwA <- 0 weight {};
+OMAwM: table maximum(10) of e: int weight M: map[string] of int;
+emit OMAwM <- 0 weight {:};
+
+# Format
+OMAfms: table maximum(10) of s: string weight w: int format("%s", s);
+emit OMAfms <- "" weight 1;
+OMAfmi: table maximum(10) of i: int weight w: int format("%d", i);
+emit OMAfmi <- 0 weight 1;
+OMAfmf: table maximum(10) of f: float weight w: int format("%f", f);
+emit OMAfmf <- 0.0 weight 1;
+OMAfmp: table maximum(10) of p: fingerprint weight w: int format("%p", p);
+emit OMAfmp <- 0P weight 1;
+OMAfmt: table maximum(10) of t: time weight w: int format("%t", t);
+emit OMAfmt <- 0T weight 1;
+OMAfmx: table maximum(10) of x: bytes weight w: int format("%T", x);
+emit OMAfmx <- B"" weight 1;
+OMAfmb: table maximum(10) of b: bool weight w: int format("%b", b);
+emit OMAfmb <- true weight 1;
+OMAfmT: table maximum(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit OMAfmT <- { "", 0, 0.0 } weight 1;
+OMAfmP: table maximum(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit OMAfmP <- { B"", 0, 0.0 } weight 1;
+OMAfmA: table maximum(10) of A: array of int weight w: int format("%T", A);
+emit OMAfmA <- {} weight 1;
+OMAfmM: table maximum(10) of M: map[string] of int weight w: int format("%T", M);
+emit OMAfmM <- {:} weight 1;
+
+#-------------------------------------------------------------
+# Minimum tables that work with the default printing emitter.
+
+# Parameter
+OMIpl: table minimum(0) of e: int weight w: int;  # const literal
+emit OMIpl <- 0 weight 1;
+static kMIParam := 0;
+OMIpv: table minimum(kMIParam) of e: int weight w: int;  # const var
+emit OMIpv <- 0 weight 1;
+OMIpe: table minimum(kMIParam * 1) of e: int weight w: int;  # const expr
+emit OMIpe <- 0 weight 1;
+OMIpr: table minimum(min(kMIParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit OMIpr <- 0 weight 1;
+OMIpf: table minimum(function(): int { return 0; }()) of e: int weight w: int; # run-time function call
+emit OMIpf <- 0 weight 1;
+
+# Index
+OMIis: table minimum(10)[s: string] of e: int weight w: int;
+emit OMIis[""] <- 0 weight 1;
+OMIii: table minimum(10)[i: int] of e: int weight w: int;
+emit OMIii[0] <- 0 weight 1;
+OMIif: table minimum(10)[f: float] of e: int weight w: int;
+emit OMIif[0.0] <- 0 weight 1;
+OMIip: table minimum(10)[p: fingerprint] of e: int weight w: int;
+emit OMIip[0P] <- 0 weight 1;
+OMIit: table minimum(10)[t: time] of e: int weight w: int;
+emit OMIit[0T] <- 0 weight 1;
+OMIix: table minimum(10)[x: bytes] of e: int weight w: int;
+emit OMIix[B""] <- 0 weight 1;
+OMIib: table minimum(10)[b: bool] of e: int weight w: int;
+emit OMIib[true] <- 0 weight 1;
+OMIiT: table minimum(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit OMIiT[{ "", 0, 0.0 }] <- 0 weight 1;
+OMIiP: table minimum(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit OMIiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+OMIiA: table minimum(10)[A: array of int] of e: int weight w: int;
+emit OMIiA[{}] <- 0 weight 1;
+OMIiM: table minimum(10)[M: map[string] of int] of e: int weight w: int;
+emit OMIiM[{:}] <- 0 weight 1;
+
+# Element
+OMIes: table minimum(10) of s: string weight w: int;
+emit OMIes <- "" weight 1;
+OMIei: table minimum(10) of i: int weight w: int;
+emit OMIei <- 0 weight 1;
+OMIef: table minimum(10) of f: float weight w: int;
+emit OMIef <- 0.0 weight 1;
+OMIep: table minimum(10) of p: fingerprint weight w: int;
+emit OMIep <- 0P weight 1;
+OMIet: table minimum(10) of t: time weight w: int;
+emit OMIet <- 0T weight 1;
+OMIex: table minimum(10) of x: bytes weight w: int;
+emit OMIex <- B"" weight 1;
+OMIeb: table minimum(10) of b: bool weight w: int;
+emit OMIeb <- true weight 1;
+OMIeT: table minimum(10) of T: { s: string, i: int, f: float } weight w: int;
+emit OMIeT <- { "", 0, 0.0 } weight 1;
+OMIeP: table minimum(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit OMIeP <- { B"", 0, 0.0 } weight 1;
+OMIeA: table minimum(10) of A: array of int weight w: int;
+emit OMIeA <- {} weight 1;
+OMIeM: table minimum(10) of M: map[string] of int weight w: int;
+emit OMIeM <- {:} weight 1;
+
+# Weight
+OMIws: table minimum(10) of e: int weight s: string;
+emit OMIws <- 0 weight "";
+OMIwi: table minimum(10) of e: int weight i: int;
+emit OMIwi <- 0 weight 0;
+OMIwf: table minimum(10) of e: int weight f: float;
+emit OMIwf <- 0 weight 0.0;
+OMIwp: table minimum(10) of e: int weight p: fingerprint;
+emit OMIwp <- 0 weight 0P;
+OMIwt: table minimum(10) of e: int weight t: time;
+emit OMIwt <- 0 weight 0T;
+OMIwx: table minimum(10) of e: int weight x: bytes;
+emit OMIwx <- 0 weight B"";
+OMIwb: table minimum(10) of e: int weight b: bool;
+emit OMIwb <- 0 weight true;
+OMIwT: table minimum(10) of e: int weight T: { s: string, i: int, f: float };
+emit OMIwT <- 0 weight { "", 0, 0.0 };
+OMIwP: table minimum(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+emit OMIwP <- 0 weight { B"", 0, 0.0 };
+OMIwA: table minimum(10) of e: int weight A: array of int;
+emit OMIwA <- 0 weight {};
+OMIwM: table minimum(10) of e: int weight M: map[string] of int;
+emit OMIwM <- 0 weight {:};
+
+# Format
+OMIfms: table minimum(10) of s: string weight w: int format("%s", s);
+emit OMIfms <- "" weight 1;
+OMIfmi: table minimum(10) of i: int weight w: int format("%d", i);
+emit OMIfmi <- 0 weight 1;
+OMIfmf: table minimum(10) of f: float weight w: int format("%f", f);
+emit OMIfmf <- 0.0 weight 1;
+OMIfmp: table minimum(10) of p: fingerprint weight w: int format("%p", p);
+emit OMIfmp <- 0P weight 1;
+OMIfmt: table minimum(10) of t: time weight w: int format("%t", t);
+emit OMIfmt <- 0T weight 1;
+OMIfmx: table minimum(10) of x: bytes weight w: int format("%T", x);
+emit OMIfmx <- B"" weight 1;
+OMIfmb: table minimum(10) of b: bool weight w: int format("%b", b);
+emit OMIfmb <- true weight 1;
+OMIfmT: table minimum(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit OMIfmT <- { "", 0, 0.0 } weight 1;
+OMIfmP: table minimum(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit OMIfmP <- { B"", 0, 0.0 } weight 1;
+OMIfmA: table minimum(10) of A: array of int weight w: int format("%T", A);
+emit OMIfmA <- {} weight 1;
+OMIfmM: table minimum(10) of M: map[string] of int weight w: int format("%T", M);
+emit OMIfmM <- {:} weight 1;
+
+#---------------------------------------------------------------
+# Mrcounter tables that work with the default printing emitter.
+
+# Index
+OMRis: table mrcounter[s: string] of e: int;
+emit OMRis[""] <- 0;
+OMRii: table mrcounter[i: int] of e: int;
+emit OMRii[0] <- 0;
+OMRif: table mrcounter[f: float] of e: int;
+emit OMRif[0.0] <- 0;
+OMRip: table mrcounter[p: fingerprint] of e: int;
+emit OMRip[0P] <- 0;
+OMRit: table mrcounter[t: time] of e: int;
+emit OMRit[0T] <- 0;
+OMRix: table mrcounter[x: bytes] of e: int;
+emit OMRix[B""] <- 0;
+OMRib: table mrcounter[b: bool] of e: int;
+emit OMRib[true] <- 0;
+OMRiT: table mrcounter[T: { s: string, i: int, f: float }] of e: int;
+emit OMRiT[{ "", 0, 0.0 }] <- 0;
+OMRiP: table mrcounter[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OMRiP[{ B"", 0, 0.0 }] <- 0;
+OMRiA: table mrcounter[A: array of int] of e: int;
+emit OMRiA[{}] <- 0;
+OMRiM: table mrcounter[M: map[string] of int] of e: int;
+emit OMRiM[{:}] <- 0;
+
+# Element
+OMRes: table mrcounter of s: string;
+emit OMRes <- "";
+OMRei: table mrcounter of i: int;
+emit OMRei <- 0;
+OMRef: table mrcounter of f: float;
+emit OMRef <- 0.0;
+OMRep: table mrcounter of p: fingerprint;
+emit OMRep <- 0P;
+OMRet: table mrcounter of t: time;
+emit OMRet <- 0T;
+OMRex: table mrcounter of x: bytes;
+emit OMRex <- B"";
+OMReb: table mrcounter of b: bool;
+emit OMReb <- true;
+OMReT: table mrcounter of T: { s: string, i: int, f: float };
+emit OMReT <- { "", 0, 0.0 };
+OMReP: table mrcounter of P: proto { b: bytes, i: int, f: float };
+emit OMReP <- { B"", 0, 0.0 };
+OMReA: table mrcounter of A: array of int;
+emit OMReA <- {};
+OMReM: table mrcounter of M: map[string] of int;
+emit OMReM <- {:};
+
+# Format
+OMRfms: table mrcounter of s: string format("%s", s);
+emit OMRfms <- "";
+OMRfmi: table mrcounter of i: int format("%d", i);
+emit OMRfmi <- 0;
+OMRfmf: table mrcounter of f: float format("%f", f);
+emit OMRfmf <- 0.0;
+OMRfmp: table mrcounter of p: fingerprint format("%p", p);
+emit OMRfmp <- 0P;
+OMRfmt: table mrcounter of t: time format("%t", t);
+emit OMRfmt <- 0T;
+OMRfmx: table mrcounter of x: bytes format("%T", x);
+emit OMRfmx <- B"";
+OMRfmb: table mrcounter of b: bool format("%b", b);
+emit OMRfmb <- true;
+OMRfmT: table mrcounter of T: { s: string, i: int, f: float } format("%T", T);
+emit OMRfmT <- { "", 0, 0.0 };
+OMRfmP: table mrcounter of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OMRfmP <- { B"", 0, 0.0 };
+OMRfmA: table mrcounter of A: array of int format("%T", A);
+emit OMRfmA <- {};
+OMRfmM: table mrcounter of M: map[string] of int format("%T", M);
+emit OMRfmM <- {:};
+
+#--------------------------------------------------------------
+# Quantile tables that work with the default printing emitter.
+
+# Parameter
+OQUpl: table quantile(3) of e: int;  # const literal
+emit OQUpl <- 0;
+static kQUParam := 3;
+OQUpv: table quantile(kQUParam) of e: int;  # const var
+emit OQUpv <- 0;
+OQUpe: table quantile(kQUParam * 1) of e: int;  # const expr
+emit OQUpe <- 0;
+OQUpr: table quantile(min(kQUParam, int(now()))) of e: int;  # run-time intrinsic call
+emit OQUpr <- 0;
+OQUpf: table quantile(function(): int { return 3; }()) of e: int;  # run-time function call
+emit OQUpf <- 0;
+
+# Index
+OQUis: table quantile(10)[s: string] of e: int;
+emit OQUis[""] <- 0;
+OQUii: table quantile(10)[i: int] of e: int;
+emit OQUii[0] <- 0;
+OQUif: table quantile(10)[f: float] of e: int;
+emit OQUif[0.0] <- 0;
+OQUip: table quantile(10)[p: fingerprint] of e: int;
+emit OQUip[0P] <- 0;
+OQUit: table quantile(10)[t: time] of e: int;
+emit OQUit[0T] <- 0;
+OQUix: table quantile(10)[x: bytes] of e: int;
+emit OQUix[B""] <- 0;
+OQUib: table quantile(10)[b: bool] of e: int;
+emit OQUib[true] <- 0;
+OQUiT: table quantile(10)[T: { s: string, i: int, f: float }] of e: int;
+emit OQUiT[{ "", 0, 0.0 }] <- 0;
+OQUiP: table quantile(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OQUiP[{ B"", 0, 0.0 }] <- 0;
+OQUiA: table quantile(10)[A: array of int] of e: int;
+emit OQUiA[{}] <- 0;
+OQUiM: table quantile(10)[M: map[string] of int] of e: int;
+emit OQUiM[{:}] <- 0;
+
+# Element
+OQUes: table quantile(10) of s: string;
+emit OQUes <- "";
+OQUei: table quantile(10) of i: int;
+emit OQUei <- 0;
+OQUef: table quantile(10) of f: float;
+emit OQUef <- 0.0;
+OQUep: table quantile(10) of p: fingerprint;
+emit OQUep <- 0P;
+OQUet: table quantile(10) of t: time;
+emit OQUet <- 0T;
+OQUex: table quantile(10) of x: bytes;
+emit OQUex <- B"";
+OQUeb: table quantile(10) of b: bool;
+emit OQUeb <- true;
+OQUeT: table quantile(10) of T: { s: string, i: int, f: float };
+emit OQUeT <- { "", 0, 0.0 };
+OQUeP: table quantile(10) of P: proto { b: bytes, i: int, f: float };
+emit OQUeP <- { B"", 0, 0.0 };
+OQUeA: table quantile(10) of A: array of int;
+emit OQUeA <- {};
+OQUeM: table quantile(10) of M: map[string] of int;
+emit OQUeM <- {:};
+
+# Format
+OQUfms: table quantile(10) of s: string format("%s", s);
+emit OQUfms <- "";
+OQUfmi: table quantile(10) of i: int format("%d", i);
+emit OQUfmi <- 0;
+OQUfmf: table quantile(10) of f: float format("%f", f);
+emit OQUfmf <- 0.0;
+OQUfmp: table quantile(10) of p: fingerprint format("%p", p);
+emit OQUfmp <- 0P;
+OQUfmt: table quantile(10) of t: time format("%t", t);
+emit OQUfmt <- 0T;
+OQUfmx: table quantile(10) of x: bytes format("%T", x);
+emit OQUfmx <- B"";
+OQUfmb: table quantile(10) of b: bool format("%b", b);
+emit OQUfmb <- true;
+OQUfmT: table quantile(10) of T: { s: string, i: int, f: float } format("%T", T);
+emit OQUfmT <- { "", 0, 0.0 };
+OQUfmP: table quantile(10) of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OQUfmP <- { B"", 0, 0.0 };
+OQUfmA: table quantile(10) of A: array of int format("%T", A);
+emit OQUfmA <- {};
+OQUfmM: table quantile(10) of M: map[string] of int format("%T", M);
+emit OQUfmM <- {:};
+
+#--------------------------------------------------------------
+# Recordio tables that work with the default printing emitter.
+
+# Parameter
+OREpl: table recordio(0) of e: int;  # const literal
+emit OREpl <- 0;
+static kREParam := 0;
+OREpv: table recordio(kREParam) of e: int;  # const var
+emit OREpv <- 0;
+OREpe: table recordio(kREParam * 1) of e: int;  # const expr
+emit OREpe <- 0;
+OREpr: table recordio(min(kREParam, int(now()))) of e: int;  # run-time intrinsic call
+emit OREpr <- 0;
+OREpf: table recordio(function(): int { return 0; }()) of e: int;  # run-time function call
+emit OREpf <- 0;
+
+# Index
+OREis: table recordio(10)[s: string] of e: int;
+emit OREis[""] <- 0;
+OREii: table recordio(10)[i: int] of e: int;
+emit OREii[0] <- 0;
+OREif: table recordio(10)[f: float] of e: int;
+emit OREif[0.0] <- 0;
+OREip: table recordio(10)[p: fingerprint] of e: int;
+emit OREip[0P] <- 0;
+OREit: table recordio(10)[t: time] of e: int;
+emit OREit[0T] <- 0;
+OREix: table recordio(10)[x: bytes] of e: int;
+emit OREix[B""] <- 0;
+OREib: table recordio(10)[b: bool] of e: int;
+emit OREib[true] <- 0;
+OREiT: table recordio(10)[T: { s: string, i: int, f: float }] of e: int;
+emit OREiT[{ "", 0, 0.0 }] <- 0;
+OREiP: table recordio(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OREiP[{ B"", 0, 0.0 }] <- 0;
+OREiA: table recordio(10)[A: array of int] of e: int;
+emit OREiA[{}] <- 0;
+OREiM: table recordio(10)[M: map[string] of int] of e: int;
+emit OREiM[{:}] <- 0;
+
+# Element
+OREes: table recordio(10) of s: string;
+emit OREes <- "";
+OREei: table recordio(10) of i: int;
+emit OREei <- 0;
+OREef: table recordio(10) of f: float;
+emit OREef <- 0.0;
+OREep: table recordio(10) of p: fingerprint;
+emit OREep <- 0P;
+OREet: table recordio(10) of t: time;
+emit OREet <- 0T;
+OREex: table recordio(10) of x: bytes;
+emit OREex <- B"";
+OREeb: table recordio(10) of b: bool;
+emit OREeb <- true;
+OREeT: table recordio(10) of T: { s: string, i: int, f: float };
+emit OREeT <- { "", 0, 0.0 };
+OREeP: table recordio(10) of P: proto { b: bytes, i: int, f: float };
+emit OREeP <- { B"", 0, 0.0 };
+OREeA: table recordio(10) of A: array of int;
+emit OREeA <- {};
+OREeM: table recordio(10) of M: map[string] of int;
+emit OREeM <- {:};
+
+# Format
+OREfms: table recordio(10) of s: string format("%s", s);
+emit OREfms <- "";
+OREfmi: table recordio(10) of i: int format("%d", i);
+emit OREfmi <- 0;
+OREfmf: table recordio(10) of f: float format("%f", f);
+emit OREfmf <- 0.0;
+OREfmp: table recordio(10) of p: fingerprint format("%p", p);
+emit OREfmp <- 0P;
+OREfmt: table recordio(10) of t: time format("%t", t);
+emit OREfmt <- 0T;
+OREfmx: table recordio(10) of x: bytes format("%T", x);
+emit OREfmx <- B"";
+OREfmb: table recordio(10) of b: bool format("%b", b);
+emit OREfmb <- true;
+OREfmT: table recordio(10) of T: { s: string, i: int, f: float } format("%T", T);
+emit OREfmT <- { "", 0, 0.0 };
+OREfmP: table recordio(10) of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OREfmP <- { B"", 0, 0.0 };
+OREfmA: table recordio(10) of A: array of int format("%T", A);
+emit OREfmA <- {};
+OREfmM: table recordio(10) of M: map[string] of int format("%T", M);
+emit OREfmM <- {:};
+
+#------------------------------------------------------------
+# Sample tables that work with the default printing emitter.
+
+# Parameter
+OSApl: table sample(0) of e: int;  # const literal
+emit OSApl <- 0;
+static kSAParam := 0;
+OSApv: table sample(kSAParam) of e: int;  # const var
+emit OSApv <- 0;
+OSApe: table sample(kSAParam * 1) of e: int;  # const expr
+emit OSApe <- 0;
+OSApr: table sample(min(kSAParam, int(now()))) of e: int;  # run-time intrinsic call
+emit OSApr <- 0;
+OSApf: table sample(function(): int { return 0; }()) of e: int;  # run-time function call
+emit OSApf <- 0;
+
+# Index
+OSAis: table sample(10)[s: string] of e: int;
+emit OSAis[""] <- 0;
+OSAii: table sample(10)[i: int] of e: int;
+emit OSAii[0] <- 0;
+OSAif: table sample(10)[f: float] of e: int;
+emit OSAif[0.0] <- 0;
+OSAip: table sample(10)[p: fingerprint] of e: int;
+emit OSAip[0P] <- 0;
+OSAit: table sample(10)[t: time] of e: int;
+emit OSAit[0T] <- 0;
+OSAix: table sample(10)[x: bytes] of e: int;
+emit OSAix[B""] <- 0;
+OSAib: table sample(10)[b: bool] of e: int;
+emit OSAib[true] <- 0;
+OSAiT: table sample(10)[T: { s: string, i: int, f: float }] of e: int;
+emit OSAiT[{ "", 0, 0.0 }] <- 0;
+OSAiP: table sample(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OSAiP[{ B"", 0, 0.0 }] <- 0;
+OSAiA: table sample(10)[A: array of int] of e: int;
+emit OSAiA[{}] <- 0;
+OSAiM: table sample(10)[M: map[string] of int] of e: int;
+emit OSAiM[{:}] <- 0;
+
+# Element
+OSAes: table sample(10) of s: string;
+emit OSAes <- "";
+OSAei: table sample(10) of i: int;
+emit OSAei <- 0;
+OSAef: table sample(10) of f: float;
+emit OSAef <- 0.0;
+OSAep: table sample(10) of p: fingerprint;
+emit OSAep <- 0P;
+OSAet: table sample(10) of t: time;
+emit OSAet <- 0T;
+OSAex: table sample(10) of x: bytes;
+emit OSAex <- B"";
+OSAeb: table sample(10) of b: bool;
+emit OSAeb <- true;
+OSAeT: table sample(10) of T: { s: string, i: int, f: float };
+emit OSAeT <- { "", 0, 0.0 };
+OSAeP: table sample(10) of P: proto { b: bytes, i: int, f: float };
+emit OSAeP <- { B"", 0, 0.0 };
+OSAeA: table sample(10) of A: array of int;
+emit OSAeA <- {};
+OSAeM: table sample(10) of M: map[string] of int;
+emit OSAeM <- {:};
+
+# Format
+OSAfms: table sample(10) of s: string format("%s", s);
+emit OSAfms <- "";
+OSAfmi: table sample(10) of i: int format("%d", i);
+emit OSAfmi <- 0;
+OSAfmf: table sample(10) of f: float format("%f", f);
+emit OSAfmf <- 0.0;
+OSAfmp: table sample(10) of p: fingerprint format("%p", p);
+emit OSAfmp <- 0P;
+OSAfmt: table sample(10) of t: time format("%t", t);
+emit OSAfmt <- 0T;
+OSAfmx: table sample(10) of x: bytes format("%T", x);
+emit OSAfmx <- B"";
+OSAfmb: table sample(10) of b: bool format("%b", b);
+emit OSAfmb <- true;
+OSAfmT: table sample(10) of T: { s: string, i: int, f: float } format("%T", T);
+emit OSAfmT <- { "", 0, 0.0 };
+OSAfmP: table sample(10) of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OSAfmP <- { B"", 0, 0.0 };
+OSAfmA: table sample(10) of A: array of int format("%T", A);
+emit OSAfmA <- {};
+OSAfmM: table sample(10) of M: map[string] of int format("%T", M);
+emit OSAfmM <- {:};
+
+#---------------------------------------------------------
+# Set tables that work with the default printing emitter.
+
+# Parameter
+OSEpl: table set(0) of e: int;  # const literal
+emit OSEpl <- 0;
+static kSEParam := 0;
+OSEpv: table set(kSEParam) of e: int;  # const var
+emit OSEpv <- 0;
+OSEpe: table set(kSEParam * 1) of e: int;  # const expr
+emit OSEpe <- 0;
+OSEpr: table set(min(kSEParam, int(now()))) of e: int;  # run-time intrinsic call
+emit OSEpr <- 0;
+OSEpf: table set(function(): int { return 0; }()) of e: int;  # run-time function call
+emit OSEpf <- 0;
+
+# Index
+OSEis: table set(10)[s: string] of e: int;
+emit OSEis[""] <- 0;
+OSEii: table set(10)[i: int] of e: int;
+emit OSEii[0] <- 0;
+OSEif: table set(10)[f: float] of e: int;
+emit OSEif[0.0] <- 0;
+OSEip: table set(10)[p: fingerprint] of e: int;
+emit OSEip[0P] <- 0;
+OSEit: table set(10)[t: time] of e: int;
+emit OSEit[0T] <- 0;
+OSEix: table set(10)[x: bytes] of e: int;
+emit OSEix[B""] <- 0;
+OSEib: table set(10)[b: bool] of e: int;
+emit OSEib[true] <- 0;
+OSEiT: table set(10)[T: { s: string, i: int, f: float }] of e: int;
+emit OSEiT[{ "", 0, 0.0 }] <- 0;
+OSEiP: table set(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OSEiP[{ B"", 0, 0.0 }] <- 0;
+OSEiA: table set(10)[A: array of int] of e: int;
+emit OSEiA[{}] <- 0;
+OSEiM: table set(10)[M: map[string] of int] of e: int;
+emit OSEiM[{:}] <- 0;
+
+# Element
+OSEes: table set(10) of s: string;
+emit OSEes <- "";
+OSEei: table set(10) of i: int;
+emit OSEei <- 0;
+OSEef: table set(10) of f: float;
+emit OSEef <- 0.0;
+OSEep: table set(10) of p: fingerprint;
+emit OSEep <- 0P;
+OSEet: table set(10) of t: time;
+emit OSEet <- 0T;
+OSEex: table set(10) of x: bytes;
+emit OSEex <- B"";
+OSEeb: table set(10) of b: bool;
+emit OSEeb <- true;
+OSEeT: table set(10) of T: { s: string, i: int, f: float };
+emit OSEeT <- { "", 0, 0.0 };
+OSEeP: table set(10) of P: proto { b: bytes, i: int, f: float };
+emit OSEeP <- { B"", 0, 0.0 };
+OSEeA: table set(10) of A: array of int;
+emit OSEeA <- {};
+OSEeM: table set(10) of M: map[string] of int;
+emit OSEeM <- {:};
+
+# Format
+OSEfms: table set(10) of s: string format("%s", s);
+emit OSEfms <- "";
+OSEfmi: table set(10) of i: int format("%d", i);
+emit OSEfmi <- 0;
+OSEfmf: table set(10) of f: float format("%f", f);
+emit OSEfmf <- 0.0;
+OSEfmp: table set(10) of p: fingerprint format("%p", p);
+emit OSEfmp <- 0P;
+OSEfmt: table set(10) of t: time format("%t", t);
+emit OSEfmt <- 0T;
+OSEfmx: table set(10) of x: bytes format("%T", x);
+emit OSEfmx <- B"";
+OSEfmb: table set(10) of b: bool format("%b", b);
+emit OSEfmb <- true;
+OSEfmT: table set(10) of T: { s: string, i: int, f: float } format("%T", T);
+emit OSEfmT <- { "", 0, 0.0 };
+OSEfmP: table set(10) of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OSEfmP <- { B"", 0, 0.0 };
+OSEfmA: table set(10) of A: array of int format("%T", A);
+emit OSEfmA <- {};
+OSEfmM: table set(10) of M: map[string] of int format("%T", M);
+emit OSEfmM <- {:};
+
+#---------------------------------------------------------
+# Sum tables that work with the default printing emitter.
+
+# Index
+OSUis: table sum[s: string] of e: int;
+emit OSUis[""] <- 0;
+OSUii: table sum[i: int] of e: int;
+emit OSUii[0] <- 0;
+OSUif: table sum[f: float] of e: int;
+emit OSUif[0.0] <- 0;
+OSUip: table sum[p: fingerprint] of e: int;
+emit OSUip[0P] <- 0;
+OSUit: table sum[t: time] of e: int;
+emit OSUit[0T] <- 0;
+OSUix: table sum[x: bytes] of e: int;
+emit OSUix[B""] <- 0;
+OSUib: table sum[b: bool] of e: int;
+emit OSUib[true] <- 0;
+OSUiT: table sum[T: { s: string, i: int, f: float }] of e: int;
+emit OSUiT[{ "", 0, 0.0 }] <- 0;
+OSUiP: table sum[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OSUiP[{ B"", 0, 0.0 }] <- 0;
+OSUiA: table sum[A: array of int] of e: int;
+emit OSUiA[{}] <- 0;
+OSUiM: table sum[M: map[string] of int] of e: int;
+emit OSUiM[{:}] <- 0;
+
+# Element
+OSUes: table sum of s: string;
+emit OSUes <- "";
+OSUei: table sum of i: int;
+emit OSUei <- 0;
+OSUef: table sum of f: float;
+emit OSUef <- 0.0;
+OSUep: table sum of p: fingerprint;
+emit OSUep <- 0P;
+OSUet: table sum of t: time;
+emit OSUet <- 0T;
+OSUex: table sum of x: bytes;
+emit OSUex <- B"";
+OSUeb: table sum of b: bool;
+emit OSUeb <- true;
+OSUeT: table sum of T: { s: string, i: int, f: float };
+emit OSUeT <- { "", 0, 0.0 };
+OSUeP: table sum of P: proto { b: bytes, i: int, f: float };
+emit OSUeP <- { B"", 0, 0.0 };
+OSUeA: table sum of A: array of int;
+emit OSUeA <- {};
+OSUeM: table sum of M: map[string] of int;
+emit OSUeM <- {:};
+
+# Format
+OSUfms: table sum of s: string format("%s", s);
+emit OSUfms <- "";
+OSUfmi: table sum of i: int format("%d", i);
+emit OSUfmi <- 0;
+OSUfmf: table sum of f: float format("%f", f);
+emit OSUfmf <- 0.0;
+OSUfmp: table sum of p: fingerprint format("%p", p);
+emit OSUfmp <- 0P;
+OSUfmt: table sum of t: time format("%t", t);
+emit OSUfmt <- 0T;
+OSUfmx: table sum of x: bytes format("%T", x);
+emit OSUfmx <- B"";
+OSUfmb: table sum of b: bool format("%b", b);
+emit OSUfmb <- true;
+OSUfmT: table sum of T: { s: string, i: int, f: float } format("%T", T);
+emit OSUfmT <- { "", 0, 0.0 };
+OSUfmP: table sum of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OSUfmP <- { B"", 0, 0.0 };
+OSUfmA: table sum of A: array of int format("%T", A);
+emit OSUfmA <- {};
+OSUfmM: table sum of M: map[string] of int format("%T", M);
+emit OSUfmM <- {:};
+
+#----------------------------------------------------------
+# Text tables that work with the default printing emitter.
+
+# Index
+OTEis: table text[s: string] of e: int;
+emit OTEis[""] <- 0;
+OTEii: table text[i: int] of e: int;
+emit OTEii[0] <- 0;
+OTEif: table text[f: float] of e: int;
+emit OTEif[0.0] <- 0;
+OTEip: table text[p: fingerprint] of e: int;
+emit OTEip[0P] <- 0;
+OTEit: table text[t: time] of e: int;
+emit OTEit[0T] <- 0;
+OTEix: table text[x: bytes] of e: int;
+emit OTEix[B""] <- 0;
+OTEib: table text[b: bool] of e: int;
+emit OTEib[true] <- 0;
+OTEiT: table text[T: { s: string, i: int, f: float }] of e: int;
+emit OTEiT[{ "", 0, 0.0 }] <- 0;
+OTEiP: table text[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OTEiP[{ B"", 0, 0.0 }] <- 0;
+OTEiA: table text[A: array of int] of e: int;
+emit OTEiA[{}] <- 0;
+OTEiM: table text[M: map[string] of int] of e: int;
+emit OTEiM[{:}] <- 0;
+
+# Element
+OTEes: table text of s: string;
+emit OTEes <- "";
+OTEei: table text of i: int;
+emit OTEei <- 0;
+OTEef: table text of f: float;
+emit OTEef <- 0.0;
+OTEep: table text of p: fingerprint;
+emit OTEep <- 0P;
+OTEet: table text of t: time;
+emit OTEet <- 0T;
+OTEex: table text of x: bytes;
+emit OTEex <- B"";
+OTEeb: table text of b: bool;
+emit OTEeb <- true;
+OTEeT: table text of T: { s: string, i: int, f: float };
+emit OTEeT <- { "", 0, 0.0 };
+OTEeP: table text of P: proto { b: bytes, i: int, f: float };
+emit OTEeP <- { B"", 0, 0.0 };
+OTEeA: table text of A: array of int;
+emit OTEeA <- {};
+OTEeM: table text of M: map[string] of int;
+emit OTEeM <- {:};
+
+# Format
+OTEfms: table text of s: string format("%s", s);
+emit OTEfms <- "";
+OTEfmi: table text of i: int format("%d", i);
+emit OTEfmi <- 0;
+OTEfmf: table text of f: float format("%f", f);
+emit OTEfmf <- 0.0;
+OTEfmp: table text of p: fingerprint format("%p", p);
+emit OTEfmp <- 0P;
+OTEfmt: table text of t: time format("%t", t);
+emit OTEfmt <- 0T;
+OTEfmx: table text of x: bytes format("%T", x);
+emit OTEfmx <- B"";
+OTEfmb: table text of b: bool format("%b", b);
+emit OTEfmb <- true;
+OTEfmT: table text of T: { s: string, i: int, f: float } format("%T", T);
+emit OTEfmT <- { "", 0, 0.0 };
+OTEfmP: table text of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OTEfmP <- { B"", 0, 0.0 };
+OTEfmA: table text of A: array of int format("%T", A);
+emit OTEfmA <- {};
+OTEfmM: table text of M: map[string] of int format("%T", M);
+emit OTEfmM <- {:};
+
+#---------------------------------------------------------
+# Top tables that work with the default printing emitter.
+
+# Parameter
+OTOpl: table top(1) of e: int weight w: int;  # const literal
+emit OTOpl <- 0 weight 1; emit OTOpl <- 1 weight 1;
+static kTOParam := 1;
+OTOpv: table top(kTOParam) of e: int weight w: int;  # const var
+emit OTOpv <- 0 weight 1; emit OTOpv <- 1 weight 1;
+OTOpe: table top(kTOParam * 1) of e: int weight w: int;  # const expr
+emit OTOpe <- 0 weight 1; emit OTOpe <- 1 weight 1;
+OTOpr: table top(min(kTOParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit OTOpr <- 0 weight 1; emit OTOpr <- 1 weight 1;
+OTOpf: table top(function(): int { return 1; }()) of e: int weight w: int; # run-time function call
+emit OTOpf <- 0 weight 1; emit OTOpf <- 1 weight 1;
+
+# Index
+OTOis: table top(10)[s: string] of e: int weight w: int;
+emit OTOis[""] <- 0 weight 1;
+OTOii: table top(10)[i: int] of e: int weight w: int;
+emit OTOii[0] <- 0 weight 1;
+OTOif: table top(10)[f: float] of e: int weight w: int;
+emit OTOif[0.0] <- 0 weight 1;
+OTOip: table top(10)[p: fingerprint] of e: int weight w: int;
+emit OTOip[0P] <- 0 weight 1;
+OTOit: table top(10)[t: time] of e: int weight w: int;
+emit OTOit[0T] <- 0 weight 1;
+OTOix: table top(10)[x: bytes] of e: int weight w: int;
+emit OTOix[B""] <- 0 weight 1;
+OTOib: table top(10)[b: bool] of e: int weight w: int;
+emit OTOib[true] <- 0 weight 1;
+OTOiT: table top(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit OTOiT[{ "", 0, 0.0 }] <- 0 weight 1;
+OTOiP: table top(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit OTOiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+OTOiA: table top(10)[A: array of int] of e: int weight w: int;
+emit OTOiA[{}] <- 0 weight 1;
+OTOiM: table top(10)[M: map[string] of int] of e: int weight w: int;
+emit OTOiM[{:}] <- 0 weight 1;
+
+# Element
+OTOes: table top(10) of s: string weight w: int;
+emit OTOes <- "" weight 1;
+OTOei: table top(10) of i: int weight w: int;
+emit OTOei <- 0 weight 1;
+OTOef: table top(10) of f: float weight w: int;
+emit OTOef <- 0.0 weight 1;
+OTOep: table top(10) of p: fingerprint weight w: int;
+emit OTOep <- 0P weight 1;
+OTOet: table top(10) of t: time weight w: int;
+emit OTOet <- 0T weight 1;
+OTOex: table top(10) of x: bytes weight w: int;
+emit OTOex <- B"" weight 1;
+OTOeb: table top(10) of b: bool weight w: int;
+emit OTOeb <- true weight 1;
+OTOeT: table top(10) of T: { s: string, i: int, f: float } weight w: int;
+emit OTOeT <- { "", 0, 0.0 } weight 1;
+OTOeP: table top(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit OTOeP <- { B"", 0, 0.0 } weight 1;
+OTOeA: table top(10) of A: array of int weight w: int;
+emit OTOeA <- {} weight 1;
+OTOeM: table top(10) of M: map[string] of int weight w: int;
+emit OTOeM <- {:} weight 1;
+
+# Weight
+OTOws: table top(10) of e: int weight s: string;
+emit OTOws <- 0 weight "";
+OTOwi: table top(10) of e: int weight i: int;
+emit OTOwi <- 0 weight 0;
+OTOwf: table top(10) of e: int weight f: float;
+emit OTOwf <- 0 weight 0.0;
+OTOwp: table top(10) of e: int weight p: fingerprint;
+emit OTOwp <- 0 weight 0P;
+OTOwt: table top(10) of e: int weight t: time;
+emit OTOwt <- 0 weight 0T;
+OTOwx: table top(10) of e: int weight x: bytes;
+emit OTOwx <- 0 weight B"";
+OTOwb: table top(10) of e: int weight b: bool;
+emit OTOwb <- 0 weight true;
+OTOwT: table top(10) of e: int weight T: { s: string, i: int, f: float };
+emit OTOwT <- 0 weight { "", 0, 0.0 };
+OTOwP: table top(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+emit OTOwP <- 0 weight { B"", 0, 0.0 };
+OTOwA: table top(10) of e: int weight A: array of int;
+emit OTOwA <- 0 weight {};
+OTOwM: table top(10) of e: int weight M: map[string] of int;
+emit OTOwM <- 0 weight {:};
+
+# Format
+OTOfms: table top(10) of s: string weight w: int format("%s", s);
+emit OTOfms <- "" weight 1;
+OTOfmi: table top(10) of i: int weight w: int format("%d", i);
+emit OTOfmi <- 0 weight 1;
+OTOfmf: table top(10) of f: float weight w: int format("%f", f);
+emit OTOfmf <- 0.0 weight 1;
+OTOfmp: table top(10) of p: fingerprint weight w: int format("%p", p);
+emit OTOfmp <- 0P weight 1;
+OTOfmt: table top(10) of t: time weight w: int format("%t", t);
+emit OTOfmt <- 0T weight 1;
+OTOfmx: table top(10) of x: bytes weight w: int format("%T", x);
+emit OTOfmx <- B"" weight 1;
+OTOfmb: table top(10) of b: bool weight w: int format("%b", b);
+emit OTOfmb <- true weight 1;
+OTOfmT: table top(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit OTOfmT <- { "", 0, 0.0 } weight 1;
+OTOfmP: table top(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit OTOfmP <- { B"", 0, 0.0 } weight 1;
+OTOfmA: table top(10) of A: array of int weight w: int format("%T", A);
+emit OTOfmA <- {} weight 1;
+OTOfmM: table top(10) of M: map[string] of int weight w: int format("%T", M);
+emit OTOfmM <- {:} weight 1;
+
+#------------------------------------------------------------
+# Unique tables that work with the default printing emitter.
+
+# Parameter
+OUNpl: table unique(0) of e: int;  # const literal
+emit OUNpl <- 0;
+static kUNParam := 0;
+OUNpv: table unique(kUNParam) of e: int;  # const var
+emit OUNpv <- 0;
+OUNpe: table unique(kUNParam * 1) of e: int;  # const expr
+emit OUNpe <- 0;
+OUNpr: table unique(min(kUNParam, int(now()))) of e: int;  # run-time intrinsic call
+emit OUNpr <- 0;
+OUNpf: table unique(function(): int { return 0; }()) of e: int;  # run-time function call
+emit OUNpf <- 0;
+
+# Index
+OUNis: table unique(10)[s: string] of e: int;
+emit OUNis[""] <- 0;
+OUNii: table unique(10)[i: int] of e: int;
+emit OUNii[0] <- 0;
+OUNif: table unique(10)[f: float] of e: int;
+emit OUNif[0.0] <- 0;
+OUNip: table unique(10)[p: fingerprint] of e: int;
+emit OUNip[0P] <- 0;
+OUNit: table unique(10)[t: time] of e: int;
+emit OUNit[0T] <- 0;
+OUNix: table unique(10)[x: bytes] of e: int;
+emit OUNix[B""] <- 0;
+OUNib: table unique(10)[b: bool] of e: int;
+emit OUNib[true] <- 0;
+OUNiT: table unique(10)[T: { s: string, i: int, f: float }] of e: int;
+emit OUNiT[{ "", 0, 0.0 }] <- 0;
+OUNiP: table unique(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+emit OUNiP[{ B"", 0, 0.0 }] <- 0;
+OUNiA: table unique(10)[A: array of int] of e: int;
+emit OUNiA[{}] <- 0;
+OUNiM: table unique(10)[M: map[string] of int] of e: int;
+emit OUNiM[{:}] <- 0;
+
+# Element
+OUNes: table unique(10) of s: string;
+emit OUNes <- "";
+OUNei: table unique(10) of i: int;
+emit OUNei <- 0;
+OUNef: table unique(10) of f: float;
+emit OUNef <- 0.0;
+OUNep: table unique(10) of p: fingerprint;
+emit OUNep <- 0P;
+OUNet: table unique(10) of t: time;
+emit OUNet <- 0T;
+OUNex: table unique(10) of x: bytes;
+emit OUNex <- B"";
+OUNeb: table unique(10) of b: bool;
+emit OUNeb <- true;
+OUNeT: table unique(10) of T: { s: string, i: int, f: float };
+emit OUNeT <- { "", 0, 0.0 };
+OUNeP: table unique(10) of P: proto { b: bytes, i: int, f: float };
+emit OUNeP <- { B"", 0, 0.0 };
+OUNeA: table unique(10) of A: array of int;
+emit OUNeA <- {};
+OUNeM: table unique(10) of M: map[string] of int;
+emit OUNeM <- {:};
+
+# Format
+OUNfms: table unique(10) of s: string format("%s", s);
+emit OUNfms <- "";
+OUNfmi: table unique(10) of i: int format("%d", i);
+emit OUNfmi <- 0;
+OUNfmf: table unique(10) of f: float format("%f", f);
+emit OUNfmf <- 0.0;
+OUNfmp: table unique(10) of p: fingerprint format("%p", p);
+emit OUNfmp <- 0P;
+OUNfmt: table unique(10) of t: time format("%t", t);
+emit OUNfmt <- 0T;
+OUNfmx: table unique(10) of x: bytes format("%T", x);
+emit OUNfmx <- B"";
+OUNfmb: table unique(10) of b: bool format("%b", b);
+emit OUNfmb <- true;
+OUNfmT: table unique(10) of T: { s: string, i: int, f: float } format("%T", T);
+emit OUNfmT <- { "", 0, 0.0 };
+OUNfmP: table unique(10) of P: proto { b: bytes, i: int, f: float } format("%T", P);
+emit OUNfmP <- { B"", 0, 0.0 };
+OUNfmA: table unique(10) of A: array of int format("%T", A);
+emit OUNfmA <- {};
+OUNfmM: table unique(10) of M: map[string] of int format("%T", M);
+emit OUNfmM <- {:};
+
+#--------------------------------------------------------------------
+# WeightedSample tables that work with the default printing emitter.
+
+# Parameter
+OWEpl: table weightedsample(1) of e: int weight w: int;  # const literal
+emit OWEpl <- 0 weight 1; emit OWEpl <- 1 weight 1;
+static kWEParam := 1;
+OWEpv: table weightedsample(kWEParam) of e: int weight w: int;  # const var
+emit OWEpv <- 0 weight 1; emit OWEpv <- 1 weight 1;
+OWEpe: table weightedsample(kWEParam * 1) of e: int weight w: int;  # const expr
+emit OWEpe <- 0 weight 1; emit OWEpe <- 1 weight 1;
+OWEpr: table weightedsample(min(kWEParam, int(now()))) of e: int weight w: int;  # run-time intrinsic call
+emit OWEpr <- 0 weight 1; emit OWEpr <- 1 weight 1;
+OWEpf: table weightedsample(function(): int { return 1; }()) of e: int weight w: int; # run-time function call
+emit OWEpf <- 0 weight 1; emit OWEpf <- 1 weight 1;
+
+# Index
+OWEis: table weightedsample(10)[s: string] of e: int weight w: int;
+emit OWEis[""] <- 0 weight 1;
+OWEii: table weightedsample(10)[i: int] of e: int weight w: int;
+emit OWEii[0] <- 0 weight 1;
+OWEif: table weightedsample(10)[f: float] of e: int weight w: int;
+emit OWEif[0.0] <- 0 weight 1;
+OWEip: table weightedsample(10)[p: fingerprint] of e: int weight w: int;
+emit OWEip[0P] <- 0 weight 1;
+OWEit: table weightedsample(10)[t: time] of e: int weight w: int;
+emit OWEit[0T] <- 0 weight 1;
+OWEix: table weightedsample(10)[x: bytes] of e: int weight w: int;
+emit OWEix[B""] <- 0 weight 1;
+OWEib: table weightedsample(10)[b: bool] of e: int weight w: int;
+emit OWEib[true] <- 0 weight 1;
+OWEiT: table weightedsample(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+emit OWEiT[{ "", 0, 0.0 }] <- 0 weight 1;
+OWEiP: table weightedsample(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+emit OWEiP[{ B"", 0, 0.0 }] <- 0 weight 1;
+OWEiA: table weightedsample(10)[A: array of int] of e: int weight w: int;
+emit OWEiA[{}] <- 0 weight 1;
+OWEiM: table weightedsample(10)[M: map[string] of int] of e: int weight w: int;
+emit OWEiM[{:}] <- 0 weight 1;
+
+# Element
+OWEes: table weightedsample(10) of s: string weight w: int;
+emit OWEes <- "" weight 1;
+OWEei: table weightedsample(10) of i: int weight w: int;
+emit OWEei <- 0 weight 1;
+OWEef: table weightedsample(10) of f: float weight w: int;
+emit OWEef <- 0.0 weight 1;
+OWEep: table weightedsample(10) of p: fingerprint weight w: int;
+emit OWEep <- 0P weight 1;
+OWEet: table weightedsample(10) of t: time weight w: int;
+emit OWEet <- 0T weight 1;
+OWEex: table weightedsample(10) of x: bytes weight w: int;
+emit OWEex <- B"" weight 1;
+OWEeb: table weightedsample(10) of b: bool weight w: int;
+emit OWEeb <- true weight 1;
+OWEeT: table weightedsample(10) of T: { s: string, i: int, f: float } weight w: int;
+emit OWEeT <- { "", 0, 0.0 } weight 1;
+OWEeP: table weightedsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+emit OWEeP <- { B"", 0, 0.0 } weight 1;
+OWEeA: table weightedsample(10) of A: array of int weight w: int;
+emit OWEeA <- {} weight 1;
+OWEeM: table weightedsample(10) of M: map[string] of int weight w: int;
+emit OWEeM <- {:} weight 1;
+
+# Weight
+OWEwi: table weightedsample(10) of e: int weight i: int;
+emit OWEwi <- 0 weight 0;
+OWEwf: table weightedsample(10) of e: int weight f: float;
+emit OWEwf <- 0 weight 0.0;
+
+# Format
+OWEfms: table weightedsample(10) of s: string weight w: int format("%s", s);
+emit OWEfms <- "" weight 1;
+OWEfmi: table weightedsample(10) of i: int weight w: int format("%d", i);
+emit OWEfmi <- 0 weight 1;
+OWEfmf: table weightedsample(10) of f: float weight w: int format("%f", f);
+emit OWEfmf <- 0.0 weight 1;
+OWEfmp: table weightedsample(10) of p: fingerprint weight w: int format("%p", p);
+emit OWEfmp <- 0P weight 1;
+OWEfmt: table weightedsample(10) of t: time weight w: int format("%t", t);
+emit OWEfmt <- 0T weight 1;
+OWEfmx: table weightedsample(10) of x: bytes weight w: int format("%T", x);
+emit OWEfmx <- B"" weight 1;
+OWEfmb: table weightedsample(10) of b: bool weight w: int format("%b", b);
+emit OWEfmb <- true weight 1;
+OWEfmT: table weightedsample(10) of T: { s: string, i: int, f: float } weight w: int format("%T", T);
+emit OWEfmT <- { "", 0, 0.0 } weight 1;
+OWEfmP: table weightedsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int format("%T", P);
+emit OWEfmP <- { B"", 0, 0.0 } weight 1;
+OWEfmA: table weightedsample(10) of A: array of int weight w: int format("%T", A);
+emit OWEfmA <- {} weight 1;
+OWEfmM: table weightedsample(10) of M: map[string] of int weight w: int format("%T", M);
+emit OWEfmM <- {:} weight 1;

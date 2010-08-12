@@ -1,0 +1,498 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Ill-formed output types that result in compilation errors.
+# Types are not allowed as expression statements, so we use type declarations.
+#
+# Please see the matching _good.szl file for an explanation of the test
+# structure and conventions.
+#
+
+# Parameter: not allowed
+type OCOpe = table collection(10) of e: int;
+type OSUpe = table sum(10) of e: int;
+
+type OTEpe = table text(10) of e: int;
+type OMRpe = table mrcounter(10) of e: int;
+
+# Parameter: missing
+type OSApm = table sample of e: int;
+type OTOpm = table top of e: int weight w: int;
+type OMApm = table maximum of e: int weight w: int;
+type OMIpm = table minimum of e: int weight w: int;
+type OUNpm = table unique of e: int;
+type OSEpm = table set of e: int;
+type OQUpm = table quantile of e: int;
+type ODIpm = table distinctsample of e: int weight w: int;
+type OINpm = table inversehistogram of e: int weight w: int;
+type OWEpm = table weightedsample of e: int weight w: int;
+type OREpm = table recordio of e: int;
+
+# Parameter: missing expression
+type OSApme = table sample() of e: int;
+type OTOpme = table top() of e: int weight w: int;
+type OMApme = table maximum() of e: int weight w: int;
+type OMIpme = table minimum() of e: int weight w: int;
+type OUNpme = table unique() of e: int;
+type OSEpme = table set() of e: int;
+type OQUpme = table quantile() of e: int;
+type ODIpme = table distinctsample() of e: int weight w: int;
+type OINpme = table inversehistogram() of e: int weight w: int;
+type OWEpme = table weightedsample() of e: int weight w: int;
+type OREpme = table recordio() of e: int;
+
+# Parameter: non-static
+i: int = 10;
+type OSApns = table sample(i) of e: int;
+type OTOpns = table top(i) of e: int weight w: int;
+type OMApns = table maximum(i) of e: int weight w: int;
+type OMIpns = table minimum(i) of e: int weight w: int;
+type OUNpns = table unique(i) of e: int;
+type OSEpns = table set(i) of e: int;
+type OQUpns = table quantile(i) of e: int;
+type ODIpns = table distinctsample(i) of e: int weight w: int;
+type OINpns = table inversehistogram(i) of e: int weight w: int;
+type OWEpns = table weightedsample(i) of e: int weight w: int;
+type OREpns = table recordio(i) of e: int;
+
+# Parameter: negative
+static kNegInt: int = -10;
+type OSApn = table sample(kNegInt) of e: int;
+type OTOpn = table top(-10) of e: int weight w: int;
+type OMApn = table maximum(kNegInt) of e: int weight w: int;
+type OMIpn = table minimum(-10) of e: int weight w: int;
+type OUNpn = table unique(kNegInt) of e: int;
+type OSEpn = table set(-10) of e: int;
+type OQUpn = table quantile(kNegInt) of e: int;
+type ODIpn = table distinctsample(-10) of e: int weight w: int;
+type OINpn = table inversehistogram(kNegInt) of e: int weight w: int;
+type OWEpn = table weightedsample(kNegInt) of e: int weight w: int;
+type OREpn = table recordio(-10) of e: int;
+
+# Parameter: overflow
+static kBigInt: int = 2147483648;  # 2**32
+type OSApo = table sample(kBigInt) of e: int;
+type OTOpo = table top(2147483648) of e: int weight w: int;
+type OMApo = table maximum(kBigInt) of e: int weight w: int;
+type OMIpo = table minimum(2147483648) of e: int weight w: int;
+type OUNpo = table unique(kBigInt) of e: int;
+type OSEpo = table set(2147483648) of e: int;
+type OQUpo = table quantile(kBigInt) of e: int;
+type ODIpo = table distinctsample(2147483648) of e: int weight w: int;
+type OINpo = table inversehistogram(kBigInt) of e: int weight w: int;
+type OWEpo = table weightedsample(kBigInt) of e: int weight w: int;
+type OREpo = table recordio(2147483648) of e: int;
+
+# Parameter: non-integer constant
+type OSApni = table sample(1.0) of e: int;
+type OTOpni = table top(1U) of e: int weight w: int;
+type OMApni = table maximum(1P) of e: int weight w: int;
+type OMIpni = table minimum(T"Jan 01 PST 2008") of e: int weight w: int;
+type OUNpni = table unique(B"") of e: int;
+type OSEpni = table set(1P) of e: int;
+type OQUpni = table quantile(true) of e: int;
+type ODIpni = table distinctsample(new(array of int, 1, 1)) of e: int weight w: int;
+type OINpni = table inversehistogram(new(map[int] of int, 0)) of e: int weight w: int;
+type OWEpni = table weightedsample(new(map[int] of int, 0)) of e: int weight w: int;
+type OREpni = table recordio(convert({ int }, { 1 })) of e: int;
+
+# Index: type must not be a function
+type OCOiF = table collection[F: function()] of e: int;
+type OSAiF = table sample(10)[F: function()] of e: int;
+type OSUiF = table sum[F: function()] of e: int;
+type OTOiF = table top(10)[F: function()] of e: int weight w: int;
+type OMAiF = table maximum(10)[F: function()] of e: int weight w: int;
+type OMIiF = table minimum(10)[F: function()] of e: int weight w: int;
+type OUNiF = table unique(10)[F: function()] of e: int;
+type OSEiF = table set(10)[F: function()] of e: int;
+type OQUiF = table quantile(10)[F: function()] of e: int;
+type ODIiF = table distinctsample(10)[F: function()] of e: int weight w: int;
+type OINiF = table inversehistogram(10)[F: function()] of e: int weight w: int;
+type OWEiF = table weightedsample(10)[F: function()] of e: int weight w: int;
+
+type OREiF = table recordio(10)[F: function()] of e: int;
+type OTEiF = table text[F: function()] of e: int;
+type OMRiF = table mrcounter[F: function()] of e: int;
+
+# Index: output type not allowed
+type OCOiO = table collection[O: table sum of int] of e: int;
+type OSAiO = table sample(10)[O: table sum of int] of e: int;
+type OSUiO = table sum[O: table sum of int] of e: int;
+type OTOiO = table top(10)[O: table sum of int] of e: int weight w: int;
+type OMAiO = table maximum(10)[O: table sum of int] of e: int weight w: int;
+type OMIiO = table minimum(10)[O: table sum of int] of e: int weight w: int;
+type OUNiO = table unique(10)[O: table sum of int] of e: int;
+type OSEiO = table set(10)[O: table sum of int] of e: int;
+type OQUiO = table quantile(10)[O: table sum of int] of e: int;
+type ODIiO = table distinctsample(10)[O: table sum of int] of e: int weight w: int;
+type OINiO = table inversehistogram(10)[O: table sum of int] of e: int weight w: int;
+type OWEiO = table weightedsample(10)[O: table sum of int] of e: int weight w: int;
+
+type OREiO = table recordio(10)[O: table sum of int] of e: int;
+type OTEiO = table text[O: table sum of int] of e: int;
+type OMRiO = table mrcounter[O: table sum of int] of e: int;
+
+# Element: type must not be a function
+type OCOeF = table collection of F: function();
+type OSAeF = table sample(10) of F: function();
+type OSUeF = table sum of F: function();
+type OTOeF = table top(10) of F: function() weight w: int;
+type OMAeF = table maximum(10) of F: function() weight w: int;
+type OMIeF = table minimum(10) of F: function() weight w: int;
+type OUNeF = table unique(10) of F: function();
+type OSEeF = table set(10) of F: function();
+type OQUeF = table quantile(10) of F: function();
+type ODIeF = table distinctsample(10) of F: function() weight w: int;
+type OINeF = table inversehistogram(10) of F: function() weight w: int;
+type OWEeF = table weightedsample(10) of F: function() weight w: int;
+
+type OREeF = table recordio(10) of F: function();
+type OTEeF = table text of F: function();
+type OMReF = table mrcounter of F: function();
+
+# Element: output type not allowed
+type OCOeO = table collection of O: table sum of int;
+type OSAeO = table sample(10) of O: table sum of int;
+type OSUeO = table sum of O: table sum of int;
+type OTOeO = table top(10) of O: table top(1) of int weight int weight w: int;
+type OMAeO = table maximum(10) of O: table top(1) of int weight int weight w: int;
+type OMIeO = table minimum(10) of O: table top(1) of int weight int weight w: int;
+type OUNeO = table unique(10) of O: table sum of int;
+type OSEeO = table set(10) of O: table sum of int;
+type OQUeO = table quantile(10) of O: table sum of int;
+type ODIeO = table distinctsample(10) of O: table top(1) of int weight int weight w: int;
+type OINeO = table inversehistogram(10) of O: table top(1) of int weight int weight w: int;
+type OWEeO = table weightedsample(10) of O: table top(1) of int weight int weight w: int;
+
+type OREeO = table recordio(10) of O: table sum of int;
+type OTEeO = table text of O: table sum of int;
+type OMReO = table mrcounter of O: table sum of int;
+
+# Element: () not allowed around elements
+type OCOep = table collection of (int);
+type OSAep = table sample(10) of (int);
+type OSUep = table sum of (int);
+type OTOep = table top(10) of (int) weight w: int;
+type OMAep = table maximum(10) of (int) weight w: int;
+type OMIep = table minimum(10) of (int) weight w: int;
+type OUNep = table unique(10) of (int);
+type OSEep = table set(10) of (int);
+type OQUep = table quantile(10) of (int);
+type ODIep = table distinctsample(10) of (int) weight w: int;
+type OINep = table inversehistogram(10) of (int) weight w: int;
+type OWEep = table weightedsample(10) of (int) weight w: int;
+
+type OREep = table recordio(10) of (int);
+type OTEep = table text of (int);
+type OMRep = table mrcounter of (int);
+
+# Element: missing 'of'
+type OCOeof = table collection e: int;
+type OSAeof = table sample(10) e: int;
+type OSUeof = table sum e: int;
+type OTOeof = table top(10) e: int weight w: int;
+type OMAeof = table maximum(10) e: int weight w: int;
+type OMIeof = table minimum(10) e: int weight w: int;
+type OUNeof = table unique(10) e: int;
+type OSEeof = table set(10) e: int;
+type OQUeof = table quantile(10) e: int;
+type ODIeof = table distinctsample(10) e: int weight w: int;
+type OINeof = table inversehistogram(10) e: int weight w: int;
+type OWEeof = table weightedsample(10) e: int weight w: int;
+
+type OREeof = table recordio(10) e: int;
+type OTEeof = table text e: int;
+type OMReof = table mrcounter e: int;
+
+# Weight: not allowed
+type OCOwe = table collection of e: int weight w: int;
+type OSAwe = table sample(10) of e: int weight w: int;
+type OSUwe = table sum of e: int weight w: int;
+type OUNwe = table unique(10) of e: int weight w: int;
+type OSEwe = table set(10) of e: int weight w: int;
+type OQUwe = table quantile(10) of e: int weight w: int;
+
+type OREwe = table recordio(10) of e: int weight w: int;
+type OTEwe = table text of e: int weight w: int;
+type OMRwe = table mrcounter of e: int weight w: int;
+
+# Weight: missing
+type OTOwm = table top(10) of e: int;
+type OMAwm = table maximum(10) of e: int;
+type OMIwm = table minimum(10) of e: int;
+type ODIwm = table distinctsample(10) of e: int;
+type OINwm = table inversehistogram(10) of e: int;
+type OWEwm = table weightedsample(10) of e: int;
+
+# Weight: type must not be a function
+type OTOwF = table top(10) of e: int weight F: function();
+type OMAwF = table maximum(10) of e: int weight F: function();
+type OMIwF = table minimum(10) of e: int weight F: function();
+type ODIwF = table distinctsample(10) of e: int weight F: function();
+type OINwF = table inversehistogram(10) of e: int weight F: function();
+type OWEwF = table weightedsample(10) of e: int weight F: function();
+
+# Weight: output type not allowed
+type OTOwO = table top(10) of e: int weight O: table sum of int();
+type OMAwO = table maximum(10) of e: int weight O: table sum of int();
+type OMIwO = table minimum(10) of e: int weight O: table sum of int();
+type ODIwO = table distinctsample(10) of e: int weight O: table sum of int();
+type OINwO = table inversehistogram(10) of e: int weight O: table sum of int();
+type OWEwO = table weightedsample(10) of e: int weight O: table sum of int();
+
+# Weight: () not allowed around weights
+type OTOwp = table top(10) of e: int weight (int);
+type OMAwp = table maximum(10) of e: int weight (int);
+type OMIwp = table minimum(10) of e: int weight (int);
+type ODIwp = table distinctsample(10) of e: int weight (int);
+type OINwp = table inversehistogram(10) of e: int weight (int);
+type OWEwp = table weightedsample(10) of e: int weight (int);
+
+# Weight: missing 'weight'
+type OTOww = table top(10) of e: int w: int
+type OMAww = table maximum(10) of e: int w: int
+type OMIww = table minimum(10) of e: int w: int
+type ODIww = table distinctsample(10) of e: int w: int
+type OINww = table inversehistogram(10) of e: int w: int
+type OWEww = table weightedsample(10) of e: int w: int
+
+# Format: referencing index, not element
+type OCOfmi = table collection[i: int] of e: int format("%d", i);
+type OSAfmi = table sample(10)[i: int] of e: int format("%d", i);
+type OSUfmi = table sum[i: int] of e: int format("%d", i);
+type OTOfmi = table top(10)[i: int] of e: int weight w: int format("%d", i);
+type OMAfmi = table maximum(10)[i: int] of e: int weight w: int format("%d", i);
+type OMIfmi = table minimum(10)[i: int] of e: int weight w: int format("%d", i);
+type OUNfmi = table unique(10)[i: int] of e: int format("%d", i);
+type OSEfmi = table set(10)[i: int] of e: int format("%d", i);
+type OQUfmi = table quantile(10)[i: int] of e: int format("%d", i);
+type ODIfmi = table distinctsample(10)[i: int] of e: int weight w: int format("%d", i);
+type OINfmi = table inversehistogram(10)[i: int] of e: int weight w: int format("%d", i);
+type OWEfmi = table weightedsample(10)[i: int] of e: int weight w: int format("%d", i);
+
+type OREfmi = table recordio(10)[i: int] of e: int format("%d", i);
+type OTEfmi = table text[i: int] of e: int format("%d", i);
+type OMRfmi = table mrcounter[i: int] of e: int format("%d", i);
+
+# Format: specification is not a string
+type OCOfmns = table collection of e: int format(e);
+type OSAfmns = table sample(10) of e: int format(e);
+type OSUfmns = table sum of e: int format(e);
+type OTOfmns = table top(10) of e: int weight w: int format(e);
+type OMAfmns = table maximum(10) of e: int weight w: int format(e);
+type OMIfmns = table minimum(10) of e: int weight w: int format(e);
+type OUNfmns = table unique(10) of e: int format(e);
+type OSEfmns = table set(10) of e: int format(e);
+type OQUfmns = table quantile(10) of e: int format(e);
+type ODIfmns = table distinctsample(10) of e: int weight w: int format(e);
+type OINfmns = table inversehistogram(10) of e: int weight w: int format(e);
+type OWEfmns = table weightedsample(10) of e: int weight w: int format(e);
+
+type OREfmns = table recordio(10) of e: int format(e);
+type OTEfmns = table text of e: int format(e);
+type OMRfmns = table mrcounter of e: int format(e);
+
+# Format: specification is not a string literal
+type OCOfmnsl = table collection of e: int format("e=" + "%s", e);
+type OSAfmnsl = table sample(10) of e: int format("e=" + "%s", e);
+type OSUfmnsl = table sum of e: int format("e=" + "%s", e);
+type OTOfmnsl = table top(10) of e: int weight w: int format("e=" + "%s", e);
+type OMAfmnsl = table maximum(10) of e: int weight w: int format("e=" + "%s", e);
+type OMIfmnsl = table minimum(10) of e: int weight w: int format("e=" + "%s", e);
+type OUNfmnsl = table unique(10) of e: int format("e=" + "%s", e);
+type OSEfmnsl = table set(10) of e: int format("e=" + "%s", e);
+type OQUfmnsl = table quantile(10) of e: int format("e=" + "%s", e);
+type ODIfmnsl = table distinctsample(10) of e: int weight w: int format("e=" + "%s", e);
+type OINfmnsl = table inversehistogram(10) of e: int weight w: int format("e=" + "%s", e);
+type OWEfmnsl = table weightedsample(10) of e: int weight w: int format("e=" + "%s", e);
+
+type OREfmnsl = table recordio(10) of e: int format("e=" + "%s", e);
+type OTEfmnsl = table text of e: int format("e=" + "%s", e);
+type OMRfmnsl = table mrcounter of e: int format("e=" + "%s", e);
+
+# Format: incompatible format
+type OCOfmif = table collection of e: int format("%s", e);
+type OSAfmif = table sample(10) of e: int format("%s", e);
+type OSUfmif = table sum of e: int format("%s", e);
+type OTOfmif = table top(10) of e: int weight w: int format("%s", e);
+type OMAfmif = table maximum(10) of e: int weight w: int format("%s", e);
+type OMIfmif = table minimum(10) of e: int weight w: int format("%s", e);
+type OUNfmif = table unique(10) of e: int format("%s", e);
+type OSEfmif = table set(10) of e: int format("%s", e);
+type OQUfmif = table quantile(10) of e: int format("%s", e);
+type ODIfmif = table distinctsample(10) of e: int weight w: int format("%s", e);
+type OINfmif = table inversehistogram(10) of e: int weight w: int format("%s", e);
+type OWEfmif = table weightedsample(10) of e: int weight w: int format("%s", e);
+
+type OREfmif = table recordio(10) of e: int format("%s", e);
+type OTEfmif = table text of e: int format("%s", e);
+type OMRfmif = table mrcounter of e: int format("%s", e);
+
+# Format: not enough arguments
+type OCOfmnea = table collection of e: int format("%d %d", e);
+type OSAfmnea = table sample(10) of e: int format("%d %d", e);
+type OSUfmnea = table sum of e: int format("%s %d", e);
+type OTOfmnea = table top(10) of e: int weight w: int format("%d %d", e);
+type OMAfmnea = table maximum(10) of e: int weight w: int format("%d %d", e);
+type OMIfmnea = table minimum(10) of e: int weight w: int format("%d %d", e);
+type OUNfmnea = table unique(10) of e: int format("%d %d", e);
+type OSEfmnea = table set(10) of e: int format("%d %d", e);
+type OQUfmnea = table quantile(10) of e: int format("%d %d", e);
+type ODIfmnea = table distinctsample(10) of e: int weight w: int format("%d %d", e);
+type OINfmnea = table inversehistogram(10) of e: int weight w: int format("%d %d", e);
+type OWEfmnea = table weightedsample(10) of e: int weight w: int format("%d %d", e);
+
+type OREfmnea = table recordio(10) of e: int format("%d %d", e);
+type OTEfmnea = table text of e: int format("%d %d", e);
+type OMRfmnea = table mrcounter of e: int format("%d %d", e);
+
+# Format: duplicate
+type OCOfmd = table collection  of e: int format("%d", e) format("");
+type OSAfmd = table sample(10)  of e: int format("%d", e) format("");
+type OSUfmd = table sum of e: int format("%d", e) format("");
+type OTOfmd = table top(10) of e: int weight w: int format("%d", e) format("");
+type OMAfmd = table maximum(10) of e: int weight w: int format("%d", e) format("");
+type OMIfmd = table minimum(10) of e: int weight w: int format("%d", e) format("");
+type OUNfmd = table unique(10) of e: int format("%d", e) format("");
+type OSEfmd = table set(10) of e: int format("%d", e) format("");
+type OQUfmd = table quantile(10) of e: int format("%d", e) format("");
+type ODIfmd = table distinctsample(10) of e: int weight w: int format("%d", e) format("");
+type OINfmd = table inversehistogram(10) of e: int weight w: int format("%d", e) format("");
+type OWEfmd = table weightedsample(10) of e: int weight w: int format("%d", e) format("");
+
+type OREfmd = table recordio(10) of e: int format("%d", e) format("");
+type OTEfmd = table text of e: int format("%d", e) format("");
+type OMRfmd = table mrcounter of e: int format("%d", e) format("");
+
+# File: specification is not a string
+type OCflns = table collection[i: int] of e: bytes file(i);
+
+# File: specification is not a string literal
+type OCflnsl = table collection of e: bytes file("/tmp/" + "foo");
+
+# File: referencing element, not index
+type OCfle = table collection of e: bytes file("/tmp/foo.%T", e);
+
+# File: element is not bytes
+type OCflnb = table collection of e: int file("/tmp/foo");
+
+# File: incompatible format
+type OCflif = table collection[i: int] of e: int file("/tmp/%s", i);
+
+# File: duplicate
+type OCfld = table collection of e: bytes file("/tmp/foo") file("");
+
+# File: not implemented for non-collection
+type OSAfl = table sample(10) of e: bytes file("/tmp/foo");
+type OSUfl = table sum of e: bytes file("/tmp/foo");
+type OTOfl = table top(10) of e: bytes weight w: int file("/tmp/foo");
+type OMAfl = table maximum(10) of e: bytes weight w: int file("/tmp/foo");
+type OMIfl = table minimum(10) of e: bytes weight w: int file("/tmp/foo");
+type OUNfl = table unique(10) of e: bytes file("/tmp/foo");
+type OSEfl = table set(10) of e: bytes file("/tmp/foo");
+type OQUfl = table quantile(10) of e: bytes file("/tmp/foo");
+type ODIfl = table distinctsample(10) of e: bytes weight w: int file("/tmp/foo");
+type OINfl = table inversehistogram(10) of e: bytes weight w: int file("/tmp/foo");
+type OWEfl = table weightedsample(10) of e: bytes weight w: int file("/tmp/foo");
+
+type OREfl = table recordio(10) of e: bytes file("/tmp/foo");
+type OTEfl = table text of e: bytes file("/tmp/foo");
+type OMRfl = table mrcounter of e: bytes file("/tmp/foo");
+
+# Proc: specification is not a string
+type OCpcns = table collection[i: int] of e: bytes proc(i);
+
+# Proc: specification is not a string literal
+type OCpcnsl = table collection of e: bytes proc("echo " + "foo");
+
+# Proc: referencing element, not index
+type OCpce = table collection of e: bytes proc("echo %T", e);
+
+# Proc: element is not bytes
+type OCpcnb = table collection of e: int proc("echo foo");
+
+# Proc: incompatible format
+type OCpcif = table collection[i: int] of e: int proc("echo %s", i);
+
+# Proc: duplicate
+type OCpcd = table collection of e: bytes proc("echo foo") proc("");
+
+# Proc: not implemented for non-collection
+type OSApc = table sample(10) of e: bytes proc("echo hello");
+type OSUpc = table sum of e: bytes proc("echo hello");
+type OTOpc = table top(10) of e: bytes weight w: int proc("echo hello");
+type OMApc = table maximum(10) of e: bytes weight w: int proc("echo hello");
+type OMIpc = table minimum(10) of e: bytes weight w: int proc("echo hello");
+type OUNpc = table unique(10) of e: bytes proc("echo hello");
+type OSEpc = table set(10) of e: bytes proc("echo hello");
+type OQUpc = table quantile(10) of e: bytes proc("echo hello");
+type ODIpc = table distinctsample(10) of e: bytes weight w: int proc("echo hello");
+type OINpc = table inversehistogram(10) of e: bytes weight w: int proc("echo hello");
+type OWEpc = table weightedsample(10) of e: bytes weight w: int proc("echo hello");
+
+type OREpc = table recordio(10) of e: bytes proc("echo hello");
+type OTEpc = table text of e: bytes proc("echo hello");
+type OMRpc = table mrcounter of e: bytes proc("echo hello");
+
+# Order: param has to be after table name, before index
+type OSAoip = table sample[i: int](10) of e: int;
+type OTOoip = table top[i: int](10) of e: int weight w: int;
+type OMAoip = table maximum[i: int](10) of e: int weight w: int;
+type OMIoip = table minimum[i: int](10) of e: int weight w: int;
+type OUNoip = table unique[i: int](10) of e: int;
+type OSEoip = table set[i: int](10) of e: int;
+type OQUoip = table quantile[i: int](10) of e: int;
+type ODIoip = table distinctsample[i: int](10) of e: int weight w: int;
+type OINoip = table inversehistogram[i: int](10) of e: int weight w: int;
+type OWEoip = table weightedsample[i: int](10) of e: int weight w: int;
+type OREoip = table recordio[i: int](10) of e: int;
+
+# Order: index has to be after table name and param, before element
+type OCOoei = table collection of e: int [i: int];
+type OSAoei = table sample(10) of e: int [i: int];
+type OSUoei = table sum of e: int [i: int];
+type OTOoei = table top(10) of e: int [i: int] weight w: int;
+type OMAoei = table maximum(10) of e: int [i: int] weight w: int;
+type OMIoei = table minimum(10) of e: int [i: int] weight w: int;
+type OUNoei = table unique(10) of e: int [i: int];
+type OSEoei = table set(10) of e: int [i: int];
+type OQUoei = table quantile(10) of e: int [i: int];
+type ODIoei = table distinctsample(10) of e: int [i: int] weight w: int;
+type OINoei = table inversehistogram(10) of e: int [i: int] weight w: int;
+type OWEoei = table weightedsample(10) of e: int [i: int] weight w: int;
+
+type OREoei = table recordio(10) of e: int [i: int];
+type OTEoei = table text of e: int [i: int];
+type OMRoei = table mrcounter of e: int [i: int];
+
+# Order: element has to be after index, before weight
+type OTOOwe = table top(10) weight w: int of e: int;
+type OMAOwe = table maximum(10) weight w: int of e: int;
+type OMIOwe = table minimum(10) weight w: int of e: int;
+type ODIOwe = table distinctsample(10) weight w: int of e: int;
+type OINOwe = table inversehistogram(10) weight w: int of e: int;
+type OWEOwe = table weightedsample(10) weight w: int of e: int;
+
+# Order: element has to be after index, before spec
+type OCofme = table collection format("foo") of e: int;
+type OCofle = table collection file("foo") of e: int;
+type OCopce = table collection proc("echo foo") of e: int;
+
+# Misc
+type OCmsc = table collection of UndeclaredType;

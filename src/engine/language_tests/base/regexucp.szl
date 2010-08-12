@@ -1,0 +1,142 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+# test regex unicode property \p and \P
+
+s0: string;
+matchArray: array of string;
+
+# test Han script
+# cjk unified idegraph block
+s0 = "123台灣香港中国日本456";
+matchArray = matchstrs(`\p{Han}+`, s0);
+
+assert(matchArray[0] == "台灣香港中国日本");
+
+# add unified idegraph block extension A
+s0 = "123台灣香港\u3400\u3500\u4db5㑑㙑中国日本456";
+matchArray = matchstrs(`\p{Han}+`, s0);
+
+assert(matchArray[0] == "台灣香港\u3400\u3500\u4db5㑑㙑中国日本");
+
+# add unified idegraph block extension B
+s0 = "123台灣香港\U00020000\U00021234\U0002FA1D𠙠𪙠中国日本456";
+matchArray = matchstrs(`\p{Han}+`, s0);
+
+assert(matchArray[0] == "台灣香港\U00020000\U00021234\U0002FA1D𠙠𪙠中国日本");
+
+# add cjk compatability ideographs
+s0 = "123台灣香港\uf900\ufa6a\ufa2d中国日本456";
+matchArray = matchstrs(`\p{Han}+`, s0);
+
+assert(matchArray[0] == "台灣香港\uf900\ufa6a\ufa2d中国日本");
+
+# test Hiragana script
+s0 = "123参院選前なお警戒456";
+matchArray = matchstrs(`\p{Hiragana}+`, s0);
+
+assert(matchArray[0] == "なお");
+
+# test Arabic script
+s0 = "Foobar العالم العربي";
+matchArray = matchstrs(`\p{Arabic}([\p{Arabic} ])+`, s0);
+
+assert(matchArray[0] == "العالم العربي");
+
+# test Armenian script
+s0 = "Foobar Ցանց    Նկարներ    Խմբեր    Ուղեցույց";
+matchArray = matchstrs(`\p{Armenian}([\p{Armenian} ])+`, s0);
+
+assert(matchArray[0] == "Ցանց    Նկարներ    Խմբեր    Ուղեցույց");
+
+# test Georgian script
+s0 = "Foobar ინტერნეტი    სურათები    ჯგუფები    კატალოგი";
+matchArray = matchstrs(`\p{Georgian}([\p{Georgian} ])+`, s0);
+
+assert(matchArray[0] == "ინტერნეტი    სურათები    ჯგუფები    კატალოგი");
+
+# test Bengali script
+s0 = "HelloবাংলাWorld";
+matchArray = matchstrs(`\p{Bengali}+`, s0);
+
+assert(matchArray[0] == "বাংলা");
+
+# test Hebrew script
+s0 = "Foobar מאות מפגינים ממישכים גם הבוקר להתנגד לעובדות האחזקה והפיתוח";
+matchArray = matchstrs(`\p{Hebrew}([\p{Hebrew} ])+`, s0);
+
+assert(matchArray[0] == "מאות מפגינים ממישכים גם הבוקר להתנגד לעובדות האחזקה והפיתוח");
+
+# test Thai script
+s0 = "Foobar เว็บ    รูปภาพ    กลุ่มข่าว    สารบบเว็บ";
+matchArray = matchstrs(`\p{Thai}([\p{Thai} ])+`, s0);
+
+assert(matchArray[0] == "เว็บ    รูปภาพ    กลุ่มข่าว    สารบบเว็บ");
+
+# test Devanagari script
+s0 = "Foobar वेब    छवियाँ    समूह    निर्देशिका";
+matchArray = matchstrs(`\p{Devanagari}([\p{Devanagari} ])+`, s0);
+
+assert(matchArray[0] == "वेब    छवियाँ    समूह    निर्देशिका");
+
+# test Tamil script
+s0 = "Foobar முடிந்த உடன் உங்கள் விருப்பங்களைச் சேமிக்கவும்";
+matchArray = matchstrs(`\p{Tamil}([\p{Tamil} ])+`, s0);
+
+assert(matchArray[0] == "முடிந்த உடன் உங்கள் விருப்பங்களைச் சேமிக்கவும்");
+
+
+# test Malayalam script
+s0 = "Foobar  ചിത്രജാലകം വിശപ്പിന്റെ രാഷ്ട്രീയം";
+matchArray = matchstrs(`\p{Malayalam}([\p{Malayalam} ])+`, s0);
+
+assert(matchArray[0] == "ചിത്രജാലകം വിശപ്പിന്റെ രാഷ്ട്രീയം");
+
+# test Telugu script
+s0 = "Foobar అరబ్బీ ఆంగ్లము ఇండొనేసియన్ గ్రీకు జర్మని హిబ్రు";
+matchArray = matchstrs(`\p{Telugu}([\p{Telugu} ])+`, s0);
+
+assert(matchArray[0] == "అరబ్బీ ఆంగ్లము ఇండొనేసియన్ గ్రీకు జర్మని హిబ్రు");
+
+# test Hangul script
+s0 = "123與의원 23명 “FTA 비준 거부 투쟁”456";
+matchArray = matchstrs(`\p{Hangul}+`, s0);
+
+assert(matchArray[0] == "의원");
+
+# test Cyrillic script
+s0 = "123Россия456";
+matchArray = matchstrs(`\p{Cyrillic}+`, s0);
+
+assert(matchArray[0] == "Россия");
+
+# test Latin script
+s0 = "РоссияîñţérñåţîöñåļîžåţîöñРоссия";
+matchArray = matchstrs(`\p{Latin}+`, s0);
+
+assert(matchArray[0] == "îñţérñåţîöñåļîžåţîöñ");
+
+# test new characters in Unicode 5.0 characters \u0241\u0242\u0243
+# should work after migration to pcre-7.x
+s0 = "abcdefg\u0230\u0231\u0232\u0241\u0242\u0243abcde";
+matchArray = matchstrs(`\p{L}+`, s0);
+
+assert(matchArray[0] == s0);
+
+
+

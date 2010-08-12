@@ -1,0 +1,21 @@
+type T = {a: int, b: string};
+t: {c: int, d: string, e: T} = {0, "hello", {1, "one"}};
+assert(convert(string, t) == "{ 0, \"hello\", { 1, \"one\" } }");
+t.e = {2, "two"};
+assert(convert(string, t) == "{ 0, \"hello\", { 2, \"two\" } }");
+type T1 = map [int] of string;
+t1: {c: int, d: string, e: T1} = {0, "hello", {1: "one"}};
+assert(convert(string, t1) == "{ 0, \"hello\", { 1: \"one\" } }");
+t1.e = {2: "two"};
+assert(convert(string, t1) == "{ 0, \"hello\", { 2: \"two\" } }");
+f: function(): bytes {
+	return load("/asdfasdf/asdfsadf");
+}
+;
+assert(!def(f()));
+a: array of map [int] of int = {{1: 1}, {2: 2}};
+b: array of map [int] of int = a;
+a[1][3] = 3;
+assert(convert(string, a) == "{ { 1: 1 }, { 2: 2, 3: 3 } }");
+;
+assert(convert(string, b) == "{ { 1: 1 }, { 2: 2 } }");

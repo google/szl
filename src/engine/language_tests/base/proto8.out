@@ -1,0 +1,8 @@
+type U = {m: int @ 1, n: array of U @ 2};
+type T = {x: int @ 1, y: array of T @ 2, z: {a: int @ 3} @ 4, w: array of {b: int @ 5} @ 6, u: U @ 7};
+u: U = convert(U, input);
+t: T = {1, {}, {2}, {{3}}, u};
+d: int = t.u.m;
+Protocol buffer type associated with input: "U"
+Fields referenced in tuple "U":
+  "m"

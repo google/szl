@@ -1,0 +1,895 @@
+type Person = parsedmessage {name: bytes @ 1 : string, age: int @ 2 : int32, address: bytes @ 3 : string, ssn: int @ 4 : int32};
+get_name: function(p: Person): bytes {
+	return p.name;
+}
+;
+get_age: function(p: Person): int {
+	return p.age;
+}
+;
+fred: Person = convert(Person, input);
+emit stdout <- convert(string, get_name(fred));
+emit stdout <- format("%d", get_age(fred));
+type Rectangle = parsedmessage {x_min: int @ 1 : int32, x_max: int @ 2 : int32, y_min: int @ 3 : int32, y_max: int @ 4 : int32};
+type Circle = parsedmessage {x: int @ 1 : int32, y: int @ 2 : int32, diameter: int @ 3 : int32};
+type Message = parsedmessage {english: bytes @ 1 : string, spanish: bytes @ 2 : string, french: bytes @ 3 : string};
+type Window = parsedmessage {title: bytes @ 1 : string, bounding_box: Rectangle @ 2, bounding_circle: Circle @ 3, messages: array of Message @ 4};
+print_title: function(): string {
+	title: string = "A Night at the Opera";
+	emit stdout <- "A Night at the Opera";
+	return "A Night at the Opera";
+}
+;
+print_index: function(): int {
+	index: int = 0;
+	emit stdout <- "0";
+	return 0;
+}
+;
+window: Window = convert(Window, X"0A00120808001001180020011A0608001000180122060A0012001A00");
+window.title = convert(bytes, print_title());
+read_x_max: int = window.bounding_box.x_max;
+window.bounding_box.y_min = 12;
+window.bounding_box.y_max = window.bounding_box.y_max + 40;
+window.messages[print_index()].english = B"Bay Window";
+msg_len: int = len(window.messages[0].spanish);
+undef_window: Window;
+undef_window.title = B"A Day at the Races";
+ai: array of int = {0, 1, 2, 3, 4};
+ai[?{
+	window.title = B"Duck Soup";
+	result 2;
+}
+] = 5;
+type Deep4 = {i: int};
+type Deep3 = {i: int, d: Deep4};
+type Deep2 = {i: int, d: Deep3};
+type Deep1 = {i: int, d: Deep2};
+d1: Deep1 = {1, {2, {3, {4}}}};
+type Shallow4 = {i: int};
+type Shallow3 = {i: int, s: Shallow4};
+type Shallow2 = {i: int, s: Shallow3};
+type Shallow1 = {i: int, s: Shallow2};
+s3: Shallow3;
+s1: Shallow1 = {1, {2, s3}};
+type Top4 = {i: int};
+type Top3 = {i: int, t: Top4};
+type Top2 = {i: int, t: Top3};
+type Top1 = {i: int, t: Top2};
+t2: Top2;
+t1: Top1 = {1, t2};
+type DeepOneField4 = {i: int @ 1 : int32};
+type DeepOneField3 = {i: int @ 1 : int32, d: DeepOneField4 @ 2};
+type DeepOneField2 = {i: int @ 1 : int32, d: DeepOneField3 @ 2};
+type DeepOneField1 = {i: int @ 1 : int32, d: DeepOneField2 @ 2};
+dof1: DeepOneField1 = convert(DeepOneField1, B"");
+dof1.d.d.d.i;
+type ShallowOneField4 = {i: int @ 1 : int32};
+type ShallowOneField3 = {i: int @ 1 : int32, s: ShallowOneField4 @ 2};
+type ShallowOneField2 = {i: int @ 1 : int32, s: ShallowOneField3 @ 2};
+type ShallowOneField1 = {i: int @ 1 : int32, s: ShallowOneField2 @ 2};
+sof1: ShallowOneField1 = convert(ShallowOneField1, B"");
+sof1.s.i;
+type TopOneField4 = {i: int @ 1 : int32};
+type TopOneField3 = {i: int @ 1 : int32, t: TopOneField4 @ 2};
+type TopOneField2 = {i: int @ 1 : int32, t: TopOneField3 @ 2};
+type TopOneField1 = {i: int @ 1 : int32, t: TopOneField2 @ 2};
+tof1: TopOneField1 = convert(TopOneField1, B"");
+tof1.i;
+type DoNotElim = {is_read: int @ 1 : int32};
+type HasWriteOnlyField = {do_not_elim: DoNotElim @ 1};
+dummy: DoNotElim = convert(DoNotElim, B"");
+dummy.is_read = 1;
+dummy.is_read;
+has_write_only_field: HasWriteOnlyField = convert(HasWriteOnlyField, B"");
+has_write_only_field.do_not_elim.is_read = 2;
+MakeTuple: function(): {b: bool, ai: array of int} {
+	return {true, {0, 0, 0}};
+}
+;
+t: {b: bool, ai: array of int} = MakeTuple();
+assert(t.ai[0] == 0);
+type Pageview = parsedmessage {url: bytes @ 1 : string, user_agent: bytes @ 2 : string, ad_group_creative_id: int @ 3 : int32};
+type PageviewContainer = parsedmessage {pageview: Pageview @ 1};
+type PageviewAndCount = {pageview: Pageview, count: int};
+static ProcessPageview: function(pageview: Pageview, emitter: function(pv: PageviewAndCount)) {
+	pageview_and_count: PageviewAndCount = {pageview, 33};
+	emitter(pageview_and_count);
+}
+;
+pageview_events: table collection of pageview: PageviewAndCount;
+PageviewEmit: function(pageview: PageviewAndCount) {
+	emit pageview_events <- pageview;
+}
+;
+container: PageviewContainer = convert(PageviewContainer, input);
+ProcessPageview(container.pageview, PageviewEmit);
+type TCInner = {a: int @ 1 : int32, b: float @ 2};
+type TCOuter = {t: TCInner @ 1};
+{
+	ti1: TCInner = convert(TCInner, B"");
+	ti1.a = 1234;
+	ti1.b = 56.78;
+	to1: TCOuter = convert(TCOuter, B"");
+	to1.t = ti1;
+	ti2: TCInner = convert(TCInner, B"");
+	ti2.a = 9876;
+	ti2.b = 54.32;
+	to2: TCOuter = convert(TCOuter, B"");
+	to2.t = ti2;
+	to1 == to2;
+}
+type ACInner = {a: int @ 1 : int32, b: float @ 2};
+type ACOuter = {a: ACInner @ 1};
+{
+	ai1: ACInner = convert(ACInner, B"");
+	ai1.a = 1234;
+	ai1.b = 56.78;
+	ao1: ACOuter = convert(ACOuter, B"");
+	ao1.a = ai1;
+	array1: array of ACOuter = new(array of ACOuter, 3, ao1);
+	ai2: ACInner = convert(ACInner, B"");
+	ai2.a = 9876;
+	ai2.b = 54.32;
+	ao2: ACOuter = convert(ACOuter, B"");
+	ao2.a = ai2;
+	array2: array of ACOuter = new(array of ACOuter, 3, ao2);
+	array1 != array2;
+}
+type MCInner = {a: int @ 1 : int32, b: float @ 2};
+type MCOuter = {m: MCInner @ 1};
+{
+	mi1: MCInner = convert(MCInner, B"");
+	mi1.a = 1234;
+	mi1.b = 56.78;
+	mo1: MCOuter = convert(MCOuter, B"");
+	mo1.m = mi1;
+	map1: map [int] of MCOuter = {1: mo1};
+	mi2: MCInner = convert(MCInner, B"");
+	mi2.a = 9876;
+	mi2.b = 54.32;
+	mo2: MCOuter = convert(MCOuter, B"");
+	mo2.m = mi2;
+	map2: map [int] of MCOuter = {2: mo2};
+	map1 == map2;
+}
+type TStrInner = {p: bytes @ 1 : string, q: float @ 2};
+type TStrOuter = {t: TStrInner @ 1};
+{
+	inner: TStrInner = convert(TStrInner, B"");
+	inner.p = X"ABCDEF";
+	inner.q = 0.12345;
+	outer: TStrOuter = convert(TStrOuter, B"");
+	outer.t = inner;
+	convert(string, outer);
+}
+type AStrInner = {p: bytes @ 1 : string, q: float @ 2};
+type AStrOuter = {a: AStrInner @ 1};
+{
+	inner: AStrInner = convert(AStrInner, B"");
+	inner.p = X"ABCDEF";
+	inner.q = 0.12345;
+	outer: AStrOuter = convert(AStrOuter, B"");
+	outer.a = inner;
+	array_of_tuples: array of AStrOuter = new(array of AStrOuter, 3, outer);
+	convert(string, array_of_tuples);
+}
+type MStrInner = {p: bytes @ 1 : string, q: float @ 2};
+type MStrOuter = {m: MStrInner @ 1};
+{
+	inner: MStrInner = convert(MStrInner, B"");
+	inner.p = X"ABCDEF";
+	inner.q = 0.12345;
+	outer: MStrOuter = convert(MStrOuter, B"");
+	outer.m = inner;
+	map_of_tuples: map [MStrOuter] of int = {outer: 1};
+	convert(string, map_of_tuples);
+}
+type TFPInner = {x: uint @ 1 : int64, y: float @ 2};
+type TFPOuter = {t: TFPInner @ 1};
+{
+	inner: TFPInner = convert(TFPInner, B"");
+	inner.x = 13579U;
+	inner.y = 24.68;
+	outer: TFPOuter = convert(TFPOuter, B"");
+	outer.t = inner;
+	fingerprintof(outer);
+}
+type AFPInner = {x: uint @ 1 : int64, y: float @ 2};
+type AFPOuter = {a: AFPInner @ 1};
+{
+	inner: AFPInner = convert(AFPInner, B"");
+	inner.x = 13579U;
+	inner.y = 24.68;
+	outer: AFPOuter = convert(AFPOuter, B"");
+	outer.a = inner;
+	array_of_tuples: array of AFPOuter = new(array of AFPOuter, 3, outer);
+	fingerprintof(array_of_tuples);
+}
+type MFPInner = {x: uint @ 1 : int64, y: float @ 2};
+type MFPOuter = {m: MFPInner @ 1};
+{
+	inner: MFPInner = convert(MFPInner, B"");
+	inner.x = 13579U;
+	inner.y = 24.68;
+	outer: MFPOuter = convert(MFPOuter, B"");
+	outer.m = inner;
+	map_of_tuples: map [int] of MFPOuter = {1: outer};
+	fingerprintof(map_of_tuples);
+}
+type TMapInner = {r: int @ 1 : int32, s: bytes @ 2 : string};
+type TMapOuter = {t: TMapInner @ 1};
+{
+	inner: TMapInner = convert(TMapInner, B"");
+	inner.r = 12345;
+	inner.s = X"6789";
+	outer: TMapOuter = convert(TMapOuter, B"");
+	outer.t = inner;
+	map_from_tuple: map [TMapOuter] of int = {:};
+	map_from_tuple[outer] = 1;
+}
+type AMapInner = {r: int @ 1 : int32, s: bytes @ 2 : string};
+type AMapOuter = {t: AMapInner @ 1};
+{
+	inner: AMapInner = convert(AMapInner, B"");
+	inner.r = 12345;
+	inner.s = X"6789";
+	outer: AMapOuter = convert(AMapOuter, B"");
+	outer.t = inner;
+	array_key: array of AMapOuter = new(array of AMapOuter, 3, outer);
+	map_from_array: map [array of AMapOuter] of int = {:};
+	map_from_array[array_key] = 1;
+}
+type MMapInner = {r: int @ 1 : int32, s: bytes @ 2 : string};
+type MMapOuter = {t: MMapInner @ 1};
+{
+	inner: MMapInner = convert(MMapInner, B"");
+	inner.r = 12345;
+	inner.s = X"6789";
+	outer: MMapOuter = convert(MMapOuter, B"");
+	outer.t = inner;
+	map_key: map [int] of MMapOuter = {1: outer};
+	map_from_map: map [map [int] of MMapOuter] of int = {:};
+	map_from_map[map_key] = 1;
+}
+type TTableInner = {t: int @ 1 : int32, u: float @ 2};
+type TTableOuter = {t: TTableInner @ 1};
+{
+	inner: TTableInner = convert(TTableInner, B"");
+	inner.t = 12345;
+	inner.u = 67.89;
+	outer: TTableOuter = convert(TTableOuter, B"");
+	outer.t = inner;
+	tuple_table: table collection[TTableOuter] of int;
+	emit tuple_table[outer] <- 1;
+}
+type ATableInner = {t: int @ 1 : int32, u: float @ 2};
+type ATableOuter = {t: ATableInner @ 1};
+{
+	inner: ATableInner = convert(ATableInner, B"");
+	inner.t = 12345;
+	inner.u = 67.89;
+	outer: ATableOuter = convert(ATableOuter, B"");
+	outer.t = inner;
+	array_key: array of ATableOuter = new(array of ATableOuter, 3, outer);
+	array_table: table collection[array of ATableOuter] of int;
+	emit array_table[array_key] <- 1;
+}
+type MTableInner = {t: int @ 1 : int32, u: float @ 2};
+type MTableOuter = {t: MTableInner @ 1};
+{
+	inner: MTableInner = convert(MTableInner, B"");
+	inner.t = 12345;
+	inner.u = 67.89;
+	outer: MTableOuter = convert(MTableOuter, B"");
+	outer.t = inner;
+	map_key: map [MTableOuter] of int = {outer: 1};
+	map_table: table collection[map [MTableOuter] of int] of int;
+	emit map_table[map_key] <- 1;
+}
+type TCompositeInner = {a: int @ 1 : int32, b: float @ 2};
+type TCompositeOuter = {t: TCompositeInner @ 1, i: int @ 2 : int32};
+{
+	inner: TCompositeInner = convert(TCompositeInner, B"");
+	outer: TCompositeOuter = {inner, 0};
+}
+type ACompositeInner = {a: int @ 1 : int32, b: float @ 2};
+type ACompositeOuter = {t: ACompositeInner @ 1, i: int @ 2 : int32};
+{
+	outer: ACompositeOuter = convert(ACompositeOuter, B"");
+	aoo: array of ACompositeOuter = {outer, outer, outer};
+}
+type MCompositeInner = {a: int @ 1 : int32, b: float @ 2};
+type MCompositeOuter = {t: MCompositeInner @ 1, i: int @ 2 : int32};
+{
+	outer: MCompositeOuter = convert(MCompositeOuter, B"");
+	moo: map [MCompositeOuter] of MCompositeOuter = convert(map [MCompositeOuter] of MCompositeOuter, {outer, outer});
+}
+type InProtoLive3 = {d: int @ 1 : int32};
+type InProtoLive2 = {c: InProtoLive3 @ 1};
+type InProtoLive1 = {b: InProtoLive2 @ 1};
+a: InProtoLive1 = convert(InProtoLive1, B"");
+a.b.c.d = 0;
+assert(inproto(a.b.c.d));
+assert(inproto(a.b.c));
+assert(inproto(a.b));
+a.b.c.d;
+SideEffect: function(msg: string, x: int): int {
+	emit stdout <- format("Side effect: %s", msg);
+	return x;
+}
+;
+type InProtoArrayLive3 = {h: int = 0 @ 1 : int32};
+type InProtoArrayLive2 = {g: array of InProtoArrayLive3 @ 1};
+type InProtoArrayLive1 = {f: array of InProtoArrayLive2 @ 1};
+e: InProtoArrayLive1 = convert(InProtoArrayLive1, B"");
+tmpLive3: InProtoArrayLive3 = convert(InProtoArrayLive3, B"");
+tmpLive2: InProtoArrayLive2 = {new(array of InProtoArrayLive3, 1, tmpLive3)};
+e.f = new(array of InProtoArrayLive2, 1, tmpLive2);
+assert(!inproto(e.f[0].g[0].h));
+assert(inproto(e.f[0].g));
+assert(inproto(e.f));
+e.f[0].g[0].h;
+clearproto(e.f[0].g);
+clearproto(e.f);
+e.f[SideEffect("Field f", 0)].g[SideEffect("Field g", 0)].h = 99;
+assert(inproto(e.f[0].g[0].h));
+assert(inproto(e.f[0].g));
+assert(inproto(e.f));
+type InProtoDead3 = {z: int @ 1 : int32};
+type InProtoDead2 = {y: InProtoDead3 @ 1};
+type InProtoDead1 = {x: InProtoDead2 @ 1};
+w: InProtoDead1 = convert(InProtoDead1, B"");
+w.x.y.z = 0;
+assert(inproto(w.x.y));
+assert(inproto(w.x));
+type InProtoArrayDead3 = {v: int = 0 @ 1 : int32};
+type InProtoArrayDead2 = {u: array of InProtoArrayDead3 @ 1};
+type InProtoArrayDead1 = {t: array of InProtoArrayDead2 @ 1};
+s: InProtoArrayDead1 = convert(InProtoArrayDead1, B"");
+tmpDead3: InProtoArrayDead3 = convert(InProtoArrayDead3, B"");
+tmpDead2: InProtoArrayDead2 = {new(array of InProtoArrayDead3, 1, tmpDead3)};
+s.t = new(array of InProtoArrayDead2, 1, tmpDead2);
+assert(inproto(s.t[0].u));
+assert(inproto(s.t));
+clearproto(s.t[0].u);
+clearproto(s.t);
+s.t[SideEffect("Field t", 0)].u[SideEffect("Field u", 0)].v = 101;
+assert(inproto(s.t[0].u));
+assert(inproto(s.t));
+type Inner1 = {leaf: int};
+type Outer1 = {inner: Inner1, inner_array: array of Inner1, inner_map: map [int] of Inner1, inner_tuple: {i: Inner1}};
+type InnerLeaf2A = {leaf: int @ 1 : int32};
+type InnerLeaf2B = {leaf: int @ 1 : int32};
+type OuterLeaf2 = {a: InnerLeaf2A @ 1, b: InnerLeaf2B @ 2, c: InnerLeaf2A @ 3};
+inner2: InnerLeaf2A = convert(InnerLeaf2A, B"");
+inner2.leaf;
+outer2: OuterLeaf2 = convert(OuterLeaf2, B"");
+outer2.a;
+outer2.b.leaf;
+type InnerNoLeaf2 = {leaf: int @ 1 : int32};
+type OuterNoLeaf2 = {a: InnerNoLeaf2 @ 1, b: InnerNoLeaf2 @ 2};
+inner_not2: InnerNoLeaf2 = convert(InnerNoLeaf2, B"");
+outer_not2: OuterNoLeaf2 = convert(OuterNoLeaf2, B"");
+outer_not2.a;
+type InnerLeaf3 = {leaf: int @ 1 : int32};
+type OuterLeaf3 = {a: InnerLeaf3 @ 1, b: InnerLeaf3 @ 2};
+convert(InnerLeaf3, {new(array of int, 1, 1)[0]});
+inner3: InnerLeaf3 = convert(InnerLeaf3, B"");
+convert(OuterLeaf3, {new(array of InnerLeaf3, 2, inner3)[0], new(array of InnerLeaf3, 2, inner3)[1]});
+type InnerNoLeaf3 = {leaf: int @ 1 : int32};
+type OuterNoLeaf3 = {a: InnerNoLeaf3 @ 1, b: InnerNoLeaf3 @ 2};
+inner_not3: InnerNoLeaf3 = convert(InnerNoLeaf3, B"");
+convert(OuterNoLeaf3, {new(array of InnerNoLeaf3, 2, inner_not3)[0], new(array of InnerNoLeaf3, 2, inner_not3)[1]});
+type InnerLeaf4 = {leaf: int @ 1 : int32};
+type OuterLeaf4 = {a: InnerLeaf4 @ 1, b: InnerLeaf4 @ 2};
+inner4: InnerLeaf4 = {1};
+outer4: OuterLeaf4 = {inner4, inner4};
+type InnerNoLeaf4 = {leaf: int @ 1 : int32};
+type OuterNoLeaf4 = {a: InnerNoLeaf4 @ 1, b: InnerNoLeaf4 @ 2};
+inner_not4: InnerNoLeaf4 = convert(InnerNoLeaf4, B"");
+outer_not4: OuterNoLeaf4 = {inner_not4, inner_not4};
+type InnerLeaf5 = {leaf: int @ 1 : int32};
+type OuterLeaf5 = {a: InnerLeaf5 @ 1, b: InnerLeaf5 @ 2};
+inner5: InnerLeaf5;
+inner5 = {1};
+outer5: OuterLeaf5;
+outer5 = {inner5, inner5};
+type InnerNoLeaf5 = {leaf: int @ 1 : int32};
+type OuterNoLeaf5 = {a: InnerNoLeaf5 @ 1, b: InnerNoLeaf5 @ 2};
+inner_not5: InnerNoLeaf5 = convert(InnerNoLeaf5, B"");
+outer_not5: OuterNoLeaf5;
+outer_not5 = {inner_not5, inner_not5};
+type InnerAll7 = {leaf: int @ 1 : int32};
+type OuterAll7 = {a: InnerAll7 @ 1, b: InnerAll7 @ 2, c: InnerAll7 @ 3};
+outer7a: OuterAll7 = convert(OuterAll7, B"");
+outer7b: OuterAll7 = convert(OuterAll7, B"");
+outer7a == outer7b;
+type InnerSome7 = {leaf: int @ 1 : int32};
+type OuterSome7 = {a: InnerSome7 @ 1, b: InnerSome7 @ 2, c: InnerSome7 @ 3};
+outer_some7a: OuterSome7 = convert(OuterSome7, B"");
+outer_some7b: OuterSome7 = convert(OuterSome7, B"");
+outer_some7a.a == outer_some7b.b;
+type InnerAll8 = {leaf: int @ 1 : int32};
+type OuterAll8 = {a: InnerAll8 @ 1, b: InnerAll8 @ 2};
+table_all8: table collection of OuterAll8;
+outer8: OuterAll8 = convert(OuterAll8, B"");
+emit table_all8 <- outer8;
+type InnerSome8 = {leaf: int @ 1 : int32};
+type OuterSome8 = {a: InnerSome8 @ 1, b: InnerSome8 @ 2};
+table_some8: table collection of InnerSome8;
+outer_some8: OuterSome8 = convert(OuterSome8, B"");
+emit table_some8 <- outer_some8.a;
+type InnerAll9 = {leaf: int @ 1 : int32};
+type OuterAll9 = {a: InnerAll9 @ 1, b: InnerAll9 @ 2};
+outer9: OuterAll9 = convert(OuterAll9, B"");
+fingerprintof(outer9);
+type InnerSome9 = {leaf: int @ 1 : int32};
+type OuterSome9 = {a: InnerSome9 @ 1, b: InnerSome9 @ 2};
+outer_some9: OuterSome9 = convert(OuterSome9, B"");
+fingerprintof(outer_some9.b);
+type InnerAll10 = {leaf: int @ 1 : int32};
+type OuterAll10 = {a: InnerAll10 @ 1, b: InnerAll10 @ 2};
+outer10: OuterAll10 = convert(OuterAll10, B"");
+convert(string, outer10);
+type InnerSome10 = {leaf: int @ 1 : int32};
+type OuterSome10 = {a: InnerSome10 @ 1, b: InnerSome10 @ 2};
+outer_some10: OuterSome10 = convert(OuterSome10, B"");
+convert(string, outer_some10.b);
+type InnerAll_11 = {leaf: int @ 1 : int32};
+type OuterAll_11 = {a: InnerAll_11 @ 1, b: InnerAll_11 @ 2};
+map_all: map [OuterAll_11] of int = {:};
+outer_all_11: OuterAll_11 = convert(OuterAll_11, B"");
+map_all[outer_all_11] = 1;
+type InnerSome11 = {leaf: int @ 1 : int32};
+type OuterSome11 = {a: InnerSome11 @ 1, b: InnerSome11 @ 2};
+map_some: map [InnerSome11] of int = {:};
+outer_some11: OuterSome11 = convert(OuterSome11, B"");
+map_some[outer_some11.b] = 1;
+type Index1 = {a: int @ 1 : int64};
+index1: Index1 = convert(Index1, B"");
+m1: map [Index1] of bool;
+type Index2 = {a: int @ 1 : int64};
+index2: Index2 = convert(Index2, B"");
+type Map2 = map [Index2] of bool;
+type Index3 = {a: int @ 1 : int64};
+index3: Index3 = convert(Index3, B"");
+type MapContainer = {m: map [Index3] of bool};
+type Index4 = {a: int @ 1 : int64};
+index4: Index4 = convert(Index4, B"");
+type StaticVarContainer = {static m: map [Index4] of bool = {:}};
+type Index5 = {a: int @ 1 : int64};
+index5: Index5 = convert(Index5, B"");
+convert(map [Index5] of Index5, {index5, index5});
+type Index6 = {a: int @ 1 : int64};
+index6: Index6 = convert(Index6, B"");
+new(array of map [Index6] of bool, 1, {:});
+type Index7 = {a: int @ 1 : int64};
+index7: Index7 = convert(Index7, B"");
+fm1: function(m: map [Index7] of bool) {
+}
+;
+fm1({:});
+type Index8 = {a: int @ 1 : int64};
+index8: Index8 = convert(Index8, B"");
+fm2: function(): map [Index8] of bool {
+	return {:};
+}
+;
+map8: map [Index8] of bool = fm2();
+type RecursiveType1 = {m: map [RecursiveType1] of bool};
+type RecursiveType2 = {m: map [RecursiveType2] of bool, n: int};
+type RecursiveType3 = {m: map [array of RecursiveType3] of bool};
+type RecursiveType4 = {m: map [{RecursiveType4}] of bool};
+type RecursiveArray = array of RecursiveArray;
+recursive_array: RecursiveArray = {};
+fingerprintof(recursive_array);
+type RecursiveMap1 = map [RecursiveMap1] of bool;
+recursive_map1: RecursiveMap1 = {:};
+fingerprintof(recursive_map1);
+type RecursiveMap2 = map [bool] of RecursiveMap2;
+recursive_map2: RecursiveMap2 = {:};
+fingerprintof(recursive_map2);
+type RecursiveMap3 = map [RecursiveMap3] of RecursiveMap3;
+recursive_map3: RecursiveMap3 = {:};
+fingerprintof(recursive_map3);
+Fields referenced in tuple "RecursiveType4":
+  "m"
+Fields referenced in tuple "RecursiveType3":
+  "m"
+Fields referenced in tuple "RecursiveType2":
+  "m"
+  "n"
+Fields referenced in tuple "RecursiveType1":
+  "m"
+Fields referenced in tuple "Index8":
+  "a"
+Fields referenced in tuple "Index7":
+  "a"
+Fields referenced in tuple "Index6":
+  "a"
+Fields referenced in tuple "Index5":
+  "a"
+Fields referenced in tuple "StaticVarContainer":
+Fields referenced in tuple "Index4":
+  "a"
+Fields referenced in tuple "MapContainer":
+Fields referenced in tuple "Index3":
+  "a"
+Fields referenced in tuple "Index2":
+  "a"
+Fields referenced in tuple "Index1":
+  "a"
+Fields referenced in tuple "OuterSome11":
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerSome11":
+  "leaf"
+Fields referenced in tuple "OuterAll_11":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerAll_11":
+  "leaf"
+Fields referenced in tuple "OuterSome10":
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerSome10":
+  "leaf"
+Fields referenced in tuple "OuterAll10":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerAll10":
+  "leaf"
+Fields referenced in tuple "OuterSome9":
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerSome9":
+  "leaf"
+Fields referenced in tuple "OuterAll9":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerAll9":
+  "leaf"
+Fields referenced in tuple "OuterSome8":
+  "a"
+  "a.leaf"
+Fields referenced in tuple "InnerSome8":
+  "leaf"
+Fields referenced in tuple "OuterAll8":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerAll8":
+  "leaf"
+Fields referenced in tuple "OuterSome7":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerSome7":
+  "leaf"
+Fields referenced in tuple "OuterAll7":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+  "c"
+  "c.leaf"
+Fields referenced in tuple "InnerAll7":
+  "leaf"
+Fields referenced in tuple "OuterNoLeaf5":
+  "a"
+  "b"
+Fields referenced in tuple "InnerNoLeaf5":
+Fields referenced in tuple "OuterLeaf5":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerLeaf5":
+  "leaf"
+Fields referenced in tuple "OuterNoLeaf4":
+  "a"
+  "b"
+Fields referenced in tuple "InnerNoLeaf4":
+Fields referenced in tuple "OuterLeaf4":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerLeaf4":
+  "leaf"
+Fields referenced in tuple "OuterNoLeaf3":
+  "a"
+  "b"
+Fields referenced in tuple "InnerNoLeaf3":
+Fields referenced in tuple "OuterLeaf3":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerLeaf3":
+  "leaf"
+Fields referenced in tuple "OuterNoLeaf2":
+  "a"
+Fields referenced in tuple "InnerNoLeaf2":
+Fields referenced in tuple "OuterLeaf2":
+  "a"
+  "a.leaf"
+  "b"
+  "b.leaf"
+Fields referenced in tuple "InnerLeaf2B":
+  "leaf"
+Fields referenced in tuple "InnerLeaf2A":
+  "leaf"
+Fields referenced in tuple "Outer1":
+Fields referenced in tuple "Inner1":
+Fields referenced in tuple "InProtoArrayDead1":
+  "t"
+  "t.u"
+Fields referenced in tuple "InProtoArrayDead2":
+  "u"
+Fields referenced in tuple "InProtoArrayDead3":
+Fields referenced in tuple "InProtoDead1":
+  "x"
+  "x.y"
+Fields referenced in tuple "InProtoDead2":
+  "y"
+Fields referenced in tuple "InProtoDead3":
+Fields referenced in tuple "InProtoArrayLive1":
+  "f"
+  "f.g"
+  "f.g.h"
+Fields referenced in tuple "InProtoArrayLive2":
+  "g"
+  "g.h"
+Fields referenced in tuple "InProtoArrayLive3":
+  "h"
+Fields referenced in tuple "InProtoLive1":
+  "b"
+  "b.c"
+  "b.c.d"
+Fields referenced in tuple "InProtoLive2":
+  "c"
+  "c.d"
+Fields referenced in tuple "InProtoLive3":
+  "d"
+Fields referenced in tuple "MCompositeOuter":
+  "t"
+  "t.a"
+  "t.b"
+  "i"
+Fields referenced in tuple "MCompositeInner":
+  "a"
+  "b"
+Fields referenced in tuple "ACompositeOuter":
+Fields referenced in tuple "ACompositeInner":
+Fields referenced in tuple "TCompositeOuter":
+  "t"
+  "i"
+Fields referenced in tuple "TCompositeInner":
+Fields referenced in tuple "MTableOuter":
+  "t"
+  "t.t"
+  "t.u"
+Fields referenced in tuple "MTableInner":
+  "t"
+  "u"
+Fields referenced in tuple "ATableOuter":
+  "t"
+  "t.t"
+  "t.u"
+Fields referenced in tuple "ATableInner":
+  "t"
+  "u"
+Fields referenced in tuple "TTableOuter":
+  "t"
+  "t.t"
+  "t.u"
+Fields referenced in tuple "TTableInner":
+  "t"
+  "u"
+Fields referenced in tuple "MMapOuter":
+  "t"
+  "t.r"
+  "t.s"
+Fields referenced in tuple "MMapInner":
+  "r"
+  "s"
+Fields referenced in tuple "AMapOuter":
+  "t"
+  "t.r"
+  "t.s"
+Fields referenced in tuple "AMapInner":
+  "r"
+  "s"
+Fields referenced in tuple "TMapOuter":
+  "t"
+  "t.r"
+  "t.s"
+Fields referenced in tuple "TMapInner":
+  "r"
+  "s"
+Fields referenced in tuple "MFPOuter":
+  "m"
+  "m.x"
+  "m.y"
+Fields referenced in tuple "MFPInner":
+  "x"
+  "y"
+Fields referenced in tuple "AFPOuter":
+  "a"
+  "a.x"
+  "a.y"
+Fields referenced in tuple "AFPInner":
+  "x"
+  "y"
+Fields referenced in tuple "TFPOuter":
+  "t"
+  "t.x"
+  "t.y"
+Fields referenced in tuple "TFPInner":
+  "x"
+  "y"
+Fields referenced in tuple "MStrOuter":
+  "m"
+  "m.p"
+  "m.q"
+Fields referenced in tuple "MStrInner":
+  "p"
+  "q"
+Fields referenced in tuple "AStrOuter":
+  "a"
+  "a.p"
+  "a.q"
+Fields referenced in tuple "AStrInner":
+  "p"
+  "q"
+Fields referenced in tuple "TStrOuter":
+  "t"
+  "t.p"
+  "t.q"
+Fields referenced in tuple "TStrInner":
+  "p"
+  "q"
+Fields referenced in tuple "MCOuter":
+  "m"
+  "m.a"
+  "m.b"
+Fields referenced in tuple "MCInner":
+  "a"
+  "b"
+Fields referenced in tuple "ACOuter":
+  "a"
+  "a.a"
+  "a.b"
+Fields referenced in tuple "ACInner":
+  "a"
+  "b"
+Fields referenced in tuple "TCOuter":
+  "t"
+  "t.a"
+  "t.b"
+Fields referenced in tuple "TCInner":
+  "a"
+  "b"
+Fields referenced in tuple "PageviewAndCount":
+  "pageview"
+  "pageview.url"
+  "pageview.user_agent"
+  "pageview.ad_group_creative_id"
+  "count"
+Fields referenced in tuple "PageviewContainer":
+  "pageview"
+  "pageview.url"
+  "pageview.user_agent"
+  "pageview.ad_group_creative_id"
+Fields referenced in tuple "Pageview":
+  "url"
+  "user_agent"
+  "ad_group_creative_id"
+Fields referenced in tuple "HasWriteOnlyField":
+  "do_not_elim"
+  "do_not_elim.is_read"
+Fields referenced in tuple "DoNotElim":
+  "is_read"
+Fields referenced in tuple "TopOneField1":
+  "i"
+Fields referenced in tuple "TopOneField2":
+Fields referenced in tuple "TopOneField3":
+Fields referenced in tuple "TopOneField4":
+Fields referenced in tuple "ShallowOneField1":
+  "s"
+  "s.i"
+Fields referenced in tuple "ShallowOneField2":
+  "i"
+Fields referenced in tuple "ShallowOneField3":
+Fields referenced in tuple "ShallowOneField4":
+Fields referenced in tuple "DeepOneField1":
+  "d"
+  "d.d"
+  "d.d.d"
+  "d.d.d.i"
+Fields referenced in tuple "DeepOneField2":
+  "d"
+  "d.d"
+  "d.d.i"
+Fields referenced in tuple "DeepOneField3":
+  "d"
+  "d.i"
+Fields referenced in tuple "DeepOneField4":
+  "i"
+Fields referenced in tuple "Top1":
+  "i"
+  "t"
+Fields referenced in tuple "Top2":
+Fields referenced in tuple "Top3":
+Fields referenced in tuple "Top4":
+Fields referenced in tuple "Shallow1":
+  "i"
+  "s"
+  "s.i"
+  "s.s"
+Fields referenced in tuple "Shallow2":
+  "i"
+  "s"
+Fields referenced in tuple "Shallow3":
+Fields referenced in tuple "Shallow4":
+Fields referenced in tuple "Deep1":
+  "i"
+  "d"
+  "d.i"
+  "d.d"
+  "d.d.i"
+  "d.d.d"
+  "d.d.d.i"
+Fields referenced in tuple "Deep2":
+  "i"
+  "d"
+  "d.i"
+  "d.d"
+  "d.d.i"
+Fields referenced in tuple "Deep3":
+  "i"
+  "d"
+  "d.i"
+Fields referenced in tuple "Deep4":
+  "i"
+Fields referenced in tuple "Window":
+  "bounding_box"
+  "bounding_box.x_max"
+  "bounding_box.y_max"
+  "messages"
+  "messages.spanish"
+Fields referenced in tuple "Message":
+  "spanish"
+Fields referenced in tuple "Circle":
+Fields referenced in tuple "Rectangle":
+  "x_max"
+  "y_max"
+Fields referenced in tuple "Person":
+  "name"
+  "age"
+
+0
+A Night at the Opera
+0
+emit _undef_cnt <- 1;
+emit _undef_details["unreachable/unused_fields.szl:115: undef_window.title = B\"A Day at the Races\"; (probably because \"undef_window\" had not been defined)"] <- 1;
+emit pageview_events <- {{bytes({}), bytes({}), 0}, 33};
+emit tuple_table[{{12345, 67.89}}] <- 1;
+emit array_table[{{{12345, 67.89}}, {{12345, 67.89}}, {{12345, 67.89}}}] <- 1;
+emit map_table[{{{12345, 67.89}}: 1}] <- 1;
+Side effect: Field f
+Side effect: Field g
+Side effect: Field t
+Side effect: Field u
+emit table_all8 <- {{0}, {0}};
+emit table_some8 <- {0};

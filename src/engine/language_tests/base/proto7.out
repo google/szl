@@ -1,0 +1,15 @@
+type X_A = parsedmessage {a: bytes @ 1 : string};
+type X_B = parsedmessage {x: bytes @ 2 : string, c: array of {y: X_A @ 6, z: X_B @ 8} @ 4, w: bytes @ 10 : string};
+xb: X_B = {convert(bytes, "c"), {{{convert(bytes, "d")}, {convert(bytes, "a"), {}, convert(bytes, "b")}}}, convert(bytes, "e")};
+input = convert(bytes, xb);
+assert(input == convert(bytes, "1201632332030a0164420612016152016224520165", "hex"));
+type Y_A = parsedmessage {a: bytes @ 1 : string};
+type Y_B = parsedmessage {x: bytes @ 2 : string, type C = parsedmessage {y: Y_A @ 6, z: Y_B @ 8}, c: array of Y_B.C @ 4, w: bytes @ 10 : string};
+yb: Y_B = convert(Y_B, input);
+assert(convert(string, yb.x) == "c");
+assert(convert(string, yb.w) == "e");
+assert(len(yb.c) == 1);
+assert(convert(string, yb.c[0].y.a) == "d");
+assert(convert(string, yb.c[0].z.x) == "a");
+assert(len(yb.c[0].z.c) == 0);
+assert(convert(string, yb.c[0].z.w) == "b");

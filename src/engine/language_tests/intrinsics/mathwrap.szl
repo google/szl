@@ -1,0 +1,33 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+szl_acos: function(f: float): float { return acos(f); }; 
+szl_acosh: function(f: float): float { return acosh(f); }; 
+szl_asin: function(f: float): float { return asin(f); }; 
+szl_asinh: function(f: float): float { return asinh(f); }; 
+szl_atan: function(f: float): float { return atan(f); }; 
+szl_atanh: function(f: float): float { return atanh(f); }; 
+szl_ceil: function(f: float): float { return ceil(f); }; 
+szl_cos: function(f: float): float { return cos(f); }; 
+szl_cosh: function(f: float): float { return cosh(f); }; 
+szl_fabs: function(f: float): float { return fabs(f); }; 
+szl_floor: function(f: float): float { return floor(f); }; 
+szl_round: function(f: float): float { return round(f); }; 
+szl_sin: function(f: float): float { return sin(f); }; 
+szl_sinh: function(f: float): float { return sinh(f); }; 
+szl_tan: function(f: float): float { return tan(f); }; 
+szl_tanh: function(f: float): float { return tanh(f); }; 
+szl_trunc: function(f: float): float { return trunc(f); }; 
+szl_atan2: function(f: float, g: float): float { return atan2(f,g); };

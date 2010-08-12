@@ -1,0 +1,36 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Sum tables with invalid format elements that fail with --table_output:
+#   "failed to create emitter for table OSUfmX: can't add elements".
+#
+# Note: this program will die after the first bad emitter, but all causing
+#       the same error are listed here for documentation purposes.
+
+OSUfmi: table sum of i: int format("%d", i);  # format makes i a string!
+OSUfms: table sum of s: string format("%s", s);
+OSUfmf: table sum of f: float format("%f", f);
+OSUfmp: table sum of p: fingerprint format("%p", p);
+OSUfmt: table sum of t: time format("%t", t);
+OSUfmx: table sum of x: bytes format("%T", x);
+OSUfmb: table sum of b: bool format("%b", b);
+OSUfmT: table sum of T: { i: int, f: float } format("%T", T);
+OSUfmP: table sum of P: proto { i: int, f: float } format("%T", P);
+OSUfmA: table sum of A: array of int format("%T", A);
+OSUfmM: table sum of M: map[string] of int format("%T", M);

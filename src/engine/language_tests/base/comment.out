@@ -1,0 +1,14 @@
+DEBUG("print", "%d\n", 3);
+DEBUG("print", "%d\n", 4);
+DEBUG("print", "%d\n", 5);
+DEBUG("print", "%d\n", 6);
+DEBUG("print", "%d # not a comment\n", 9);
+DEBUG("print", "%d\n", 10);
+DEBUG("print", "%d\n", 11);
+3
+4
+5
+6
+9 # not a comment
+10
+11

@@ -1,0 +1,757 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: If boolean (conditional & unconditional) operators work for types
+#desc: other than bool.
+
+i1: int = 3;
+i2: int = 5;
+
+f1: float = -3.0;
+f2: float = -5.0;
+
+by1: bytes = "1234";
+by2: bytes = "0";
+
+s1: string = "a";
+s2: string = "b";
+
+fg1: fingerprint = fingerprint("a");
+fg2: fingerprint = fingerprint("b");
+
+t1: time = HOUR;
+t2: time = SECOND;
+
+Ai1: array of int;
+Ai2: array of int;
+
+Pi1: {x:int};
+Pi2: {x:int};
+
+Mi1: map [x:int] of int;
+Mi2: map[x:int] of int;
+
+#inst: Does boolean op work for int.
+if (i1 && i2)
+{
+}
+
+if (i1 || i2)
+{
+}
+
+if (!i1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((i1 && i2) || (i1 || i2) || !i1)
+{
+}
+
+if (i1 and i2)
+{
+}
+
+if (i1 or i2)
+{
+}
+
+if (not i1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((i1 and i2) or (i1 or i2) or !i1)
+{
+}
+
+
+#inst: Does boolean op work for float.
+if (f1 && f2)
+{
+}
+
+if (f1 || f2)
+{
+}
+
+if (!f1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((f1 && f2) || (f1 || f2) || !f1)
+{
+}
+
+if (f1 and f2)
+{
+}
+
+if (f1 or f2)
+{
+}
+
+if (not f1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((f1 and f2) or (f1 or f2) or !f1)
+{
+}
+
+
+#inst: Does boolean op work for bytes.
+if (by1 && by2)
+{
+}
+
+if (by1 || by2)
+{
+}
+
+if (!by1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((by1 && by2) || (by1 || by2) || !by1)
+{
+}
+
+if (by1 and by2)
+{
+}
+
+if (by1 or by2)
+{
+}
+
+if (not by1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((by1 and by2) or (by1 or by2) or !by1)
+{
+}
+
+
+#inst: Does boolean op work for string.
+if (s1 && s2)
+{
+}
+
+if (s1 || s2)
+{
+}
+
+if (!s1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((s1 && s2) || (s1 || s2) || !s1)
+{
+}
+
+if (s1 and s2)
+{
+}
+
+if (s1 or s2)
+{
+}
+
+if (not s1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((s1 and s2) or (s1 or s2) or !s1)
+{
+}
+
+
+#inst: Does boolean op work for fingerprint.
+if (fg1 && fg2)
+{
+}
+
+if (fg1 || fg2)
+{
+}
+
+if (!fg1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((fg1 && fg2) || (fg1 || fg2) || !fg1)
+{
+}
+
+if (fg1 and fg2)
+{
+}
+
+if (fg1 or fg2)
+{
+}
+
+if (not fg1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((fg1 and fg2) or (fg1 or fg2) or !fg1)
+{
+}
+
+
+#inst: Does boolean op work for time.
+if (t1 && t2)
+{
+}
+
+if (t1 || t2)
+{
+}
+
+if (!t1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((t1 && t2) || (t1 || t2) || !t1)
+{
+}
+
+if (t1 and t2)
+{
+}
+
+if (t1 or t2)
+{
+}
+
+if (not t1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((t1 and t2) or (t1 or t2) or !t1)
+{
+}
+
+
+
+
+#inst: Does boolean op work for array types.
+if (Ai1 && Ai2)
+{
+}
+
+if (Ai1 || Ai2)
+{
+}
+
+if (!Ai1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((Ai1 && Ai2) || (Ai1 || Ai2) || !Ai1)
+{
+}
+
+if (Ai1 and Ai2)
+{
+}
+
+if (Ai1 or Ai2)
+{
+}
+
+if (not Ai1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((Ai1 and Ai2) or (Ai1 or Ai2) or !Ai1)
+{
+}
+
+
+
+
+#inst: Does boolean op work for map types.
+if (Mi1 && Mi2)
+{
+}
+
+if (Mi1 || Mi2)
+{
+}
+
+if (!Mi1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((Mi1 && Mi2) || (Mi1 || Mi2) || !Mi1)
+{
+}
+
+if (Mi1 and Mi2)
+{
+}
+
+if (Mi1 or Mi2)
+{
+}
+
+if (not Mi1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((Mi1 and Mi2) or (Mi1 or Mi2) or !Mi1)
+{
+}
+
+
+#inst: Does boolean op work for tuple types.
+if (Pi1 && Pi2)
+{
+}
+
+if (Pi1 || Pi2)
+{
+}
+
+if (!Pi1)
+{
+}
+
+#BUG: Why error message for || not came.
+if ((Pi1 && Pi2) || (Pi1 || Pi2) || !Pi1)
+{
+}
+
+if (Pi1 and Pi2)
+{
+}
+
+if (Pi1 or Pi2)
+{
+}
+
+if (not Pi1)
+{
+}
+
+#BUG: Why error message for or not came.
+if ((Pi1 and Pi2) or (Pi1 or Pi2) or !Pi1)
+{
+}
+
+
+#inst: Boolean operators b/w incompatible types.
+
+if (true && i1)
+{
+}
+
+if (true && f1)
+{
+}
+
+if (true && by1)
+{
+}
+
+if (true && s1)
+{
+}
+
+if (true && fg1)
+{
+}
+
+if (true && t1)
+{
+}
+
+if (true && Ai1)
+{
+}
+
+if (true && Mi1)
+{
+}
+
+if (true && Pi1)
+{
+}
+
+if (i1 && true)
+{
+}
+
+if (f1 && true)
+{
+}
+
+if (by1 && true)
+{
+}
+
+if (s1 && true)
+{
+}
+
+if (fg1 && true)
+{
+}
+
+if (t1 && true)
+{
+}
+
+if (Ai1 && true)
+{
+}
+
+if (Mi1 && true)
+{
+}
+
+if (Pi1 && true)
+{
+}
+
+if (i1 && f1)
+{
+}
+
+if (i1 && by1)
+{
+}
+
+if (i1 && s1)
+{
+}
+
+if (i1 && fg1)
+{
+}
+
+if (i1 && t1)
+{
+}
+
+if (i1 && Ai1)
+{
+}
+
+if (i1 && Mi1)
+{
+}
+
+if (i1 && Pi1)
+{
+}
+
+if (f1 && i1)
+{
+}
+
+if (f1 && by1)
+{
+}
+
+if (f1 && s1)
+{
+}
+
+if (f1 && fg1)
+{
+}
+
+if (f1 && t1)
+{
+}
+
+if (f1 && Ai1)
+{
+}
+
+if (f1 && Mi1)
+{
+}
+
+if (f1 && Pi1)
+{
+}
+
+if (s1 && f1)
+{
+}
+
+if (s1 && by1)
+{
+}
+
+if (s1 && i1)
+{
+}
+
+if (s1 && fg1)
+{
+}
+
+if (s1 && t1)
+{
+}
+
+if (s1 && Ai1)
+{
+}
+
+if (s1 && Mi1)
+{
+}
+
+if (s1 && Pi1)
+{
+}
+
+
+if (by1 && f1)
+{
+}
+
+if (by1 && s1)
+{
+}
+
+if (by1 && i1)
+{
+}
+
+if (by1 && fg1)
+{
+}
+
+if (by1 && t1)
+{
+}
+
+if (by1 && Ai1)
+{
+}
+
+if (by1 && Mi1)
+{
+}
+
+if (by1 && Pi1)
+{
+}
+
+
+
+if (fg1 && f1)
+{
+}
+
+if (fg1 && s1)
+{
+}
+
+if (fg1 && i1)
+{
+}
+
+if (fg1 && by1)
+{
+}
+
+if (fg1 && t1)
+{
+}
+
+if (fg1 && Ai1)
+{
+}
+
+if (fg1 && Mi1)
+{
+}
+
+if (fg1 && Pi1)
+{
+}
+
+
+if (t1 && f1)
+{
+}
+
+if (t1 && s1)
+{
+}
+
+if (t1 && i1)
+{
+}
+
+if (t1 && fg1)
+{
+}
+
+if (t1 && by1)
+{
+}
+
+if (t1 && Ai1)
+{
+}
+
+if (t1 && Mi1)
+{
+}
+
+if (t1 && Pi1)
+{
+}
+
+
+if (Ai1 && f1)
+{
+}
+
+if (Ai1 && s1)
+{
+}
+
+if (Ai1 && i1)
+{
+}
+
+if (Ai1 && fg1)
+{
+}
+
+if (Ai1 && t1)
+{
+}
+
+if (Ai1 && by1)
+{
+}
+
+if (Ai1 && Mi1)
+{
+}
+
+if (Ai1 && Pi1)
+{
+}
+
+
+if (Mi1 && f1)
+{
+}
+
+if (Mi1 && s1)
+{
+}
+
+if (Mi1 && i1)
+{
+}
+
+if (Mi1 && fg1)
+{
+}
+
+if (Mi1 && t1)
+{
+}
+
+if (Mi1 && Ai1)
+{
+}
+
+if (Mi1 && by1)
+{
+}
+
+if (Mi1 && Pi1)
+{
+}
+
+
+if (Pi1 && f1)
+{
+}
+
+if (Pi1 && s1)
+{
+}
+
+if (Pi1 && i1)
+{
+}
+
+if (Pi1 && fg1)
+{
+}
+
+if (Pi1 && t1)
+{
+}
+
+if (Pi1 && Ai1)
+{
+}
+
+if (Pi1 && Mi1)
+{
+}
+
+if (Pi1 && by1)
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

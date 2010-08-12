@@ -1,0 +1,149 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc: Comparison of implicit and explicit type conversion
+
+include "basic_implicit_initialize_good.szl"
+
+# Conversion to int
+                                                
+i:int;
+i=int(10);                     #int
+if(i != i0) DEBUG("print","\nError: i != i0");
+if(i0 != i) DEBUG("print","Error: i0 != i\n");
+
+i= int(true);                  #bool
+if(i != i1) DEBUG("print","\nError: i != i1");
+if(i1 != i) DEBUG("print","Error: i1 != i\n");
+
+i= int(fingerprint(100));      #fingerprint
+if(i != i2) DEBUG("print","\nError: i != i2");
+if(i2 != i) DEBUG("print","Error: i2 != i\n");
+
+i= int(10.32);                 #float
+if(i != i3) DEBUG("print","\nError: i != i3");
+if(i3 != i) DEBUG("print","Error: i3 != i\n");
+
+#i= int(trunctohour(now()));                 #time
+#if(i != i4) DEBUG("print","\nError: i != i4");
+#if(i4 != i) DEBUG("print","Error: i4 != i\n");
+                                                
+# Conversion to float
+                                                
+f: float;
+f = float(10);                   #int
+if(f != f0) DEBUG("print","\nError: f != f0");
+if(f0 != f) DEBUG("print","Error: f0 != f\n");
+
+f = float(10.32);
+if(f != f1) DEBUG("print","\nError: f != f1");
+if(f1 != f) DEBUG("print","Error: f1 != f\n");
+
+# Conversion to string
+                                                
+s: string;
+s = string(10);                #int
+if(s != s0) DEBUG("print","\nError: s != s0");
+if(s0 != s) DEBUG("print","\nError: s0 != s\n");
+ 
+s = string("Hello");     #sting
+if(s != s1) DEBUG("print","\nError: s != s1");
+if(s1 != s) DEBUG("print","\nError: s1 != s\n");
+
+s= string(true);               #bool
+if(s != s2) DEBUG("print","\nError: s != s2");
+if(s2 != s) DEBUG("print","\nError: s2 != s\n");
+
+s= string(fingerprint(100));   #fingerprint
+if(s != s3) DEBUG("print","\nError: s != s3");
+if(s3 != s) DEBUG("print","\nError: s3 != s\n");
+
+s= string(10.32);              #float
+if(s != s4) DEBUG("print","\nError: s != s4");
+if(s4 != s) DEBUG("print","\nError: s4 != s\n");
+
+#s= string(trunctohour(now()));              #time
+#if(s != s5) DEBUG("print","\nError: s != s5");
+#if(s5 != s) DEBUG("print","\nError: s5 != s\n");
+
+                                                
+# Conversion to bool
+b: bool;
+b= bool("hello world!");        #string
+if(b != b0) DEBUG("print","\nError: b != b0");
+if(b0 != b) DEBUG("print","\nError: b0 != b\n");
+
+b= bool(true);                  #bool
+if(b != b1) DEBUG("print","\nError: b != b1");
+if(b1 != b) DEBUG("print","\nError: b1 != b \n");
+                                                
+# Conversion to bytes                 
+by: bytes;
+by= bytes("hello world!");        #string
+if(by != by0) DEBUG("print","\nError: by != by0");
+if(by0 != by) DEBUG("print","\nError: by0 != by \n");
+
+by= bytes({10,11,12,13,14});
+if(by != by1) DEBUG("print","\nError: by != by1");
+if(by1 != by) DEBUG("print","\nError: by1 != by \n");
+                                               
+# Conversion to fingerprint
+fg: fingerprint;
+
+fg= fingerprint(10);                    #int
+if(fg != fg0) DEBUG("print","\nError: fg != fg0");
+if(fg0 != fg) DEBUG("print","\nError: fg0 != fg \n");
+
+fg= fingerprint("0x123456");        #string
+if(fg != fg1) DEBUG("print","\nError: fg != fg1");
+if(fg1 != fg) DEBUG("print","\nError: fg1 != fg \n");
+
+#fg= fingerprint(true);                  #bool
+#if(fg != fg2) DEBUG("print","\nError: fg != fg2");
+#if(fg2 != fg) DEBUG("print","\nError: fg2 != fg \n");
+
+fg= fingerprint(bytes({10,11,12,13,14,15,16,17}));      #bytes
+if(fg != fg3) DEBUG("print","\nError: fg != fg3");
+if(fg3 != fg) DEBUG("print","\nError: fg3 != fg \n");
+
+fg= fingerprint(fingerprint(100));      #fingerprint
+if(fg != fg4) DEBUG("print","\nError: fg != fg4");
+if(fg4 != fg) DEBUG("print","\nError: fg4 != fg \n");
+
+#fg= fingerprint(10.32);                 #float
+#if(fg != fg5) DEBUG("print","\nError: fg != fg5");
+#if(fg5 != fg) DEBUG("print","\nError: fg5 != fg \n");
+
+#fg= fingerprint(trunctohour(now()));                 #time
+#if(fg != fg6) DEBUG("print","\nError: fg != fg6");
+#if(fg6 != fg) DEBUG("print","\nError: fg6 != fg \n");
+                                                
+# Conversion to time  
+t: time;
+t = time(10);                    #int
+if(t != t0) DEBUG("print","\nError: t != t0");
+if(t0 != t) DEBUG("print","Error: t0!= t");
+
+t= time("Wed Dec 31 16:00:00 PST 1975");     #string
+if(t != t1) DEBUG("print","\nError: t != t1");
+if(t1 != t) DEBUG("print","Error: t1!= t");
+
+#t= time(trunctohour(now()));
+#if(t != t2) DEBUG("print","\nError: t != t2");
+#if(t2 != t) DEBUG("print","Error: t2!= t");
+                                                
+

@@ -1,0 +1,3 @@
+type T = {a: int = 5 @ 1, s1: bytes = X"68656C6C6FE18080" @ 2, s2: bytes = X"68656C6C6FC3A1C280C280" @ 3};
+t: T = convert(T, convert(bytes, ""));
+assert(convert(string, t) == "{ 5, X\"68656C6C6FE18080\", X\"68656C6C6FC3A1C280C280\" }");

@@ -1,0 +1,194 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Tests the zlibcompress, zlibuncompress, gzip, and gunzip functions.
+
+type Example = {
+    uncompressed: bytes,
+    zlib_compressed: bytes,
+    zlib_compressed_no_header: bytes,
+    gzip_compressed: bytes };
+
+examples: array of Example = {
+    { B"",
+      X"789c030000000001",
+      X"0300",
+      X"1f8b08000000000002ff03000000000000000000" },
+    { B"Hello, world.",
+      X"789cf348cdc9c9d75128cf2fca49d10300206b0497",
+      X"f348cdc9c9d75128cf2fca49d10300",
+      X"1f8b08000000000002fff348cdc9c9d75128cf2fca49d1030077db597b0d000000" },
+    { B"hello",
+      X"789ccb48cdc9c90700062c0215",
+      X"cb48cdc9c90700",
+      X"1f8b08000000000002ffcb48cdc9c9070086a6103605000000" },
+    { B"hello\n",
+      X"789ccb48cdc9c9e70200084b021f",
+      X"cb48cdc9c9e70200",
+      X"1f8b08004ab2ba4a0003cb48cdc9c9e7020020303a3606000000" },
+    # a long example to make sure compressed version exceeds buffer size
+    { B"Okay...           0 Okay...           1 Okay...           2 " +
+          B"Okay...           3 Okay...           4 Okay...           5 " +
+          B"Okay...           6 Okay...           7 Okay...           8 " +
+          B"Okay...           9 Okay...          10 Okay...          11 " +
+          B"Okay...          12 Okay...          13 Okay...          14 " +
+          B"Okay...          15 Okay...          16 Okay...          17 " +
+          B"Okay...          18 Okay...          19 Okay...          20 " +
+          B"Okay...          21 Okay...          22 Okay...          23 " +
+          B"Okay...          24 Okay...          25 Okay...          26 " +
+          B"Okay...          27 Okay...          28 Okay...          29 " +
+          B"Okay...          30 Okay...          31 Okay...          32 " +
+          B"Okay...          33 Okay...          34 Okay...          35 " +
+          B"Okay...          36 Okay...          37 Okay...          38 " +
+          B"Okay...          39 Okay...          40 Okay...          41 " +
+          B"Okay...          42 Okay...          43 Okay...          44 " +
+          B"Okay...          45 Okay...          46 Okay...          47 " +
+          B"Okay...          48 Okay...          49 Okay...          50 " +
+          B"Okay...          51 Okay...          52 Okay...          53 " +
+          B"Okay...          54 Okay...          55 Okay...          56 " +
+          B"Okay...          57 Okay...          58 Okay...          59 " +
+          B"Okay...          60 Okay...          61 Okay...          62 " +
+          B"Okay...          63 Okay...          64 Okay...          65 " +
+          B"Okay...          66 Okay...          67 Okay...          68 " +
+          B"Okay...          69 Okay...          70 Okay...          71 " +
+          B"Okay...          72 Okay...          73 Okay...          74 " +
+          B"Okay...          75 Okay...          76 Okay...          77 " +
+          B"Okay...          78 Okay...          79 Okay...          80 " +
+          B"Okay...          81 Okay...          82 Okay...          83 " +
+          B"Okay...          84 Okay...          85 Okay...          86 " +
+          B"Okay...          87 Okay...          88 Okay...          89 " +
+          B"Okay...          90 Okay...          91 Okay...          92 " +
+          B"Okay...          93 Okay...          94 Okay...          95 " +
+          B"Okay...          96 Okay...          97 Okay...          98 " +
+          B"Okay...          99 Okay...         100 Okay...         101 " +
+          B"Okay...         102 Okay...         103 Okay...         104 " +
+          B"Okay...         105 Okay...         106 Okay...         107 " +
+          B"Okay...         108 Okay...         109 Okay...         110 " +
+          B"Okay...         111 Okay...         112 Okay...         113 " +
+          B"Okay...         114 Okay...         115 Okay...         116 " +
+          B"Okay...         117 Okay...         118 Okay...         119 " +
+          B"Okay...         120 Okay...         121 Okay...         122 " +
+          B"Okay...         123 Okay...         124 Okay...         125 " +
+          B"Okay...         126 Okay...         127 Okay...         128 " +
+          B"Okay...         129 Okay...         130 Okay...         131 " +
+          B"Okay...         132 Okay...         133 Okay...         134 " +
+          B"Okay...         135 Okay...         136 Okay...         137 " +
+          B"Okay...         138 Okay...         139 Okay...         140 " +
+          B"Okay...         141 Okay...         142 Okay...         143 " +
+          B"Okay...         144 Okay...         145 Okay...         146 " +
+          B"Okay...         147 Okay...         148 Okay...         149 " +
+          B"Okay...         150 Okay...         151 Okay...         152 " +
+          B"Okay...         153 Okay...         154 Okay...         155 " +
+          B"Okay...         156 Okay...         157 Okay...         158 " +
+          B"Okay...         159 Okay...         160 Okay...         161 " +
+          B"Okay...         162 Okay...         163 Okay...         164 " +
+          B"Okay...         165 Okay...         166 Okay...         167 " +
+          B"Okay...         168 Okay...         169 Okay...         170 " +
+          B"Okay...         171 Okay...         172 Okay...         173 " +
+          B"Okay...         174 Okay...         175 Okay...         176 " +
+          B"Okay...         177 Okay...         178 Okay...         179 " +
+          B"Okay...         180 Okay...         181 Okay...         182 " +
+          B"Okay...         183 Okay...         184 Okay...         185 " +
+          B"Okay...         186 Okay...         187 Okay...         188 " +
+          B"Okay...         189 Okay...         190 Okay...         191 " +
+          B"Okay...         192 Okay...         193 Okay...         194 " +
+          B"Okay...         195 Okay...         196 Okay...         197 " +
+          B"Okay...         198 Okay...         199 ",
+      X"789c6dd5b175dd300004c15654c17f5c9200c82a54836255e0eeedcc01e6" +
+          X"c2cb26daefdf9f3f9fcfe7ebff8eafefed0bdf89efc277e31bf826be85ef" +
+          X"c1f7ee5f7004477004477004477004477004c709c709c709c709c709c709" +
+          X"c709c709c709c709c705c705c705c705c705c705c705c705c705c705c70d" +
+          X"c70dc70dc70dc70dc70dc70dc70dc70dc70dc78063c031e018700c38061c" +
+          X"038e01c78063c031e198704c38261c138e09c78463c231e198702c38161c" +
+          X"0b8e05c78263c1b1e058702c38161c0f1c0f1c0f1c0f1c0f1c0f1c0f1c0f" +
+          X"1c0f1c0f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1cefeee8d81d1dbb" +
+          X"a3637774ec8e8eddd1b13b3a7647c7eee8d81d1d70a0e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7fdebf95f468f12aa",
+      X"6dd5b175dd300004c15654c17f5c9200c82a54836255e0eeedcc01e6c2cb" +
+          X"26daefdf9f3f9fcfe7ebff8eafefed0bdf89efc277e31bf826be85efc1f7" +
+          X"ee5f7004477004477004477004477004c709c709c709c709c709c709c709" +
+          X"c709c709c709c705c705c705c705c705c705c705c705c705c705c70dc70d" +
+          X"c70dc70dc70dc70dc70dc70dc70dc70dc78063c031e018700c38061c038e" +
+          X"01c78063c031e198704c38261c138e09c78463c231e198702c38161c0b8e" +
+          X"05c78263c1b1e058702c38161c0f1c0f1c0f1c0f1c0f1c0f1c0f1c0f1c0f" +
+          X"1c0f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1cefeee8d81d1dbba363" +
+          X"7774ec8e8eddd1b13b3a7647c7eee8d81d1d70a0e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7fdebf95f",
+      X"1f8b08000000000002ff6dd5b175dd300004c15654c17f5c9200c82a5483" +
+          X"6255e0eeedcc01e6c2cb26daefdf9f3f9fcfe7ebff8eafefed0bdf89efc2" +
+          X"77e31bf826be85efc1f7ee5f7004477004477004477004477004c709c709" +
+          X"c709c709c709c709c709c709c709c709c705c705c705c705c705c705c705" +
+          X"c705c705c705c70dc70dc70dc70dc70dc70dc70dc70dc70dc70dc78063c0" +
+          X"31e018700c38061c038e01c78063c031e198704c38261c138e09c78463c2" +
+          X"31e198702c38161c0b8e05c78263c1b1e058702c38161c0f1c0f1c0f1c0f" +
+          X"1c0f1c0f1c0f1c0f1c0f1c0f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f1c2f" +
+          X"1cefeee8d81d1dbba3637774ec8e8eddd1b13b3a7647c7eee8d81d1d70a0" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1" +
+          X"e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7a1e7fdebf9" +
+          X"5f5d20df23a00f0000" } };
+
+when (i: each int; def(examples[i])) {
+  x := examples[i];
+  assert(zlibuncompress(x.zlib_compressed, false) == x.uncompressed);
+  assert(zlibuncompress(x.zlib_compressed_no_header, true) == x.uncompressed);
+  assert(gunzip(x.gzip_compressed) == x.uncompressed);
+
+  # Use a small buffer to test that working across buffers works.
+  assert(zlibuncompress(x.zlib_compressed, false, 100) == x.uncompressed);
+  assert(zlibuncompress(x.zlib_compressed_no_header, true, 100) ==
+         x.uncompressed);
+
+  # Append a stray byte to a valid stream. Should return undef.
+  assert(!def(zlibuncompress(x.zlib_compressed + B"z", false)));
+  assert(!def(zlibuncompress(x.zlib_compressed_no_header + B"z", true)));
+
+  # gunzip ignores extra data past the footer.
+  assert(gunzip(x.gzip_compressed + B"extra stuff") == x.uncompressed);
+
+  # Prepend a stray byte before a valid stream. Functions that require a header
+  # should fail.
+  assert(!def(zlibuncompress(B"z" + x.zlib_compressed, false)));
+  assert(!def(gunzip(B"z" + x.gzip_compressed)));
+
+  # Round trip. The uncompressed form is is always preserved (although the
+  # compressed encoding isn't guaranteed to be the same on different runs).
+  assert(x.uncompressed == zlibuncompress(zlibcompress(x.uncompressed, true),
+                                          true));
+  assert(x.uncompressed == zlibuncompress(zlibcompress(x.uncompressed, false),
+                                          false));
+  assert(x.uncompressed == gunzip(gzip(x.uncompressed)));
+}
+
+# Invalid zlib data returns undef
+assert(!def(zlibuncompress(B"bad bytes", false)));
+assert(!def(zlibuncompress(B"bad bytes", true)));
+assert(!def(gunzip(B"bad bytes")));
+
+# gzip requires a valid header/footer.
+assert(!def(gunzip(B"")));

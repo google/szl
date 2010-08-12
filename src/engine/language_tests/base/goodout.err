@@ -1,0 +1,55 @@
+base/goodout.szl:42: warning: unnecessary def(): argument has value (tCO) which is known to be defined
+base/goodout.szl:47: warning: unnecessary def(): argument has value (tCOfm) which is known to be defined
+base/goodout.szl:52: warning: unnecessary def(): argument has value (tCOfl) which is known to be defined
+base/goodout.szl:57: warning: unnecessary def(): argument has value (tCOpc) which is known to be defined
+base/goodout.szl:63: warning: unnecessary def(): argument has value (tSU) which is known to be defined
+base/goodout.szl:69: warning: unnecessary def(): argument has value (tTE) which is known to be defined
+base/goodout.szl:74: warning: unnecessary def(): argument has value (tTEfm) which is known to be defined
+base/goodout.szl:80: warning: unnecessary def(): argument has value (tMR) which is known to be defined
+base/goodout.szl:86: warning: unnecessary def(): argument has value (tSA) which is known to be defined
+base/goodout.szl:91: warning: unnecessary def(): argument has value (tSAfm) which is known to be defined
+base/goodout.szl:97: warning: unnecessary def(): argument has value (tSE) which is known to be defined
+base/goodout.szl:102: warning: unnecessary def(): argument has value (tSEfm) which is known to be defined
+base/goodout.szl:108: warning: unnecessary def(): argument has value (tQU) which is known to be defined
+base/goodout.szl:112: warning: unnecessary def(): argument has value (tQUfm) which is known to be defined
+base/goodout.szl:118: warning: unnecessary def(): argument has value (tUN) which is known to be defined
+base/goodout.szl:123: warning: unnecessary def(): argument has value (tUNfm) which is known to be defined
+base/goodout.szl:129: warning: unnecessary def(): argument has value (tRE) which is known to be defined
+base/goodout.szl:134: warning: unnecessary def(): argument has value (tREfm) which is known to be defined
+base/goodout.szl:140: warning: unnecessary def(): argument has value (tTO) which is known to be defined
+base/goodout.szl:145: warning: unnecessary def(): argument has value (tTOfm) which is known to be defined
+base/goodout.szl:151: warning: unnecessary def(): argument has value (tMA) which is known to be defined
+base/goodout.szl:156: warning: unnecessary def(): argument has value (tMAfm) which is known to be defined
+base/goodout.szl:162: warning: unnecessary def(): argument has value (tMI) which is known to be defined
+base/goodout.szl:167: warning: unnecessary def(): argument has value (tMIfm) which is known to be defined
+base/goodout.szl:173: warning: unnecessary def(): argument has value (tDI) which is known to be defined
+base/goodout.szl:178: warning: unnecessary def(): argument has value (tDIfm) which is known to be defined
+base/goodout.szl:184: warning: unnecessary def(): argument has value (tIN) which is known to be defined
+base/goodout.szl:189: warning: unnecessary def(): argument has value (tINfm) which is known to be defined
+base/goodout.szl:195: warning: unnecessary def(): argument has value (tWE) which is known to be defined
+base/goodout.szl:200: warning: unnecessary def(): argument has value (tWEfm) which is known to be defined
+base/goodout.szl:435: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:438: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:441: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:444: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:447: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:450: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:453: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:456: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:459: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:462: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:465: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:468: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:471: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:474: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:477: warning: unnecessary def(): argument has value (t) which is known to be defined
+base/goodout.szl:610: warning: unnecessary def(): argument has value (ttt) which is known to be defined
+base/goodout.szl:613: warning: unnecessary def(): argument has value (tt) which is known to be defined
+base/goodout.szl:616: warning: unnecessary def(): argument has value (t) which is known to be defined
+goodbye world!
+selected err: i = 0
+selected err: i = 1
+selected err: i = 2
+selected err: i = 3
+selected err: i = 4
+not an error

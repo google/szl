@@ -1,0 +1,18 @@
+conversion/basic_to_composite_initialize_bad.szl:22: cannot convert 10 (type int) to array of int
+conversion/basic_to_composite_initialize_bad.szl:23: cannot convert 10.32 (type float) to array of int
+conversion/basic_to_composite_initialize_bad.szl:24: cannot convert "Hello World" (type string) to array of int
+conversion/basic_to_composite_initialize_bad.szl:25: cannot convert true (type bool) to array of int
+conversion/basic_to_composite_initialize_bad.szl:26: cannot convert convert(fingerprint, 10) (type fingerprint) to array of int
+conversion/basic_to_composite_initialize_bad.szl:27: cannot convert trunctohour(now()) (type time) to array of int
+conversion/basic_to_composite_initialize_bad.szl:32: cannot convert 10 (type int) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:33: cannot convert 10.32 (type float) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:34: cannot convert "Hello World" (type string) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:35: cannot convert true (type bool) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:36: cannot convert convert(fingerprint, 10) (type fingerprint) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:37: cannot convert trunctohour(now()) (type time) to map [int] of int
+conversion/basic_to_composite_initialize_bad.szl:42: cannot convert 10 (type int) to {int, string}
+conversion/basic_to_composite_initialize_bad.szl:43: cannot convert 10.32 (type float) to {int, string}
+conversion/basic_to_composite_initialize_bad.szl:44: cannot convert "Hello World" (type string) to {int, string}
+conversion/basic_to_composite_initialize_bad.szl:45: cannot convert true (type bool) to {int, string}
+conversion/basic_to_composite_initialize_bad.szl:46: cannot convert convert(fingerprint, 10) (type fingerprint) to {int, string}
+conversion/basic_to_composite_initialize_bad.szl:47: cannot convert trunctohour(now()) (type time) to {int, string}

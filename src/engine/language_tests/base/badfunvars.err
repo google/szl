@@ -1,0 +1,10 @@
+base/badfunvars.szl:59: cannot convert 0 (type int) to function(x: int): int
+base/badfunvars.szl:61: cannot convert function(x: int): int {
+}
+ (type ftype) to int
+base/badfunvars.szl:72: '{' expected; found ';'
+base/badfunvars.szl:73: '{' expected; found '='
+base/badfunvars.szl:77: undeclared_fun undeclared
+base/badfunvars.szl:78: ';' expected; found 'syntax_error'
+base/badfunvars.szl:81: misdeclared_fun is not a function, cannot call it
+base/badfunvars.szl:82: ';' expected; found 'syntax_error'

@@ -1,0 +1,110 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Metcharacters in Regular Expression Constructs.
+
+#inst: metachar ^
+if (match("^xx", "xxaaa") != true)
+{
+    emit stdout <- `match("^xx", "xxaaa") Failed !!!`;
+}
+
+#inst: metachar ^ at beginning of string to match.
+if (match(`\^`, "^") != true)
+{
+    emit stdout <- `match("\^", "^") Failed !!!`;
+}
+
+#inst: metachar ^ not in beginning of string to match.
+if (match(`aa\^xx`, "yyaa^xx") != true)
+{
+    emit stdout <- `match("aa\^xx", "yyaa^xx") Failed !!!`;
+}
+
+#inst: metachar .matches any character except new-line
+s0: string = "a";
+
+for (i: int = 1; i < 256; i++)
+{
+    s0[0] = i;
+
+    if (i != '\n' && match(".", s0) != true)
+    {
+	emit stdout <- format(`match(".", "%s") Failed !!!`, s0);
+    }
+}
+
+#inst: metachar . does not match 
+if (match(".", "\n") != false)
+{
+    emit stdout <- format(`match(".", "\n") Failed !!!`);
+}
+
+#inst: matching metachar ., $, ^
+if (match("^aa\.aa$", "aa.aa") != true)
+{
+    emit stdout <- format(`match("aa\.aa", "aa.aa") Failed !!!`);
+}
+
+#inst: pattern ^$ matches empty string.
+if (match("^$", "") != true)
+{
+    emit stdout <- format(`match("^$", "") Failed !!!`);
+}
+
+#inst: matching $ in string.
+if (match(`aa\$aa`, "aa\$aa") != true)
+{
+    emit stdout <- format(`match("aa\$aa", "aa\$aa") Failed !!!`);
+}
+
+#inst: alternation.
+if (match("aa|bb|cc", "aa") != true)
+{
+    emit stdout <- format(`match("aa|bb|cc", "aa") Failed !!!`);
+}
+
+if (match("aa|bb|cc", "ab") != false)
+{
+    emit stdout <- format(`match("aa|bb|cc", "ab") Failed !!!`);
+}
+
+#inst: matching | char.
+if (match("aa\|aa", "aa|aa") != true)
+{
+    emit stdout <- format(`match("aa\|aa", "aa|aa") Failed !!!`);
+}
+
+#inst: grouping.
+if (match("a(a|b)(b|c)c", "abcc") != true)
+{
+    emit stdout <- format(`match("a(a|b)(b|c)c", "abcc") Failed !!!`);
+}
+
+if (match("a(a|b)(b|c)c", "aa") != false)
+{
+    emit stdout <- format(`match("a(a|b)(b|c)c", "ab") Failed !!!`);
+}
+
+#inst: matching (, )
+if (match("\(aa\)", "(aa)") != true)
+{
+    emit stdout <- format(`match("\(aa\)", "(aa)") Failed !!!`);
+}
+
+ 

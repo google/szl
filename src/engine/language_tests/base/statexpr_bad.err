@@ -1,0 +1,11 @@
+base/statexpr_bad.szl:17: result undeclared
+base/statexpr_bad.szl:21: type mismatch in assignment: s (type string) = ?{
+	result 4;
+}
+ (type int)
+base/statexpr_bad.szl:29: result expression ("hi") is not compatible with previous result type (int)
+base/statexpr_bad.szl:32: ?{} has no result statement
+base/statexpr_bad.szl:36: non-static variable i may not be accessed in an initializer for a static variable
+base/statexpr_bad.szl:39: unimplemented non-static variable declaration i in a static statement expression
+base/statexpr_bad.szl:40: unimplemented non-static variable declaration i in a static statement expression
+base/statexpr_bad.szl:41: unimplemented non-static variable declaration sum in a static statement expression

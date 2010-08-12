@@ -1,0 +1,5 @@
+base/arrayconv1.szl:33: cannot convert {1} (type array of int) to T0
+base/arrayconv1.szl:34: cannot convert {1, 2} (type array of int) to T1
+base/arrayconv1.szl:35: cannot convert {1, 2, 3} (type array of int) to T2
+base/arrayconv1.szl:36: cannot convert {} (type {}) to T3
+base/arrayconv1.szl:37: cannot convert {3, 4, 5} (type array of int) to T4

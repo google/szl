@@ -1,0 +1,5 @@
+Stack trace:
+  0. no symbolic frame information (initialization frame?)
+     (use --v=1 for more details)
+
+szl: fatal: undefined value at emitter/tables_runtime_bad_param_undef.szl:22: OREfrt (divide by zero error: 1 / 0)

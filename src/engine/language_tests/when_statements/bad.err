@@ -1,0 +1,14 @@
+when_statements/bad.szl:25: type mismatch: query_string[somex] (type int) == "" (type string)
+when_statements/bad.szl:32: value of 'all' quantifier variable allx undefined in body of when statement
+when_statements/bad.szl:39: expression 2 + 3 (int) must be of type bool
+when_statements/bad.szl:42: expression 2.5 + 3.9 (float) must be of type bool
+when_statements/bad.szl:46: expression f() (void) must be of type bool
+when_statements/bad.szl:53: factor expected, found ';'
+when_statements/bad.szl:56: factor expected, found '@'
+when_statements/bad.szl:59: '(' expected; found '{'
+when_statements/bad.szl:62: ')' expected; found '}'
+when_statements/bad.szl:65: warning: no quantifiers in 'when' - use 'if' instead
+when_statements/bad.szl:65: empty condition in 'when' statement
+when_statements/bad.szl:69: ';' expected; found 'query_string'
+when_statements/bad.szl:73: warning: no quantifiers in 'when' - use 'if' instead
+when_statements/bad.szl:74: '}' expected; found EOF

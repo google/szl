@@ -1,0 +1,312 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Some tests of definedness propagation.
+# This test is to be run twice, once with --noignore_undefs and once
+# with --ignore_undefs.  There are  two copies of this file, just to
+# simplify setting the flags, but the two copies should be identical.
+#
+# The "expected warnings" are expected under --ignore_undefs only
+# when the knowledge of definedness is dependent on uninitialized values,
+# ___undefine() or control flow based on def(), and not on knowledge that a
+# previous implicit check did not fail (because the program is still running).
+
+# Parameters are known to be defined.
+f1: function(s: string) {
+  if (def(s)) ;    # expect warning: "s" known to be defined
+};
+
+# Uninitialized variables are known to be undefined.
+# Initialized variables are not known to be defined unless the
+# definedness of the initializer is known.
+f2: function() {
+  x: int;
+  if (def(x)) ;    # expect warning: "x" known to be undefined
+  y: int = x;      # expect warning: use of an undefined value
+  if (nrand(5) == 17)
+    x = 1;
+  z: int = x;      # expect no warning
+  if (def(z));     # expect no warning
+};
+
+
+# Normal variable references (rvalue or lvalue) known to be defined
+# after the reference does not abort the program.
+f3: function() {
+  x: int;
+  if (nrand(5) == 17)
+    x = 1;
+  if (def(x)) ;    # expect no warning
+  y: int;
+  y = x;       
+  if (def(x)) ;    # expect warning: "x" known to be defined
+  if (def(y)) ;    # expect warning: "y" known to be defined
+};
+
+# Variables are known to be undefined after "___undefine()"
+f4: function() {
+  x: int = 1;
+  if (def(x)) ;    # expect warning: "x" known to be defined
+  ___undefine(x);
+  if (def(x));     # expect warning: "x" known to be undefined
+};
+
+# Variables are known to be defined or undefined base on "def()".
+f5: function() {
+  x: int;
+  if (nrand(5) == 17)
+    x = 1;
+  if (def(x)) {
+    if (def(x)) ;    # expect warning: "x" known to be defined
+  } else {
+    if (def(x)) ;    # expect warning: "x" known to be undefined
+  }
+  if (!def(x)) {
+    if (def(x)) ;    # expect warning: "x" known to be undefined
+  } else {
+    if (def(x)) ;    # expect warning: "x" known to be defined
+  }
+};
+
+# Check that variables referenced in conditional part of the short-circuiting
+# logical operator (&&,||) are marked defined only within the subexpression.
+f6: function() {
+  x: int = 1/nrand(2);
+  if (nrand(2) == 0 && (x == 0 || def(x))) ;  # expect warning: "x" known def
+  x++;  # expect no warning: may not have executed conditional part of "&&"
+  y: int;
+  g: function(): bool { y = 0; return true; };
+  if (def(y) && x == 0) ;  # expect warning: "y" known to be defined
+  if (def(y) && g()) ;     # expect no warning: too complex to catch this
+};
+
+# Check that definedness propagates through built-in operators.
+f7: function(x: int, y: int, a: bool, b: bool) {
+  if (def(x+y)) ;    # expect warning: "x+y" known to be defined
+  if (def(x-y)) ;    # expect warning: "x-y" known to be defined
+  if (def(x*y)) ;    # expect warning: "x*y" known to be defined
+  if (def(x/y)) ;    # expect no warning; see additional tests below
+  if (def(x%y)) ;    # expect no warning; see additional tests below
+  if (def(x==y)) ;   # expect warning; "x==y" known to be defined
+  if (def(x!=y)) ;   # expect warning; "x!=y" known to be defined
+  if (def(x<=y)) ;   # expect warning; "x<=y" known to be defined
+  if (def(x>=y)) ;   # expect warning; "x>=y" known to be defined
+  if (def(x< y)) ;   # expect warning; "x<y" known to be defined
+  if (def(x> y)) ;   # expect warning; "x>y" known to be defined
+  if (def(x&y)) ;    # expect warning: "x&y" known to be defined
+  if (def(x|y)) ;    # expect warning: "x|y" known to be defined
+  if (def(x^y)) ;    # expect warning: "x^y" known to be defined
+  if (def(~x)) ;     # expect warning: "~x" known to be defined
+  if (def(x<<y)) ;   # expect warning: "x<<y" known to be defined
+  if (def(x>>y)) ;   # expect warning: "x>>y" known to be defined
+  if (def(a&&b)) ;   # expect warning: "a&&b" known to be defined
+  if (def(a||b)) ;   # expect warning: "a||b" known to be defined
+
+  if (def(x/2)) ;    # expect warning; "x/2" known to be defined
+  if (def(x%2)) ;    # expect warning; "x%2" known to be defined
+  if (def(x/0)) ;    # expect warning; "x/0" known to be undefined
+  if (def(x%0)) ;    # expect warning; "x%0" known to be undefined
+};
+
+# Check that definedness propagates through initialization and assignment,
+# with a distinction made for a variable vs. expression on left hand side.
+f8: function() {
+  x: int = 1/nrand(2);  # unknown value, unknown whether defined
+  if (def(x)) ;         # expect no warning
+  y: int;
+  y = x;                # know x and y are defined after this succeeds
+  z: int = x;
+  w: int;
+  w = y;
+  if (def(z)) ;      # expect warning: "z" known to be defined
+  if (def(w)) ;      # expect warning: "w" known to be defined
+
+  a: array of int;
+  a[1] = 0;          # expect warning: "a" known to be undefined
+  b: array of int;
+  if (nrand(2) == 0)
+    b = { };
+  b[1] = 0;          # expext no warning
+  def(b);            # expect warning: "b" known to be defined
+
+  c: string;
+  c[1] = 'a';        # expect warning: "c" known to be undefined
+  d: string;
+  if (nrand(2) == 0)
+    d = "abc";
+  d[1] = 0;          # expext no warning
+  def(d);            # expect warning: "d" known to be defined
+
+  e: map[int] of int;
+  e[1] = 0;          # expect warning: "e" known to be undefined
+  f: map[int] of int;
+  if (nrand(2) == 0)
+    f = { 1:1 };
+  f[1] = 0;          # expext no warning
+  def(f);            # expect warning: "d" known to be defined
+
+  g: { x: int };
+  g.x = 0;           # expect warning: "g" known to be undefined
+  h: { x: int };
+  if (nrand(2) == 0)
+    h = { 0 };
+  h.x = 0;           # expect no warning
+  def(h);            # expect warning: "h" known to be defined
+};
+
+# Check that certain intrinsics are known not to fail and others are not.
+# Not tested: $combinerange, $getkeybyindex, $combinekeys, ___undefine, assert,
+#   ___raise_segv, ___heapcheck, regex, getadditionalinput
+f9: function(i: int, b: bytes, s: string, ai: array of int, m: map[int] of int,
+             t: proto { x: int@1 }, tm: time, f: float) {
+
+  def(rand());                     # warning
+  def(nrand(i));                   # no warning
+  def(tobase64(b, true));          # warning
+  def(frombase64(b, true));        # no warning
+  def(splitcsvline(b));            # warning
+  def(splitcsv(b, ai));            # no warning
+
+  # intrinsic.cc
+  def(fingerprintof(i));           # warning
+  def(format("%d", i));            # warning
+  def(len(s));                     # warning
+  def(haskey(m,i));                # warning
+  def(inproto(t.x));               # warning
+  def(abs(i));                     # warning
+  def(keys(m));                    # warning
+  def(lookup(m,i,i));              # warning
+  def(max(i,i));                   # warning
+  def(min(i,i));                   # warning
+
+  def(addday(tm,i));               # no warning
+  def(addmonth(tm,i));             # no warning
+  def(addweek(tm,i));              # no warning
+  def(addyear(tm,i));              # no warning
+  def(dayofmonth(tm));             # no warning
+  def(dayofweek(tm));              # no warning
+  def(dayofyear(tm));              # no warning
+  def(hourof(tm));                 # no warning
+  def(minuteof(tm));               # no warning
+  def(monthof(tm));                # no warning
+  def(secondof(tm));               # no warning
+  def(yearof(tm));                 # no warning
+  def(trunctoday(tm));             # no warning
+  def(trunctohour(tm));            # no warning
+  def(trunctominute(tm));          # no warning
+  def(trunctomonth(tm));           # no warning
+  def(trunctosecond(tm));          # no warning
+  def(trunctoyear(tm));            # no warning
+  def(now());                      # warning
+
+  def(highbit(i));                 # warning
+  def(load(s));                    # no warning
+  def(getenv(s));                  # no warning
+  def(lowercase(s));               # warning
+  def(uppercase(s));               # warning
+  def(match(s,s));                 # no warning
+  def(strfind(s,s));               # warning
+  def(strrfind(s,s));              # warning
+  def(strreplace(s,s,s, true));    # warning
+  def(matchposns(s,s));            # no warning
+  def(matchstrs(s,s));             # no warning
+
+  def(getresourcestats());         # warning
+  def(___addressof(i));            # warning
+
+  def(saw(s,s));                   # no warning
+  def(sawn(i,s,s));                # no warning
+  def(sawzall(s,s));               # no warning
+
+  # mathintrinsic.cc
+  def(ln(f));                      # warning
+  def(log10(f));                   # warning
+  def(exp(f));                     # warning
+  def(sqrt(f));                    # warning
+  def(pow(f,f));                   # warning
+  def(sin(f));                     # warning
+  def(cos(f));                     # warning
+  def(tan(f));                     # warning
+  def(asin(f));                    # warning
+  def(acos(f));                    # warning
+  def(atan(f));                    # warning
+  def(atan2(f,f));                 # warning
+  def(sinh(f));                    # warning
+  def(cosh(f));                    # warning
+  def(tanh(f));                    # warning
+  def(asinh(f));                   # warning
+  def(acosh(f));                   # warning
+  def(atanh(f));                   # warning
+  def(fabs(f));                    # warning
+  def(ceil(f));                    # warning
+  def(floor(f));                   # warning
+  def(round(f));                   # warning
+  def(trunc(f));                   # warning
+  def(isnan(f));                   # warning
+  def(isinf(f));                   # warning
+  def(isfinite(f));                # warning
+  def(isnormal(f));                # warning
+
+  # sortintrinsic.cc
+  def(sort(ai));                   # warning
+  def(sortx(ai));                  # warning
+
+  # symboltable.cc
+  def(DEBUG("ref",i));             # warning
+  def(DEBUG("print","%d",i));      # warning
+
+  def(def(i));                     # warning
+
+  def(convert(int,f));             # no warning
+  def(new(string,i,'x'));          # no warning
+};
+
+# Check that we keep track of whether a function can return an undefined
+# value and use that in defness propagation.
+f11: function() {
+  g1: function(x: int): int {  # cannot return undefined
+    return x + 1;
+  };
+  g2: function(x: int): int {       # can return undefined
+    return 1 / x;
+  };
+  g3: function(x: int): int {  # cannot return undefined, multiple returns
+    if (nrand(2) == 0)
+      return x * 3;
+    else
+      return x / 3;
+  };
+  g4: function(x: int): int {  # can return undefined, multiple returns, mixed
+    if (nrand(2) == 0)
+      return 1 / x;
+    else
+      return x / 1;
+  };
+  g5: function(x: int): int {  # other way, just for completeness
+    if (x == 0)
+      return x / 1;
+    else
+      return 1 / x;
+  };
+  def(g1(0));  # expect a warning: known to be defined
+  def(g2(0));  # expect no warning
+  def(g3(0));  # expect a warning: known to be defined
+  def(g4(0));  # expect no warning
+  def(g5(0));  # expect no warning
+  g6: function(x: int): int {  # expect no warning: analyzed too late
+    def(g6(0));
+    return 0;
+  };
+};

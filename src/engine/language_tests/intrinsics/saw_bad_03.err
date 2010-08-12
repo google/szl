@@ -1,0 +1,7 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     t0: {p1: int, p2: int} = <undefined>
+
+szl: fatal: undefined value at intrinsics/saw_bad_03.szl:23: DEBUG("print", "protocol = %d, domain = %d\n", t0.p1, t0.p2) (probably because "t0" was undefined due to an error at intrinsics/saw_bad_03.szl:22: saw("http989://989www.google.com/search?q=Google", `\w+`, skip `://`, `[\w.]+`) (string "989www.google.com" contains extra chars))

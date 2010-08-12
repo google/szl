@@ -1,0 +1,29 @@
+F_called: bool = false;
+T_called: bool = false;
+F: function(): bool {
+	F_called = true;
+	return false;
+}
+;
+T: function(): bool {
+	T_called = true;
+	return true;
+}
+;
+ClearTFCalled: function() {
+	F_called = false;
+	T_called = false;
+}
+;
+ClearTFCalled();
+F() and T();
+assert(F_called && T_called);
+ClearTFCalled();
+F() && T();
+assert(F_called && (!T_called));
+ClearTFCalled();
+T() or F();
+assert(T_called && F_called);
+ClearTFCalled();
+T() || F();
+assert(T_called && (!F_called));

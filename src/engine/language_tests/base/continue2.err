@@ -1,0 +1,7 @@
+base/continue2.szl:23: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:27: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:34: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:41: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:47: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:54: 'continue' must be in a loop, but not in a 'when' statement
+base/continue2.szl:61: 'continue' must be in a loop, but not in a 'when' statement

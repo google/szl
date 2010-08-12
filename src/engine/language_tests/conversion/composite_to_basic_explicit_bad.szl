@@ -1,0 +1,49 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env  szl
+
+#desc:  Conversion from composite to basic type
+
+
+# conversion to int
+
+i0:int = int({1,2,3,4});				# array of int
+i1:int = int({1:2,2:3,3:4,4:5});			# map[int] of int
+i2:int = int({{1,"Hi"},{2,"World"}});			# tuple {int,string}
+
+# conversion to float
+
+f0:float = float({1,2,3,4});				# array of int
+f1:float = float({1:2,2:3,3:4,4:5});			# map[int] of int
+f2:float = float({{1,"Hi"},{2,"World"}});		# tuple {int,string}
+
+# conversion to bool
+
+b0:bool = bool({1,2,3,4});				# array of int
+b1:bool = bool({1:2,2:3,3:4,4:5});			# map[int] of int
+b2:bool = bool({{1,"Hi"},{2,"World"}});		# tuple {int,string}
+
+# conversion to bytes
+
+by0:bytes = bytes({1,2,3,4});				# array of int
+by1:bytes = bytes({1:2,2:3,3:4,4:5});			# map[int] of int
+by2:bytes = bytes({{1,"Hi"},{2,"World"}});		# tuple {int,string}
+
+# conversion to time
+
+t0:time = time({1,2,3,4});				# array of int
+t1:time = time({1:2,2:3,3:4,4:5});			# map[int] of int
+t2:time = time({{1,"Hi"},{2,"World"}});		# tuple {int,string}

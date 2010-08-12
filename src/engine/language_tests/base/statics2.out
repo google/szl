@@ -1,0 +1,9 @@
+static s1: int = 1;
+static s2: int = 2;
+static s3: int = 3;
+static s4: int = 4;
+static s5: int = 5;
+static s6: int = 6;
+static s7: int = 7;
+emit stdout <- "A";
+A

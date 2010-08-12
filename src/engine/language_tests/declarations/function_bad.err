@@ -1,0 +1,54 @@
+declarations/function_bad.szl:53: ':' expected; found ')'
+declarations/function_bad.szl:54: ':' expected; found ')'
+declarations/function_bad.szl:55: identifier expected; found ':'
+declarations/function_bad.szl:56: ':' expected; found 'bool'
+declarations/function_bad.szl:57: identifier expected; found 'array'
+declarations/function_bad.szl:58: identifier expected; found 'array'
+declarations/function_bad.szl:59: identifier expected; found 'map'
+declarations/function_bad.szl:60: identifier expected; found 'map'
+declarations/function_bad.szl:61: identifier expected; found 'map'
+declarations/function_bad.szl:62: identifier expected; found 'map'
+declarations/function_bad.szl:63: identifier expected; found 'map'
+declarations/function_bad.szl:64: identifier expected; found '{'
+declarations/function_bad.szl:67: identifier expected; found ';'
+declarations/function_bad.szl:68: identifier expected; found '{'
+declarations/function_bad.szl:69: identifier expected; found '('
+declarations/function_bad.szl:71: identifier expected; found ';'
+declarations/function_bad.szl:72: '(' expected; found ';'
+declarations/function_bad.szl:73: '(' expected; found '{'
+declarations/function_bad.szl:76: identifier expected; found ':'
+declarations/function_bad.szl:77: type expected; ')' found
+declarations/function_bad.szl:78: ':' expected; found 'int'
+declarations/function_bad.szl:81: redeclaration of x (previous declaration at declarations/function_bad.szl:81)
+declarations/function_bad.szl:82: redeclaration of x (previous declaration at declarations/function_bad.szl:82)
+declarations/function_bad.szl:85: x23 undeclared
+declarations/function_bad.szl:88: identifier expected; found ','
+declarations/function_bad.szl:91: identifier expected; found ')'
+declarations/function_bad.szl:92: x26 undeclared
+declarations/function_bad.szl:95: redeclaration of x18 (previous declaration at declarations/function_bad.szl:76)
+declarations/function_bad.szl:98: redeclaration of x27 (previous declaration at declarations/function_bad.szl:97)
+declarations/function_bad.szl:101: ')' expected; found '='
+declarations/function_bad.szl:139: result ("abc") is not compatible with function result type (bool)
+declarations/function_bad.szl:143: result ("abc") is not compatible with function result type (bytes)
+declarations/function_bad.szl:147: result ("abc") is not compatible with function result type (int)
+declarations/function_bad.szl:151: result ("abc") is not compatible with function result type (float)
+declarations/function_bad.szl:155: result ("abc") is not compatible with function result type (time)
+declarations/function_bad.szl:159: result ("abc") is not compatible with function result type (fingerprint)
+declarations/function_bad.szl:163: result (4) is not compatible with function result type (string)
+declarations/function_bad.szl:243: result ({{10, 12}}) is not compatible with function result type (T0)
+declarations/function_bad.szl:248: result ({{10, 12}}) is not compatible with function result type ({x: array of int, y: map [key: string] of value: string})
+declarations/function_bad.szl:252: result ({true, 10}) is not compatible with function result type (array of bool)
+declarations/function_bad.szl:256: result ({convert(bytes, "abc"), 10}) is not compatible with function result type (array of bytes)
+declarations/function_bad.szl:260: result ({10, 10.23}) is not compatible with function result type (array of float)
+declarations/function_bad.szl:268: result ("abc") is not compatible with function result type (array of time)
+declarations/function_bad.szl:275: result ({{10, 12, 256}, {"R": "RED", "B": "BLUE", "G": "GREEN"}}) is not compatible with function result type (array of {x: array of int, y: map [key: string] of value: string})
+declarations/function_bad.szl:286: result (5) is not compatible with function result type (string)
+declarations/function_bad.szl:290: result (5) is not compatible with function result type (string)
+declarations/function_bad.szl:296: type expected; 'return' found
+declarations/function_bad.szl:299: ';' expected; found 'int'
+declarations/function_bad.szl:303: ',' expected; found '{'
+declarations/function_bad.szl:307: ',' expected; found 'y'
+declarations/function_bad.szl:312: function f52 does not expect a result
+declarations/function_bad.szl:317: function f53 expects a result
+declarations/function_bad.szl:356: i0 undeclared
+declarations/function_bad.szl:364: 'break' must be in a loop or a 'switch', but not in a 'when' statement

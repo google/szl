@@ -1,0 +1,74 @@
+base/valuepropagation5.szl:585: warning: unnecessary def(): argument has value (x100) which is known to be undefined
+base/valuepropagation5.szl:586: warning: variable x100 will always have an undefined value at this point
+base/valuepropagation5.szl:591: warning: unnecessary def(): argument has value (x102) which is known to be undefined
+base/valuepropagation5.szl:592: warning: variable x102 will always have an undefined value at this point
+base/valuepropagation5.szl:615: warning: unnecessary def(): argument has value (x120) which is known to be undefined
+base/valuepropagation5.szl:616: warning: variable x120 will always have an undefined value at this point
+base/valuepropagation5.szl:621: warning: unnecessary def(): argument has value (x122) which is known to be undefined
+base/valuepropagation5.szl:622: warning: variable x122 will always have an undefined value at this point
+base/valuepropagation5.szl:660: warning: unnecessary def(): argument has value (x200) which is known to be defined
+base/valuepropagation5.szl:669: warning: unnecessary def(): argument has value (x203) which is known to be defined
+base/valuepropagation5.szl:672: warning: unnecessary def(): argument has value (x204) which is known to be defined
+base/valuepropagation5.szl:675: warning: unnecessary def(): argument has value (x205) which is known to be defined
+base/valuepropagation5.szl:714: warning: unnecessary def(): argument has value (x230) which is known to be defined
+base/valuepropagation5.szl:723: warning: unnecessary def(): argument has value (x233) which is known to be defined
+base/valuepropagation5.szl:726: warning: unnecessary def(): argument has value (x234) which is known to be defined
+base/valuepropagation5.szl:729: warning: unnecessary def(): argument has value (x235) which is known to be defined
+base/valuepropagation5.szl:732: warning: unnecessary def(): argument has value (x240) which is known to be defined
+base/valuepropagation5.szl:741: warning: unnecessary def(): argument has value (x243) which is known to be defined
+base/valuepropagation5.szl:744: warning: unnecessary def(): argument has value (x244) which is known to be defined
+base/valuepropagation5.szl:747: warning: unnecessary def(): argument has value (x245) which is known to be defined
+base/valuepropagation5.szl:750: warning: unnecessary def(): argument has value (x250) which is known to be defined
+base/valuepropagation5.szl:759: warning: unnecessary def(): argument has value (x253) which is known to be defined
+base/valuepropagation5.szl:762: warning: unnecessary def(): argument has value (x254) which is known to be defined
+base/valuepropagation5.szl:765: warning: unnecessary def(): argument has value (x255) which is known to be defined
+base/valuepropagation5.szl:768: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:769: warning: divide by zero
+base/valuepropagation5.szl:777: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:778: warning: divide by zero
+base/valuepropagation5.szl:780: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:781: warning: divide by zero
+base/valuepropagation5.szl:783: warning: unnecessary def(): argument has value (x305) which is known to be defined
+base/valuepropagation5.szl:822: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:823: warning: divide by zero
+base/valuepropagation5.szl:831: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:832: warning: divide by zero
+base/valuepropagation5.szl:834: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:835: warning: divide by zero
+base/valuepropagation5.szl:837: warning: unnecessary def(): argument has value (x335) which is known to be defined
+base/valuepropagation5.szl:840: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:841: warning: divide by zero
+base/valuepropagation5.szl:849: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:850: warning: divide by zero
+base/valuepropagation5.szl:852: warning: unnecessary def(): argument has value (123) which is known to be defined
+base/valuepropagation5.szl:853: warning: divide by zero
+base/valuepropagation5.szl:855: warning: unnecessary def(): argument has value (x345) which is known to be defined
+base/valuepropagation5.szl:858: warning: unnecessary def(): argument has value (x350) which is known to be defined
+base/valuepropagation5.szl:867: warning: unnecessary def(): argument has value (x353) which is known to be defined
+base/valuepropagation5.szl:870: warning: unnecessary def(): argument has value (x354) which is known to be defined
+base/valuepropagation5.szl:873: warning: unnecessary def(): argument has value (x355) which is known to be defined
+base/valuepropagation5.szl:876: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:878: warning: divide by zero
+base/valuepropagation5.szl:885: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:887: warning: divide by zero
+base/valuepropagation5.szl:888: warning: unnecessary def(): argument has value (x404) which is known to be defined
+base/valuepropagation5.szl:891: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:893: warning: divide by zero
+base/valuepropagation5.szl:930: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:932: warning: divide by zero
+base/valuepropagation5.szl:939: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:941: warning: divide by zero
+base/valuepropagation5.szl:942: warning: unnecessary def(): argument has value (x434) which is known to be defined
+base/valuepropagation5.szl:945: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:947: warning: divide by zero
+base/valuepropagation5.szl:948: warning: unnecessary def(): argument has value (x440) which is known to be defined
+base/valuepropagation5.szl:957: warning: unnecessary def(): argument has value (x443) which is known to be defined
+base/valuepropagation5.szl:960: warning: unnecessary def(): argument has value (x444) which is known to be defined
+base/valuepropagation5.szl:963: warning: unnecessary def(): argument has value (x445) which is known to be defined
+base/valuepropagation5.szl:966: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:968: warning: divide by zero
+base/valuepropagation5.szl:975: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:977: warning: divide by zero
+base/valuepropagation5.szl:978: warning: unnecessary def(): argument has value (x454) which is known to be defined
+base/valuepropagation5.szl:981: warning: unnecessary def(): argument has value (456) which is known to be defined
+base/valuepropagation5.szl:983: warning: divide by zero

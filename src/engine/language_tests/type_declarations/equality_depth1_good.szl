@@ -1,0 +1,358 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options
+
+#desc:  Valid type equality check for basic and composite types upto depth 1
+
+include "equality_var_decl.szl"
+
+i2 = i1;
+i0 = i2;
+
+s2 = s1;
+s0 = s2;
+
+f2 = f1;
+f0 = f2;
+
+fg2 = fg1;
+fg0 = fg2;
+
+b2 = b1;
+b0 = b2;
+
+by2 = by1;
+by0 = by2;
+
+#t2 = t1;
+#t0 = t2;
+
+ai2 = ai1;
+ai0 = ai2;
+
+as2 = as1;
+as0 = as2;
+
+af2 = af1;
+af0 = af2;
+
+afg2 = afg1;
+afg0 = afg2;
+
+ab2 = ab1;
+ab0 = ab2;
+
+aby2 = aby1;
+aby0 = aby2;
+
+#at2 = at1;
+#at0 = at2;
+
+mii2 = mii1;
+mii0 = mii2;
+
+mis2 = mis1;
+mis0 = mis2;
+
+mif2 = mif1;
+mif0 = mif2;
+
+mifg2 = mifg1;
+mifg0 = mifg2;
+
+mib2 = mib1;
+mib0 = mib2;
+
+miby2 = miby1;
+miby0 = miby2;
+
+mit2 = mit1;
+mit0 = mit2;
+
+msi2 = msi1;
+msi0 = msi2;
+
+mss2 = mss1;
+mss0 = mss2;
+
+msf2 = msf1;
+msf0 = msf2;
+
+msfg2 = msfg1;
+msfg0 = msfg2;
+
+msb2 = msb1;
+msb0 = msb2;
+
+msby2 = msby1;
+msby0 = msby2;
+
+mst2 = mst1;
+mst0 = mst2;
+
+mfi2 = mfi1;
+mfi0 = mfi2;
+
+mfs2 = mfs1;
+mfs0 = mfs2;
+
+mff2 = mff1;
+mff0 = mff2;
+
+mffg2 = mffg1;
+mffg0 = mffg2;
+
+mfb2 = mfb1;
+mfb0 = mfb2;
+
+mfby2 = mfby1;
+mfby0 = mfby2;
+
+mft2 = mft1;
+mft0 = mft2;
+
+mfgi2 = mfgi1;
+mfgi0 = mfgi2;
+
+mfgs2 = mfgs1;
+mfgs0 = mfgs2;
+
+mfgf2 = mfgf1;
+mfgf0 = mfgf2;
+
+mfgfg2 = mfgfg1;
+mfgfg0 = mfgfg2;
+
+mfgb2 = mfgb1;
+mfgb0 = mfgb2;
+
+mfgby2 = mfgby1;
+mfgby0 = mfgby2;
+
+mfgt2 = mfgt1;
+mfgt0 = mfgt2;
+
+mbi2 = mbi1;
+mbi0 = mbi2;
+
+mbs2 = mbs1;
+mbs0 = mbs2;
+
+mbf2 = mbf1;
+mbf0 = mbf2;
+
+mbfg2 = mbfg1;
+mbfg0 = mbfg2;
+
+mbb2 = mbb1;
+mbb0 = mbb2;
+
+mbby2 = mbby1;
+mbby0 = mbby2;
+
+mbt2 = mbt1;
+mbt0 = mbt2;
+
+mbyi2 = mbyi1;
+mbyi0 = mbyi2;
+
+mbys2 = mbys1;
+mbys0 = mbys2;
+
+mbyf2 = mbyf1;
+mbyf0 = mbyf2;
+
+mbyfg2 = mbyfg1;
+mbyfg0 = mbyfg2;
+
+mbyb2 = mbyb1;
+mbyb0 = mbyb2;
+
+mbyby2 = mbyby1;
+mbyby0 = mbyby2;
+
+mbyt2 = mbyt1;
+mbyt0 = mbyt2;
+
+mti2 = mti1;
+mti0 = mti2;
+
+mts2 = mts1;
+mts0 = mts2;
+
+mtf2 = mtf1;
+mtf0 = mtf2;
+
+mtfg2 = mtfg1;
+mtfg0 = mtfg2;
+
+mtb2 = mtb1;
+mtb0 = mtb2;
+
+mtby2 = mtby1;
+mtby0 = mtby2;
+
+mtt2 = mtt1;
+mtt0 = mtt2;
+
+tii2 = tii1;
+tii0 = tii2;
+
+tis2 = tis1;
+tis0 = tis2;
+
+tif2 = tif1;
+tif0 = tif2;
+
+tifg2 = tifg1;
+tifg0 = tifg2;
+
+tib2 = tib1;
+tib0 = tib2;
+
+tiby2 = tiby1;
+tiby0 = tiby2;
+
+#tit2 = tit1;
+#tit0 = tit2;
+
+tsi2 = tsi1;
+tsi0 = tsi2;
+
+tss2 = tss1;
+tss0 = tss2;
+
+tsf2 = tsf1;
+tsf0 = tsf2;
+
+tsfg2 = tsfg1;
+tsfg0 = tsfg2;
+
+tsb2 = tsb1;
+tsb0 = tsb2;
+
+tsby2 = tsby1;
+tsby0 = tsby2;
+
+#tst2 = tst1;
+#tst0 = tst2;
+
+tfi2 = tfi1;
+tfi0 = tfi2;
+
+tfs2 = tfs1;
+tfs0 = tfs2;
+
+tff2 = tff1;
+tff0 = tff2;
+
+tffg2 = tffg1;
+tffg0 = tffg2;
+
+tfb2 = tfb1;
+tfb0 = tfb2;
+
+tfby2 = tfby1;
+tfby0 = tfby2;
+
+#tft2 = tft1;
+#tft0 = tft2;
+
+tfgi2 = tfgi1;
+tfgi0 = tfgi2;
+
+tfgs2 = tfgs1;
+tfgs0 = tfgs2;
+
+tfgf2 = tfgf1;
+tfgf0 = tfgf2;
+
+tfgfg2 = tfgfg1;
+tfgfg0 = tfgfg2;
+
+tfgb2 = tfgb1;
+tfgb0 = tfgb2;
+
+tfgby2 = tfgby1;
+tfgby0 = tfgby2;
+
+#tfgt2 = tfgt1;
+#tfgt0 = tfgt2;
+
+tbi2 = tbi1;
+tbi0 = tbi2;
+
+tbs2 = tbs1;
+tbs0 = tbs2;
+
+tbf2 = tbf1;
+tbf0 = tbf2;
+
+tbfg2 = tbfg1;
+tbfg0 = tbfg2;
+
+tbb2 = tbb1;
+tbb0 = tbb2;
+
+tbby2 = tbby1;
+tbby0 = tbby2;
+
+#tbt2 = tbt1;
+#tbt0 = tbt2;
+
+tbyi2 = tbyi1;
+tbyi0 = tbyi2;
+
+tbys2 = tbys1;
+tbys0 = tbys2;
+
+tbyf2 = tbyf1;
+tbyf0 = tbyf2;
+
+tbyfg2 = tbyfg1;
+tbyfg0 = tbyfg2;
+
+tbyb2 = tbyb1;
+tbyb0 = tbyb2;
+
+tbyby2 = tbyby1;
+tbyby0 = tbyby2;
+
+#tbyt2 = tbyt1;
+#tbyt0 = tbyt2;
+
+#tti2 = tti1;
+#tti0 = tti2;
+
+#tts2 = tts1;
+#tts0 = tts2;
+
+#ttf2 = ttf1;
+#ttf0 = ttf2;
+
+#ttfg2 = ttfg1;
+#ttfg0 = ttfg2;
+
+#ttb2 = ttb1;
+#ttb0 = ttb2;
+
+#ttby2 = ttby1;
+#ttby0 = ttby2;
+
+#ttt2 = ttt1;
+#ttt0 = ttt2;

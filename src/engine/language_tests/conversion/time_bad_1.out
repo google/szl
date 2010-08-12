@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["conversion/time_bad_1.szl:25: t0 = time(\"16102003\" + empty); (date conversion failed (\"16102003\" is not an accepted date string) or time zone \"\" was not recognized)"] <- 1;

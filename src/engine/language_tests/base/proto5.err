@@ -1,0 +1,12 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     b1: bytes = X"0A03616263108182"
+     c1: T = <undefined>
+     b2: bytes = <undefined>
+     c2: T = <undefined>
+     b3: bytes = <undefined>
+     c3: T = <undefined>
+
+szl: fatal: undefined value at base/proto5.szl:29: assert(string(c1.x) == "abc") (probably because "c1" was undefined due to an error at base/proto5.szl:28: T(b1) (field for tag: 2 (proto type id = 0) could not be skipped; corrupt data?))

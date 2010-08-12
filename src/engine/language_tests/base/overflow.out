@@ -1,0 +1,13 @@
+empty: string = new(string, nrand(1), 1);
+i1: int = convert(int, "9223372036854775807" + empty, 0);
+assert(def(i1));
+i2: int = convert(int, "9223372036854775808" + empty, 0);
+assert(!def(i2));
+i3: int = convert(int, "-9223372036854775808" + empty, 0);
+assert(def(i3));
+p1: fingerprint = convert(fingerprint, "18446744073709551615" + empty);
+assert(def(p1));
+p2: fingerprint = convert(fingerprint, "18446744073709551616" + empty);
+assert(!def(p2));
+f1: float = convert(float, "1e1000" + empty);
+assert(!def(f1));

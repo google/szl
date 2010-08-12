@@ -1,0 +1,20 @@
+type A1 = array of int;
+a: A1 = new(array of int, 10, 2);
+b: A1 = new(A1, 10, 3);
+c: string = new(string, 10, 5);
+d: bytes = new(bytes, 10, 7);
+for (i: int = 0; i < len(a); i++)
+	assert((((a[i] == 2) && (b[i] == 3)) && (c[i] == 5)) && (d[i] == 7));
+aaa: array of array of array of string;
+aaa = new(array of array of array of string, 3, new(array of array of string, 3, new(array of string, 3, "")));
+for (i: int = 0; i < len(aaa); i++)
+	for (j: int = 0; j < len(aaa[i]); j++)
+		for (k: int = 0; k < len(aaa[i][j]); k++)
+		{
+			assert(aaa[i][j][k] == "");
+			aaa[i][j][k] = format("%d%d%d", i, j, k);
+		}
+for (i: int = 0; i < len(aaa); i++)
+	for (j: int = 0; j < len(aaa[i]); j++)
+		for (k: int = 0; k < len(aaa[i][j]); k++)
+			assert(convert(int, aaa[i][j][k], 10) == (((100 * i) + (10 * j)) + k));

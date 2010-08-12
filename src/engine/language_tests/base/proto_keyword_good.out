@@ -1,0 +1,11 @@
+{
+	proto "proto2.proto"
+}
+f: function() {
+	proto "proto_append.proto"
+}
+;
+proto "proto3.proto"
+x: int;
+a: proto {i: int} = convert(proto {i: int}, B"");
+b: proto {{}, int} = convert(proto {{}, int}, B"");

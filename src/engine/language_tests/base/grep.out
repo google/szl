@@ -1,0 +1,93 @@
+line: string = convert(string, input);
+out: table collection of e: {s: string, i: int} file("/dev/stdout") format("%s: %d\n", e.s, e.i);
+when (
+	i: each int;
+	match("spool|sbin", line) and (line[i] == 47)
+)
+	emit out <- {line, i};
+bin:x:1:1:bin:/bin:/sbin/nologin: 14
+bin:x:1:1:bin:/bin:/sbin/nologin: 19
+bin:x:1:1:bin:/bin:/sbin/nologin: 24
+daemon:x:2:2:daemon:/sbin:/sbin/nologin: 20
+daemon:x:2:2:daemon:/sbin:/sbin/nologin: 26
+daemon:x:2:2:daemon:/sbin:/sbin/nologin: 31
+adm:x:3:4:adm:/var/adm:/sbin/nologin: 14
+adm:x:3:4:adm:/var/adm:/sbin/nologin: 18
+adm:x:3:4:adm:/var/adm:/sbin/nologin: 23
+adm:x:3:4:adm:/var/adm:/sbin/nologin: 28
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin: 12
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin: 16
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin: 22
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin: 27
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin: 32
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin: 17
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin: 21
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin: 27
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin: 33
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin: 38
+news:x:9:13:news:/var/spool/news:: 17
+news:x:9:13:news:/var/spool/news:: 21
+news:x:9:13:news:/var/spool/news:: 27
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin: 18
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin: 22
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin: 28
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin: 34
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin: 39
+operator:x:11:0:operator:/root:/sbin/nologin: 25
+operator:x:11:0:operator:/root:/sbin/nologin: 31
+operator:x:11:0:operator:/root:/sbin/nologin: 36
+games:x:12:100:games:/usr/games:/sbin/nologin: 21
+games:x:12:100:games:/usr/games:/sbin/nologin: 25
+games:x:12:100:games:/usr/games:/sbin/nologin: 32
+games:x:12:100:games:/usr/games:/sbin/nologin: 37
+ftp:x:14:50:FTP User:/ftp:/sbin/nologin: 21
+ftp:x:14:50:FTP User:/ftp:/sbin/nologin: 26
+ftp:x:14:50:FTP User:/ftp:/sbin/nologin: 31
+nscd:x:20:20:NSCD Daemon:/:/sbin/nologin: 25
+nscd:x:20:20:NSCD Daemon:/:/sbin/nologin: 27
+nscd:x:20:20:NSCD Daemon:/:/sbin/nologin: 32
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin: 33
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin: 37
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin: 41
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin: 46
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin: 51
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin: 32
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin: 34
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin: 39
+ntp:!!:38:38::/etc/ntp:/sbin/nologin: 14
+ntp:!!:38:38::/etc/ntp:/sbin/nologin: 18
+ntp:!!:38:38::/etc/ntp:/sbin/nologin: 23
+ntp:!!:38:38::/etc/ntp:/sbin/nologin: 28
+gdm:x:42:42:gdm:/var/gdm:/sbin/nologin: 16
+gdm:x:42:42:gdm:/var/gdm:/sbin/nologin: 20
+gdm:x:42:42:gdm:/var/gdm:/sbin/nologin: 25
+gdm:x:42:42:gdm:/var/gdm:/sbin/nologin: 30
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin: 26
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin: 30
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin: 34
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin: 38
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin: 43
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin: 18
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin: 22
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin: 28
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin: 36
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin: 41
+postfix:x:89:89:Postfix:/var/spool/mqueue:/sbin/nologin: 24
+postfix:x:89:89:Postfix:/var/spool/mqueue:/sbin/nologin: 28
+postfix:x:89:89:Postfix:/var/spool/mqueue:/sbin/nologin: 34
+postfix:x:89:89:Postfix:/var/spool/mqueue:/sbin/nologin: 42
+postfix:x:89:89:Postfix:/var/spool/mqueue:/sbin/nologin: 47
+mysql:x:201:201:MySQL server:/var/lib/mysql:/sbin/nologin: 29
+mysql:x:201:201:MySQL server:/var/lib/mysql:/sbin/nologin: 33
+mysql:x:201:201:MySQL server:/var/lib/mysql:/sbin/nologin: 37
+mysql:x:201:201:MySQL server:/var/lib/mysql:/sbin/nologin: 44
+mysql:x:201:201:MySQL server:/var/lib/mysql:/sbin/nologin: 49
+named:x:202:202:Name server:/var/named:/sbin/nologin: 28
+named:x:202:202:Name server:/var/named:/sbin/nologin: 32
+named:x:202:202:Name server:/var/named:/sbin/nologin: 39
+named:x:202:202:Name server:/var/named:/sbin/nologin: 44
+nfsnobody:x:655534:655534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin: 45
+nfsnobody:x:655534:655534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin: 49
+nfsnobody:x:655534:655534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin: 53
+nfsnobody:x:655534:655534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin: 58
+nfsnobody:x:655534:655534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin: 63

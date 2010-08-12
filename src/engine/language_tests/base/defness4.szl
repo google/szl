@@ -1,0 +1,51 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Test for the special case of returning a never-defined variable from
+# local scope as a way to return an undefined value from a function.
+# This case should not generate a warning, despite the use of an undefined
+# variable.
+
+f: function(): int {
+  x: int;
+  return x;  # OK, no warning, assumed to be deliberate
+};
+
+g: function() {
+  y: int;
+  h: function(): int {
+    return y;  # warning, not a local variable
+  };
+};
+
+h: function(): int {
+  z: int;
+  z = 1;
+  return z;   # no warning, defined
+};
+
+i: function(): int {
+  w: int = 1;
+  ___undefine(w);
+  return w;   # warning, was defined at one time
+};
+
+j: function(): int {
+  v: int = 1/nrand(1);
+  if (def(v))
+    return v;
+  else
+    return v;   # warning, tried to define it, even if unsuccessful
+};

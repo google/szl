@@ -1,0 +1,44 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+s1: string;
+s2: string;
+s3: string;
+
+s1 = "日本語";
+s2 = "日本語";
+
+assert(s1 == s2);
+assert(s2 + s2 == s1 + s1);
+assert(s1[0:1] + s1[1:2] + s1[2:3] == s2);
+assert(s1[0:0] == "");
+assert(s1[0] == '日');
+s3 = s1;
+s3[0] = 'X';
+assert(s1[0] == '日');
+assert(s3[0] == 'X');
+assert(s1[1:3] == s2[1:3]);
+assert(s1[1:3] == s1[1:len(s1)]);
+assert(s1[1:$] == s1[1:len(s1)]);
+assert(s1[0:$] == s1);
+assert(s1[$-$:$] == s1);
+assert(s1[$-$:$/2] == s1[0:1]);
+
+# make sure characters don't become signed
+s4:string = { 0x7fff, 0x8000, 0x8001, 0xffff };
+assert(s4[0] == 0x7fff);
+assert(s4[1] == 0x8000);
+assert(s4[2] == 0x8001);
+assert(s4[3] == 0xffff);

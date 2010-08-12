@@ -1,0 +1,24 @@
+base/defness.szl:18: warning: variable a will always have an undefined value at this point
+base/defness.szl:19: warning: unnecessary def(): argument has value (x) which is known to be undefined
+base/defness.szl:24: warning: unnecessary def(): argument has value (false) which is known to be defined
+base/defness.szl:26: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:30: warning: unnecessary def(): argument has value (v) which is known to be defined
+base/defness.szl:32: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:36: warning: unnecessary def(): argument has value (0x0000000000000000P) which is known to be defined
+base/defness.szl:38: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:42: warning: unnecessary def(): argument has value (0.0) which is known to be defined
+base/defness.szl:44: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:48: warning: unnecessary def(): argument has value (0) which is known to be defined
+base/defness.szl:50: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:54: warning: unnecessary def(): argument has value ("") which is known to be defined
+base/defness.szl:56: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:60: warning: unnecessary def(): argument has value (0T) which is known to be defined
+base/defness.szl:62: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:66: warning: unnecessary def(): argument has value (v) which is known to be defined
+base/defness.szl:68: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:72: warning: unnecessary def(): argument has value (v) which is known to be defined
+base/defness.szl:74: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:78: warning: unnecessary def(): argument has value (v) which is known to be defined
+base/defness.szl:80: warning: unnecessary def(): argument has value (v) which is known to be undefined
+base/defness.szl:87: warning: unnecessary def(): argument has value (v) which is known to be defined
+base/defness.szl:99: warning: unnecessary def(): argument has value (v) which is known to be defined

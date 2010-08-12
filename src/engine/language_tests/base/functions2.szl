@@ -1,0 +1,119 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+type F = function(s: string): string;
+
+type T = { f0: F, f1: F };
+type A = array of F;
+type M = map [int] of F;
+
+f0: F {
+  return "f0: " + s;
+};
+
+f1: F {
+  return "f1: " + s;
+};
+
+# direct call
+assert(f0("f0") == "f0: f0");
+assert(f1("f1") == "f1: f1");
+
+# call from within a data structure
+t: T = { f0, f1 };
+a: A = new(array of F, 5, f0);
+a[1] = f1;
+m: M = { 0: f0, 1: f1 };
+
+assert(t.f0("t.f0") == "f0: t.f0");
+assert(t.f1("t.f1") == "f1: t.f1");
+
+expect: array of string = { "f0: a[0]", "f1: a[1]", "f0: a[2]", "f0: a[3]",
+                            "f0: a[4]" };
+for (i: int = 0; i < len(a); i++)
+  assert(a[i](format("a[%d]", i)) == expect[i]);
+
+assert(m[0]("m[0]") == "f0: m[0]");
+assert(m[1]("m[1]") == "f1: m[1]");
+
+# call from within a function
+g: function(f: F): string {
+  return f("from within g");
+};
+assert(g(f0) == "f0: from within g");
+assert(g(f1) == "f1: from within g");
+
+# call from within a data structure within a function
+h: function(f1: F) {
+  count: int = -1;
+  f0: F {
+    count++;
+    return format("%d. inside f0: %s", count, s);
+  };
+  
+  t: T = { f0, f1 };
+  a: A = new(array of F, 5, f0);
+  a[1] = f1;
+  m: M = { 0: f0, 1: f1 };
+
+  assert(t.f0("t.f0") == "0. inside f0: t.f0");
+  assert(t.f1("t.f1") == "f1: t.f1");
+
+  expect: array of string = { "1. inside f0: a[0]", "f1: a[1]",
+                              "2. inside f0: a[2]", "3. inside f0: a[3]",
+                              "4. inside f0: a[4]" };
+  for (i: int = 0; i < len(a); i++)
+    assert(a[i](format("a[%d]", i)) == expect[i]);
+
+  assert(m[0]("m[0]") == "5. inside f0: m[0]");
+  assert(m[1]("m[1]") == "f1: m[1]");
+
+  # call from within a function
+  g: function(f: F): string {
+    return f("from within g");
+  };
+  assert(g(f0) == "6. inside f0: from within g");
+  assert(g(f1) == "f1: from within g");
+};
+h(f1);
+
+# Reference to outer variable given intervening pure function
+# to verify that the context is set correctly.
+
+y: int = 2000;
+static z: int = 10000;
+
+f3: function(): int {
+  x: int = 123;
+  f4: function(): int {
+    f5: function(): int {
+      return x + y + z;
+    };
+    return f5();
+  };
+  return f4();
+};
+assert(f3() == 12123);
+
+assert(function(): int {
+  x: int = 456;
+  f7: function(): int {
+    f8: function(): int {
+      return x + y + z;
+    };
+    return f8();
+  };
+  return f7();
+}() == 12456);

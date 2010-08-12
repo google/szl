@@ -1,0 +1,10 @@
+type Pair = {a: int, b: int};
+type PairUtil = {type PairUtilHelper = {static CreateUndef: function(): Pair {
+	undef: Pair;
+	return undef;
+}
+}, static UndefPair: function(): Pair {
+	return PairUtil.PairUtilHelper.CreateUndef();
+}
+, static UndefPairAlias: function(): Pair = PairUtil.UndefPair};
+returning 33

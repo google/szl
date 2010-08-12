@@ -1,0 +1,2 @@
+misc/bytes_bad.szl:26: type mismatch: by0 (type bytes) == {97, 98, 99} (type incomplete)
+misc/bytes_bad.szl:32: type mismatch: by1 (type bytes) == {1, 2, 3} (type incomplete)

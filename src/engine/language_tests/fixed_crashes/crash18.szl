@@ -1,0 +1,29 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# When a string is allocated during static initialization and contains UTF-8,
+# an OffsetMap will be allocated.  The bug was that if the first index operation
+# occurred after static initialization, the OffsetMap of the string would be in
+# garbage-collected memory and the pointer to it would go stale at the first
+# garbage collection, triggering a crash.
+
+# This program is simple enough to trigger the bug in the pre-fixed code if
+# we first do
+#	export SAW_ARG="--pattern=グーグル"
+# and then run szl over a simple file of text.
+
+static saw_arg: string = getenv("SAW_ARG");
+a := string(saw_arg[0]);
+b := string(saw_arg[1]);

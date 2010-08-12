@@ -1,0 +1,7 @@
+proto/proto_types.szl:47: float is not an acceptable underlying type for int
+proto/proto_types.szl:52: expected protocol buffer type identifier; found '}'
+proto/proto_types.szl:57: int256 not valid for type of default value in protocol buffer
+proto/proto_types.szl:62: not a protocol buffer field; underlying type ignored
+proto/proto_types.szl:66: attempted to declare an underlying type for non-basic type T0
+proto/proto_types.szl:67: attempted to declare an underlying type for non-basic type {c: int @ 2}
+proto/proto_types.szl:69: attempted to declare an underlying type for non-basic type array of int

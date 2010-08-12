@@ -1,0 +1,5 @@
+a: array of string = {"1", "2", "3"};
+fp: fingerprint = fingerprintof(0);
+for (i: int = 0; i < len(a); i++)
+	fp = fp + fingerprintof(a[i]);
+assert(fp == fingerprintof(a));

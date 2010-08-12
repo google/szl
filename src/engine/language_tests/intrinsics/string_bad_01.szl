@@ -1,0 +1,63 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: bad string intrinsic function calls.
+
+#inst: not using usual function calling syntax.
+lowercase;
+uppercase;
+
+#inst: less number of arguments.
+lowercase();
+uppercase();
+
+#inst: more number of arguments.
+lowercase("ABC", "DEF");
+uppercase("abc", "def");
+
+#inst: type incompatible aggument.
+b0: bool = true;
+i0: int = 10;
+f0: float = 10.2;
+by0: bytes = "abc";
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+fg0: fingerprint = fingerprint("abc");
+
+a0: array of int = { 1, 2, 3 };
+m0: map [key: string] of int = { "A" : 65, "B" : 66 };
+p0: { x: int, y: string } = { 65, "A"};
+
+lowercase(b0);
+lowercase(i0);
+lowercase(f0);
+lowercase(by0);
+lowercase(t0);
+lowercase(fg0);
+lowercase(a0);
+lowercase(m0);
+lowercase(p0);
+
+uppercase(b0);
+uppercase(i0);
+uppercase(f0);
+uppercase(by0);
+uppercase(t0);
+uppercase(fg0);
+uppercase(a0);
+uppercase(m0);
+uppercase(p0);

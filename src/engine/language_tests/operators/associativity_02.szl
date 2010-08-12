@@ -1,0 +1,99 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Associativity for operator categories.
+
+# 7 operator categories
+#    selector
+#    unary
+#    multiplicative
+#    additive
+#    comparison
+#    conjunction
+#    disjunction
+
+ASSERT: function (condition: bool, msg: string): bool {
+  if (not condition) {
+    emit stdout <- msg;
+  }
+  return condition;
+};
+
+T: bool = true;
+F: bool = false;
+
+
+#inst: Associativity for additive operators.
+
+#test cases have been chosen keeping in mind the integer arithmetic.
+
+# "# = value" represent the value obtained by evaluating rhs of comp op.
+# first statement (in a group separated by \n) for operator combination 
+# show that the operator category is left associative, while second statement
+# show that the operator category is not right associative.
+# Note: we don't have second statement in all those cases where left 
+# associativity and right associativity will produce the same result with any
+# set of values. (eq. associativity b/w * and * operator).
+
+# + operator as the first operator.
+ASSERT((10+2+4) == ((10+2)+4), "(10+2+4) != ((10+2)+4)"); # = 16
+
+ASSERT((10+2-4) == ((10+2)-4), "(10+2-4) != ((10+2)-4)"); # = 8
+
+ASSERT((10+2|4) == ((10+2)|4), "(10+2|4) != ((10+2)|4)"); # = 12
+ASSERT((10+2|4) != (10+(2|4)), "(10+2|4) == (10+(2|4))"); # = 16
+
+ASSERT((10+2^4) == ((10+2)^4), "(10+2^4) != ((10+2)^4)"); # = 8
+ASSERT((10+2^4) != (10+(2^4)), "(10+2^4) == (10+(2^4))"); # = 16
+
+# - operator as the first operator.
+ASSERT((10-2+4) == ((10-2)+4), "(10-2+4) != ((10-2)+4)"); # = 8
+
+ASSERT((10-2-4) == ((10-2)-4), "(10-2-4) != ((10-2)-4)"); # = 4
+ASSERT((10-2-4) != (10-(2-4)), "(10-2-4) == ((10-(2-4))"); # = 12
+
+ASSERT((10-2|4) == ((10-2)|4), "(10-2|4) != ((10-2)|4)"); # = 12
+ASSERT((10-2|4) != (10-(2|4)), "(10-2|4) == (10-(2|4))"); # = 4
+
+ASSERT((10-2^4) == ((10-2)^4), "(10-2^4) != ((10-2)^4)"); # = 12
+ASSERT((10-2^4) != (10-(2^4)), "(10-2^4) == (10-(2^4))"); # = 4
+
+
+# | operator as the first operator.
+ASSERT((10|2+3) == ((10|2)+3), "(10|2+3) != ((10|2)+3)"); # = 13
+ASSERT((10|2+3) != (10|(2+3)), "(10|2+3) == ((10|(2+3))"); # = 15
+
+ASSERT((10|4-2) == ((10|4)-2), "(10|4-2) != ((10|4)-2)"); # = 12
+ASSERT((10|4-2) != (10|(4-2)), "(10|4-2) == ((10|(4-2))"); # = 10
+
+ASSERT((10|2|4) == ((10|2)|4), "(10|2|4) != ((10|2)|4)"); # = 12
+
+ASSERT((10|4^3) == ((10|4)^3), "(10|4^3) != ((10|4)^3)"); # = 13
+ASSERT((10|4^3) != (10|(4^3)), "(10|4^3) == (10|(4^3))"); # = 15
+
+# ^ operator as the first operator.
+ASSERT((10^2+3) == ((10^2)+3), "(10^2+3) != ((10^2)+3)"); # = 11
+ASSERT((10^2+3) != (10^(2+3)), "(10^2+3) == ((10^(2+3))"); # = 15
+
+ASSERT((10^4-2) == ((10^4)-2), "(10^4-2) != ((10^4)-2)"); # = 12
+ASSERT((10^4-2) != (10^(4-2)), "(10^4-2) == ((10^(4-2))"); # = 8
+
+ASSERT((12^2|4) == ((12^2)|4), "(12^2|4) != ((12^2)|4)"); # = 14
+ASSERT((12^2|4) != (12^(2|4)), "(12^2|4) == (12^(2|4))"); # = 14
+
+ASSERT((10^4^3) == ((10^4)^3), "(10^4^3) != ((10^4)^3)"); # = 13

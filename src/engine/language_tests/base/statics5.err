@@ -1,0 +1,8 @@
+Stack trace:
+  0. f: function(): int
+     i: int = <undefined>
+
+  1. no symbolic frame information (initialization frame?)
+     (use --v=1 for more details)
+
+szl: fatal: undefined value at base/statics5.szl:26: i == 0 (probably because "i" had not been defined)

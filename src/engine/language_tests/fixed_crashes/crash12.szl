@@ -1,0 +1,81 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Verify that emitted index, element and weight types have any embedded
+# tuple types marked as referenced.
+
+# Must use distinct types since each case must mark its tuple type as
+# referenced, and we could miss a failure of another case to mark its tuple
+# as referenced if we reuse the same tuple type.
+
+
+type T1 = proto { x: int = 1 @ 1 };
+t1: T1 = bytes("");
+tbl1: table collection of T1;
+emit tbl1 <- t1;
+
+type T2 = proto { x: int = 1 @ 1 };
+t2: T2 = bytes("");
+type AT2 = array of T2;
+at2: AT2 = { t2 };
+tbl2: table collection of AT2;
+emit tbl2 <- at2;
+
+type T3 = proto { x: int = 1 @ 1 };
+t3: T3 = bytes("");
+type MT3 =  map[T3] of T3;
+mt3: MT3 = { t3:t3 };
+tbl3: table collection of MT3;
+emit tbl3 <- mt3;
+
+
+type T4 = proto { x: int = 1 @ 1 };
+t4: T4 = bytes("");
+tbl4: table top(10)[T4] of int weight int;
+emit tbl4[t4] <- 0 weight 0;
+
+type T5 = proto { x: int = 1 @ 1 };
+t5: T5 = bytes("");
+type AT5 = array of T5;
+at5: AT5 = { t5 };
+tbl5: table top(10)[AT5] of int weight int;
+emit tbl5[at5] <- 0 weight 0;
+
+type T6 = proto { x: int = 1 @ 1 };
+t6: T6 = bytes("");
+type MT6 =  map[T6] of T6;
+mt6: MT6 = { t6:t6 };
+tbl6: table top(10)[MT6] of int weight int;
+emit tbl6[mt6] <- 0 weight 0;
+
+
+type T7 = proto { x: int = 1 @ 1 };
+t7: T7 = bytes("");
+tbl7: table top(10)[int] of int weight T7;
+emit tbl7[0] <- 0 weight t7;
+
+type T8 = proto { x: int = 1 @ 1 };
+t8: T8 = bytes("");
+type AT8 = array of T8;
+at8: AT8 = { t8 };
+tbl8: table top(10)[int] of int weight AT8;
+emit tbl8[0] <- 0 weight at8;
+
+type T9 = proto { x: int = 1 @ 1 };
+t9: T9 = bytes("");
+type MT9 =  map[T9] of T9;
+mt9: MT9 = { t9:t9 };
+tbl9: table top(10)[int] of int weight MT9;
+emit tbl9[0] <- 0 weight mt9;

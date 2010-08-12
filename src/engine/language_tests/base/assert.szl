@@ -1,0 +1,83 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+f := function(i: int) {
+  assert(false, "this should print a stack trace");
+};
+
+g := function(i: int) {
+  f(i);
+};
+
+g(23);
+
+# Test the rewriting of asserts containing different kinds of expressions.
+
+# Literals.
+# Two asserts with constant conditions that we do not rewrite.
+if (nrand(1) == 100) { assert(false, "always false"); }
+assert(true, "always true");
+
+# No message.  Not rewritten.
+assert(nrand(10) > -1);
+
+# Assertions with constant messages are not rewritten.  Test with one constant
+# message and one non-constant message.
+const_msg: string = "a literal";
+
+# Variables.
+bool_var: bool = nrand(10) > -1;
+string_var: string = function(): string { return "message variable"; }();
+assert(bool_var, const_msg);
+assert(bool_var, string_var);
+
+# Binary expressions.
+assert(nrand(10) > -1, const_msg);
+assert(nrand(10) > -1, "prefix" + "suffix");
+assert(nrand(10) > -1, string_var + string_var);
+
+# Calls.
+bool_fun: function(): bool { return true; };
+string_fun: function(): string { return "message from function"; };
+assert(bool_fun(), const_msg);
+assert(bool_fun(), string_fun());
+
+# Conversions.
+true_string_fun: function(): string { return "true"; };
+assert(convert(bool, true_string_fun()), const_msg);
+assert(convert(bool, true_string_fun()), convert(string, bool_var));
+
+# Index expressions.
+assert(new(array of bool, 1, true)[0], const_msg);
+assert(new(array of bool, 1, true)[0],
+       new(array of string, 1, "array message")[0]);
+
+# Selector expressions.
+t1: { condition: bool } = { true };
+t2: { message: string } = { "tuple_message" };
+assert(t1.condition, const_msg);
+assert(t1.condition, t2.message);
+
+# Statement expressions.
+assert(?{ result true; }, const_msg);
+assert(?{ result true; }, ?{ result "statement expression message"; });
+
+# Test visiting the children of an expression statement.
+function() { assert(bool_var, string_var); }();
+
+# Test an assertion within another assertion that are both rewritten.
+assert(?{ assert(bool_var, string_var); result bool_var; }, string_var);
+
+

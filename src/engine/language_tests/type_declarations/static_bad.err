@@ -1,0 +1,10 @@
+type_declarations/static_bad.szl:24: static variable x must be initialized
+type_declarations/static_bad.szl:25: x is static; cannot assign to it
+type_declarations/static_bad.szl:29: a is static; cannot assign to it
+type_declarations/static_bad.szl:30: a[0] is static; cannot assign to it
+type_declarations/static_bad.szl:33: static variable aa must be initialized
+type_declarations/static_bad.szl:34: aa[0] is static; cannot assign to it
+type_declarations/static_bad.szl:39: t is static; cannot assign to it
+type_declarations/static_bad.szl:40: t.i is static; cannot assign to it
+type_declarations/static_bad.szl:44: m[4] is static; cannot assign to it
+type_declarations/static_bad.szl:45: m[3] is static; cannot assign to it

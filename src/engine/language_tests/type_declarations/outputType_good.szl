@@ -1,0 +1,819 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Well-formed output types.
+# Types are not allowed as expression statements, so we use type declarations.
+#
+# Table types consist of the following features:
+#   kind (required)
+#   parameter (optional)
+#   indices (repeated)
+#   element (required)
+#   weight (optional)
+#   format attribute (optional)
+#   file/proc attribute (optional)
+#
+# File structure:
+#   Test cases are grouped by feature from the listed above and include all
+#   tables that support it.
+#
+#   For features that don't have a type, we list all tables per test case:
+#
+#     # <Component>: test case description
+#     ... helper declarations (if any) ...
+#     type OABcotst = table ...
+#     ...
+#     type OXYcotst = table ...
+#
+#   For features that are typed, we list all types and group by table kind:
+#     
+#     # <Component>: <table_kind> test case description
+#     ...
+#     type OTKcotst = ... s: string ...
+#     ...
+#     type OTKcotst = ... m: map ...
+#
+# Naming convention:
+#   type name
+#     O<KI><co><tst>
+#       O   - "0" for output type
+#       KI  - 2-letter abbreviation of the table kind
+#       co  - 1-2-letter abbreviation of the component
+#       tst - abbreviation of the test case
+#
+#   component identifiers
+#     defaults for required components - indicating no affect on the test case
+#       i: int - for index
+#       e: int - for element
+#       w: int - for weight
+#     indicating testing of various types
+#       s: string
+#       i: int
+#       f: float
+#       p: fingerprint
+#       t: time
+#       x: bytes
+#       b: bool
+#       T: { s: string, i: int, f: float }
+#       P: proto { b: bytes, i: int, f: float }
+#       A: array of int
+#       M: map[string] of int
+#       F: function()
+
+# Parameter: integer literals
+type OSApl = table sample(10) of e: int;
+type OTOpl = table top(10) of e: int weight w: int;
+type OMApl = table maximum(10) of e: int weight w: int;
+type OMIpl = table minimum(10) of e: int weight w: int;
+type OUNpl = table unique(10) of e: int;
+type OSEpl = table set(10) of e: int;
+type OQUpl = table quantile(10) of e: int;
+type ODIpl = table distinctsample(10) of e: int weight w: int;
+type OINpl = table inversehistogram(10) of e: int weight w: int;
+type OWEpl = table weightedsample(10) of e: int weight w: int;
+type OREpl = table recordio(10) of e: int;
+
+# Parameter: integer constant variables
+static kInt: int = 10;
+type OSApv = table sample(kInt) of e: int;
+type OTOpv = table top(kInt) of e: int weight w: int;
+type OMApv = table maximum(kInt) of e: int weight w: int;
+type OMIpv = table minimum(kInt) of e: int weight w: int;
+type OUNpv = table unique(kInt) of e: int;
+type OSEpv = table set(kInt) of e: int;
+type OQUpv = table quantile(kInt) of e: int;
+type ODIpv = table distinctsample(kInt) of e: int weight w: int;
+type OINpv = table inversehistogram(kInt) of e: int weight w: int;
+type OWEpv = table weightedsample(kInt) of e: int weight w: int;
+type OREpv = table recordio(kInt) of e: int;
+
+# Parameter: foldable binary expression
+type OSApe = table sample(10 * 3 + 8 / 2) of e: int;
+type OTOpe = table top(10 * 3 + 8 / 2) of e: int weight w: int;
+type OMApe = table maximum(10 * 3 + 8 / 2) of e: int weight w: int;
+type OMIpe = table minimum(10 * 3 + 8 / 2) of e: int weight w: int;
+type OUNpe = table unique(10 * 3 + 8 / 2) of e: int;
+type OSEpe = table set(10 * 3 + 8 / 2) of e: int;
+type OQUpe = table quantile(10 * 3 + 8 / 2) of e: int;
+type ODIpe = table distinctsample(10 * 3 + 8 / 2) of e: int weight w: int;
+type OINpe = table inversehistogram(10 * 3 + 8 / 2) of e: int weight w: int;
+type OWEpe = table weightedsample(10 * 3 + 8 / 2) of e: int weight w: int;
+type OREpe = table recordio(10 * 3 + 8 / 2) of e: int;
+
+# Parameter: foldable binary expression with variables
+static kInt1 := 10 * 3;
+static kInt2 := 8 / 2;
+type OSApev = table sample(kInt1 + kInt2 + 5) of e: int;
+type OTOpev = table top(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OMApev = table maximum(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OMIpev = table minimum(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OUNpev = table unique(kInt1 + kInt2 + 5) of e: int;
+type OSEpev = table set(kInt1 + kInt2 + 5) of e: int;
+type OQUpev = table quantile(kInt1 + kInt2 + 5) of e: int;
+type ODIpev = table distinctsample(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OINpev = table inversehistogram(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OWEpev = table weightedsample(kInt1 + kInt2 + 5) of e: int weight w: int;
+type OREpev = table recordio(kInt1 + kInt2 + 5) of e: int;
+
+# Parameter: foldable conversion
+type OSApc = table sample(int("10", 10)) of e: int;
+type OTOpc = table top(int("10", 10)) of e: int weight w: int;
+type OMApc = table maximum(int("10", 10)) of e: int weight w: int;
+type OMIpc = table minimum(int("10", 10)) of e: int weight w: int;
+type OUNpc = table unique(int("10", 10)) of e: int;
+type OSEpc = table set(int("10", 10)) of e: int;
+type OQUpc = table quantile(int("10", 10)) of e: int;
+type ODIpc = table distinctsample(int("10", 10)) of e: int weight w: int;
+type OINpc = table inversehistogram(int("10", 10)) of e: int weight w: int;
+type OWEpc = table weightedsample(int("10", 10)) of e: int weight w: int;
+type OREpc = table recordio(int("10", 10)) of e: int;
+
+# Parameter: foldable conversion with variables
+static kBool := (10 == 10);
+type OSApcv = table sample(int(kBool)) of e: int;
+type OTOpcv = table top(int(kBool)) of e: int weight w: int;
+type OMApcv = table maximum(int(kBool)) of e: int weight w: int;
+type OMIpcv = table minimum(int(kBool)) of e: int weight w: int;
+type OUNpcv = table unique(int(kBool)) of e: int;
+type OSEpcv = table set(int(kBool)) of e: int;
+type OQUpcv = table quantile(int(kBool)) of e: int;
+type ODIpcv = table distinctsample(int(kBool)) of e: int weight w: int;
+type OINpcv = table inversehistogram(int(kBool)) of e: int weight w: int;
+type OWEpcv = table weightedsample(int(kBool)) of e: int weight w: int;
+type OREpcv = table recordio(int(kBool)) of e: int;
+
+# Parameter: foldable intrinsic call
+type OSApi = table sample(abs(-1 * 5)) of e: int;
+type OTOpi = table top(abs(-1 * 5)) of e: int weight w: int;
+type OMApi = table maximum(abs(-1 * 5)) of e: int weight w: int;
+type OMIpi = table minimum(abs(-1 * 5)) of e: int weight w: int;
+type OUNpi = table unique(abs(-1 * 5)) of e: int;
+type OSEpi = table set(abs(-1 * 5)) of e: int;
+type OQUpi = table quantile(abs(-1 * 5)) of e: int;
+type ODIpi = table distinctsample(abs(-1 * 5)) of e: int weight w: int;
+type OINpi = table inversehistogram(abs(-1 * 5)) of e: int weight w: int;
+type OWEpi = table weightedsample(abs(-1 * 5)) of e: int weight w: int;
+type OREpi = table recordio(abs(-1 * 5)) of e: int;
+
+# Parameter: foldable intrinsic call with variables
+static kNegInt := int(-1.0 * 5.0);
+type OSApiv = table sample(abs(kNegInt)) of e: int;
+type OTOpiv = table top(abs(kNegInt)) of e: int weight w: int;
+type OMApiv = table maximum(abs(kNegInt)) of e: int weight w: int;
+type OMIpiv = table minimum(abs(kNegInt)) of e: int weight w: int;
+type OUNpiv = table unique(abs(kNegInt)) of e: int;
+type OSEpiv = table set(abs(kNegInt)) of e: int;
+type OQUpiv = table quantile(abs(kNegInt)) of e: int;
+type ODIpiv = table distinctsample(abs(kNegInt)) of e: int weight w: int;
+type OINpiv = table inversehistogram(abs(kNegInt)) of e: int weight w: int;
+type OWEpiv = table weightedsample(abs(kNegInt)) of e: int weight w: int;
+type OREpiv = table recordio(abs(kNegInt)) of e: int;
+
+# Parameter: expressions that require run-time evaluation
+static kNow := int(now());
+static kUserLen := len(getenv("USER"));
+type OSAprt = table sample(min(3, kNow)) of e: int;
+type OTOprt = table top(kNow / kNow) of e: int weight w: int;
+type OMAprt = table maximum(min(3, kUserLen)) of e: int weight w: int;
+type OMIprt = table minimum(kUserLen / kUserLen) of e: int weight w: int;
+type OUNprt = table unique(function(): int { return 3; }()) of e: int;
+type OSEprt = table set(function(): int { return 1+1; }()) of e: int;
+type OQUprt = table quantile(new(array of int, 5, 5)[0]) of e: int;
+type ODIprt = table distinctsample(len(new(array of int, 3, 3))) of e: int weight w: int;
+type OINprt = table inversehistogram(int(rand()) + 2) of e: int weight w: int;
+type OWEprt = table weightedsample(int(rand()) + 2) of e: int weight w: int;
+type OREprt = table recordio(int(rand())) of e: int;
+
+# Index: collection with different index types
+type OCOis = table collection[s: string] of e: int;
+type OCOii = table collection[i: int] of e: int;
+type OCOif = table collection[f: float] of e: int;
+type OCOip = table collection[p: fingerprint] of e: int;
+type OCOit = table collection[t: time] of e: int;
+type OCOix = table collection[x: bytes] of e: int;
+type OCOib = table collection[b: bool] of e: int;
+type OCOiT = table collection[T: { s: string, i: int, f: float }] of e: int;
+type OCOiP = table collection[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OCOiA = table collection[A: array of int] of e: int;
+type OCOiM = table collection[M: map[string] of int] of e: int;
+
+# Index: sample with different index types
+type OSAis = table sample(10)[s: string] of e: int;
+type OSAii = table sample(10)[i: int] of e: int;
+type OSAif = table sample(10)[f: float] of e: int;
+type OSAip = table sample(10)[p: fingerprint] of e: int;
+type OSAit = table sample(10)[t: time] of e: int;
+type OSAix = table sample(10)[x: bytes] of e: int;
+type OSAib = table sample(10)[b: bool] of e: int;
+type OSAiT = table sample(10)[T: { s: string, i: int, f: float }] of e: int;
+type OSAiP = table sample(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OSAiA = table sample(10)[A: array of int] of e: int;
+type OSAiM = table sample(10)[M: map[string] of int] of e: int;
+
+# Index: sum with different index types
+type OSUis = table sum[s: string] of e: int;
+type OSUii = table sum[i: int] of e: int;
+type OSUif = table sum[f: float] of e: int;
+type OSUip = table sum[p: fingerprint] of e: int;
+type OSUit = table sum[t: time] of e: int;
+type OSUix = table sum[x: bytes] of e: int;
+type OSUib = table sum[b: bool] of e: int;
+type OSUiT = table sum[T: { s: string, i: int, f: float }] of e: int;
+type OSUiP = table sum[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OSUiA = table sum[A: array of int] of e: int;
+type OSUiM = table sum[M: map[string] of int] of e: int;
+
+# Index: top with different index types
+type OTOis = table top(10)[s: string] of e: int weight w: int;
+type OTOii = table top(10)[i: int] of e: int weight w: int;
+type OTOif = table top(10)[f: float] of e: int weight w: int;
+type OTOip = table top(10)[p: fingerprint] of e: int weight w: int;
+type OTOit = table top(10)[t: time] of e: int weight w: int;
+type OTOix = table top(10)[x: bytes] of e: int weight w: int;
+type OTOib = table top(10)[b: bool] of e: int weight w: int;
+type OTOiT = table top(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type OTOiP = table top(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type OTOiA = table top(10)[A: array of int] of e: int weight w: int;
+type OTOiM = table top(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: maximum with different index types
+type OMAis = table maximum(10)[s: string] of e: int weight w: int;
+type OMAii = table maximum(10)[i: int] of e: int weight w: int;
+type OMAif = table maximum(10)[f: float] of e: int weight w: int;
+type OMAip = table maximum(10)[p: fingerprint] of e: int weight w: int;
+type OMAit = table maximum(10)[t: time] of e: int weight w: int;
+type OMAix = table maximum(10)[x: bytes] of e: int weight w: int;
+type OMAib = table maximum(10)[b: bool] of e: int weight w: int;
+type OMAiT = table maximum(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type OMAiP = table maximum(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type OMAiA = table maximum(10)[A: array of int] of e: int weight w: int;
+type OMAiM = table maximum(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: minimum with different index types
+type OMIis = table minimum(10)[s: string] of e: int weight w: int;
+type OMIii = table minimum(10)[i: int] of e: int weight w: int;
+type OMIif = table minimum(10)[f: float] of e: int weight w: int;
+type OMIip = table minimum(10)[p: fingerprint] of e: int weight w: int;
+type OMIit = table minimum(10)[t: time] of e: int weight w: int;
+type OMIix = table minimum(10)[x: bytes] of e: int weight w: int;
+type OMIib = table minimum(10)[b: bool] of e: int weight w: int;
+type OMIiT = table minimum(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type OMIiP = table minimum(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type OMIiA = table minimum(10)[A: array of int] of e: int weight w: int;
+type OMIiM = table minimum(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: unique with different index types
+type OUNis = table unique(10)[s: string] of e: int;
+type OUNii = table unique(10)[i: int] of e: int;
+type OUNif = table unique(10)[f: float] of e: int;
+type OUNip = table unique(10)[p: fingerprint] of e: int;
+type OUNit = table unique(10)[t: time] of e: int;
+type OUNix = table unique(10)[x: bytes] of e: int;
+type OUNib = table unique(10)[b: bool] of e: int;
+type OUNiT = table unique(10)[T: { s: string, i: int, f: float }] of e: int;
+type OUNiP = table unique(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OUNiA = table unique(10)[A: array of int] of e: int;
+type OUNiM = table unique(10)[M: map[string] of int] of e: int;
+
+# Index: set with different index types
+type OSEis = table set(10)[s: string] of e: int;
+type OSEii = table set(10)[i: int] of e: int;
+type OSEif = table set(10)[f: float] of e: int;
+type OSEip = table set(10)[p: fingerprint] of e: int;
+type OSEit = table set(10)[t: time] of e: int;
+type OSEix = table set(10)[x: bytes] of e: int;
+type OSEib = table set(10)[b: bool] of e: int;
+type OSEiT = table set(10)[T: { s: string, i: int, f: float }] of e: int;
+type OSEiP = table set(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OSEiA = table set(10)[A: array of int] of e: int;
+type OSEiM = table set(10)[M: map[string] of int] of e: int;
+
+# Index: quantile with different index types
+type OQUis = table quantile(10)[s: string] of e: int;
+type OQUii = table quantile(10)[i: int] of e: int;
+type OQUif = table quantile(10)[f: float] of e: int;
+type OQUip = table quantile(10)[p: fingerprint] of e: int;
+type OQUit = table quantile(10)[t: time] of e: int;
+type OQUix = table quantile(10)[x: bytes] of e: int;
+type OQUib = table quantile(10)[b: bool] of e: int;
+type OQUiT = table quantile(10)[T: { s: string, i: int, f: float }] of e: int;
+type OQUiP = table quantile(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OQUiA = table quantile(10)[A: array of int] of e: int;
+type OQUiM = table quantile(10)[M: map[string] of int] of e: int;
+
+# Index: distinctsample with different index types
+type ODIis = table distinctsample(10)[s: string] of e: int weight w: int;
+type ODIii = table distinctsample(10)[i: int] of e: int weight w: int;
+type ODIif = table distinctsample(10)[f: float] of e: int weight w: int;
+type ODIip = table distinctsample(10)[p: fingerprint] of e: int weight w: int;
+type ODIit = table distinctsample(10)[t: time] of e: int weight w: int;
+type ODIix = table distinctsample(10)[x: bytes] of e: int weight w: int;
+type ODIib = table distinctsample(10)[b: bool] of e: int weight w: int;
+type ODIiT = table distinctsample(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type ODIiP = table distinctsample(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type ODIiA = table distinctsample(10)[A: array of int] of e: int weight w: int;
+type ODIiM = table distinctsample(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: inversehistogram with different index types
+type OINis = table inversehistogram(10)[s: string] of e: int weight w: int;
+type OINii = table inversehistogram(10)[i: int] of e: int weight w: int;
+type OINif = table inversehistogram(10)[f: float] of e: int weight w: int;
+type OINip = table inversehistogram(10)[p: fingerprint] of e: int weight w: int;
+type OINit = table inversehistogram(10)[t: time] of e: int weight w: int;
+type OINix = table inversehistogram(10)[x: bytes] of e: int weight w: int;
+type OINib = table inversehistogram(10)[b: bool] of e: int weight w: int;
+type OINiT = table inversehistogram(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type OINiP = table inversehistogram(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type OINiA = table inversehistogram(10)[A: array of int] of e: int weight w: int;
+type OINiM = table inversehistogram(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: weightedsample with different index types
+type OWEis = table weightedsample(10)[s: string] of e: int weight w: int;
+type OWEii = table weightedsample(10)[i: int] of e: int weight w: int;
+type OWEif = table weightedsample(10)[f: float] of e: int weight w: int;
+type OWEip = table weightedsample(10)[p: fingerprint] of e: int weight w: int;
+type OWEit = table weightedsample(10)[t: time] of e: int weight w: int;
+type OWEix = table weightedsample(10)[x: bytes] of e: int weight w: int;
+type OWEib = table weightedsample(10)[b: bool] of e: int weight w: int;
+type OWEiT = table weightedsample(10)[T: { s: string, i: int, f: float }] of e: int weight w: int;
+type OWEiP = table weightedsample(10)[P: proto { b: bytes, i: int, f: float }] of e: int weight w: int;
+type OWEiA = table weightedsample(10)[A: array of int] of e: int weight w: int;
+type OWEiM = table weightedsample(10)[M: map[string] of int] of e: int weight w: int;
+
+# Index: recordio with different index types
+type OREis = table recordio(10)[s: string] of e: int;
+type OREii = table recordio(10)[i: int] of e: int;
+type OREif = table recordio(10)[f: float] of e: int;
+type OREip = table recordio(10)[p: fingerprint] of e: int;
+type OREit = table recordio(10)[t: time] of e: int;
+type OREix = table recordio(10)[x: bytes] of e: int;
+type OREib = table recordio(10)[b: bool] of e: int;
+type OREiT = table recordio(10)[T: { s: string, i: int, f: float }] of e: int;
+type OREiP = table recordio(10)[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OREiA = table recordio(10)[A: array of int] of e: int;
+type OREiM = table recordio(10)[M: map[string] of int] of e: int;
+
+# Index: text with different index types
+type OTEis = table text[s: string] of e: int;
+type OTEii = table text[i: int] of e: int;
+type OTEif = table text[f: float] of e: int;
+type OTEip = table text[p: fingerprint] of e: int;
+type OTEit = table text[t: time] of e: int;
+type OTEix = table text[x: bytes] of e: int;
+type OTEib = table text[b: bool] of e: int;
+type OTEiT = table text[T: { s: string, i: int, f: float }] of e: int;
+type OTEiP = table text[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OTEiA = table text[A: array of int] of e: int;
+type OTEiM = table text[M: map[string] of int] of e: int;
+
+# Index: mrcounter with different index types
+type OMRis = table mrcounter[s: string] of e: int;
+type OMRii = table mrcounter[i: int] of e: int;
+type OMRif = table mrcounter[f: float] of e: int;
+type OMRip = table mrcounter[p: fingerprint] of e: int;
+type OMRit = table mrcounter[t: time] of e: int;
+type OMRix = table mrcounter[x: bytes] of e: int;
+type OMRib = table mrcounter[b: bool] of e: int;
+type OMRiT = table mrcounter[T: { s: string, i: int, f: float }] of e: int;
+type OMRiP = table mrcounter[P: proto { b: bytes, i: int, f: float }] of e: int;
+type OMRiA = table mrcounter[A: array of int] of e: int;
+type OMRiM = table mrcounter[M: map[string] of int] of e: int;
+
+# Index: no identifier
+type OCOi = table collection[int] of e: int;
+type OSAi = table sample(10)[int] of e: int;
+type OSUi = table sum[int] of e: int;
+type OTOi = table top(10)[int] of e: int weight w: int;
+type OMAi = table maximum(10)[int] of e: int weight w: int;
+type OMIi = table minimum(10)[int] of e: int weight w: int;
+type OUNi = table unique(10)[int] of e: int;
+type OSEi = table set(10)[int] of e: int;
+type OQUi = table quantile(10)[int] of e: int;
+type ODIi = table distinctsample(10)[int] of e: int weight w: int;
+type OINi = table inversehistogram(10)[int] of e: int weight w: int;
+type OWEi = table weightedsample(10)[int] of e: int weight w: int;
+
+type OREi = table recordio(10)[int] of e: int;
+type OTEi = table text[int] of e: int;
+type OMRi = table mrcounter[int] of e: int;
+
+# Element: collection with different element types
+type OCOes = table collection of s: string;
+type OCOei = table collection of i: int;
+type OCOef = table collection of f: float;
+type OCOep = table collection of p: fingerprint;
+type OCOet = table collection of t: time;
+type OCOex = table collection of x: bytes;
+type OCOeb = table collection of b: bool;
+type OCOeT = table collection of T: { s: string, i: int, f: float };
+type OCOeP = table collection of P: proto { b: bytes, i: int, f: float };
+type OCOeA = table collection of A: array of int;
+type OCOeM = table collection of M: map[string] of int;
+
+# Element: sample with different element types
+type OSAes = table sample(10) of s: string;
+type OSAei = table sample(10) of i: int;
+type OSAef = table sample(10) of f: float;
+type OSAep = table sample(10) of p: fingerprint;
+type OSAet = table sample(10) of t: time;
+type OSAex = table sample(10) of x: bytes;
+type OSAeb = table sample(10) of b: bool;
+type OSAeT = table sample(10) of T: { s: string, i: int, f: float };
+type OSAeP = table sample(10) of P: proto { b: bytes, i: int, f: float };
+type OSAeA = table sample(10) of A: array of int;
+type OSAeM = table sample(10) of M: map[string] of int;
+
+# Element: sum with different element types
+type OSUes = table sum of s: string;
+type OSUei = table sum of i: int;
+type OSUef = table sum of f: float;
+type OSUep = table sum of p: fingerprint;
+type OSUet = table sum of t: time;
+type OSUex = table sum of x: bytes;
+type OSUeb = table sum of b: bool;
+type OSUeT = table sum of T: { s: string, i: int, f: float };
+type OSUeP = table sum of P: proto { b: bytes, i: int, f: float };
+type OSUeA = table sum of A: array of int;
+type OSUeM = table sum of M: map[string] of int;
+
+# Element: top with different element types
+type OTOes = table top(10) of s: string weight w: int;
+type OTOei = table top(10) of i: int weight w: int;
+type OTOef = table top(10) of f: float weight w: int;
+type OTOep = table top(10) of p: fingerprint weight w: int;
+type OTOet = table top(10) of t: time weight w: int;
+type OTOex = table top(10) of x: bytes weight w: int;
+type OTOeb = table top(10) of b: bool weight w: int;
+type OTOeT = table top(10) of T: { s: string, i: int, f: float } weight w: int;
+type OTOeP = table top(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type OTOeA = table top(10) of A: array of int weight w: int;
+type OTOeM = table top(10) of M: map[string] of int weight w: int;
+
+# Element: maximum with different element types
+type OMAes = table maximum(10) of s: string weight w: int;
+type OMAei = table maximum(10) of i: int weight w: int;
+type OMAef = table maximum(10) of f: float weight w: int;
+type OMAep = table maximum(10) of p: fingerprint weight w: int;
+type OMAet = table maximum(10) of t: time weight w: int;
+type OMAex = table maximum(10) of x: bytes weight w: int;
+type OMAeb = table maximum(10) of b: bool weight w: int;
+type OMAeT = table maximum(10) of T: { s: string, i: int, f: float } weight w: int;
+type OMAeP = table maximum(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type OMAeA = table maximum(10) of A: array of int weight w: int;
+type OMAeM = table maximum(10) of M: map[string] of int weight w: int;
+
+# Element: minimum with different element types
+type OMIes = table minimum(10) of s: string weight w: int;
+type OMIei = table minimum(10) of i: int weight w: int;
+type OMIef = table minimum(10) of f: float weight w: int;
+type OMIep = table minimum(10) of p: fingerprint weight w: int;
+type OMIet = table minimum(10) of t: time weight w: int;
+type OMIex = table minimum(10) of x: bytes weight w: int;
+type OMIeb = table minimum(10) of b: bool weight w: int;
+type OMIeT = table minimum(10) of T: { s: string, i: int, f: float } weight w: int;
+type OMIeP = table minimum(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type OMIeA = table minimum(10) of A: array of int weight w: int;
+type OMIeM = table minimum(10) of M: map[string] of int weight w: int;
+
+# Element: unique with different element types
+type OUNes = table unique(10) of s: string;
+type OUNei = table unique(10) of i: int;
+type OUNef = table unique(10) of f: float;
+type OUNep = table unique(10) of p: fingerprint;
+type OUNet = table unique(10) of t: time;
+type OUNex = table unique(10) of x: bytes;
+type OUNeb = table unique(10) of b: bool;
+type OUNeT = table unique(10) of T: { s: string, i: int, f: float };
+type OUNeP = table unique(10) of P: proto { b: bytes, i: int, f: float };
+type OUNeA = table unique(10) of A: array of int;
+type OUNeM = table unique(10) of M: map[string] of int;
+
+# Element: set with different element types
+type OSEes = table set(10) of s: string;
+type OSEei = table set(10) of i: int;
+type OSEef = table set(10) of f: float;
+type OSEep = table set(10) of p: fingerprint;
+type OSEet = table set(10) of t: time;
+type OSEex = table set(10) of x: bytes;
+type OSEeb = table set(10) of b: bool;
+type OSEeT = table set(10) of T: { s: string, i: int, f: float };
+type OSEeP = table set(10) of P: proto { b: bytes, i: int, f: float };
+type OSEeA = table set(10) of A: array of int;
+type OSEeM = table set(10) of M: map[string] of int;
+
+# Element: quantile with different element types
+type OQUes = table quantile(10) of s: string;
+type OQUei = table quantile(10) of i: int;
+type OQUef = table quantile(10) of f: float;
+type OQUep = table quantile(10) of p: fingerprint;
+type OQUet = table quantile(10) of t: time;
+type OQUex = table quantile(10) of x: bytes;
+type OQUeb = table quantile(10) of b: bool;
+type OQUeT = table quantile(10) of T: { s: string, i: int, f: float };
+type OQUeP = table quantile(10) of P: proto { b: bytes, i: int, f: float };
+type OQUeA = table quantile(10) of A: array of int;
+type OQUeM = table quantile(10) of M: map[string] of int;
+
+# Element: distinctsample with different element types
+type ODIes = table distinctsample(10) of s: string weight w: int;
+type ODIei = table distinctsample(10) of i: int weight w: int;
+type ODIef = table distinctsample(10) of f: float weight w: int;
+type ODIep = table distinctsample(10) of p: fingerprint weight w: int;
+type ODIet = table distinctsample(10) of t: time weight w: int;
+type ODIex = table distinctsample(10) of x: bytes weight w: int;
+type ODIeb = table distinctsample(10) of b: bool weight w: int;
+type ODIeT = table distinctsample(10) of T: { s: string, i: int, f: float } weight w: int;
+type ODIeP = table distinctsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type ODIeA = table distinctsample(10) of A: array of int weight w: int;
+type ODIeM = table distinctsample(10) of M: map[string] of int weight w: int;
+
+# Element: inversehistogram with different element types
+type OINes = table inversehistogram(10) of s: string weight w: int;
+type OINei = table inversehistogram(10) of i: int weight w: int;
+type OINef = table inversehistogram(10) of f: float weight w: int;
+type OINep = table inversehistogram(10) of p: fingerprint weight w: int;
+type OINet = table inversehistogram(10) of t: time weight w: int;
+type OINex = table inversehistogram(10) of x: bytes weight w: int;
+type OINeb = table inversehistogram(10) of b: bool weight w: int;
+type OINeT = table inversehistogram(10) of T: { s: string, i: int, f: float } weight w: int;
+type OINeP = table inversehistogram(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type OINeA = table inversehistogram(10) of A: array of int weight w: int;
+type OINeM = table inversehistogram(10) of M: map[string] of int weight w: int;
+
+# Element: weightedsample with different element types
+type OWEes = table weightedsample(10) of s: string weight w: int;
+type OWEei = table weightedsample(10) of i: int weight w: int;
+type OWEef = table weightedsample(10) of f: float weight w: int;
+type OWEep = table weightedsample(10) of p: fingerprint weight w: int;
+type OWEet = table weightedsample(10) of t: time weight w: int;
+type OWEex = table weightedsample(10) of x: bytes weight w: int;
+type OWEeb = table weightedsample(10) of b: bool weight w: int;
+type OWEeT = table weightedsample(10) of T: { s: string, i: int, f: float } weight w: int;
+type OWEeP = table weightedsample(10) of P: proto { b: bytes, i: int, f: float } weight w: int;
+type OWEeA = table weightedsample(10) of A: array of int weight w: int;
+type OWEeM = table weightedsample(10) of M: map[string] of int weight w: int;
+
+# Element: recordio with different element types
+type OREes = table recordio(10) of s: string;
+type OREei = table recordio(10) of i: int;
+type OREef = table recordio(10) of f: float;
+type OREep = table recordio(10) of p: fingerprint;
+type OREet = table recordio(10) of t: time;
+type OREex = table recordio(10) of x: bytes;
+type OREeb = table recordio(10) of b: bool;
+type OREeT = table recordio(10) of T: { s: string, i: int, f: float };
+type OREeP = table recordio(10) of P: proto { b: bytes, i: int, f: float };
+type OREeA = table recordio(10) of A: array of int;
+type OREeM = table recordio(10) of M: map[string] of int;
+
+# Element: text with different element types
+type OTEes = table text of s: string;
+type OTEei = table text of i: int;
+type OTEef = table text of f: float;
+type OTEep = table text of p: fingerprint;
+type OTEet = table text of t: time;
+type OTEex = table text of x: bytes;
+type OTEeb = table text of b: bool;
+type OTEeT = table text of T: { s: string, i: int, f: float };
+type OTEeP = table text of P: proto { b: bytes, i: int, f: float };
+type OTEeA = table text of A: array of int;
+type OTEeM = table text of M: map[string] of int;
+
+# Element: mrcounter with different element types
+type OMRes = table mrcounter of s: string;
+type OMRei = table mrcounter of i: int;
+type OMRef = table mrcounter of f: float;
+type OMRep = table mrcounter of p: fingerprint;
+type OMRet = table mrcounter of t: time;
+type OMRex = table mrcounter of x: bytes;
+type OMReb = table mrcounter of b: bool;
+type OMReT = table mrcounter of T: { s: string, i: int, f: float };
+type OMReP = table mrcounter of P: proto { b: bytes, i: int, f: float };
+type OMReA = table mrcounter of A: array of int;
+type OMReM = table mrcounter of M: map[string] of int;
+
+# Element: no identifier
+type OCOe = table collection of int;
+type OSAe = table sample(10) of int;
+type OSUe = table sum of int;
+type OTOe = table top(10) of int weight w: int;
+type OMAe = table maximum(10) of int weight w: int;
+type OMIe = table minimum(10) of int weight w: int;
+type OUNe = table unique(10) of int;
+type OSEe = table set(10) of int;
+type OQUe = table quantile(10) of int;
+type ODIe = table distinctsample(10) of int weight w: int;
+type OINe = table inversehistogram(10) of int weight w: int;
+type OWEe = table weightedsample(10) of int weight w: int;
+
+type OREe = table recordio(10) of int;
+type OTEe = table text of int;
+type OMRe = table mrcounter of int;
+
+# Weight: top with different weight types
+type OTOws = table top(10) of e: int weight s: string;
+type OTOwi = table top(10) of e: int weight i: int;
+type OTOwf = table top(10) of e: int weight f: float;
+type OTOwp = table top(10) of e: int weight p: fingerprint;
+type OTOwt = table top(10) of e: int weight t: time;
+type OTOwx = table top(10) of e: int weight x: bytes;
+type OTOwb = table top(10) of e: int weight b: bool;
+type OTOwT = table top(10) of e: int weight T: { s: string, i: int, f: float };
+type OTOwP = table top(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type OTOwA = table top(10) of e: int weight A: array of int;
+type OTOwM = table top(10) of e: int weight M: map[string] of int;
+
+# Weight: maximum with different weight types
+type OMAws = table maximum(10) of e: int weight s: string;
+type OMAwi = table maximum(10) of e: int weight i: int;
+type OMAwf = table maximum(10) of e: int weight f: float;
+type OMAwp = table maximum(10) of e: int weight p: fingerprint;
+type OMAwt = table maximum(10) of e: int weight t: time;
+type OMAwx = table maximum(10) of e: int weight x: bytes;
+type OMAwb = table maximum(10) of e: int weight b: bool;
+type OMAwT = table maximum(10) of e: int weight T: { s: string, i: int, f: float };
+type OMAwP = table maximum(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type OMAwA = table maximum(10) of e: int weight A: array of int;
+type OMAwM = table maximum(10) of e: int weight M: map[string] of int;
+
+# Weight: minimum with different weight types
+type OMIws = table minimum(10) of e: int weight s: string;
+type OMIwi = table minimum(10) of e: int weight i: int;
+type OMIwf = table minimum(10) of e: int weight f: float;
+type OMIwp = table minimum(10) of e: int weight p: fingerprint;
+type OMIwt = table minimum(10) of e: int weight t: time;
+type OMIwx = table minimum(10) of e: int weight x: bytes;
+type OMIwb = table minimum(10) of e: int weight b: bool;
+type OMIwT = table minimum(10) of e: int weight T: { s: string, i: int, f: float };
+type OMIwP = table minimum(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type OMIwA = table minimum(10) of e: int weight A: array of int;
+type OMIwM = table minimum(10) of e: int weight M: map[string] of int;
+
+# Weight: distinctsample with different weight types
+type ODIws = table distinctsample(10) of e: int weight s: string;
+type ODIwi = table distinctsample(10) of e: int weight i: int;
+type ODIwf = table distinctsample(10) of e: int weight f: float;
+type ODIwp = table distinctsample(10) of e: int weight p: fingerprint;
+type ODIwt = table distinctsample(10) of e: int weight t: time;
+type ODIwx = table distinctsample(10) of e: int weight x: bytes;
+type ODIwb = table distinctsample(10) of e: int weight b: bool;
+type ODIwT = table distinctsample(10) of e: int weight T: { s: string, i: int, f: float };
+type ODIwP = table distinctsample(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type ODIwA = table distinctsample(10) of e: int weight A: array of int;
+type ODIwM = table distinctsample(10) of e: int weight M: map[string] of int;
+
+# Weight: inversehistogram with different weight types
+type OINws = table inversehistogram(10) of e: int weight s: string;
+type OINwi = table inversehistogram(10) of e: int weight i: int;
+type OINwf = table inversehistogram(10) of e: int weight f: float;
+type OINwp = table inversehistogram(10) of e: int weight p: fingerprint;
+type OINwt = table inversehistogram(10) of e: int weight t: time;
+type OINwx = table inversehistogram(10) of e: int weight x: bytes;
+type OINwb = table inversehistogram(10) of e: int weight b: bool;
+type OINwT = table inversehistogram(10) of e: int weight T: { s: string, i: int, f: float };
+type OINwP = table inversehistogram(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type OINwA = table inversehistogram(10) of e: int weight A: array of int;
+type OINwM = table inversehistogram(10) of e: int weight M: map[string] of int;
+
+# Weight: weightedsample with different weight types
+type OWEws = table weightedsample(10) of e: int weight s: string;
+type OWEwi = table weightedsample(10) of e: int weight i: int;
+type OWEwf = table weightedsample(10) of e: int weight f: float;
+type OWEwp = table weightedsample(10) of e: int weight p: fingerprint;
+type OWEwt = table weightedsample(10) of e: int weight t: time;
+type OWEwx = table weightedsample(10) of e: int weight x: bytes;
+type OWEwb = table weightedsample(10) of e: int weight b: bool;
+type OWEwT = table weightedsample(10) of e: int weight T: { s: string, i: int, f: float };
+type OWEwP = table weightedsample(10) of e: int weight P: proto { b: bytes, i: int, f: float };
+type OWEwA = table weightedsample(10) of e: int weight A: array of int;
+type OWEwM = table weightedsample(10) of e: int weight M: map[string] of int;
+
+# Weight: no identifier
+type OTOw = table top(10) of e: int weight int;
+type OMAw = table maximum(10) of e: int weight int;
+type OMIw = table minimum(10) of e: int weight int;
+type ODIw = table distinctsample(10) of e: int weight int;
+type OINw = table inversehistogram(10) of e: int weight int;
+type OWEw = table weightedsample(10) of e: int weight int;
+
+# Format: string literal only
+type OCOfml = table collection of e: int format("");
+type OSAfml = table sample(10) of e: int format("");
+type OSUfml = table sum of e: int format("");
+type OTOfml = table top(10) of e: int weight w: int format("");
+type OMAfml = table maximum(10) of e: int weight w: int format("");
+type OMIfml = table minimum(10) of e: int weight w: int format("");
+type OUNfml = table unique(10) of e: int format("");
+type OSEfml = table set(10) of e: int format("");
+type OQUfml = table quantile(10) of e: int format("");
+type ODIfml = table distinctsample(10) of e: int weight w: int format("");
+type OINfml = table inversehistogram(10) of e: int weight w: int format("");
+type OWEfml = table weightedsample(10) of e: int weight w: int format("");
+
+type OREfml = table recordio(10) of e: int format("");
+type OTEfml = table text of e: int format("");
+type OMRfml = table mrcounter of e: int format("");
+
+# Format: referencing element
+type OCOfme = table collection of e: { i: int } format("%d", e.i);
+type OSAfme = table sample(10) of e: { i: int } format("%d", e.i);
+type OSUfme = table sum of e: { i: int } format("%d", e.i);
+type OTOfme = table top(10) of e: { i: int } weight w: int format("%d", e.i);
+type OMAfme = table maximum(10) of e: { i: int } weight w: int format("%d", e.i);
+type OMIfme = table minimum(10) of e: { i: int } weight w: int format("%d", e.i);
+type OUNfme = table unique(10) of e: { i: int } format("%d", e.i);
+type OSEfme = table set(10) of e: { i: int } format("%d", e.i);
+type OQUfme = table quantile(10) of e: { i: int } format("%d", e.i);
+type ODIfme = table distinctsample(10) of e: { i: int } weight w: int format("%d", e.i);
+type OINfme = table inversehistogram(10) of e: { i: int } weight w: int format("%d", e.i);
+type OWEfme = table weightedsample(10) of e: { i: int } weight w: int format("%d", e.i);
+
+type OREfme = table recordio(10) of e: { i: int } format("%d", e.i);
+type OTEfme = table text of e: { i: int } format("%d", e.i);
+type OMRfme = table mrcounter of e: { i: int } format("%d", e.i);
+
+# Format: referencing element with the same identifier as index
+type OCOfmx = table collection[x: int] of x: int format("%d", x);
+type OSAfmx = table sample(10)[x: int] of x: int format("%d", x);
+type OSUfmx = table sum[x: int] of x: int format("%d", x);
+type OTOfmx = table top(10)[x: int] of x: int weight w: int format("%d", x);
+type OMAfmx = table maximum(10)[x: int] of x: int weight w: int format("%d", x);
+type OMIfmx = table minimum(10)[x: int] of x: int weight w: int format("%d", x);
+type OUNfmx = table unique(10)[x: int] of x: int format("%d", x);
+type OSEfmx = table set(10)[x: int] of x: int format("%d", x);
+type OQUfmx = table quantile(10)[x: int] of x: int format("%d", x);
+type ODIfmx = table distinctsample(10)[x: int] of x: int weight w: int format("%d", x);
+type OINfmx = table inversehistogram(10)[x: int] of x: int weight w: int format("%d", x);
+type OWEfmx = table weightedsample(10)[x: int] of x: int weight w: int format("%d", x);
+
+type OREfmx = table recordio(10)[x: int] of x: int format("%d", x);
+type OTEfmx = table text[x: int] of x: int format("%d", x);
+type OMRfmx = table mrcounter[x: int] of x: int format("%d", x);
+
+# File: string literal
+type OCfll = table collection of b: bytes file("/tmp/foo");
+
+# File: referencing index
+type OCfli = table collection[i: string] of e: bytes file("/tmp/%s", i);
+type OCflx = table collection[x: string] of x: bytes file("/tmp/%s", x);
+type OCfl2 = table collection[i1: string][i2: int] of x: bytes file("/tmp/%s.%d", i1, i2);
+
+# File: with format
+type OCflf = table collection[i: string] of e: int file("/tmp/%s", i) format("%d", e);
+type OCflfx = table collection[x: string] of x: int file("/tmp/%s", x) format("%d", x);
+
+# Proc: string literal
+type OCpcl = table collection of e: bytes proc("echo hello");
+
+# Proc: referencing index
+type OCpci = table collection[i: string] of e: bytes proc("echo %s", i);
+type OCpcx = table collection[x: string] of x: bytes proc("echo %s", x);
+type OCpc2 = table collection[i1: string][i2: int] of x: bytes proc("echo %s %d", i1, i2);
+
+# Proc: with format
+type OCpcf = table collection[i: string] of e: int proc("echo %s", i) format("%d", e);
+type OCpcfx = table collection[x: string] of x: int proc("echo %s", x) format("%d", x);
+
+# Other: spec order does not matter
+type OCoflfm = table collection of e: int file("/tmp/foo") format("%d", e);
+type OCofmfl = table collection of e: int format("%d", e) file("/tmp/foo");
+type OCopcfm = table collection of e: int proc("echo foo") format("%d", e);
+type OCofmpc = table collection of e: int format("%d", e) proc("echo foo");
+
+# Other: using predefined types
+type I = { b: bool, x: bytes, f: fingerprint, s: string };
+type E = { i: int, f: float, t: time };
+type W = float;
+type OCOoTT = table collection[i: I] of e: E;
+type OSAoTT = table sample(10)[i: I] of e: E;
+type OSUoTT = table sum[i: I] of e: E;
+type OTOoTT = table top(10)[i: I] of e: E weight w: W;
+type OMAoTT = table maximum(10)[i: I] of e: E weight w: W;
+type OMIoTT = table minimum(10)[i: I] of e: E weight w: W;
+type OUNoTT = table unique(10)[i: I] of e: E;
+type OSEoTT = table set(10)[i: I] of e: E;
+type OQUoTT = table quantile(10)[i: I] of e: E;
+type ODIoTT = table distinctsample(10)[i: I] of e: E weight w: W;
+type OINoTT = table inversehistogram(10)[i: I] of e: E weight w: W;
+type OWEoTT = table weightedsample(10)[i: I] of e: E weight w: W;
+
+type OREoTT = table recordio(10)[i: I] of e: E;
+type OTEoTT = table text[i: I] of e: E;
+type OMRoTT = table mrcounter[i: I] of e: E;

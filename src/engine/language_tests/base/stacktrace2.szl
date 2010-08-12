@@ -1,0 +1,35 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# For this tuple type all fields are used implicitly by convert to bytes.
+type T = proto { x: int, y: int, z: int };
+
+# For this tuple type field "y" is not used except in the stack trace.
+type U = proto { x: int, y: int, z: int };
+
+# For this tuple type field "y" is used only in a conversion to string.
+type V = proto { x: int, y: int, z: int };
+
+t: T = { 1, 2, 3 };
+b: bytes = bytes(t);
+u: U = U(b);            # u.y is referenced only in a string conversion
+u.x + u.z;
+s: string = string(u);
+v: V = V(b);            # v.y is not referenced
+v.x + v.z;
+
+# Force a stack trace
+a: int;
+a = 1 / nrand(1);

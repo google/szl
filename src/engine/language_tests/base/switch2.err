@@ -1,0 +1,8 @@
+base/switch2.szl:21: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:25: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:32: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:47: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:52: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:58: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:65: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+base/switch2.szl:72: 'break' must be in a loop or a 'switch', but not in a 'when' statement

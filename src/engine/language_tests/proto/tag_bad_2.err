@@ -1,0 +1,2 @@
+proto/tag_bad_2.szl:34: expected int literal in tag expression; found float literal
+proto/tag_bad_2.szl:35: ',' expected; found 'f0'

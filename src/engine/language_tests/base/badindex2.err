@@ -1,0 +1,23 @@
+base/badindex2.szl:26: index j (float) must be of type int
+base/badindex2.szl:27: index j (float) must be of type int
+base/badindex2.szl:28: index j (float) must be of type int
+base/badindex2.szl:30: index j (float) must be of type int
+base/badindex2.szl:31: index j (float) must be of type int
+base/badindex2.szl:32: index j (float) must be of type int
+base/badindex2.szl:38: map index i (int) must be of type string
+base/badindex2.szl:39: map index j (float) must be of type string
+base/badindex2.szl:40: '$' must not be used with a map (m)
+base/badindex2.szl:41: '$' must not be used with a map (m)
+base/badindex2.szl:42: no slices allowed for map index
+base/badindex2.szl:43: map index i (int) must be of type string
+base/badindex2.szl:44: no slices allowed for map index
+base/badindex2.szl:52: 'emit' expected before t0 (table collection of string)
+base/badindex2.szl:53: 'emit' expected before t1 (table collection[i: int] of string)
+base/badindex2.szl:54: 'emit' expected before t1 (table collection[i: int] of string)
+base/badindex2.szl:55: 'emit' expected before t2 (table collection[i: int][s: string] of float)
+base/badindex2.szl:56: 'emit' expected before t2 (table collection[i: int][s: string] of float)
+base/badindex2.szl:58: too many indices (output variable defines only 0 dimensions)
+base/badindex2.szl:59: too many indices (output variable defines only 1 dimensions)
+base/badindex2.szl:60: not enough indices (output variable defines 2 dimension(s))
+base/badindex2.szl:61: output variable index no. 2, [i] of type int, should be string
+base/badindex2.szl:62: too many indices (output variable defines only 2 dimensions)

@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["intrinsics/saw_bad_03.szl:23: DEBUG(\"print\", \"protocol = %d, domain = %d\\n\", t0.p1, t0.p2) (probably because \"t0\" was undefined due to an error at intrinsics/saw_bad_03.szl:22: saw(\"http989://989www.google.com/search?q=Google\", `\\w+`, skip `://`, `[\\w.]+`) (string \"989www.google.com\" contains extra chars))"] <- 1;

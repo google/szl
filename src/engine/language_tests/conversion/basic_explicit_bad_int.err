@@ -1,0 +1,8 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     empty: string = ""
+     i0: int = <undefined>
+
+szl: fatal: undefined value at conversion/basic_explicit_bad_int.szl:23: i0 = int("Hello World" + empty,0); (string "Hello World" contains no int)

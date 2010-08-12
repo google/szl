@@ -1,0 +1,108 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# a test file full of good (= legal) sawzall literals
+
+# ints
+i: int;
+i = 2;
+i = 0;
+i = 0000000010;
+i = 0b1010;
+i = 0xffff;
+i = 9223372036854775807;
+i = -9223372036854775808;
+i = 0 -5;
+i = 0 -9223372036854775807;
+
+# fingerprints
+p: fingerprint;
+p = 2p;
+p = 0p;
+p = 0000000010p;
+p = 0b1010p;
+p = 0xffffP;
+p = 9223372036854775807P;
+p = 9223372036854775808P;
+p = 18223372036854775808P;
+
+# times
+t: time;
+t = 2t;
+t = 0t;
+t = 0000000010t;
+t = 0b1010t;
+t = 0xffffT;
+t = 9223372036854775807T;
+t = 9223372036854775808T;
+t = 18223372036854775808T;
+t = T"Wed Feb 28 13:50:21 PST 2007";
+t = T`Wed Feb 28 13:50:21 PST 2007`;
+
+# floats
+f: float;
+f = 1e5;
+f = 1.2;
+f = 1.23e0;
+f = 1.23e-11;
+f = 1.23e+12;
+f = 0.;
+f = 0000000000000.;
+f = 0000000000000.e-10;
+f = .0;
+f = .0e+9;
+f = 00000000000012345.;
+f = 00000000000034567e-2;
+f= 00008.;
+f = 00008e8;
+
+# chars
+c: int;
+c = 'a';
+c = '\a';
+c = '\n';
+c = '\0';
+c = '\07';
+c = '\072';
+c = '\x40';
+c = '\'';
+
+# strings
+s: string;
+s = "";
+s = ``;
+s = "query.proto";
+s = "Hello World! Καλημέρα κόσμε! こんにちは 世界!";
+s = "\a\b\f\n\r\t\v\\\"";
+s = "hello \"\t\x0030\041world\n";
+s = "\1abcdefghijkl";
+s = "\0619";
+s = "\u65e5";
+assert(s[0] == 0x65e5);
+s = "\U000065e5";
+assert(s[0] == 0x65e5);
+
+# bytes
+b: bytes;
+b = B"";
+b = X"";
+b = B``;
+b = X``;
+b = B"hello";
+b = B"\u0055U\x55";
+assert(b == B"UUU");
+b = B"\a\b\f\n\r\t\v\\\"";
+b = X"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
+for (i := 0; i < 256; i++) assert(b[i] == i);

@@ -1,0 +1,1034 @@
+// Copyright 2010 Google Inc.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <memory.h>
+#include <stdarg.h>
+#include <pcre.h>
+
+#include <string>
+#include <vector>
+
+#include "public/porting.h"
+#include "public/logging.h"
+
+#include "fmt/runes.h"
+#include "utilities/strutils.h"
+
+
+// ===========================================================================
+// Various.
+
+
+// Like strncpy, but guarantees a null terminator and does not pad
+
+char* safestrncpy(char* dst, const char* src, size_t n) {
+  // Assume we have builtin strlen and memcpy that are so fast that
+  // calling both of them beats writing a custom loop.
+  size_t len = strlen(src);
+  if (len >= n)
+    len = n - 1;
+  memcpy(dst, src, len);
+  dst[len] = '\0';
+  return dst;
+}
+
+
+// case-insensitve string comparison, from Plan 9.
+
+int cistrcmp(const char *s1, const char *s2) {
+  int c1, c2;
+
+  while (*s1) {
+    c1 = *(unsigned char*)s1++;
+    c2 = *(unsigned char*)s2++;
+
+    if (c1 == c2)
+      continue;
+
+    if (c1 >= 'A' && c1 <= 'Z')
+      c1 -= 'A' - 'a';
+
+    if (c2 >= 'A' && c2 <= 'Z')
+      c2 -= 'A' - 'a';
+
+    if (c1 != c2)
+      return c1 - c2;
+  }
+  return -*s2;
+}
+
+
+// Split string at commas.
+
+void SplitStringAtCommas(const string& str, vector<string>* pieces) {
+  const char* p = str.data();
+  const char* end = p + str.size();
+  while (p != end) {
+    if (*p == ',') {
+      ++p;
+    } else {
+      const char* start = p;
+      p = strchr(p, ',');
+      if (p == NULL)
+        p = end;
+      pieces->push_back(string(start, p - start));
+    }
+  }
+}
+
+
+uint64 ParseLeadingHex64Value(const char *str, uint64 deflt) {
+  char *error = NULL;
+  const uint64 value = strtoull(str, &error, 16);
+  return (error == str) ? deflt : value;
+}
+
+
+int FloatToAscii(char (&buf)[64], double x) {
+  // we use %g because it tends to suppress trailing zeros.
+  // however, it might leave off the decimal point, making the constant look
+  // like an integer.  solution: format the number, and if it has no decimal
+  // point or exponent, it looks like an int, so append ".0".
+  // limit precision to 15 significant digits to avoid noise at the end.
+  // (IEEE double is 53 bits (52 explicit and one implicit), so in ranges just
+  // above a power of two, one ULP is about 2^-52 = 10^-15.6 times the value.
+  // when a value is just above a power of two and just below a power of ten
+  // (e.g. 9.0), an error of one ULP can be as large as 2.2 in the 16th digit,
+  // so even a perfectly rounded value value can be off by 1.1 in the 16th
+  // significant digit.)
+  int length = snprintf(buf, sizeof(buf) - 2, "%.15g", x);
+  if (strchr(buf, '.') == NULL && strchr(buf, 'e') == NULL &&
+      cistrcmp(buf, "inf") != 0 && cistrcmp(buf, "nan") != 0) {
+    strcpy(buf+length, ".0");
+    length += 2;
+  }
+  return length;
+}
+
+
+// Like asprintf, but returns a string.
+// Most if not all uses are expected to produce well under 80 characters.
+
+string StringPrintf(const char* format, ...) {
+  // Try a small local buffer first.
+  char buffer[80];
+  va_list ap1;
+  va_start(ap1, format);
+  int length = vsnprintf(buffer, sizeof(buffer), format, ap1);
+  va_end(ap1);
+  CHECK_GE(length, 0);
+  if (length < sizeof(buffer))
+    return string(buffer, length);
+
+  // Too big, dynamically allocate.
+  char* allocated = new char[length + 1];
+  va_list ap2;
+  va_start(ap2, format);
+  CHECK_EQ(vsnprintf(allocated, length+1, format, ap2), length);
+  va_end(ap2);
+
+  // Assume the named return value optimization so we don't have to play tricks
+  // with the order of deleting "allocated" and creating the result to avoid
+  // an extra copy of the result string.
+  string result(allocated, length);
+  delete [] allocated;
+  return result;
+}
+
+
+// Like StringPrintf, but appends the result.
+void StringAppendF(string* dst, const char* format, ...) {
+  // Try a smal local buffer first.
+  char buffer[80];
+  va_list ap1;
+  va_start(ap1, format);
+  int length = vsnprintf(buffer, sizeof(buffer), format, ap1);
+  va_end(ap1);
+  CHECK_GE(length, 0);
+  if (length < sizeof(buffer)) {
+    dst->append(buffer, length);
+    return;
+  }
+
+  // Too big, allocate.
+  char* allocated = new char[length + 1];;
+  va_list ap2;
+  va_start(ap2, format);
+  CHECK_EQ(vsnprintf(allocated, length+1, format, ap2), length);
+  va_end(ap2);
+  dst->append(allocated, length);
+  delete [] allocated;
+}
+
+
+// # Table generated by this Python code (bit 0x02 is currently unused):
+// def Hex2(n):
+//   return '0x' + hex(n/16)[2:] + hex(n%16)[2:]
+// def IsPunct(ch):
+//   return (ord(ch) >= 32 and ord(ch) < 127 and
+//           not ch.isspace() and not ch.isalnum())
+// def IsBlank(ch):
+//   return ch in ' \t'
+// def IsCntrl(ch):
+//   return ord(ch) < 32 or ord(ch) == 127
+// def IsXDigit(ch):
+//   return ch.isdigit() or ch.lower() in 'abcdef'
+// for i in range(128):
+//   ch = chr(i)
+//   mask = ((ch.isalpha() and 0x01 or 0) |
+//           (ch.isalnum() and 0x04 or 0) |
+//           (ch.isspace() and 0x08 or 0) |
+//           (IsPunct(ch) and 0x10 or 0) |
+//           (IsBlank(ch) and 0x20 or 0) |
+//           (IsCntrl(ch) and 0x40 or 0) |
+//           (IsXDigit(ch) and 0x80 or 0))
+//   print Hex2(mask) + ',',
+//   if i % 16 == 7:
+//     print ' //', Hex2(i & 0x78)
+//   elif i % 16 == 15:
+//     print
+const uint8 kAsciiPropertyBits[256] = {
+  0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40,  // 0x00
+  0x40, 0x68, 0x48, 0x48, 0x48, 0x48, 0x40, 0x40,
+  0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40,  // 0x10
+  0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40,
+  0x28, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,  // 0x20
+  0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+  0x84, 0x84, 0x84, 0x84, 0x84, 0x84, 0x84, 0x84,  // 0x30
+  0x84, 0x84, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10,
+  0x10, 0x85, 0x85, 0x85, 0x85, 0x85, 0x85, 0x05,  // 0x40
+  0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05,
+  0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05,  // 0x50
+  0x05, 0x05, 0x05, 0x10, 0x10, 0x10, 0x10, 0x10,
+  0x10, 0x85, 0x85, 0x85, 0x85, 0x85, 0x85, 0x05,  // 0x60
+  0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05,
+  0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05,  // 0x70
+  0x05, 0x05, 0x05, 0x10, 0x10, 0x10, 0x10, 0x40,
+};
+
+
+// ===========================================================================
+// Base64 encoding and decoding.
+
+static int Base64EscapeInternal(const unsigned char *src, int szsrc, char *dest,
+                             int szdest, const char *base64, bool do_padding) {
+  static const char kPad64 = '=';
+
+  if (szsrc <= 0) return 0;
+
+  char *cur_dest = dest;
+  const unsigned char *cur_src = src;
+
+  // Three bytes of data encodes to four characters of cyphertext.
+  // So we can pump through three-byte chunks atomically.
+  while (szsrc > 2) { /* keep going until we have less than 24 bits */
+    if( (szdest -= 4) < 0 ) return 0;
+    cur_dest[0] = base64[cur_src[0] >> 2];
+    cur_dest[1] = base64[((cur_src[0] & 0x03) << 4) + (cur_src[1] >> 4)];
+    cur_dest[2] = base64[((cur_src[1] & 0x0f) << 2) + (cur_src[2] >> 6)];
+    cur_dest[3] = base64[cur_src[2] & 0x3f];
+
+    cur_dest += 4;
+    cur_src += 3;
+    szsrc -= 3;
+  }
+
+  /* now deal with the tail (<=2 bytes) */
+  switch (szsrc) {
+    case 0:
+      // Nothing left; nothing more to do.
+      break;
+    case 1:
+      // One byte left: this encodes to two characters, and (optionally)
+      // two pad characters to round out the four-character cypherblock.
+      if( (szdest -= 2) < 0 ) return 0;
+      cur_dest[0] = base64[cur_src[0] >> 2];
+      cur_dest[1] = base64[(cur_src[0] & 0x03) << 4];
+      cur_dest += 2;
+      if (do_padding) {
+        if( (szdest -= 2) < 0 ) return 0;
+        cur_dest[0] = kPad64;
+        cur_dest[1] = kPad64;
+        cur_dest += 2;
+      }
+      break;
+    case 2:
+      // Two bytes left: this encodes to three characters, and (optionally)
+      // one pad character to round out the four-character cypherblock.
+      if( (szdest -= 3) < 0 ) return 0;
+      cur_dest[0] = base64[cur_src[0] >> 2];
+      cur_dest[1] = base64[((cur_src[0] & 0x03) << 4) + (cur_src[1] >> 4)];
+      cur_dest[2] = base64[(cur_src[1] & 0x0f) << 2];
+      cur_dest += 3;
+      if (do_padding) {
+        if( (szdest -= 1) < 0 ) return 0;
+        cur_dest[0] = kPad64;
+        cur_dest += 1;
+      }
+      break;
+    default:
+      // Should not be reached: blocks of 3 bytes are handled
+      // in the while loop before this switch statement.
+      LOG(FATAL) << "Logic problem? szsrc = " << szsrc;
+      break;
+  }
+  return (cur_dest - dest);
+}
+
+
+int WebSafeBase64Escape(const unsigned char *src, int szsrc, char *dest,
+                        int szdest, bool do_padding) {
+  static const char kWebSafeBase64Chars[] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  return Base64EscapeInternal(src, szsrc, dest, szdest,
+                              kWebSafeBase64Chars, do_padding);
+}
+
+
+int Base64Escape(const unsigned char *src, int szsrc, char *dest, int szdest) {
+  static const char kBase64Chars[] =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  return Base64EscapeInternal(src, szsrc, dest, szdest, kBase64Chars, true);
+}
+
+
+int CalculateBase64EscapedLen(int input_len, bool do_padding) {
+  // these formulae were copied from comments that used to go with the base64
+  // encoding functions
+  int intermediate_result = 8 * input_len + 5;
+  assert(intermediate_result > 0);     // make sure we didn't overflow
+  int len = intermediate_result / 6;
+  if (do_padding) len = ((len + 3) / 4) * 4;
+  return len;
+}
+
+
+static int Base64UnescapeInternal(const char *src, int szsrc, char *dest,
+                                  int szdest, const signed char* unbase64) {
+  static const char kPad64 = '=';
+
+  int decode = 0;
+  int destidx = 0;
+  int state = 0;
+  unsigned int ch = 0;
+  unsigned int temp = 0;
+
+  // The GET_INPUT macro gets the next input character, skipping
+  // over any whitespace, and stopping when we reach the end of the
+  // string or when we read any non-data character.  The arguments are
+  // an arbitrary identifier (used as a label for goto) and the number
+  // of data bytes that must remain in the input to avoid aborting the
+  // loop.
+#define GET_INPUT(label, remain)                 \
+  label:                                         \
+    --szsrc;                                     \
+    ch = *src++;                                 \
+    decode = unbase64[ch];                       \
+    if (decode < 0) {                            \
+      if (ascii_isspace(ch) && szsrc >= remain)  \
+        goto label;                              \
+      state = 4 - remain;                        \
+      break;                                     \
+    }
+
+  // if dest is null, we're just checking to see if it's legal input
+  // rather than producing output.  (I suspect this could just be done
+  // with a regexp...).  We duplicate the loop so this test can be
+  // outside it instead of in every iteration.
+
+  if (dest) {
+    // This loop consumes 4 input bytes and produces 3 output bytes
+    // per iteration.  We can't know at the start that there is enough
+    // data left in the string for a full iteration, so the loop may
+    // break out in the middle; if so 'state' will be set to the
+    // number of input bytes read.
+
+    while (szsrc >= 4)  {
+      // We'll start by optimistically assuming that the next four
+      // bytes of the string (src[0..3]) are four good data bytes
+      // (that is, no nulls, whitespace, padding chars, or illegal
+      // chars).  We need to test src[0..2] for nulls individually
+      // before constructing temp to preserve the property that we
+      // never read past a null in the string (no matter how long
+      // szsrc claims the string is).
+
+      if (!src[0] || !src[1] || !src[2] ||
+          (temp = ((unbase64[src[0]] << 18) |
+                   (unbase64[src[1]] << 12) |
+                   (unbase64[src[2]] << 6) |
+                   (unbase64[src[3]]))) & 0x80000000) {
+
+        // Iff any of those four characters was bad (null, illegal,
+        // whitespace, padding), then temp's high bit will be set
+        // (because unbase64[] is -1 for all bad characters).
+        //
+        // We'll back up and resort to the slower decoder, which knows
+        // how to handle those cases.
+
+        GET_INPUT(first, 4);
+        temp = decode;
+        GET_INPUT(second, 3);
+        temp = (temp << 6) | decode;
+        GET_INPUT(third, 2);
+        temp = (temp << 6) | decode;
+        GET_INPUT(fourth, 1);
+        temp = (temp << 6) | decode;
+      } else {
+        // We really did have four good data bytes, so advance four
+        // characters in the string.
+
+        szsrc -= 4;
+        src += 4;
+        decode = -1;
+        ch = '\0';
+      }
+
+      // temp has 24 bits of input, so write that out as three bytes.
+
+      if (destidx+3 > szdest) return -1;
+      dest[destidx+2] = temp;
+      temp >>= 8;
+      dest[destidx+1] = temp;
+      temp >>= 8;
+      dest[destidx] = temp;
+      destidx += 3;
+    }
+  } else {
+    while (szsrc >= 4)  {
+      if (!src[0] || !src[1] || !src[2] ||
+          (temp = ((unbase64[src[0]] << 18) |
+                   (unbase64[src[1]] << 12) |
+                   (unbase64[src[2]] << 6) |
+                   (unbase64[src[3]]))) & 0x80000000) {
+        GET_INPUT(first_no_dest, 4);
+        GET_INPUT(second_no_dest, 3);
+        GET_INPUT(third_no_dest, 2);
+        GET_INPUT(fourth_no_dest, 1);
+      } else {
+        szsrc -= 4;
+        src += 4;
+        decode = -1;
+        ch = '\0';
+      }
+      destidx += 3;
+    }
+  }
+
+#undef GET_INPUT
+
+  // if the loop terminated because we read a bad character, return
+  // now.
+  if (decode < 0 && ch != '\0' && ch != kPad64 && !ascii_isspace(ch))
+    return -1;
+
+  if (ch == kPad64) {
+    // if we stopped by hitting an '=', un-read that character -- we'll
+    // look at it again when we count to check for the proper number of
+    // equals signs at the end.
+    ++szsrc;
+    --src;
+  } else {
+    // This loop consumes 1 input byte per iteration.  It's used to
+    // clean up the 0-3 input bytes remaining when the first, faster
+    // loop finishes.  'temp' contains the data from 'state' input
+    // characters read by the first loop.
+    while (szsrc > 0)  {
+      --szsrc;
+      ch = *src++;
+      decode = unbase64[ch];
+      if (decode < 0) {
+        if (ascii_isspace(ch)) {
+          continue;
+        } else if (ch == '\0') {
+          break;
+        } else if (ch == kPad64) {
+          // back up one character; we'll read it again when we check
+          // for the correct number of equals signs at the end.
+          ++szsrc;
+          --src;
+          break;
+        } else {
+          return -1;
+        }
+      }
+
+      // Each input character gives us six bits of output.
+      temp = (temp << 6) | decode;
+      ++state;
+      if (state == 4) {
+        // If we've accumulated 24 bits of output, write that out as
+        // three bytes.
+        if (dest) {
+          if (destidx+3 > szdest) return -1;
+          dest[destidx+2] = temp;
+          temp >>= 8;
+          dest[destidx+1] = temp;
+          temp >>= 8;
+          dest[destidx] = temp;
+        }
+        destidx += 3;
+        state = 0;
+        temp = 0;
+      }
+    }
+  }
+
+  // Process the leftover data contained in 'temp' at the end of the input.
+  int expected_equals = 0;
+  switch (state) {
+    case 0:
+      // Nothing left over; output is a multiple of 3 bytes.
+      break;
+
+    case 1:
+      // Bad input; we have 6 bits left over.
+      return -1;
+
+    case 2:
+      // Produce one more output byte from the 12 input bits we have left.
+      if (dest) {
+        if (destidx+1 > szdest) return -1;
+        temp >>= 4;
+        dest[destidx] = temp;
+      }
+      ++destidx;
+      expected_equals = 2;
+      break;
+
+    case 3:
+      // Produce two more output bytes from the 18 input bits we have left.
+      if (dest) {
+        if (destidx+2 > szdest) return -1;
+        temp >>= 2;
+        dest[destidx+1] = temp;
+        temp >>= 8;
+        dest[destidx] = temp;
+      }
+      destidx += 2;
+      expected_equals = 1;
+      break;
+
+    default:
+      // state should have no other values at this point.
+      LOG(FATAL) << "This can't happen; base64 decoder state = " << state;
+  }
+
+  // The remainder of the string should be all whitespace, mixed with
+  // exactly 0 equals signs, or exactly 'expected_equals' equals
+  // signs.  (Always accepting 0 equals signs is an extension
+  // not covered in the RFC.)
+
+  int equals = 0;
+  while (szsrc > 0 && *src) {
+    if (*src == kPad64)
+      ++equals;
+    else if (!ascii_isspace(*src))
+      return -1;
+    --szsrc;
+    ++src;
+  }
+
+  return (equals == 0 || equals == expected_equals) ? destidx : -1;
+}
+
+static const signed char kUnBase64[] = {
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      62/*+*/, -1,      -1,      -1,      63/*/ */,
+   52/*0*/, 53/*1*/, 54/*2*/, 55/*3*/, 56/*4*/, 57/*5*/, 58/*6*/, 59/*7*/,
+   60/*8*/, 61/*9*/, -1,      -1,      -1,      -1,      -1,      -1,
+   -1,       0/*A*/,  1/*B*/,  2/*C*/,  3/*D*/,  4/*E*/,  5/*F*/,  6/*G*/,
+    7/*H*/,  8/*I*/,  9/*J*/, 10/*K*/, 11/*L*/, 12/*M*/, 13/*N*/, 14/*O*/,
+   15/*P*/, 16/*Q*/, 17/*R*/, 18/*S*/, 19/*T*/, 20/*U*/, 21/*V*/, 22/*W*/,
+   23/*X*/, 24/*Y*/, 25/*Z*/, -1,      -1,      -1,      -1,      -1,
+   -1,      26/*a*/, 27/*b*/, 28/*c*/, 29/*d*/, 30/*e*/, 31/*f*/, 32/*g*/,
+   33/*h*/, 34/*i*/, 35/*j*/, 36/*k*/, 37/*l*/, 38/*m*/, 39/*n*/, 40/*o*/,
+   41/*p*/, 42/*q*/, 43/*r*/, 44/*s*/, 45/*t*/, 46/*u*/, 47/*v*/, 48/*w*/,
+   49/*x*/, 50/*y*/, 51/*z*/, -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1
+};
+
+static const signed char kUnWebSafeBase64[] = {
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      62/*-*/, -1,      -1,
+   52/*0*/, 53/*1*/, 54/*2*/, 55/*3*/, 56/*4*/, 57/*5*/, 58/*6*/, 59/*7*/,
+   60/*8*/, 61/*9*/, -1,      -1,      -1,      -1,      -1,      -1,
+   -1,       0/*A*/,  1/*B*/,  2/*C*/,  3/*D*/,  4/*E*/,  5/*F*/,  6/*G*/,
+    7/*H*/,  8/*I*/,  9/*J*/, 10/*K*/, 11/*L*/, 12/*M*/, 13/*N*/, 14/*O*/,
+   15/*P*/, 16/*Q*/, 17/*R*/, 18/*S*/, 19/*T*/, 20/*U*/, 21/*V*/, 22/*W*/,
+   23/*X*/, 24/*Y*/, 25/*Z*/, -1,      -1,      -1,      -1,      63/*_*/,
+   -1,      26/*a*/, 27/*b*/, 28/*c*/, 29/*d*/, 30/*e*/, 31/*f*/, 32/*g*/,
+   33/*h*/, 34/*i*/, 35/*j*/, 36/*k*/, 37/*l*/, 38/*m*/, 39/*n*/, 40/*o*/,
+   41/*p*/, 42/*q*/, 43/*r*/, 44/*s*/, 45/*t*/, 46/*u*/, 47/*v*/, 48/*w*/,
+   49/*x*/, 50/*y*/, 51/*z*/, -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1,
+   -1,      -1,      -1,      -1,      -1,      -1,      -1,      -1
+};
+
+int Base64Unescape(const char *src, int szsrc, char *dest, int szdest) {
+  return Base64UnescapeInternal(src, szsrc, dest, szdest, kUnBase64);
+}
+
+int WebSafeBase64Unescape(const char *src, int szsrc, char *dest, int szdest) {
+  return Base64UnescapeInternal(src, szsrc, dest, szdest, kUnWebSafeBase64);
+}
+
+
+// ===========================================================================
+// DualString
+
+
+DualString::DualString(char* utf8, int num_utf8, int num_runes)
+ : num_runes_(num_runes),
+   runecursor_(0),
+   utf8cursor_(0),
+   utf8_(utf8),
+   num_utf8_(num_utf8) {
+  // Construct array of rune offsets; need +1 to store value at end of string.
+  runepos_ = new int[num_utf8 + 1];  // explicitly deallocated
+  int n = GetRunePositions(runepos_, utf8, num_utf8);
+  CHECK_EQ(n, num_runes);
+}
+
+
+// Move forward along string by num_runes_forward runes.
+int DualString::Advance(int num_runes_forward) {
+  assert(num_runes_forward <= num_runes());
+  int start = utf8cursor_;
+  for (int i = 0; i < num_runes_forward; i++) {
+    Rune r;
+    utf8cursor_ += FastCharToRune(&r, utf8_ + utf8cursor_);
+  }
+  runecursor_ += num_runes_forward;
+  return utf8cursor_ - start;
+}
+
+
+// Move forward along string by num_bytes_forward bytes and
+//  num_runes_forward_runes, which are known to be in agreement.
+void DualString::Advance(int num_bytes_forward, int num_runes_forward) {
+  assert(num_runes_forward <= num_runes());
+  assert(num_bytes_forward <= num_utf8());
+  utf8cursor_ += num_bytes_forward;
+  runecursor_ += num_runes_forward;
+}
+
+
+// Given an array of byte offsets into the utf8 string,
+// generate an array of rune offsets into the rune string.
+// The incoming and outgoing positions are relative to the
+// cursors, that is, a position of zero corresponds to the
+// character pointed at by the cursors.
+void DualString::ConvertPositions(int* runepos, int* utf8pos, int n) {
+  for (int i = 0; i < n; i++) {
+    // fix the -1s from empty captures
+    if (utf8pos[i] < 0)
+      utf8pos[i] = 0;
+    runepos[i] = runepos_[utf8pos[i] + utf8cursor_] - runecursor_;
+  }
+}
+
+
+DualString::~DualString() {
+  // utf8_ is owned by creator; do not delete
+  delete[] runepos_;
+}
+
+
+// ===========================================================================
+// Regular expressions
+
+
+// Wrappers for regular expressions.
+
+// Compile pattern.  Return value is an opaque void* so client
+// knows nothing of underlying library.  NULL return indicates
+// error; *errbufp will hold error string.
+
+// Pattern is NUL-terminated UTF-8
+void* CompileRegexp(const char* pattern8, const char** errbufp) {
+  int eoffset;
+  pcre* re = pcre_compile(pattern8, PCRE_UTF8, errbufp, &eoffset, NULL);
+  return static_cast<void*>(re);
+}
+
+
+// Execute expression given compiled regexp.
+// Return value is 1 if we have matches, 0 if we don't have matches,
+// and < 0 if we have an error (the the result is the pcre_exec() error code).
+int SimpleExecRegexp(void* compiled_pattern, const char* utf8, int utf8_len) {
+  CHECK(compiled_pattern != NULL);
+  pcre* re = static_cast<pcre*>(compiled_pattern);
+  // do the matching
+  int nvec = pcre_exec(re,         // compiled pattern
+                       NULL,       // we did not study the pattern
+                       utf8,       // UTF-8 encoded string
+                       utf8_len,   // number of bytes in string
+                       0,          // beginning byte offset
+                       PCRE_NO_UTF8_CHECK,  // options
+                       NULL,        // we are not interested in the ovector
+                       0);     // length of ovector
+  if (nvec == PCRE_ERROR_NOMATCH)  // has value -1 !
+    return 0;
+  if (nvec >= 0)  // 0 means we have matches (but we have a NULL ovector)
+    return 1;
+  return nvec;
+}
+
+
+// Execute expression given compiled regexp.
+// Return value is number of elements >= 0 of matches[] array filled in;
+// result is pcre_exec() error code if < 0.
+int DualExecRegexp(void* compiled_pattern, DualString* dual,
+                   int offsets[], int byte_offsets[], int noffsets) {
+  assert(compiled_pattern != NULL);
+  int nvec;
+  const int kNvec = 2 + (noffsets * 3) / 2;
+  int* vec = new int[kNvec];
+  pcre* re = static_cast<pcre*>(compiled_pattern);
+  // do the matching
+  // PCRE rounds this down to a multiple of 3, so make it large enough
+  nvec = pcre_exec(re,               // compiled pattern
+                   NULL,             // we did not study the pattern
+                   dual->utf8(),     // UTF-8 encoded string
+                   dual->num_utf8(), // number of bytes in string
+                   0,                // beginning byte offset
+                   PCRE_NO_UTF8_CHECK,  // options
+                   vec,              // vector of byte pos pairs
+                   kNvec);           // length of vector
+  if (nvec == PCRE_ERROR_NOMATCH) {  // has value -1 !
+    delete [] vec;
+    return 0;
+  }
+  if (nvec < 0) {
+    delete [] vec;
+    return nvec;
+  }
+  nvec *= 2;  // convert #matches to #elements in array
+  if (nvec > noffsets)
+    nvec = noffsets;
+  // convert byte positions back into rune positions.  Fix -1s in vec
+  dual->ConvertPositions(offsets, vec, nvec);
+  // copy byte offsets back to user.
+  memmove(byte_offsets, vec, nvec * sizeof vec[0]);
+  delete [] vec;
+  return nvec;
+}
+
+
+void FreeRegexp(void* pattern) {
+  pcre* re = static_cast<pcre*>(pattern);
+  (*pcre_free)(re);
+}
+
+
+// ----------------------------------------------------------------------------
+// Runes
+
+
+int Str2RuneStr(Rune* dst, const char* src, int len) {
+  assert(len >= 0);
+  Rune* d = dst;
+  const char* e = src + len;
+  // Must stop at null character because utfnlen() does.
+  // (We use utfnlen() to allocate the output buffer.)
+  while (src < e && *src != '\0') {
+    int c = *reinterpret_cast<const unsigned char*>(src);
+    if (c < Runeself) {
+      *d++ = c;
+      src++;
+    } else if ((e - src) >= UTFmax || fullrune(src, e - src)) {
+      src += FastCharToRune(d++, src);
+    } else {
+      // Must stop at incomplete character because utfnlen() does.
+      break;
+    }
+  }
+  return d - dst;
+}
+
+
+// Return the length that the bytes stored at src would require
+// to be stored as valid UTF-8.  The boolean will report whether
+// the input is valid UTF-8 as is.  Stop processing at a \0.
+int CStrValidUTF8Len(const char* src, bool* is_valid_utf8, int* num_runes) {
+  *is_valid_utf8 = true;
+  int valid_len = 0;
+  int n = 0;
+  while (*src != '\0') {
+    Rune r;
+    r = *reinterpret_cast<const unsigned char*>(src);
+    if (r < Runeself) {
+      src++;
+      valid_len++;
+    } else {
+      int in_rune_len = FastCharToRune(&r, src);
+      src += in_rune_len;
+      int out_rune_len = runelen(r);
+      valid_len += out_rune_len;
+      // TODO: think about whether runelen() returning a different
+      // value than chartorune() on errors is a problem.
+      if (out_rune_len != in_rune_len)
+        *is_valid_utf8 = false;
+    }
+    n++;
+  }
+  *num_runes = n;
+  return valid_len;
+}
+
+
+// Return the length that the bytes stored at src would require
+// to be stored as valid UTF-8.  The boolean will report whether
+// the input is valid UTF-8 as is.  Note: src may contain a \0.
+int StrValidUTF8Len(const char* src, int len,
+                    bool* is_valid_utf8, int* num_runes) {
+  *is_valid_utf8 = true;
+  const char* start = src;
+  const char* end = src + len;
+  // Initial loop handles an ASCII prefix of the string.  If the string is
+  // all ASCII, then this loop handles the whole string.
+  while (src < end &&
+         *src != '\0' &&
+         (*reinterpret_cast<const unsigned char*>(src) < Runeself)) {
+    src++;
+  }
+  if (src == end) {
+    // Fast exit path for all-ASCII strings
+    *num_runes = end - start;
+    return end - start;
+  }
+  int valid_len = src - start;
+  int n = valid_len;
+  while (src < end) {
+    Rune r;
+    r = *reinterpret_cast<const unsigned char*>(src);
+    if (r < Runeself && r != '\0') {
+      src++;
+      valid_len++;
+    } else {
+      int in_rune_len;
+      if (!fullrune(src, end-src) || r == '\0') {
+        // Bad encoding; absorb one byte, emit Runerror
+        in_rune_len = 1;
+        r = Runeerror;
+      } else {
+        in_rune_len = FastCharToRune(&r, src);
+        // TODO: think about whether runelen() returning a different
+        // value than chartorune() on errors is a problem.
+      }
+      src += in_rune_len;
+      int out_rune_len = runelen(r);
+      valid_len += out_rune_len;
+      if (out_rune_len != in_rune_len)
+        *is_valid_utf8 = false;
+    }
+    n++;
+  }
+  *num_runes = n;
+  return valid_len;
+}
+
+
+// Convert the data to valid UTF-8.  The destination must be big enough.
+// The source is expected to be NULL-terminated.
+int CStr2ValidUTF8(char* dst, const char* src) {
+  char* d = dst;
+  while (*src != '\0') {
+    Rune r;
+    r = *reinterpret_cast<const unsigned char*>(src);
+    if (r < Runeself) {
+      src++;
+      *d++ = r;
+    } else {
+      src += FastCharToRune(&r, src);
+      d += runetochar(d, &r);
+    }
+  }
+  return d - dst;
+}
+
+
+// Convert the data to valid UTF-8.  The destination must be big enough.
+// The source may contain a \0, but any \0 bytes will be converted to
+// Runerror in the result.
+int Str2ValidUTF8(char* dst, const char* src, int len) {
+  const char *send = src + len;
+  char *d = dst;
+  while (src < send) {
+    Rune r;
+    r = *reinterpret_cast<const unsigned char*>(src);
+    if (r < Runeself && r != '\0') {
+      src++;
+      *d++ = r;
+    } else {
+      if (!fullrune(src, send-src) || r == '\0') {
+        // Bad encoding; absorb one byte, emit Runerror
+        src++;
+        r = Runeerror;
+      } else {
+        src += FastCharToRune(&r, src);
+      }
+      d += runetochar(d, &r);
+    }
+  }
+  return d - dst;
+}
+
+
+// Keep in sync with Scanner::ValidUnicode.  Hard to share the implementation
+// because it has compile-time error-handling for good diagnostics.
+bool IsValidUnicode(int r) {
+  if (r <= 0 || r > Runemax) {
+    return false;
+  }
+  if (0xD800 <= r && r <= 0xDFFF) {
+    return false;
+  }
+  return true;
+}
+
+
+void RuneStr2Str(char* dst, int num_bytes, const Rune* src, int len) {
+  assert(len >= 0);
+  char* d = dst;
+  while (len-- > 0) {
+    if (*src < Runeself)  // ASCII
+      *d++ = *src++;
+    else
+      d += runetochar(d, src++);
+  }
+  assert(num_bytes == d - dst);
+}
+
+
+// produce null terminated C string in fixed-size buffer
+// clen should be at least UTFmax-1 longer than absolutely
+// needed, to allow for overflow near end of string while
+// unpacking a multibyte character.
+// returns strlen(dst);
+int RuneStr2CStr(char* dst, int clen, const Rune* src, int len) {
+  char* d = dst;
+  char* e = dst + clen - UTFmax;  // conservative but safe
+  // most of the time, we have ASCII.  use that fact
+  while (len-- > 0 && d < e) {
+    if (*src < Runeself)  // ASCII
+      *d++ = *src++;
+    else
+      d += runetochar(d, src++);
+  }
+  *d = '\0';
+  return d - dst;
+}
+
+
+// produce null terminated C string in fixed-size buffer
+// and record positions of each rune boundary in result.
+// clen should be at least UTFmax-1 longer than absolutely
+// needed, to allow for overflow near end of string while
+// unpacking a multibyte character.
+// returns strlen(dst);
+int RuneStr2CStrWithPos(char* dst, int clen, int *runepos,
+                        const Rune* src, int len) {
+  char* d = dst;
+  char* e = dst + clen - UTFmax;  // conservative but safe
+  const Rune* start = src;
+  // most of the time, we have ASCII.  use that fact
+  while (len-- > 0 && d < e) {
+    if (*src < Runeself) {  // ASCII
+      *d++ = *src;
+      *runepos++ = src - start;
+    } else {
+      const int w = runetochar(d, src);
+      for (int i = 0; i < w; i++)
+        *runepos++ = src - start;
+      d += w;
+    }
+    src++;
+  }
+  *runepos = src-start;
+  *d = '\0';
+  return d - dst;
+}
+
+
+// For each byte offset j in the source string, write into
+// runepos[j] the rune number occupying that byte.
+// Returns the number of runes in the source.
+// Input is assumed to be valid UTF-8 throughout.
+// 'runepos' must be at least len+1 elements long.
+int GetRunePositions(int* runepos, const char* src, int len) {
+  const char* end = src + len;
+  int nrunes = 0;
+  // most of the time, we have ASCII.  use that fact.
+  while (src < end) {
+    if (*reinterpret_cast<const unsigned char*>(src) < Runeself) {  // ASCII
+      *runepos++ = nrunes;
+      src++;
+    } else {
+      Rune r;
+      const int w = FastCharToRune(&r, src);
+      // We should only need the first element, but setting a Rune
+      // position for every byte in the character guarantees that we
+      // do not have to depend on the regexp library never giving
+      // us a pointer inside a character.
+      for (int i = 0; i < w; i++)
+        *runepos++ = nrunes;
+      src += w;
+    }
+    nrunes++;
+  }
+  *runepos = nrunes;
+  return nrunes;
+}

@@ -1,0 +1,17 @@
+base/baddefness.szl:23: wrong number of arguments to def()
+base/baddefness.szl:24: wrong number of arguments to def()
+base/baddefness.szl:25: wrong number of arguments to ___undefine()
+base/baddefness.szl:26: wrong number of arguments to ___undefine()
+base/baddefness.szl:29: false not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:30: 0 not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:31: g() not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:32: argument to def() is not a value
+base/baddefness.szl:35: type mismatch in assignment: x (type int) = ___undefine(y) (type void)
+base/baddefness.szl:41: a[0] not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:42: t.f not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:43: m[0] not a suitable argument for ___undefine(); variable expected
+base/baddefness.szl:47: cannot undefine static variable v (int)
+base/baddefness.szl:51: cannot undefine static variable c (table collection of int)
+base/baddefness.szl:55: cannot undefine quantifier i (some int)
+base/baddefness.szl:58: cannot undefine quantifier i (each int)
+base/baddefness.szl:61: value of 'all' quantifier variable i undefined in body of when statement

@@ -1,0 +1,74 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Generate the streamed pb data using an unnamed group.
+
+type X_A = parsedmessage {
+  a: bytes @ 1: string
+};
+
+type X_B = parsedmessage {
+  x: bytes @ 2: string,
+  c: array of {
+    y: X_A @ 6,
+    z: X_B @ 8
+  } @ 4,
+  w: bytes @ 10: string
+};
+
+xb: X_B = {
+  bytes("c"),           # x
+  {                     # c
+    {                   # c[0]
+      { bytes("d") },   # c[0].y
+      {                 # c[0].z
+        bytes("a"),     # c[0].z.x
+        { },            # c[0].z.c
+        bytes("b")      # c[0].z.w
+      }
+    }
+  },
+  bytes("e")            # w
+};
+
+input = bytes(xb);
+assert(input == bytes("1201632332030a0164420612016152016224520165", "hex"));
+
+
+# Using real nesting, convert the stream and verify the values.
+
+type Y_A = parsedmessage {
+  a: bytes @ 1: string
+};
+
+type Y_B = parsedmessage {
+  x: bytes @ 2: string,
+  type C = parsedmessage {
+    y: Y_A @ 6,
+    z: Y_B @ 8
+  },
+  c: array of C @ 4,
+  w: bytes @ 10: string,
+};
+
+yb: Y_B = input;
+
+assert(string(yb.x) == "c");
+assert(string(yb.w) == "e");
+assert(len(yb.c) == 1);
+assert(string(yb.c[0].y.a) == "d");
+assert(string(yb.c[0].z.x) == "a");
+assert(len(yb.c[0].z.c) == 0);
+assert(string(yb.c[0].z.w) == "b");

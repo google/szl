@@ -1,0 +1,3 @@
+conversion/basic_explicit_intbase.szl:26: warning: no base provided for conversion to integer; base will be input-dependent
+conversion/basic_explicit_intbase.szl:35: warning: no base provided for conversion to integer; base will be input-dependent
+conversion/basic_explicit_intbase.szl:46: warning: no base provided for conversion to integer; base will be input-dependent

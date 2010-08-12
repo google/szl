@@ -1,0 +1,1412 @@
+Block
+. Empty
+. TypeDecl
+. . "x"
+. . BasicType
+. . . int
+. TypeDecl
+. . "a"
+. . ArrayType
+. . . BasicType
+. . . . int
+. TypeDecl
+. . "aa"
+. . ArrayType
+. . . ArrayType
+. . . . BasicType
+. . . . . int
+. TypeDecl
+. . "f"
+. . Function (Type)
+. . . arg:
+. . . . "a"
+. . . . BasicType
+. . . . . int
+. . . result:
+. . . . ArrayType
+. . . . . aa
+. TypeDecl
+. . "emptyf"
+. . Function (Type)
+. TypeDecl
+. . "m"
+. . Map
+. . . key:
+. . . . BasicType
+. . . . . int
+. . . value:
+. . . . BasicType
+. . . . . string
+. TypeDecl
+. . "o"
+. . OutputType
+. . . "maximum"
+. . . parameter:
+. . . . Literal
+. . . . . 1000
+. . . value-type:
+. . . . "foo":
+. . . . BasicType
+. . . . . int
+. . . weight:
+. . . . "w":
+. . . . BasicType
+. . . . . int
+. . . elem-format:
+. . . List<Expr*>
+. . . . Literal
+. . . . . "hello"
+n. TypeDecl
+. . "op"
+. . OutputType
+. . . "collection"
+. . . value-type:
+. . . . "foo":
+. . . . BasicType
+. . . . . bytes
+. . . proc:
+. . . List<Expr*>
+. . . . Literal
+. . . . . "echo"
+. TypeDecl
+. . "t"
+. . TupleType
+. . . "i":
+. . . BasicType
+. . . . int
+. . . "j":
+. . . Map
+. . . . m
+. TypeDecl
+. . "p"
+. . TupleType
+. . . parsedmessage
+. . . "i":
+. . . BasicType
+. . . . int
+. . . value:
+. . . . Literal
+. . . . . 0
+. . . tag: 1
+. VarDecl
+. . static
+. . "static_int"
+. . BasicType
+. . . int
+. . Literal
+. . . 0
+. TypeDecl
+. . "t_with_statics"
+. . TupleType
+. . . VarDecl
+. . . . static
+. . . . "a"
+. . . . BasicType
+. . . . . int
+. . . . Literal
+. . . . . 4660
+. TypeDecl
+. . "t_with_nested_types"
+. . TupleType
+. . . "nested"
+. . . TupleType
+. . . . "nested_basic"
+. . . . BasicType
+. . . . . int
+. . . . "nested_array"
+. . . . ArrayType
+. . . . . BasicType
+. . . . . . int
+. . . . "nested_map"
+. . . . Map
+. . . . . key:
+. . . . . . BasicType
+. . . . . . . int
+. . . . . value:
+. . . . . . BasicType
+. . . . . . . int
+. . . . "nested_tuple"
+. . . . TupleType
+. . . . . BasicType
+. . . . . . int
+. . . . "nested_proto"
+. . . . TupleType
+. . . . "nested_function"
+. . . . Function (Type)
+. . . . "nested_output"
+. . . . OutputType
+. . . . . "sum"
+. . . . . value-type:
+. . . . . . BasicType
+. . . . . . . int
+. . . "n":
+. . . TupleType
+. . . . TupleType
+. . . . . "t_with_nested_types"
+. . . . "nested"
+. . . "b":
+. . . BasicType
+. . . . int
+. . . "a":
+. . . ArrayType
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "t_with_nested_types"
+. . . . . "nested"
+. . . . nested_array
+. . . "m":
+. . . Map
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "t_with_nested_types"
+. . . . . "nested"
+. . . . nested_map
+. . . "t":
+. . . TupleType
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "t_with_nested_types"
+. . . . . "nested"
+. . . . "nested_tuple"
+. . . "p":
+. . . TupleType
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "t_with_nested_types"
+. . . . . "nested"
+. . . . "nested_proto"
+. . . "f":
+. . . Function (Type)
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "t_with_nested_types"
+. . . . . "nested"
+. . . . nested_function
+. . . VarDecl
+. . . . static
+. . . . "o"
+. . . . Function (Type)
+. . . . . arg:
+. . . . . . "o"
+. . . . . . OutputType
+. . . . . . . TupleType
+. . . . . . . . TupleType
+. . . . . . . . . "t_with_nested_types"
+. . . . . . . . "nested"
+. . . . . . . nested_output
+. . . . Function (Node)
+. . . . . Function (Type)
+. . . . . . arg:
+. . . . . . . "o"
+. . . . . . . OutputType
+. . . . . . . . TupleType
+. . . . . . . . . TupleType
+. . . . . . . . . . "t_with_nested_types"
+. . . . . . . . . "nested"
+. . . . . . . . nested_output
+. . . . . Block
+. VarDecl
+. . "kCountries"
+. . ArrayType
+. . . BasicType
+. . . . string
+. . Composite
+. . . ArrayType
+. . . . BasicType
+. . . . . string
+. . . Literal
+. . . . "a"
+. . . Literal
+. . . . "b"
+. VarDecl
+. . "country"
+. . BasicType
+. . . string
+. . Literal
+. . . "abc"
+. If
+. . Binary
+. . . ==
+. . . Literal
+. . . . 1
+. . . Literal
+. . . . 2
+. . Block
+. . . Assignment
+. . . . Variable
+. . . . . "country"
+. . . . Literal
+. . . . . "abc"
+. . . Assignment
+. . . . Variable
+. . . . . "country"
+. . . . Literal
+. . . . . "xyz"
+. . Assignment
+. . . Variable
+. . . . "country"
+. . . Literal
+. . . . "def"
+. VarDecl
+. . "i"
+. . BasicType
+. . . int
+. Assignment
+. . Variable
+. . . "i"
+. . Binary
+. . . +
+. . . Literal
+. . . . 2
+. . . Call
+. . . . Intrinsic
+. . . . . "len"
+. . . . List<Expr*>
+. . . . . Binary
+. . . . . . +
+. . . . . . Literal
+. . . . . . . "xy"
+. . . . . . Literal
+. . . . . . . "zy"
+. Increment
+. . Variable
+. . . "i"
+. . ++
+. VarDecl
+. . "b"
+. . BasicType
+. . . string
+. VarDecl
+. . "aaaa"
+. . ArrayType
+. . . BasicType
+. . . . string
+. . Saw
+. . . "sawn"
+. . . Literal
+. . . . 3
+. . . Literal
+. . . . "hi"
+. . . Literal
+. . . . "a"
+. . . Regex
+. . . . BasicType
+. . . . . int
+. . . . Literal
+. . . . . 10
+. . . rest :
+. . . Variable
+. . . . "b"
+. VarDecl
+. . "z"
+. . BasicType
+. . . string
+. . New
+. . . BasicType
+. . . . string
+. . . Conversion
+. . . . BasicType
+. . . . . int
+. . . . Literal
+. . . . . "10"
+. . . . List<Expr*>
+. . . . . Literal
+. . . . . . 10
+. . . Index
+. . . . Slice
+. . . . . Literal
+. . . . . . "x"
+. . . . . Literal
+. . . . . . 0
+. . . . . Dollar
+. . . . . . Literal
+. . . . . . . "x"
+. . . . Literal
+. . . . . 0
+. VarDecl
+. . "identity"
+. . Function (Type)
+. . . arg:
+. . . . "s"
+. . . . BasicType
+. . . . . string
+. . . result:
+. . . . BasicType
+. . . . . string
+. . Function (Node)
+. . . Function (Type)
+. . . . arg:
+. . . . . "s"
+. . . . . BasicType
+. . . . . . string
+. . . . result:
+. . . . . BasicType
+. . . . . . string
+. . . Block
+. . . . Return
+. . . . Variable
+. . . . . "s"
+. Assignment
+. . Variable
+. . . "z"
+. . Call
+. . . Variable
+. . . . "identity"
+. . . List<Expr*>
+. . . . Variable
+. . . . . "z"
+. Switch 
+. . Variable
+. . . "z"
+. . case
+. . . List<Expr*>
+. . . . Literal
+. . . . . "a"
+. . . . Literal
+. . . . . "z"
+. . . Block
+. . . . Emit
+. . . . . table:
+. . . . . . Variable
+. . . . . . . "stdout"
+. . . . . value:
+. . . . . . Literal
+. . . . . . . "hi"
+. . default:
+. . . Block
+. . . . Emit
+. . . . . table:
+. . . . . . Variable
+. . . . . . . "stdout"
+. . . . . value:
+. . . . . . Literal
+. . . . . . . "bye"
+. VarDecl
+. . static
+. . "tab"
+. . OutputType
+. . . "sum"
+. . . indices:
+. . . "a":
+. . . . BasicType
+. . . . . int
+. . . "b":
+. . . . BasicType
+. . . . . int
+. . . value-type:
+. . . . BasicType
+. . . . . int
+. Loop
+. . for 
+. . . Assignment
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 0
+. . . Binary
+. . . . <
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 3
+. . . Empty
+. . . Block
+. . . . Emit
+. . . . . table:
+. . . . . . Variable
+. . . . . . . "tab"
+. . . . . indices:
+. . . . . . List<Expr*>
+. . . . . . . Literal
+. . . . . . . . 1
+. . . . . . . Literal
+. . . . . . . . 2
+. . . . . value:
+. . . . . . Literal
+. . . . . . . 3
+. . . . Assignment
+. . . . . Variable
+. . . . . . "i"
+. . . . . Literal
+. . . . . . 1000
+. Loop
+. . do 
+. . . Assignment
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 0
+. . . Binary
+. . . . >
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 0
+. Loop
+. . while 
+. . . Binary
+. . . . >
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 0
+. . . Assignment
+. . . . Variable
+. . . . . "i"
+. . . . Literal
+. . . . . 0
+. If
+. . Binary
+. . . >
+. . . Variable
+. . . . "i"
+. . . Literal
+. . . . 0
+. . Empty
+. . Empty
+. ExprStat
+. . Literal
+. . . 123
+. VarDecl
+. . "y"
+. . BasicType
+. . . int
+. . StatExpr
+. . . Block
+. . . . Result
+. . . . . Literal
+. . . . . . 0
+. Proto
+. . "proto2.proto"
+. . Proto
+. . . "proto1.proto"
+. . . TypeDecl
+. . . . "Proto1Message"
+. . . . TupleType
+. . . . . parsedmessage
+. . . . . VarDecl
+. . . . . . static
+. . . . . . "tagnames"
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . . value:
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . Composite
+. . . . . . . Map
+. . . . . . . . key:
+. . . . . . . . . BasicType
+. . . . . . . . . . string
+. . . . . . . . value:
+. . . . . . . . . BasicType
+. . . . . . . . . . int
+. . . . . . . Literal
+. . . . . . . . "ErrorCode"
+. . . . . . . Literal
+. . . . . . . . 0
+. . . . . . . Literal
+. . . . . . . . "a"
+. . . . . . . Literal
+. . . . . . . . 1
+. . . . . . . Literal
+. . . . . . . . "b"
+. . . . . . . Literal
+. . . . . . . . 2
+. . . . . . . Literal
+. . . . . . . . "c"
+. . . . . . . Literal
+. . . . . . . . 3
+. . . . . "a":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 1
+. . . . .  : "int64"
+. . . . . "b":
+. . . . . BasicType
+. . . . . . uint
+. . . . . tag: 2
+. . . . .  : "fixed32"
+. . . . . "c":
+. . . . . BasicType
+. . . . . . uint
+. . . . . tag: 3
+. . . . .  : "fixed32"
+. . TypeDecl
+. . . "Proto2Message"
+. . . TupleType
+. . . . parsedmessage
+. . . . "version"
+. . . . BasicType
+. . . . . int
+. . . . VarDecl
+. . . . . static
+. . . . . "A"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 1
+. . . . VarDecl
+. . . . . static
+. . . . . "version_names"
+. . . . . Map
+. . . . . . key:
+. . . . . . . "enum_value":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . value:
+. . . . . . . "enum_name":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . "enum_value":
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . . value:
+. . . . . . . . "enum_name":
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "A"
+. . . . "I"
+. . . . BasicType
+. . . . . int
+. . . . VarDecl
+. . . . . static
+. . . . . "Ii"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 1
+. . . . VarDecl
+. . . . . static
+. . . . . "I2"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 2
+. . . . VarDecl
+. . . . . static
+. . . . . "I_names"
+. . . . . Map
+. . . . . . key:
+. . . . . . . "enum_value":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . value:
+. . . . . . . "enum_name":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . "enum_value":
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . . value:
+. . . . . . . . "enum_name":
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . Literal
+. . . . . . . 2
+. . . . . . Literal
+. . . . . . . "I2"
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "Ii"
+. . . . "N"
+. . . . BasicType
+. . . . . int
+. . . . VarDecl
+. . . . . static
+. . . . . "N1"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 0
+. . . . VarDecl
+. . . . . static
+. . . . . "N2"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 1
+. . . . VarDecl
+. . . . . static
+. . . . . "N_names"
+. . . . . Map
+. . . . . . key:
+. . . . . . . "enum_value":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . value:
+. . . . . . . "enum_name":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . "enum_value":
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . . value:
+. . . . . . . . "enum_name":
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "N2"
+. . . . . . Literal
+. . . . . . . 0
+. . . . . . Literal
+. . . . . . . "N1"
+. . . . "U"
+. . . . BasicType
+. . . . . int
+. . . . VarDecl
+. . . . . static
+. . . . . "U1"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 0
+. . . . VarDecl
+. . . . . static
+. . . . . "U2"
+. . . . . BasicType
+. . . . . . int
+. . . . . Literal
+. . . . . . 1
+. . . . VarDecl
+. . . . . static
+. . . . . "U_names"
+. . . . . Map
+. . . . . . key:
+. . . . . . . "enum_value":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . value:
+. . . . . . . "enum_name":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . "enum_value":
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . . value:
+. . . . . . . . "enum_name":
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "U2"
+. . . . . . Literal
+. . . . . . . 0
+. . . . . . Literal
+. . . . . . . "U1"
+. . . . VarDecl
+. . . . . static
+. . . . . "tagnames"
+. . . . . Map
+. . . . . . key:
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . . value:
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . . value:
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . Literal
+. . . . . . . "ErrorCode"
+. . . . . . Literal
+. . . . . . . 0
+. . . . . . Literal
+. . . . . . . "Proto1"
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "b"
+. . . . . . Literal
+. . . . . . . 2
+. . . . . . Literal
+. . . . . . . "c"
+. . . . . . Literal
+. . . . . . . 3
+. . . . . . Literal
+. . . . . . . "e"
+. . . . . . Literal
+. . . . . . . 4
+. . . . . . Literal
+. . . . . . . "f"
+. . . . . . Literal
+. . . . . . . 5
+. . . . . . Literal
+. . . . . . . "g"
+. . . . . . Literal
+. . . . . . . 6
+. . . . . . Literal
+. . . . . . . "h"
+. . . . . . Literal
+. . . . . . . 7
+. . . . . . Literal
+. . . . . . . "j"
+. . . . . . Literal
+. . . . . . . 8
+. . . . . . Literal
+. . . . . . . "k"
+. . . . . . Literal
+. . . . . . . 9
+. . . . . . Literal
+. . . . . . . "l"
+. . . . . . Literal
+. . . . . . . 10
+. . . . . . Literal
+. . . . . . . "m"
+. . . . . . Literal
+. . . . . . . 11
+. . . . . . Literal
+. . . . . . . "o"
+. . . . . . Literal
+. . . . . . . 12
+. . . . . . Literal
+. . . . . . . "P"
+. . . . . . Literal
+. . . . . . . 13
+. . . . . . Literal
+. . . . . . . "q"
+. . . . . . Literal
+. . . . . . . 14
+. . . . . . Literal
+. . . . . . . "r"
+. . . . . . Literal
+. . . . . . . 15
+. . . . . . Literal
+. . . . . . . "s"
+. . . . . . Literal
+. . . . . . . 16
+. . . . . . Literal
+. . . . . . . "t"
+. . . . . . Literal
+. . . . . . . 17
+. . . . . . Literal
+. . . . . . . "V"
+. . . . . . Literal
+. . . . . . . 18
+. . . . . . Literal
+. . . . . . . "v1"
+. . . . . . Literal
+. . . . . . . 19
+. . . . . . Literal
+. . . . . . . "v2"
+. . . . . . Literal
+. . . . . . . 20
+. . . . . . Literal
+. . . . . . . "W"
+. . . . . . Literal
+. . . . . . . 21
+. . . . . . Literal
+. . . . . . . "w1"
+. . . . . . Literal
+. . . . . . . 22
+. . . . . . Literal
+. . . . . . . "w2"
+. . . . . . Literal
+. . . . . . . 23
+. . . . . . Literal
+. . . . . . . "w3"
+. . . . . . Literal
+. . . . . . . 24
+. . . . . . Literal
+. . . . . . . "w4"
+. . . . . . Literal
+. . . . . . . 25
+. . . . . . Literal
+. . . . . . . "X"
+. . . . . . Literal
+. . . . . . . 26
+. . . . . . Literal
+. . . . . . . "x1"
+. . . . . . Literal
+. . . . . . . 27
+. . . . . . Literal
+. . . . . . . "x2"
+. . . . . . Literal
+. . . . . . . 28
+. . . . . . Literal
+. . . . . . . "x3"
+. . . . . . Literal
+. . . . . . . 29
+. . . . . . Literal
+. . . . . . . "x4"
+. . . . . . Literal
+. . . . . . . 30
+. . . . . . Literal
+. . . . . . . "x5"
+. . . . . . Literal
+. . . . . . . 31
+. . . . . . Literal
+. . . . . . . "Y"
+. . . . . . Literal
+. . . . . . . 32
+. . . . . . Literal
+. . . . . . . "y1"
+. . . . . . Literal
+. . . . . . . 33
+. . . . . . Literal
+. . . . . . . "Z"
+. . . . . . Literal
+. . . . . . . 34
+. . . . . . Literal
+. . . . . . . "z1"
+. . . . . . Literal
+. . . . . . . 35
+. . . . . . Literal
+. . . . . . . "z2"
+. . . . . . Literal
+. . . . . . . 36
+. . . . . . Literal
+. . . . . . . "z3"
+. . . . . . Literal
+. . . . . . . 37
+. . . . . . Literal
+. . . . . . . "z4"
+. . . . . . Literal
+. . . . . . . 38
+. . . . . . Literal
+. . . . . . . "z5"
+. . . . . . Literal
+. . . . . . . 39
+. . . . . . Literal
+. . . . . . . "AA"
+. . . . . . Literal
+. . . . . . . 40
+. . . . . . Literal
+. . . . . . . "aa1"
+. . . . . . Literal
+. . . . . . . 41
+. . . . . . Literal
+. . . . . . . "aa2"
+. . . . . . Literal
+. . . . . . . 42
+. . . . . . Literal
+. . . . . . . "y2"
+. . . . . . Literal
+. . . . . . . 43
+. . . . . . Literal
+. . . . . . . "cc"
+. . . . . . Literal
+. . . . . . . 44
+. . . . . . Literal
+. . . . . . . "dd"
+. . . . . . Literal
+. . . . . . . 45
+. . . . . . Literal
+. . . . . . . "ee"
+. . . . . . Literal
+. . . . . . . 46
+. . . . . . Literal
+. . . . . . . "ff"
+. . . . . . Literal
+. . . . . . . 47
+. . . . . . Literal
+. . . . . . . "gg"
+. . . . . . Literal
+. . . . . . . 48
+. . . . . . Literal
+. . . . . . . "HH"
+. . . . . . Literal
+. . . . . . . 49
+. . . . . . Literal
+. . . . . . . "hh1"
+. . . . . . Literal
+. . . . . . . 50
+. . . . . . Literal
+. . . . . . . "hh2"
+. . . . . . Literal
+. . . . . . . 51
+. . . . . . Literal
+. . . . . . . "II"
+. . . . . . Literal
+. . . . . . . 52
+. . . . . . Literal
+. . . . . . . "ii1"
+. . . . . . Literal
+. . . . . . . 53
+. . . . . . Literal
+. . . . . . . "ii2"
+. . . . . . Literal
+. . . . . . . 54
+. . . . . . Literal
+. . . . . . . "jj"
+. . . . . . Literal
+. . . . . . . 55
+. . . . "P"
+. . . . TupleType
+. . . . . "q":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 14
+. . . . .  : "string"
+. . . . . "r":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 15
+. . . . .  : "int32"
+. . . . "V"
+. . . . TupleType
+. . . . . "v1":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 19
+. . . . .  : "string"
+. . . . . "v2":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 20
+. . . . .  : "int32"
+. . . . "W"
+. . . . TupleType
+. . . . . "w1":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 22
+. . . . .  : "string"
+. . . . . "w2":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 23
+. . . . .  : "int32"
+. . . . . "w3":
+. . . . . ArrayType
+. . . . . . BasicType
+. . . . . . . int
+. . . . . tag: 24
+. . . . .  : "int32"
+. . . . . "w4":
+. . . . . ArrayType
+. . . . . . BasicType
+. . . . . . . string
+. . . . . tag: 25
+. . . . .  : "string"
+. . . . "X"
+. . . . TupleType
+. . . . . "Y"
+. . . . . TupleType
+. . . . . . "BB"
+. . . . . . BasicType
+. . . . . . . int
+. . . . . . VarDecl
+. . . . . . . static
+. . . . . . . "BB1"
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . . Literal
+. . . . . . . . 0
+. . . . . . VarDecl
+. . . . . . . static
+. . . . . . . "BB2"
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . . Literal
+. . . . . . . . 1
+. . . . . . VarDecl
+. . . . . . . static
+. . . . . . . "BB3"
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . . Literal
+. . . . . . . . 64
+. . . . . . VarDecl
+. . . . . . . static
+. . . . . . . "BB_names"
+. . . . . . . Map
+. . . . . . . . key:
+. . . . . . . . . "enum_value":
+. . . . . . . . . BasicType
+. . . . . . . . . . int
+. . . . . . . . value:
+. . . . . . . . . "enum_name":
+. . . . . . . . . BasicType
+. . . . . . . . . . string
+. . . . . . . Composite
+. . . . . . . . Map
+. . . . . . . . . key:
+. . . . . . . . . . "enum_value":
+. . . . . . . . . . BasicType
+. . . . . . . . . . . int
+. . . . . . . . . value:
+. . . . . . . . . . "enum_name":
+. . . . . . . . . . BasicType
+. . . . . . . . . . . string
+. . . . . . . . Literal
+. . . . . . . . . 64
+. . . . . . . . Literal
+. . . . . . . . . "BB3"
+. . . . . . . . Literal
+. . . . . . . . . 1
+. . . . . . . . Literal
+. . . . . . . . . "BB2"
+. . . . . . . . Literal
+. . . . . . . . . 0
+. . . . . . . . Literal
+. . . . . . . . . "BB1"
+. . . . . . "Z"
+. . . . . . TupleType
+. . . . . . . "z1":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . . tag: 35
+. . . . . . .  : "int32"
+. . . . . . . "z2":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . . . tag: 36
+. . . . . . .  : "string"
+. . . . . . . "z3":
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . . . tag: 37
+. . . . . . .  : "string"
+. . . . . . . "z4":
+. . . . . . . BasicType
+. . . . . . . . bool
+. . . . . . . tag: 38
+. . . . . . .  : "bool"
+. . . . . . . "z5":
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . . tag: 39
+. . . . . . .  : "int32"
+. . . . . . "AA"
+. . . . . . TupleType
+. . . . . . . "aa1":
+. . . . . . . BasicType
+. . . . . . . . float
+. . . . . . . tag: 41
+. . . . . . .  : "float"
+. . . . . . . "aa2":
+. . . . . . . BasicType
+. . . . . . . . float
+. . . . . . . tag: 42
+. . . . . . .  : "float"
+. . . . . . "y1":
+. . . . . . BasicType
+. . . . . . . string
+. . . . . . tag: 33
+. . . . . .  : "string"
+. . . . . . "z":
+. . . . . . TupleType
+. . . . . . . TupleType
+. . . . . . . . TupleType
+. . . . . . . . . TupleType
+. . . . . . . . . . "Proto2Message"
+. . . . . . . . . "X"
+. . . . . . . . "Y"
+. . . . . . . "Z"
+. . . . . . tag: 34
+. . . . . . "aa":
+. . . . . . TupleType
+. . . . . . . TupleType
+. . . . . . . . TupleType
+. . . . . . . . . TupleType
+. . . . . . . . . . "Proto2Message"
+. . . . . . . . . "X"
+. . . . . . . . "Y"
+. . . . . . . "AA"
+. . . . . . tag: 40
+. . . . . . "y2":
+. . . . . . ArrayType
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . . tag: 43
+. . . . . .  : "int32"
+. . . . . "x1":
+. . . . . BasicType
+. . . . . . bool
+. . . . . tag: 27
+. . . . .  : "bool"
+. . . . . "x2":
+. . . . . BasicType
+. . . . . . uint
+. . . . . tag: 28
+. . . . .  : "uint64"
+. . . . . "x3":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 29
+. . . . .  : "int32"
+. . . . . "x4":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 30
+. . . . .  : "int32"
+. . . . . "x5":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 31
+. . . . .  : "int32"
+. . . . . "y":
+. . . . . ArrayType
+. . . . . . TupleType
+. . . . . . . TupleType
+. . . . . . . . TupleType
+. . . . . . . . . "Proto2Message"
+. . . . . . . . "X"
+. . . . . . . "Y"
+. . . . . tag: 32
+. . . . "HH"
+. . . . TupleType
+. . . . . "hh1":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 50
+. . . . .  : "string"
+. . . . . "hh2":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 51
+. . . . .  : "string"
+. . . . "II"
+. . . . TupleType
+. . . . . "ii1":
+. . . . . BasicType
+. . . . . . string
+. . . . . tag: 53
+. . . . .  : "string"
+. . . . . "ii2":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 54
+. . . . .  : "int64"
+. . . . "proto1":
+. . . . TupleType
+. . . . . "Proto1Message"
+. . . . tag: 1
+. . . . "b":
+. . . . BasicType
+. . . . . int
+. . . . tag: 2
+. . . .  : "int32"
+. . . . "c":
+. . . . BasicType
+. . . . . string
+. . . . tag: 3
+. . . .  : "string"
+. . . . "e":
+. . . . BasicType
+. . . . . int
+. . . . tag: 4
+. . . .  : "int32"
+. . . . "f":
+. . . . BasicType
+. . . . . string
+. . . . tag: 5
+. . . .  : "string"
+. . . . "g":
+. . . . ArrayType
+. . . . . BasicType
+. . . . . . string
+. . . . tag: 6
+. . . .  : "string"
+. . . . "h":
+. . . . BasicType
+. . . . . int
+. . . . tag: 7
+. . . .  : "int32"
+. . . . "j":
+. . . . BasicType
+. . . . . int
+. . . . tag: 8
+. . . .  : "int32"
+. . . . "k":
+. . . . BasicType
+. . . . . string
+. . . . tag: 9
+. . . .  : "string"
+. . . . "l":
+. . . . BasicType
+. . . . . bool
+. . . . tag: 10
+. . . .  : "bool"
+. . . . "m":
+. . . . ArrayType
+. . . . . BasicType
+. . . . . . string
+. . . . tag: 11
+. . . .  : "string"
+. . . . "o":
+. . . . ArrayType
+. . . . . BasicType
+. . . . . . int
+. . . . tag: 12
+. . . .  : "int32"
+. . . . "p":
+. . . . ArrayType
+. . . . . TupleType
+. . . . . . TupleType
+. . . . . . . "Proto2Message"
+. . . . . . "P"
+. . . . tag: 13
+. . . . "s":
+. . . . BasicType
+. . . . . string
+. . . . tag: 16
+. . . .  : "string"
+. . . . "t":
+. . . . BasicType
+. . . . . string
+. . . . tag: 17
+. . . .  : "string"
+. . . . "v":
+. . . . ArrayType
+. . . . . TupleType
+. . . . . . TupleType
+. . . . . . . "Proto2Message"
+. . . . . . "V"
+. . . . tag: 18
+. . . . "w":
+. . . . ArrayType
+. . . . . TupleType
+. . . . . . TupleType
+. . . . . . . "Proto2Message"
+. . . . . . "W"
+. . . . tag: 21
+. . . . "x":
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "Proto2Message"
+. . . . . "X"
+. . . . tag: 26
+. . . . "cc":
+. . . . BasicType
+. . . . . string
+. . . . tag: 44
+. . . .  : "string"
+. . . . "dd":
+. . . . BasicType
+. . . . . string
+. . . . tag: 45
+. . . .  : "string"
+. . . . "ee":
+. . . . BasicType
+. . . . . int
+. . . . tag: 46
+. . . .  : "int32"
+. . . . "ff":
+. . . . BasicType
+. . . . . uint
+. . . . tag: 47
+. . . .  : "fixed32"
+. . . . "gg":
+. . . . BasicType
+. . . . . int
+. . . . tag: 48
+. . . .  : "int64"
+. . . . "hh":
+. . . . ArrayType
+. . . . . TupleType
+. . . . . . TupleType
+. . . . . . . "Proto2Message"
+. . . . . . "HH"
+. . . . tag: 49
+. . . . "ii":
+. . . . TupleType
+. . . . . TupleType
+. . . . . . "Proto2Message"
+. . . . . "II"
+. . . . tag: 52
+. . . . "jj":
+. . . . BasicType
+. . . . . string
+. . . . tag: 55
+. . . .  : "string"
+. . TypeDecl
+. . . "Proto2Message2"
+. . . TupleType
+. . . . parsedmessage
+. . . . VarDecl
+. . . . . static
+. . . . . "tagnames"
+. . . . . Map
+. . . . . . key:
+. . . . . . . BasicType
+. . . . . . . . string
+. . . . . . value:
+. . . . . . . BasicType
+. . . . . . . . int
+. . . . . Composite
+. . . . . . Map
+. . . . . . . key:
+. . . . . . . . BasicType
+. . . . . . . . . string
+. . . . . . . value:
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . Literal
+. . . . . . . "ErrorCode"
+. . . . . . Literal
+. . . . . . . 0
+. . . . . . Literal
+. . . . . . . "A"
+. . . . . . Literal
+. . . . . . . 1
+. . . . . . Literal
+. . . . . . . "a1"
+. . . . . . Literal
+. . . . . . . 2
+. . . . . . Literal
+. . . . . . . "a2"
+. . . . . . Literal
+. . . . . . . 3
+. . . . "A"
+. . . . TupleType
+. . . . . "a1":
+. . . . . TupleType
+. . . . . . "Proto2Message"
+. . . . . tag: 2
+. . . . . "a2":
+. . . . . BasicType
+. . . . . . int
+. . . . . tag: 3
+. . . . .  : "int64"
+. . . . "a":
+. . . . ArrayType
+. . . . . TupleType
+. . . . . . TupleType
+. . . . . . . "Proto2Message2"
+. . . . . . "A"
+. . . . tag: 1
+. ExprStat
+. . RuntimeGuard
+. . . Composite
+. . . . TupleType
+. . . . . BasicType
+. . . . . . int
+. . . . Index
+. . . . . TempVariable
+. . . . . . New
+. . . . . . . ArrayType
+. . . . . . . . BasicType
+. . . . . . . . . int
+. . . . . . . Literal
+. . . . . . . . 1
+. . . . . . . Literal
+. . . . . . . . 1
+. . . . . Literal
+. . . . . . 0

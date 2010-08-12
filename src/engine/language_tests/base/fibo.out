@@ -1,0 +1,16 @@
+fibo: function(n: int): int {
+	if (n > 2)
+		return fibo(n - 1) + fibo(n - 2);
+	else
+		return n;
+}
+;
+enum: function(n: int, expected: array of int) {
+	if (n >= 0)
+	{
+		assert(fibo(n) == expected[($ - n) - 1]);
+		enum(n - 1, expected);
+	}
+}
+;
+enum(10, {89, 55, 34, 21, 13, 8, 5, 3, 2, 1, 0});

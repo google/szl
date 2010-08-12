@@ -1,0 +1,4 @@
+sort/sort_bad_03.szl:42: sort: data1[i].a with element type array of int is not sortable
+sort/sort_bad_03.szl:44: sort: data1[i].a with element type array of int is not sortable
+sort/sort_bad_03.szl:48: sort: data2[i].a with element type {x: int, y: int} is not sortable
+sort/sort_bad_03.szl:50: sort: data2[i].a with element type {x: int, y: int} is not sortable

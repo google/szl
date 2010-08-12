@@ -1,0 +1,207 @@
+type String = string;
+type Bytes = bytes;
+type ArrayOfInt = array of int;
+type MapIntOfInt = map [int] of int;
+type TupleIntIntInt = {i: int, j: int, k: int};
+type TupleIntFloatBytes = {i: int, f: float, b: bytes};
+type ProtoIntIntInt = proto {i: int, j: int, k: int};
+type ProtoIntFloatBytes = proto {i: int, f: float, b: bytes};
+ai: array of int = {1, 2, 3};
+tifs: TupleIntFloatBytes = {1, 2.0, B"3"};
+mii: map [int] of int = {1: 11, 2: 22, 3: 33};
+ae: array of int = {};
+te: {} = {};
+me: map [int] of int = {:};
+aai: array of array of int = {{}, {3, 4}};
+assert(((len(aai[0]) == 0) && (aai[1][0] == 3)) && (aai[1][1] == 4));
+mimii: map [int] of map [int] of int = {0: {:}, 1: {0: 3, 1: 4}};
+assert(((len(mimii[0]) == 0) && (mimii[1][0] == 3)) && (mimii[1][1] == 4));
+tt: {i: int, t: {i: int, f: float}} = {1, {2, 3.0}};
+assert(((tt.i == 1) && (tt.t.i == 2)) && (tt.t.f == 3.0));
+s1: string = {65, 66, 67};
+s2: string = {65, 66, 67};
+assert((s1 == "ABC") && (s2 == "ABC"));
+b1: bytes = {65, 66, 67};
+b2: bytes = {65, 66, 67};
+assert((b1 == B"ABC") && (b2 == B"ABC"));
+a1: array of int = {65, 66, 67};
+a2: ArrayOfInt = {65, 66, 67};
+assert((((a1 == a2) && (a1[0] == 65)) && (a1[1] == 66)) && (a1[2] == 67));
+t1: {i: int, j: int, k: int} = {65, 66, 67};
+t2: TupleIntIntInt = {65, 66, 67};
+assert((((t1 == t2) && (t1.i == 65)) && (t1.j == 66)) && (t1.k == 67));
+p1: proto {i: int, j: int, k: int} = {65, 66, 67};
+p2: ProtoIntIntInt = {65, 66, 67};
+assert((((p1 == p2) && (p1.i == 65)) && (p1.j == 66)) && (p1.k == 67));
+s: string = {65};
+assert(s == "A");
+a: array of int = {65, 66, 67};
+assert(a[1] == 66);
+m: map [string] of int = {"hello": 0, "you": 1};
+assert(m["hello"] == 0);
+nested_array: array of array of array of array of array of array of array of array of array of array of array of array of int = {{{{{{{{{{{{12}}}}}}}}}}}};
+assert(nested_array[0][0][0][0][0][0][0][0][0][0][0][0] == 12);
+nested_tuple: {int, a: {int, b: {int, c: {int, d: {int, e: {int, f: {int, g: {int, h: {int, i: {int, j: {int, k: {l: int}}}}}}}}}}}} = {1, {2, {3, {4, {5, {6, {7, {8, {9, {10, {11, {12}}}}}}}}}}}};
+assert(nested_tuple.a.b.c.d.e.f.g.h.i.j.k.l == 12);
+nested_map: map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of map [string] of int = {"a": {"b": {"c": {"d": {"e": {"f": {"g": {"h": {"i": {"j": {"k": {"l": 12}}}}}}}}}}}};
+assert(nested_map["a"]["b"]["c"]["d"]["e"]["f"]["g"]["h"]["i"]["j"]["k"]["l"] == 12);
+s3: string = {};
+s4: string = {};
+s5: string;
+s5 = {};
+s6: string;
+s6 = {};
+assert((((s3 == "") && (s4 == "")) && (s5 == "")) && (s6 == ""));
+function(s: string) {
+	assert(s == "");
+}
+({});
+function(s: string) {
+	assert(s == "");
+}
+({});
+assert(format("-%s-", {}) == "--");
+b3: bytes = {};
+b4: bytes = {};
+b5: bytes;
+b5 = {};
+b6: bytes;
+b6 = {};
+assert((((b3 == B"") && (b4 == B"")) && (b5 == B"")) && (b6 == B""));
+function(b: bytes) {
+	assert(b == B"");
+}
+({});
+function(b: bytes) {
+	assert(b == B"");
+}
+({});
+ai3: array of int = {1, 2, 3};
+ai4: ArrayOfInt = {1, 2, 3};
+ai5: array of int;
+ai5 = {1, 2, 3};
+ai6: ArrayOfInt;
+ai6 = {1, 2, 3};
+assert(((((((ai3 == ai4) && (ai4 == ai5)) && (ai5 == ai6)) && (len(ai3) == 3)) && (ai3[0] == 1)) && (ai3[1] == 2)) && (ai3[2] == 3));
+function(a: array of int) {
+	assert(len(a) == 3);
+}
+({1, 2, 3});
+function(a: ArrayOfInt) {
+	assert(len(a) == 3);
+}
+({1, 2, 3});
+mii3: map [int] of int = {1: 1, 2: 2, 3: 3};
+mii4: MapIntOfInt = {1: 1, 2: 2, 3: 3};
+mii5: map [int] of int;
+mii5 = {1: 1, 2: 2, 3: 3};
+mii6: MapIntOfInt;
+mii6 = {1: 1, 2: 2, 3: 3};
+assert(((((((mii3 == mii4) && (mii4 == mii5)) && (mii5 == mii6)) && (len(mii3) == 3)) && (mii3[1] == 1)) && (mii3[2] == 2)) && (mii3[3] == 3));
+function(m: map [int] of int) {
+	assert(len(m) == 3);
+}
+({1: 1, 2: 2, 3: 3});
+function(m: MapIntOfInt) {
+	assert(len(m) == 3);
+}
+({1: 1, 2: 2, 3: 3});
+tm3: {i: int, f: float, b: bytes} = {1, 2.0, B"3"};
+tm4: TupleIntFloatBytes = {1, 2.0, B"3"};
+tm5: {i: int, f: float, b: bytes};
+tm5 = {1, 2.0, B"3"};
+tm6: TupleIntFloatBytes;
+tm6 = {1, 2.0, B"3"};
+assert((((((tm3 == tm4) && (tm4 == tm5)) && (tm5 == tm6)) && (tm3.i == 1)) && (tm3.f == 2.0)) && (tm3.b == B"3"));
+function(t: {i: int, f: float, b: bytes}) {
+	assert(t.i == 1);
+}
+({1, 2.0, B"3"});
+function(t: TupleIntFloatBytes) {
+	assert(t.b == B"3");
+}
+({1, 2.0, B"3"});
+tm7: {i: int, f: float, b: bytes} = {convert(int, "1"), convert(float, "2"), convert(bytes, "3")};
+tm8: TupleIntFloatBytes = {convert(int, "1"), convert(float, "2"), convert(bytes, "3")};
+assert((((tm7 == tm8) && (tm7.i == 1)) && (tm7.f == 2.0)) && (tm7.b == B"3"));
+pm3: proto {i: int, f: float, b: bytes} = {1, 2.0, B"3"};
+pm4: ProtoIntFloatBytes = {1, 2.0, B"3"};
+pm5: proto {i: int, f: float, b: bytes};
+pm5 = {1, 2.0, B"3"};
+pm6: ProtoIntFloatBytes;
+pm6 = {1, 2.0, B"3"};
+assert((((((pm3 == pm4) && (pm4 == pm5)) && (pm5 == pm6)) && (pm3.i == 1)) && (pm3.f == 2.0)) && (pm3.b == B"3"));
+function(p: proto {i: int, f: float, b: bytes}) {
+	assert(p.i == 1);
+}
+({1, 2.0, B"3"});
+function(p: ProtoIntFloatBytes) {
+	assert(p.b == B"3");
+}
+({1, 2.0, B"3"});
+pm7: proto {i: int, f: float, b: bytes} = {convert(int, "1"), convert(float, "2"), convert(bytes, "3")};
+pm8: ProtoIntFloatBytes = {convert(int, "1"), convert(float, "2"), convert(bytes, "3")};
+assert((((pm7 == pm8) && (pm7.i == 1)) && (pm7.f == 2.0)) && (pm7.b == B"3"));
+assert({"a", "b", "c", "d", {}}[0] == "a");
+assert({"a", "b", "c", "d", {}}[1] == "b");
+assert({"a", "b", "c", "d", {}}[2] == "c");
+assert({"a", "b", "c", "d", {}}[3] == "d");
+f: function(key: string): string {
+	return convert(string, {"a": 3, "b": 5, "c": 7, "d": 11, {}: 13}[key]);
+}
+;
+assert(f("a") == "3");
+assert(f("d") == "11");
+assert(f({}) == "13");
+hello_you_array: array of string;
+hello_you_array = {{104, 101, 108, 108, 111}, " you"};
+hello_you_string: string = "";
+for (i: int = 0; i < len(hello_you_array); i++)
+	hello_you_string = hello_you_string + hello_you_array[i];
+assert(hello_you_string == "hello you");
+expected: string = "{ 1, 1.0, \"cool\", { 97, 98, 99 } }";
+s7: string = convert(string, {1, 1.0, "cool", {97, 98, 99}});
+assert(s7 == expected);
+assert(convert(string, {1, 1.0, "cool", {97, 98, 99}}) == expected);
+expected = "{ 1, 1.0, \"cool\", { 97: 0, 98: 5, 99: 9 } }";
+s8: string = convert(string, {1, 1.0, "cool", {97: 0, 98: 5, 99: 9}});
+assert(s8 == expected);
+assert(convert(string, {1, 1.0, "cool", {97: 0, 98: 5, 99: 9}}) == expected);
+convert(string, {});
+convert(string, {});
+convert(string, {});
+convert(string, {});
+convert(bytes, {});
+convert(bytes, {});
+convert(bytes, {});
+convert(bytes, {});
+convert(array of int, {1, 2, 3});
+convert(ArrayOfInt, {1, 2, 3});
+convert(ArrayOfInt, {1, 2, 3});
+convert(map [int] of int, {1: 1, 2: 2, 3: 3});
+convert(MapIntOfInt, {1: 1, 2: 2, 3: 3});
+convert(MapIntOfInt, {1: 1, 2: 2, 3: 3});
+convert({int, float, bytes}, {1, 2.0, B"3"});
+convert(TupleIntFloatBytes, {1, 2.0, B"3"});
+convert(TupleIntFloatBytes, {1, 2.0, B"3"});
+convert({int, float, string}, {1, convert(float, 2), convert(string, 3)});
+convert(proto {i: int, f: float, b: bytes}, {convert(int, "1"), convert(float, "2"), convert(bytes, "3")});
+convert(TupleIntFloatBytes, {convert(int, "1"), convert(float, "2"), convert(bytes, "3")});
+convert(ProtoIntFloatBytes, {convert(int, "1"), convert(float, "2"), convert(bytes, "3")});
+convert(TupleIntFloatBytes, {convert(int, "1"), convert(float, "2"), convert(bytes, "3")});
+convert(ProtoIntFloatBytes, {convert(int, "1"), convert(float, "2"), convert(bytes, "3")});
+convert({int, float, string}, {new(array of int, 3, 3)[0], convert(float, new(array of int, 3, 3)[1]), convert(string, new(array of int, 3, 3)[2])});
+convert(proto {i: int, f: float, b: bytes}, {convert(int, new(array of string, 3, "1")[0]), convert(float, new(array of string, 3, "1")[1]), convert(bytes, new(array of string, 3, "1")[2])});
+convert(TupleIntFloatBytes, {convert(int, new(array of string, 3, "1")[0]), convert(float, new(array of string, 3, "1")[1]), convert(bytes, new(array of string, 3, "1")[2])});
+convert(ProtoIntFloatBytes, {convert(int, new(array of string, 3, "1")[0]), convert(float, new(array of string, 3, "1")[1]), convert(bytes, new(array of string, 3, "1")[2])});
+convert(TupleIntFloatBytes, {convert(int, new(array of string, 3, "1")[0]), convert(float, new(array of string, 3, "1")[1]), convert(bytes, new(array of string, 3, "1")[2])});
+convert(ProtoIntFloatBytes, {convert(int, new(array of string, 3, "1")[0]), convert(float, new(array of string, 3, "1")[1]), convert(bytes, new(array of string, 3, "1")[2])});
+ai7: array of int = convert(array of int, {1.0, 2.0, 3.0});
+ai8: ArrayOfInt = convert(ArrayOfInt, {1.0, 2.0, 3.0});
+mii7: map [int] of int = convert(map [int] of int, {1, 1, 2, 2, 3, 3});
+mii8: MapIntOfInt = convert(MapIntOfInt, {1, 1, 2, 2, 3, 3});
+convert(array of int, {1.0, 2.0, 3.0});
+convert(ArrayOfInt, {1.0, 2.0, 3.0});
+convert(ArrayOfInt, {1.0, 2.0, 3.0});
+convert(map [int] of int, {1, 1, 2, 2, 3, 3});
+convert(MapIntOfInt, {1, 1, 2, 2, 3, 3});

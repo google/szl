@@ -1,0 +1,76 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Value propagation tests specific to "--ignore_undefs".
+
+
+# Verify that a REST variable may remain undefined because a saw operation
+# was skipped due to an undefined variable.
+
+s1: string;
+if (nrand(5) == 17)
+  s1 = "abc";
+
+t1: string;
+saw(s1, "a", rest t1);
+b1: bool = def(t1);  # do not know whether defined under --ignore_undefs
+
+a: int = ?{ b: int = 1 / (1 + nrand(1)); result b; };
+def(a);  # do not know whether defined under --ignore_undefs
+
+
+
+
+# Because definedness propagation disabled ignore_undefs when visiting static
+# variable declarations, DoVariable marked 'result' as defined, so no TrapDesc
+# was generated for 'result' in the return statement. This caused a
+# segmentation fault in native mode and "szl: fatal: no trap handler for pc"
+# in nonative.
+
+static Foo: function(): string {
+  result := "";
+  groups: array of string = {};
+  result = groups[$];
+  return result;
+};
+Foo();
+
+# This test cases also resulted in a segfault/no trap handler error.
+
+static Bar: { f: function() } = {
+  function() {
+    undef: string;
+    s: string;
+    s = undef;
+    s = undef;
+  }
+};
+Bar.f();
+
+# Test that lookahead in loop analysis is done more than once.
+
+g: function() {
+  a: int;
+  b: int = 1;
+  c: int = 1;
+  d: int = 1;
+  for (i: int = 0; i < 3; i++) {
+    d = c;
+    c = b;
+    b = a;
+  }
+  def(d);  # must not be flagged as "known to be defined"
+};
+g();

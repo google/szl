@@ -1,0 +1,7 @@
+i: int = 1;
+fun1: function(i: int) {
+	i = i + 1;
+	fun1(i);
+}
+;
+fun1(i);

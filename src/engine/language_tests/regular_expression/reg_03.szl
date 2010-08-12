@@ -1,0 +1,190 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Quantifiers in Regular Expression Constructs.
+
+#inst: * quantifier matches 0 or more times.
+
+s0: string = "";
+for (i: int = 0; i < 10; i++)
+{
+    if (match("^a*$", s0) != true)
+    {
+	emit stdout <- format(`match("^a*$", "%s") Failed !!!`, s0);
+    }
+    
+    s0 = s0 + "a";
+}
+
+#inst: + quantifier matches 1 or more times.
+s0 = "";
+
+if (match("^a+$", s0) != false)
+{
+    emit stdout <- format(`match("^a+$", "%s") Failed !!!`, s0);
+}
+
+for (i: int = 1; i <= 10; i++)
+{
+    s0 = s0 + "a";
+    
+    if (match("^a+$", s0) != true)
+    {
+	emit stdout <- format(`match("^a+$", "%s") Failed !!!`, s0);
+    }
+
+}
+
+#inst: ? matches 0 or 1 times.
+s0 = "";
+for (i: int = 0; i < 2; i++)
+{
+    if (match("^a?$", s0) != true)
+    {
+	emit stdout <- format(`match("^a?$", "%s") Failed !!!`, s0);
+    }
+    
+    s0 = s0 + "a";
+}
+
+s0 = "aa";
+if (match("^a?$", s0) != false)
+{
+    emit stdout <- format(`match("^a?$", "%s") Failed !!!`, s0);
+}
+
+#inst: {n} quantifier match exactly n times.
+#maxQuantifierLimit: int;
+#regExp: string = "";
+#
+#for (j: int = 1; j <= 32; j++)
+#{
+#    maxQuantifierLimit = 1 << j;
+#    emit stdout <- format("maxQuantifierLimit = %d", maxQuantifierLimit);
+#
+#    s0 = "";
+#
+#
+#    for (i: int = 0; i < maxQuantifierLimit; i++)
+#    {
+#	regExp = "a{" + string(i) + "}"; 
+#	if (match(regExp, s0) != true)
+#	{
+#	    emit stdout <- format(`match("%s", "%s") Failed !!!`, regExp, s0);
+#	}
+#	    
+#	s0 = s0 + "a";
+#    }
+#}
+
+
+#inst: {n} quantifier match exactly n times.
+
+s0 = "aaa";
+
+if (match("^a{3}$", s0) != true)
+{
+    emit stdout <- format(`match("^a{3}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "aa";
+if (match("^a{3}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{3}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "aaaa";
+if (match("^a{3}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{3}$", "%s") Failed !!!`, s0);
+}
+
+#inst: quantifier {n, } matches atleast n.
+
+s0 = "aa";
+if (match("^a{3,}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{3,}$", "%s") Failed !!!`, s0);
+}
+
+for (i: int = 0; i < 2; i++)
+{
+    s0 = s0 + "a";
+    if (match("^a{3,}$", s0) != true)
+    {
+	emit stdout <- format(`match("^a{3,}$", "%s") Failed !!!`, s0);
+    }
+}
+
+
+#inst: quantifier {n, m} matches atleast n and atmost m.
+
+s0 = "aa";
+if (match("^a{3,5}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{3,5}$", "%s") Failed !!!`, s0);
+}
+
+for (i: int = 0; i < 2; i++)
+{
+    s0 = s0 + "a";
+    if (match("^a{3,5}$", s0) != true)
+    {
+	emit stdout <- format(`match("^a{3,5}$", "%s") Failed !!!`, s0);
+    }
+}
+
+
+#inst: 0 value of quantifier in {}.
+
+s0 = "";
+if (match("^a{0}$", s0) != true)
+{
+    emit stdout <- format(`match("^a{0}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "";
+if (match("^a{0,}$", s0) != true)
+{
+    emit stdout <- format(`match("^a{0,}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "";
+if (match("^a{0,0}$", s0) != true)
+{
+    emit stdout <- format(`match("^a{0,0}$", "%s") Failed !!!`, s0);
+}
+
+#inst: negative quantifier value in {}
+s0 = "a";
+if (match("^a{-1}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{-1}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "a";
+if (match("^a{-1,}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{-1,}$", "%s") Failed !!!`, s0);
+}
+
+s0 = "a";
+if (match("^a{-1,0}$", s0) != false)
+{
+    emit stdout <- format(`match("^a{-1,0}$", "%s") Failed !!!`, s0);
+}

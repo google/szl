@@ -1,0 +1,279 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# test conversion between time and string with explicit timezones.
+
+# We use a set of test times bracketing the (USA) DST transition times in 2006.
+
+# There are cases where a round trip conversion fails.
+# - If you start with a local time that does not exist (2:30am start of DST)
+#   then converting to szl_time and back will yield a time that does exist
+#   and so cannot match.
+# - If you start with a local time and specify an RFC822 time zone identifier
+#   that indicates whether DST is in effect, and that indication is wrong,
+#   converting to szl_time and back will yield the correct identifier with the
+#   (different) hour that matches it.
+#
+# We account for these anomalies by adjusting the result before checking the
+# round trip identity.
+#
+# In order to make sure that the adjustments do not hide any changes to the
+# output that would indicate problems, we write the unadjusted output to stdout
+# for comparison with the expected results.
+
+
+# Values of "isdst" below, indicating whether DST is in effect.
+kIsDST:  int = 0;      # yes
+kNotDST: int = 1;      # no
+kImpossible: int = 2;  # no such time exists
+kAmbiguous: int = 3;   # ambiguous
+
+
+type local_time_t = {
+  prefix: string,         # the part before the time zone identifier
+  suffix: string,         # the part after the time zone identifier
+  isdst: int,             # whether DST
+};
+
+
+local_times: array of local_time_t = {
+  { "Sat Apr  1 12:00:00",  "2006",  kNotDST },
+  { "Sun Apr  2 00:00:00",  "2006",  kNotDST },
+  { "Sun Apr  2 00:59:59",  "2006",  kNotDST },
+  { "Sun Apr  2 01:00:00",  "2006",  kNotDST },
+  { "Sun Apr  2 01:59:59",  "2006",  kNotDST },
+  { "Sun Apr  2 02:00:00",  "2006",  kImpossible },
+  { "Sun Apr  2 02:59:59",  "2006",  kImpossible },
+  { "Sun Apr  2 03:00:00",  "2006",  kIsDST },
+  { "Sun Apr  2 03:59:59",  "2006",  kIsDST },
+  { "Sun Apr  2 04:00:00",  "2006",  kIsDST },
+  { "Mon Apr  3 12:00:00",  "2006",  kIsDST },
+  { "Sat Oct 28 12:00:00",  "2006",  kIsDST },
+  { "Sun Oct 29 00:00:00",  "2006",  kIsDST },
+  { "Sun Oct 29 00:59:59",  "2006",  kIsDST },
+  { "Sun Oct 29 01:00:00",  "2006",  kAmbiguous },
+  { "Sun Oct 29 01:59:59",  "2006",  kAmbiguous },
+  { "Sun Oct 29 02:00:00",  "2006",  kNotDST },
+  { "Sun Oct 29 02:59:59",  "2006",  kNotDST },
+  { "Sun Oct 29 03:00:00",  "2006",  kNotDST },
+  { "Sun Oct 29 03:59:59",  "2006",  kNotDST },
+  { "Sun Oct 29 04:00:00",  "2006",  kNotDST },
+  { "Mon Oct 30 12:00:00",  "2006",  kNotDST }
+};
+
+
+utc_times: array of int = {
+  1143892800,  # Sat Apr  1 12:00:00
+  1143936000,  # Sun Apr  2 00:00:00
+  1143939599,  # Sun Apr  2 00:59:59
+  1143939600,  # Sun Apr  2 01:00:00
+  1143943199,  # Sun Apr  2 01:59:59
+  1143946800,  # Sun Apr  2 02:00:00
+  1143950399,  # Sun Apr  2 02:59:59
+  1143946800,  # Sun Apr  2 03:00:00
+  1143950399,  # Sun Apr  2 03:59:59
+  1143950400,  # Sun Apr  2 04:00:00
+  1144065600,  # Mon Apr  3 12:00:00
+  1162036800,  # Sat Oct 28 12:00:00
+  1162080000,  # Sun Oct 29 00:00:00
+  1162083599,  # Sun Oct 29 00:59:59
+  1162083600,  # Sun Oct 29 01:00:00
+  1162087199,  # Sun Oct 29 01:59:59
+  1162087200,  # Sun Oct 29 02:00:00
+  1162090799,  # Sun Oct 29 02:59:59
+  1162090800,  # Sun Oct 29 03:00:00
+  1162094399,  # Sun Oct 29 03:59:59
+  1162094400,  # Sun Oct 29 04:00:00
+  1162209600,  # Mon Oct 30 12:00:00
+};
+
+
+type timezone_t = {
+  in: string,          # name to use for string to time
+  out_std: string,     # name to expect for time to string when non-DST
+  out_dst: string,     # name to expect for time to string when DST
+};
+
+
+timezones: array of timezone_t = {
+  { "",         "PST",  "PDT" },
+  { "A",        "A",    "A"   },
+  { "B",        "B",    "B"   },
+  { "C",        "C",    "C"   },
+  { "D",        "D",    "D"   },
+  { "E",        "E",    "E"   },
+  { "F",        "F",    "F"   },
+  { "G",        "G",    "G"   },
+  { "H",        "H",    "H"   },
+  { "I",        "I",    "I"   },
+  { "K",        "K",    "K"   },
+  { "L",        "L",    "L"   },
+  { "M",        "M",    "M"   },
+  { "N",        "N",    "N"   },
+  { "O",        "O",    "O"   },
+  { "P",        "P",    "P"   },
+  { "Q",        "Q",    "Q"   },
+  { "R",        "R",    "R"   },
+  { "S",        "S",    "S"   },
+  { "T",        "T",    "T"   },
+  { "U",        "U",    "U"   },
+  { "V",        "V",    "V"   },
+  { "W",        "W",    "W"   },
+  { "X",        "X",    "X"   },
+  { "Y",        "Y",    "Y"   },
+  { "Z",        "GMT",  "GMT" },
+  { "PST",      "PST",  "PDT" },
+  { "PDT",      "PST",  "PDT" },
+  { "PST8PDT",  "PST",  "PDT" },
+  { "MST",      "MST",  "MDT" },
+  { "MDT",      "MST",  "MDT" },
+  { "MST7MDT",  "MST",  "MDT" },
+  { "CST",      "CST",  "CDT" },
+  { "CDT",      "CST",  "CDT" },
+  { "CST6CDT",  "CST",  "CDT" },
+  { "EST",      "EST",  "EDT" },
+  { "EDT",      "EST",  "EDT" },
+  { "EST5EDT",  "EST",  "EDT" },
+  { "UT",       "GMT",  "GMT" },
+  { "GMT",      "GMT",  "GMT" },
+  { "America/Los_Angeles", "PST", "PDT" },
+  { "America/New_York",    "EST", "EDT" },
+};
+
+
+# Update a time string from standard time to DST adjusting both
+# the time zone and the time.  (Only implemented for the test cases.)
+
+AdjustStdToDst: function(s: string): string {
+  old: string = s;
+  s = strreplace(s, "PST", "PDT", false);
+  s = strreplace(s, "MST", "MDT", false);
+  s = strreplace(s, "CST", "CDT", false);
+  s = strreplace(s, "EST", "EDT", false);
+  s = strreplace(s, " 12:", " 13:", false);
+  s = strreplace(s, " 04:", " 05:", false);
+  s = strreplace(s, " 03:", " 04:", false);
+  s = strreplace(s, " 02:", " 03:", false);
+  s = strreplace(s, " 01:", " 02:", false);
+  s = strreplace(s, " 00:", " 01:", false);
+  assert(s != old, "AdjustStdToDst: " + old);
+  return s;
+};
+
+
+# Update a time string from DST to standard time adjusting both
+# the time zone and the time.  (Only implemented for the test cases.)
+
+AdjustDstToStd: function(s: string): string {
+  old: string = s;
+  s = strreplace(s, "PDT", "PST", false);
+  s = strreplace(s, "MDT", "MST", false);
+  s = strreplace(s, "CDT", "CST", false);
+  s = strreplace(s, "EDT", "EST", false);
+  s = strreplace(s, "Sun Apr  2 00:", "Sat Apr  1 23:", false);
+  s = strreplace(s, " 01:", " 00:", false);
+  s = strreplace(s, " 02:", " 01:", false);
+  s = strreplace(s, " 03:", " 02:", false);
+  s = strreplace(s, " 04:", " 03:", false);
+  s = strreplace(s, " 05:", " 04:", false);
+  s = strreplace(s, " 12:", " 11:", false);
+  assert(s != old, "AdjustDstToStd: " + old);
+  return s;
+};
+
+
+
+when (i: each int; def(timezones[i])) {
+  # Get the standard time offset; later we use it to map the numeric UTC values
+  # so they fall in the general range where they will cross DST boundaries.
+  tz: timezone_t = timezones[i];
+  offset: int = int(time("Sat Jan 3 12:00:00 GMT 1971"))
+              - int(time("Sat Jan 3 12:00:00 " + tz.in + " 1971"));
+  if (offset == 0) {
+    if (tz.in != "GMT" && tz.in != "UT" && tz.in != "Z") {
+      assert(false, "Did not recognize time zone name: " + tz.in);
+    }
+  }
+
+  # test string => time => string for each local time using this time zone
+  when (j: each int; def(local_times[j])) {
+    local_time: local_time_t = local_times[j];
+
+    # construct a time string containing this time zone and with no time zone
+    s1: string = local_time.prefix + " " + tz.in + " " + local_time.suffix;
+    s2: string = local_time.prefix +       " "         + local_time.suffix;
+
+    # verify we get same result with time zone embedded or passed as argument
+    t1: time = time(s1);
+    t2: time = time(s2, tz.in);
+    assert(t1 == t2, "Embedded and argument TZ results difer");
+
+    # determine the time zone identifier we expect when converting back
+    expected_tz: string;
+    if (tz.out_std == tz.out_dst) {
+      expected_tz = tz.out_std;  # not dependent on DST
+    } else if (local_time.isdst == kAmbiguous && tz.in == tz.out_std) {
+      expected_tz = tz.out_std;  # ambiguous time and we are told STD
+    } else if (local_time.isdst == kAmbiguous && tz.in == tz.out_dst) {
+      expected_tz = tz.out_dst;  # ambiguous time and we are told DST
+    } else if (local_time.isdst == kAmbiguous) {
+      expected_tz = tz.out_std;  # ambiguous time and not told, expect STD 
+    } else if (local_time.isdst == kNotDST) {
+      expected_tz = tz.out_std;  # time is STD, expect that one
+    } else if (local_time.isdst == kIsDST) {
+      expected_tz = tz.out_dst;  # time is DST, expect that one
+    } else {
+      expected_tz = tz.out_std;  # impossible time, expect STD (see below)
+    }
+
+    # construct the string we expect to get back from string => time => string
+    s3: string = local_time.prefix + " " + expected_tz + " " + local_time.suffix;
+
+    # adjust it for DST boundary anomalies
+    if (tz.out_std != tz.out_dst) {
+      # if we specified standard time but the output should be DST, fix it
+      if (tz.in == tz.out_std &&
+          (local_time.isdst == kIsDST || local_time.isdst == kImpossible))
+	s3 = AdjustStdToDst(s3);
+      # if we specified DST but the output should be standard time, fix it
+      if (tz.in == tz.out_dst &&
+          (local_time.isdst == kNotDST || local_time.isdst == kImpossible))
+	s3 = AdjustDstToStd(s3);
+      # if we did not specify which and the time is "impossible", it will be
+      # interpreted as STD on input and converted to DST on output; this needs
+      # a time correction and the simplest way to get it is to set expected_tz
+      # to the STD string above and make the adjustment here
+      if (tz.in != tz.out_std && tz.in != tz.out_dst &&
+          local_time.isdst == kImpossible)
+	s3 = AdjustStdToDst(s3);
+    }
+
+    # check the round trip
+    s4: string = string(t1, tz.in);
+    assert(s3 == s4, format("%s => %d => %s\n(expected) %s", s1,
+                            int(t1) / 1000000, s4, s3));
+  }
+
+  # test time => string => time for each UTC time using this time zone
+  when (j: each int; def(utc_times[j])) {
+    # find the UTC time where this local time will be near the DST transition
+    t1: time = time(utc_times[j] * 1000000 - offset);
+
+    # convert and check time => string => time
+    s1: string = string(t1, tz.in);
+    t2: time = time(s1, tz.in);
+    assert(t1 == t2, format("%d => %s => %d", int(t1), s1, int(t2)));
+  }
+}

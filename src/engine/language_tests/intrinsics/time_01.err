@@ -1,0 +1,2 @@
+intrinsics/time_01.szl:122: warning: formattime: invalid time or time zone "XYZ" was not recognized
+intrinsics/time_01.szl:123: warning: formattime: result too long

@@ -1,0 +1,144 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options  -noexecute
+
+#desc: Declaring 
+
+# Composite types
+
+type AAI = array of array of int;
+type AAS = array of array of string;
+type AAF = array of array of float;
+type AAFG = array of array of fingerprint;
+type AAB = array of array of bool;
+type AABY = array of array of bytes;
+type AAT = array of array of time;
+
+type AMII = array of map[int] of int;
+type AMIS = array of map[int] of string;
+type AMIF = array of map[int] of float;
+type AMIFG = array of map[int] of fingerprint;
+type AMIB = array of map[int] of bool;
+type AMIBY = array of map[int] of bytes;
+type AMIT = array of map [int] of time;
+
+
+type AMSI = array of map[string] of int;
+type AMSS = array of map[string] of string;
+type AMSF = array of map[string] of float;
+type AMSFG = array of map[string] of fingerprint;
+type AMSB = array of map[string] of bool;
+type AMSBY = array of map[string] of bytes;
+type AMST = array of map [string] of time;
+
+type AMFI = array of map[float] of int;
+type AMFS = array of map[float] of string;
+type AMFF = array of map[float] of float;
+type AMFFG = array of map[float] of fingerprint;
+type AMFB = array of map[float] of bool;
+type AMFBY = array of map[float] of bytes;
+type AMFT = array of map [float] of time;
+
+type AMFGI = array of map[fingerprint] of int;
+type AMFGS = array of map[fingerprint] of string;
+type AMFGF = array of map[fingerprint] of float;
+type AMFGFG = array of map[fingerprint] of fingerprint;
+type AMFGB = array of map[fingerprint] of bool;
+type AMFGBY = array of map[fingerprint] of bytes;
+type AMFGT = array of map [fingerprint] of time;
+
+type AMBI = array of map[bool] of int;
+type AMBS = array of map[bool] of string;
+type AMBF = array of map[bool] of float;
+type AMBFG = array of map[bool] of fingerprint;
+type AMBB = array of map[bool] of bool;
+type AMBBY = array of map[bool] of bytes;
+type AMBT = array of map [bool] of time;
+
+type AMBYI = array of map[bytes] of int;
+type AMBYS = array of map[bytes] of string;
+type AMBYF = array of map[bytes] of float;
+type AMBYFG = array of map[bytes] of fingerprint;
+type AMBYB = array of map[bytes] of bool;
+type AMBYBY = array of map[bytes] of bytes;
+type AMBYT = array of map [bytes] of time;
+
+type AMTI = array of map[time] of int;
+type AMTS = array of map[time] of string;
+type AMTF = array of map[time] of float;
+type AMTFG = array of map[time] of fingerprint;
+type AMTB = array of map[time] of bool;
+type AMTBY = array of map[time] of bytes;
+type AMTT = array of map [time] of time;
+
+type ATII = array of {i0:int,i:int};
+type ATIS = array of {i0:int,s:string};
+type ATIF = array of {i0:int,f:float};
+type ATIFG = array of {i0:int,fg:fingerprint};
+type ATIB = array of {i0:int,b:bool};
+type ATIBY = array of {i0:int,by:bytes};
+type ATIT = array of {i0:int,t:time};
+
+type ATSI = array of {s0:string,i:int};
+type ATSS = array of {s0:string,s:string};
+type ATSF = array of {s0:string,f:float};
+type ATSFG = array of {s0:string,fg:fingerprint};
+type ATSB = array of {s0:string,b:bool};
+type ATSBY = array of {s0:string,by:bytes};
+type ATST = array of {s0:string,t:time};
+
+type ATFI = array of {f0:float,i:int};
+type ATFS = array of {f0:float,s:string};
+type ATFF = array of {f0:float,f:float};
+type ATFFG = array of {f0:float,fg:fingerprint};
+type ATFB = array of {f0:float,b:bool};
+type ATFBY = array of {f0:float,by:bytes};
+type ATFT = array of {f0:float,t:time};
+
+type ATFGI = array of {fg0:fingerprint,i:int};
+type ATFGS = array of {fg0:fingerprint,s:string};
+type ATFGF = array of {fg0:fingerprint,f:float};
+type ATFGFG = array of {fg0:fingerprint,fg:fingerprint};
+type ATFGB = array of {fg0:fingerprint,b:bool};
+type ATFGBY = array of {fg0:fingerprint,by:bytes};
+type ATFGT = array of {fg0:fingerprint,t:time};
+
+type ATBI = array of {b0:bool,i:int};
+type ATBS = array of {b0:bool,s:string};
+type ATBF = array of {b0:bool,f:float};
+type ATBFG = array of {b0:bool,fg:fingerprint};
+type ATBB = array of {b0:bool,b:bool};
+type ATBBY = array of {b0:bool,by:bytes};
+type ATBT = array of {b0:bool,t:time};
+
+type ATBYI = array of {by0:bytes,i:int};
+type ATBYS = array of {by0:bytes,s:string};
+type ATBYF = array of {by0:bytes,f:float};
+type ATBYFG = array of {by0:bytes,fg:fingerprint};
+type ATBYB = array of {by0:bytes,b:bool};
+type ATBYBY = array of {by0:bytes,by:bytes};
+type ATBYT = array of {by0:bytes,t:time};
+
+type ATTI = array of {t0:time,i:int};
+type ATTS = array of {t0:time,s:string};
+type ATTF = array of {t0:time,f:float};
+type ATTFG = array of {t0:time,fg:fingerprint};
+type ATTB = array of {t0:time,b:bool};
+type ATTBY = array of {t0:time,by:bytes};
+type ATTT = array of {t0:time,t:time};
+

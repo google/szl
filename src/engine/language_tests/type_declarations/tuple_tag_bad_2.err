@@ -1,0 +1,3 @@
+type_declarations/tuple_tag_bad_2.szl:21: ',' expected; found '1'
+type_declarations/tuple_tag_bad_2.szl:22: ',' expected; found 'query'
+type_declarations/tuple_tag_bad_2.szl:23: ',' expected; found '3'

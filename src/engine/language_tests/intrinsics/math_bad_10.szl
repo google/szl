@@ -1,0 +1,103 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: bad math intrinsic function call.
+
+#inst: not using function calling syntax.
+pow;
+ln;
+log10;
+exp;
+
+#inst: function call with no args.
+pow();
+ln();
+log10();
+exp();
+
+#inst: less number of args.
+pow(10.0);
+
+#inst: more number of args.
+pow(10.0, 1.0, 1.0);
+ln(10.0, 10.0);
+log10(10.0, 10.0);
+exp(10.0, 10.0);
+
+#inst: type incompatible args.
+b0: bool = true;
+i0: int = 10;
+by0: bytes = "abc";
+s0: string = "abc";
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+fg0: fingerprint = fingerprint("abc");
+
+a0: array of int = { 1, 2, 3 };
+m0: map [key: string] of int = { "A" : 65, "B" : 66 };
+p0: { x: int, y: string } = { 65, "A"};
+
+pow(b0, 10.2);
+pow(i0, 10.2);
+pow(by0, 10.2);
+pow(s0, 10.2);
+pow(t0, 10.2);
+pow(fg0, 10.2);
+pow(a0, 10.2);
+pow(m0, 10.2);
+pow(p0, 10.2);
+
+pow(10.2, b0);
+pow(10.2, i0);
+pow(10.2, by0);
+pow(10.2, s0);
+pow(10.2, t0);
+pow(10.2, fg0);
+pow(10.2, a0);
+pow(10.2, m0);
+pow(10.2, p0);
+
+ln(b0);
+ln(i0);
+ln(by0);
+ln(s0);
+ln(t0);
+ln(fg0);
+ln(a0);
+ln(m0);
+ln(p0);
+
+log10(b0);
+log10(i0);
+log10(by0);
+log10(s0);
+log10(t0);
+log10(fg0);
+log10(a0);
+log10(m0);
+log10(p0);
+
+exp(b0);
+exp(i0);
+exp(by0);
+exp(s0);
+exp(t0);
+exp(fg0);
+exp(a0);
+exp(m0);
+exp(p0);
+

@@ -1,0 +1,198 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Verify that the reference count of the RHS of an assignment is held nonzero
+# while the LHS is duplicated due to an assignment to a tuple field.
+
+# Since the key allocation is that of the tuple itself, we need a very large
+# tuple to make it likely that GC will be triggered by the tuple allocation,
+# not the allocation on the RHS of the assignment.
+
+type S = string;
+type T = {
+  a00:S,a01:S,a02:S,a03:S,a04:S,a05:S,a06:S,a07:S,a08:S,a09:S,
+  a10:S,a11:S,a12:S,a13:S,a14:S,a15:S,a16:S,a17:S,a18:S,a19:S,
+  a20:S,a21:S,a22:S,a23:S,a24:S,a25:S,a26:S,a27:S,a28:S,a29:S,
+  a30:S,a31:S,a32:S,a33:S,a34:S,a35:S,a36:S,a37:S,a38:S,a39:S,
+  a40:S,a41:S,a42:S,a43:S,a44:S,a45:S,a46:S,a47:S,a48:S,a49:S,
+  a50:S,a51:S,a52:S,a53:S,a54:S,a55:S,a56:S,a57:S,a58:S,a59:S,
+  a60:S,a61:S,a62:S,a63:S,a64:S,a65:S,a66:S,a67:S,a68:S,a69:S,
+  a70:S,a71:S,a72:S,a73:S,a74:S,a75:S,a76:S,a77:S,a78:S,a79:S,
+  a80:S,a81:S,a82:S,a83:S,a84:S,a85:S,a86:S,a87:S,a88:S,a89:S,
+  a90:S,a91:S,a92:S,a93:S,a94:S,a95:S,a96:S,a97:S,a98:S,a99:S,
+  b00:S,b01:S,b02:S,b03:S,b04:S,b05:S,b06:S,b07:S,b08:S,b09:S,
+  b10:S,b11:S,b12:S,b13:S,b14:S,b15:S,b16:S,b17:S,b18:S,b19:S,
+  b20:S,b21:S,b22:S,b23:S,b24:S,b25:S,b26:S,b27:S,b28:S,b29:S,
+  b30:S,b31:S,b32:S,b33:S,b34:S,b35:S,b36:S,b37:S,b38:S,b39:S,
+  b40:S,b41:S,b42:S,b43:S,b44:S,b45:S,b46:S,b47:S,b48:S,b49:S,
+  b50:S,b51:S,b52:S,b53:S,b54:S,b55:S,b56:S,b57:S,b58:S,b59:S,
+  b60:S,b61:S,b62:S,b63:S,b64:S,b65:S,b66:S,b67:S,b68:S,b69:S,
+  b70:S,b71:S,b72:S,b73:S,b74:S,b75:S,b76:S,b77:S,b78:S,b79:S,
+  b80:S,b81:S,b82:S,b83:S,b84:S,b85:S,b86:S,b87:S,b88:S,b89:S,
+  b90:S,b91:S,b92:S,b93:S,b94:S,b95:S,b96:S,b97:S,b98:S,b99:S,
+  c00:S,c01:S,c02:S,c03:S,c04:S,c05:S,c06:S,c07:S,c08:S,c09:S,
+  c10:S,c11:S,c12:S,c13:S,c14:S,c15:S,c16:S,c17:S,c18:S,c19:S,
+  c20:S,c21:S,c22:S,c23:S,c24:S,c25:S,c26:S,c27:S,c28:S,c29:S,
+  c30:S,c31:S,c32:S,c33:S,c34:S,c35:S,c36:S,c37:S,c38:S,c39:S,
+  c40:S,c41:S,c42:S,c43:S,c44:S,c45:S,c46:S,c47:S,c48:S,c49:S,
+  c50:S,c51:S,c52:S,c53:S,c54:S,c55:S,c56:S,c57:S,c58:S,c59:S,
+  c60:S,c61:S,c62:S,c63:S,c64:S,c65:S,c66:S,c67:S,c68:S,c69:S,
+  c70:S,c71:S,c72:S,c73:S,c74:S,c75:S,c76:S,c77:S,c78:S,c79:S,
+  c80:S,c81:S,c82:S,c83:S,c84:S,c85:S,c86:S,c87:S,c88:S,c89:S,
+  c90:S,c91:S,c92:S,c93:S,c94:S,c95:S,c96:S,c97:S,c98:S,c99:S,
+  d00:S,d01:S,d02:S,d03:S,d04:S,d05:S,d06:S,d07:S,d08:S,d09:S,
+  d10:S,d11:S,d12:S,d13:S,d14:S,d15:S,d16:S,d17:S,d18:S,d19:S,
+  d20:S,d21:S,d22:S,d23:S,d24:S,d25:S,d26:S,d27:S,d28:S,d29:S,
+  d30:S,d31:S,d32:S,d33:S,d34:S,d35:S,d36:S,d37:S,d38:S,d39:S,
+  d40:S,d41:S,d42:S,d43:S,d44:S,d45:S,d46:S,d47:S,d48:S,d49:S,
+  d50:S,d51:S,d52:S,d53:S,d54:S,d55:S,d56:S,d57:S,d58:S,d59:S,
+  d60:S,d61:S,d62:S,d63:S,d64:S,d65:S,d66:S,d67:S,d68:S,d69:S,
+  d70:S,d71:S,d72:S,d73:S,d74:S,d75:S,d76:S,d77:S,d78:S,d79:S,
+  d80:S,d81:S,d82:S,d83:S,d84:S,d85:S,d86:S,d87:S,d88:S,d89:S,
+  d90:S,d91:S,d92:S,d93:S,d94:S,d95:S,d96:S,d97:S,d98:S,d99:S,
+  e00:S,e01:S,e02:S,e03:S,e04:S,e05:S,e06:S,e07:S,e08:S,e09:S,
+  e10:S,e11:S,e12:S,e13:S,e14:S,e15:S,e16:S,e17:S,e18:S,e19:S,
+  e20:S,e21:S,e22:S,e23:S,e24:S,e25:S,e26:S,e27:S,e28:S,e29:S,
+  e30:S,e31:S,e32:S,e33:S,e34:S,e35:S,e36:S,e37:S,e38:S,e39:S,
+  e40:S,e41:S,e42:S,e43:S,e44:S,e45:S,e46:S,e47:S,e48:S,e49:S,
+  e50:S,e51:S,e52:S,e53:S,e54:S,e55:S,e56:S,e57:S,e58:S,e59:S,
+  e60:S,e61:S,e62:S,e63:S,e64:S,e65:S,e66:S,e67:S,e68:S,e69:S,
+  e70:S,e71:S,e72:S,e73:S,e74:S,e75:S,e76:S,e77:S,e78:S,e79:S,
+  e80:S,e81:S,e82:S,e83:S,e84:S,e85:S,e86:S,e87:S,e88:S,e89:S,
+  e90:S,e91:S,e92:S,e93:S,e94:S,e95:S,e96:S,e97:S,e98:S,e99:S,
+  f00:S,f01:S,f02:S,f03:S,f04:S,f05:S,f06:S,f07:S,f08:S,f09:S,
+  f10:S,f11:S,f12:S,f13:S,f14:S,f15:S,f16:S,f17:S,f18:S,f19:S,
+  f20:S,f21:S,f22:S,f23:S,f24:S,f25:S,f26:S,f27:S,f28:S,f29:S,
+  f30:S,f31:S,f32:S,f33:S,f34:S,f35:S,f36:S,f37:S,f38:S,f39:S,
+  f40:S,f41:S,f42:S,f43:S,f44:S,f45:S,f46:S,f47:S,f48:S,f49:S,
+  f50:S,f51:S,f52:S,f53:S,f54:S,f55:S,f56:S,f57:S,f58:S,f59:S,
+  f60:S,f61:S,f62:S,f63:S,f64:S,f65:S,f66:S,f67:S,f68:S,f69:S,
+  f70:S,f71:S,f72:S,f73:S,f74:S,f75:S,f76:S,f77:S,f78:S,f79:S,
+  f80:S,f81:S,f82:S,f83:S,f84:S,f85:S,f86:S,f87:S,f88:S,f89:S,
+  f90:S,f91:S,f92:S,f93:S,f94:S,f95:S,f96:S,f97:S,f98:S,f99:S,
+  g00:S,g01:S,g02:S,g03:S,g04:S,g05:S,g06:S,g07:S,g08:S,g09:S,
+  g10:S,g11:S,g12:S,g13:S,g14:S,g15:S,g16:S,g17:S,g18:S,g19:S,
+  g20:S,g21:S,g22:S,g23:S,g24:S,g25:S,g26:S,g27:S,g28:S,g29:S,
+  g30:S,g31:S,g32:S,g33:S,g34:S,g35:S,g36:S,g37:S,g38:S,g39:S,
+  g40:S,g41:S,g42:S,g43:S,g44:S,g45:S,g46:S,g47:S,g48:S,g49:S,
+  g50:S,g51:S,g52:S,g53:S,g54:S,g55:S,g56:S,g57:S,g58:S,g59:S,
+  g60:S,g61:S,g62:S,g63:S,g64:S,g65:S,g66:S,g67:S,g68:S,g69:S,
+  g70:S,g71:S,g72:S,g73:S,g74:S,g75:S,g76:S,g77:S,g78:S,g79:S,
+  g80:S,g81:S,g82:S,g83:S,g84:S,g85:S,g86:S,g87:S,g88:S,g89:S,
+  g90:S,g91:S,g92:S,g93:S,g94:S,g95:S,g96:S,g97:S,g98:S,g99:S,
+  h00:S,h01:S,h02:S,h03:S,h04:S,h05:S,h06:S,h07:S,h08:S,h09:S,
+  h10:S,h11:S,h12:S,h13:S,h14:S,h15:S,h16:S,h17:S,h18:S,h19:S,
+  h20:S,h21:S,h22:S,h23:S,h24:S,h25:S,h26:S,h27:S,h28:S,h29:S,
+  h30:S,h31:S,h32:S,h33:S,h34:S,h35:S,h36:S,h37:S,h38:S,h39:S,
+  h40:S,h41:S,h42:S,h43:S,h44:S,h45:S,h46:S,h47:S,h48:S,h49:S,
+  h50:S,h51:S,h52:S,h53:S,h54:S,h55:S,h56:S,h57:S,h58:S,h59:S,
+  h60:S,h61:S,h62:S,h63:S,h64:S,h65:S,h66:S,h67:S,h68:S,h69:S,
+  h70:S,h71:S,h72:S,h73:S,h74:S,h75:S,h76:S,h77:S,h78:S,h79:S,
+  h80:S,h81:S,h82:S,h83:S,h84:S,h85:S,h86:S,h87:S,h88:S,h89:S,
+  h90:S,h91:S,h92:S,h93:S,h94:S,h95:S,h96:S,h97:S,h98:S,h99:S,
+  i00:S,i01:S,i02:S,i03:S,i04:S,i05:S,i06:S,i07:S,i08:S,i09:S,
+  i10:S,i11:S,i12:S,i13:S,i14:S,i15:S,i16:S,i17:S,i18:S,i19:S,
+  i20:S,i21:S,i22:S,i23:S,i24:S,i25:S,i26:S,i27:S,i28:S,i29:S,
+  i30:S,i31:S,i32:S,i33:S,i34:S,i35:S,i36:S,i37:S,i38:S,i39:S,
+  i40:S,i41:S,i42:S,i43:S,i44:S,i45:S,i46:S,i47:S,i48:S,i49:S,
+  i50:S,i51:S,i52:S,i53:S,i54:S,i55:S,i56:S,i57:S,i58:S,i59:S,
+  i60:S,i61:S,i62:S,i63:S,i64:S,i65:S,i66:S,i67:S,i68:S,i69:S,
+  i70:S,i71:S,i72:S,i73:S,i74:S,i75:S,i76:S,i77:S,i78:S,i79:S,
+  i80:S,i81:S,i82:S,i83:S,i84:S,i85:S,i86:S,i87:S,i88:S,i89:S,
+  i90:S,i91:S,i92:S,i93:S,i94:S,i95:S,i96:S,i97:S,i98:S,i99:S,
+  j00:S,j01:S,j02:S,j03:S,j04:S,j05:S,j06:S,j07:S,j08:S,j09:S,
+  j10:S,j11:S,j12:S,j13:S,j14:S,j15:S,j16:S,j17:S,j18:S,j19:S,
+  j20:S,j21:S,j22:S,j23:S,j24:S,j25:S,j26:S,j27:S,j28:S,j29:S,
+  j30:S,j31:S,j32:S,j33:S,j34:S,j35:S,j36:S,j37:S,j38:S,j39:S,
+  j40:S,j41:S,j42:S,j43:S,j44:S,j45:S,j46:S,j47:S,j48:S,j49:S,
+  j50:S,j51:S,j52:S,j53:S,j54:S,j55:S,j56:S,j57:S,j58:S,j59:S,
+  j60:S,j61:S,j62:S,j63:S,j64:S,j65:S,j66:S,j67:S,j68:S,j69:S,
+  j70:S,j71:S,j72:S,j73:S,j74:S,j75:S,j76:S,j77:S,j78:S,j79:S,
+  j80:S,j81:S,j82:S,j83:S,j84:S,j85:S,j86:S,j87:S,j88:S,j89:S,
+  j90:S,j91:S,j92:S,j93:S,j94:S,j95:S,j96:S,j97:S,j98:S,j99:S
+};
+
+s: string = "";
+
+t: T = {
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,
+  s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s
+};
+
+kRandomValue: int = nrand(10);  # discourage optimization
+
+# Each tuple object must take at least sizeof(Val*) * 10000 bytes,
+# or about 39KB when Val* is four bytes.
+# Allocate until we must have done a GC several times based on the
+# expected memory limit.  (For an eight-byte Val* we do twice as many.)
+# (We use a very large tuple and a very small string because memory
+# allocation in the loop alternates between the tuple and the string,
+# and we want GC to be triggered at the tuple allocation.)
+
+kMemoryLimit: int = 50;  # required --memory_limit value for test (in MB)
+
+N: int = 5 * (kMemoryLimit << 20) / (4*10000);
+
+for (i: int = 0; i < N; i++) {
+  assert(DEBUG("ref", t) == 1);
+  u: T = t;
+  assert(DEBUG("ref", t) == 2);
+  assert(DEBUG("ref", u) == 2);
+  u.a01 = string(kRandomValue);  # tuple must be duplicated
+  assert(DEBUG("ref", u.a01) == 1);
+  temp: { s: string} = { u.a01 };
+  string(temp);
+  assert(DEBUG("ref", u.a01) == 2);
+  assert(DEBUG("ref", t) == 1);
+  assert(DEBUG("ref", u) == 1);
+}

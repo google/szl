@@ -1,0 +1,13 @@
+saw("XYZ", "Z*", "Z*", "Z*")
+sawzall("XYZXYZ", "Z*")
+x[0] = 
+x[1] = 
+x[2] = Z
+x[3] = 
+x[4] = Z
+sawn(6, "XYZXYZ", "Z*")
+x[0] = 
+x[1] = 
+x[2] = Z
+x[3] = 
+x[4] = Z

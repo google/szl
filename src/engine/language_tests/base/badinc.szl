@@ -1,0 +1,96 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Illegal uses of ++/--.
+
+# Only "int" operands are allowed.
+
+v_bool: bool = false;
+v_bytes: bytes = X"1234";
+v_fingerprint: fingerprint = 123P;
+v_float: float = 1.23;
+v_int: int = 1;
+v_string: string = "abc";
+v_time: time = 123T;
+v_array: array of int = { 1, 2, 3 };
+v_function: function() { };
+v_map: map[int] of int = { 1:2 };
+v_output: table collection of int;
+v_tuple: { x:int, y:int} = { 1, 2 };
+
+v_bool++;
+v_bool--;
+v_bytes++;
+v_bytes--;
+v_fingerprint++;
+v_fingerprint--;
+v_float++;
+v_float--;
+v_int++;
+v_int--;
+v_string++;
+v_string--;
+v_time++;
+v_time--;
+v_array++;
+v_array--;
+v_function++;
+v_function--;
+v_map++;
+v_map--;
+v_output++;
+v_output--;
+v_tuple++;
+v_tuple--;
+
+
+# Array/bytes/string elements and slices, map elements and tuple fields
+# are allowed only if the base is an lvalue.  Since increment/decrement
+# operands must begin with an identifier, the only other possible operands
+# to incr/decr are variables (allowed) and function calls (not allowed).
+
+a: array of int = { 1, 2, 3 };
+m: map[int] of int = { 1:2 };
+s: string = "abc";
+b: bytes = X"1234";
+t: { x: int, y: int } = { 1, 2 };
+
+a[1]++;
+a[1]--;
+m[1]++;
+m[1]--;
+s[1]++;
+s[1]--;
+b[1]++;
+b[1]--;
+t.y++;
+t.y--;
+
+fa: function(): array of int { return a; };
+fm: function(): map[int] of int { return m; };
+fs: function(): string { return s; };
+fb: function(): bytes { return b; };
+ft: function(): { x: int, y: int } { return { 1, 2 }; };
+
+fa()[1]++;
+fa()[1]--;
+fm()[1]++;
+fm()[1]--;
+fs()[1]++;
+fs()[1]--;
+fb()[1]++;
+fb()[1]--;
+ft().y++;
+ft().y--;

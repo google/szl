@@ -1,0 +1,119 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: bad saw/sawn/sawzall intrinsic function calls.
+
+#inst: not using usual function calling syntax.
+saw;
+sawn;
+sawzall;
+
+#inst: with zero arguments.
+saw();
+sawzall();
+
+#inst: with single string arg.
+saw("sawzall");
+sawzall("sawzall");
+
+#inst: type incompatible first arg.
+b0: bool = true;
+i0: int = 10;
+f0: float = 10.2;
+by0: bytes = "abc";
+s0: string = "abc";
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+fg0: fingerprint = fingerprint("abc");
+
+a0: array of int = { 1, 2, 3 };
+m0: map [key: string] of int = { "A" : 65, "B" : 66 };
+p0: { x: int, y: string } = { 65, "A"};
+
+saw(b0, s0);
+saw(i0, s0);
+saw(f0, s0);
+saw(by0, s0);
+saw(t0, s0);
+saw(fg0, s0);
+saw(a0, s0);
+saw(m0, s0);
+saw(p0, s0);
+
+sawzall(b0, s0);
+sawzall(i0, s0);
+sawzall(f0, s0);
+sawzall(by0, s0);
+sawzall(t0, s0);
+sawzall(fg0, s0);
+sawzall(a0, s0);
+sawzall(m0, s0);
+sawzall(p0, s0);
+
+
+sawn(b0, s0, s0);
+sawn(f0, s0, s0);
+sawn(s0, s0, s0);
+sawn(by0, s0, s0);
+sawn(t0, s0, s0);
+sawn(fg0, s0, s0);
+sawn(a0, s0, s0);
+sawn(m0, s0, s0);
+sawn(p0, s0, s0);
+
+
+#inst: type incompatible second arg.
+saw(s0, b0, s0);
+saw(s0, i0, s0);
+saw(s0, f0, s0);
+saw(s0, by0, s0);
+saw(s0, t0, s0);
+saw(s0, fg0, s0);
+saw(s0, a0, s0);
+saw(s0, m0, s0);
+saw(s0, p0, s0);
+
+sawzall(s0, b0, s0);
+sawzall(s0, i0, s0);
+sawzall(s0, f0, s0);
+sawzall(s0, by0, s0);
+sawzall(s0, t0, s0);
+sawzall(s0, fg0, s0);
+sawzall(s0, a0, s0);
+sawzall(s0, m0, s0);
+sawzall(s0, p0, s0);
+
+sawn(i0, b0, s0);
+sawn(i0, i0, s0);
+sawn(i0, f0, s0);
+sawn(i0, by0, s0);
+sawn(i0, t0, s0);
+sawn(i0, fg0, s0);
+sawn(i0, a0, s0);
+sawn(i0, m0, s0);
+sawn(i0, p0, s0);
+
+sawn(i0, s0, b0, s0);
+sawn(i0, s0, i0, s0, s0);
+sawn(i0, s0, f0, s0);
+sawn(i0, s0, by0, s0);
+sawn(i0, s0, t0, s0);
+sawn(i0, s0, fg0, s0);
+sawn(i0, s0, a0, s0);
+sawn(i0, s0, m0, s0);
+sawn(i0, s0, p0, s0);
+

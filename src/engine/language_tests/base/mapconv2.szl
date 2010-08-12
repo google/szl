@@ -1,0 +1,30 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Array to map conversions using compound element types.
+
+type T =  { int, string };
+t1: T = { 1, "one" };
+t2: T = { 2, "two" };
+t3: T = { 3, "three" };
+t4: T = { 4, "four" };
+t: array of T = { t1, t2, t3, t4  };
+mt: map[T] of T = t;
+assert(string(mt) ==
+       `{ { 1, "one" }: { 2, "two" }, { 3, "three" }: { 4, "four" } }`);
+
+aai: array of array of int = { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
+ma: map[array of int] of array of int = aai;
+assert(string(ma) == "{ { 1, 1 }: { 2, 2 }, { 3, 3 }: { 4, 4 } }");

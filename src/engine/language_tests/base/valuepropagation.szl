@@ -1,0 +1,293 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Value propagation tests.
+# More such tests will be practical when constant folding is implemented,
+# but until then it is usually impossible to tell that value propagation
+# has happened except by inspecting the generated code.
+
+
+
+# Verify that function definitions do not use the values of global variables
+# as of the function definition, but as of the function execution.
+
+i: int = 0;
+f1: function() : int {
+  return i;
+};
+i = 2;
+assert(f1() == 2);
+
+
+# Same test but for non-local, non-global references.
+
+f2: function() {
+  j: int = 0;
+  f3: function() : int {
+    return j;
+  };
+  j = 2;
+  assert(f3() == 2);
+};
+f2();
+
+
+# Verify that after a variable is named by REST its definedness is known.
+# (Note that "saw" and "undefine" are really statements, not intrinsics,
+# so there is no possibility of conditionally executing them with && and ||
+# nor of conditionally skipping them because only part of an initialization
+# expression was executed.  However, the "rest" assignment can be skipped
+# undef "ignore_undefs" if the input string is undefined.  This is checked
+# elsewhere.)
+
+s3: string;
+b3: bool = def(s3);   # warning, s3 is known to be undefined
+saw("a", rest s3);
+b3 = def(s3);         # warning, s3 is known to be defined
+
+# This should print a warning that def(s5) is always false, but no warning
+# for def(s4) even though it's always false on the first loop iteration.
+s4:string;
+s5:string;
+for (i:int = 0; i < 3; i++) {
+  if(!def(s4)) {
+    s4 = "Hello";
+  }
+  if(def(s5)) {
+  }
+}
+
+
+# Verify bug fix: used to get a spurious warning at the function call.
+
+g: function() {
+  x: int = 1 / 0;
+};
+g();
+
+
+# Verify bug fix: labels after the first in "case" not necessarily evaluated.
+
+x: int = 1 + nrand(1);
+y: int = 1 / nrand(1);
+
+switch (1) {
+  case x, y:
+    break;
+  case nrand(1):
+    def(y);      # do not know if "y" is defined
+    default:
+    break;
+}
+
+# Verify that value and definednes propagation occurs independently
+# in emits using the same output variable.
+
+n: int;
+tbl: table collection of i: int format("%b\n", def(n));
+emit tbl <- 1;  # "n" known to be undefined
+n = 1;
+emit tbl <- 2;  # "n" known to be defined
+if (nrand(9)*nrand(9) == 17)  # false, but compiler unlikely to fold this
+   ___undefine(n);
+emit tbl <- 3;  # not known whether "n" is defined
+
+# Verify that we know that a statement expression that does not fail
+# must yield a defined value.
+
+a: int = ?{ b: int = 1 / (1 + nrand(1)); result b; };
+def(a);
+
+# Verify that assignments made in statement expressions do not propagate
+# to the enclosing expression because the order of execution is not guaranteed.
+
+{
+  f: function(a: int, b: int, c: int): string {
+    return format("a = %d   b = %d   c = %d", a, b, c);
+  };
+  x:int = 10;
+  y:int = 1;
+  z:int = 20;
+  w:int = 2 + nrand(1);
+  s: string = f( x+y, ?{ x = z; y = w; result 0; }, x+y );
+  assert(s == "a = 22   b = 0   c = 11");
+}
+
+# Verify fixes to loop handling.
+#
+{
+  # Break in control flow at "continue" statement.
+  f: function(): int {
+    x: int = 3;
+    for (i: int = 0; i < 2; i++) {
+      x = 4;
+      continue;
+      x = 3;
+    }
+    return x;
+  };
+  assert(f() == 4);
+}
+
+{
+  # Code leading up to "break" is never executed before the condition.
+  g: function(b: bool): int { return 1; };
+  f: function() {
+    x: int = 1;
+    j: int = 1;
+    for (i: int = 0; i < 2; i = i + g(def(j))) {  # j is always defined
+      if (i == 1) {
+        ___undefine(j);
+        break;
+      }
+    }
+  };
+  f();
+}
+
+{
+  # Condition in for/while is always executed at least once.
+  x: int = 1 / (nrand(1) + 1);
+  while (x == 0 ) ;
+  def(x);  # x is always defined
+}
+
+{
+  # Condition in for/while is always executed before the body.
+  x: int;
+  if (nrand(1) == 1) {
+    while (x == 0)  # x is always undefined, but not caught
+      x = 1;
+  }
+}
+
+{
+  # Body of do-while is executed before the condition.
+  x: int;
+  y: int;
+  do {
+    z: int = x;         # x is always undefined on first iteration; not caught
+    if (nrand(1) == 1)
+      w: int = y;       # y may or may not be defined
+    x = 1;
+    y = 1;
+  } while (!def(x));  # x is always defined, but that is not caught
+}
+
+{
+  # Multiple continue statements.
+  a: int;
+  b: int;
+  c: int;
+  g: function(w: int, x: bool, y: bool, z: bool): int { return w+1; };
+  for (i: int = 0;
+       i < 2 && (def(a) || def(b) || def(c));  # c always undefined
+       i = g(i, def(a), def(b), def(c))) {     # c always undefined
+    if (i == 0) {
+      a = 1;
+      continue;
+    } else if (i == 1) {
+      b = 2;
+      continue;
+    } else {
+      c = 3;
+      break;
+    }
+  }
+  def(a);  # not known if defined
+  def(b);  # not known if defined
+  def(c);  # not known if defined
+}
+
+{
+  # Multiple break statements.
+  a: int;
+  b: int;
+  c: int;
+  g: function(w: int, x: bool, y: bool, z: bool): int { return w+1; };
+  for (i: int = 0;
+       i < 2 && (def(a) || def(b) || def(c));  # a and b always undefined
+       i = g(i, def(a), def(b), def(c))) {     # a and b always undefined
+    if (i == 0) {
+      a = 1;
+      break;
+    } else if (i == 1) {
+      b = 2;
+      break;
+    } else {
+      c = 3;
+      continue;
+    }
+  }
+  def(a);  # not known if defined
+  def(b);  # not known if defined
+  def(c);  # not known if defined
+}
+
+{
+  # bug
+  d: array of int = { 1, 0, 2, 3, 4, 0, 5 };
+  so_far: int = 0;
+  out: string = "";
+
+  for (i: int = 0; i < len(d); i++) {
+   so_far = so_far + d[i];
+   if (d[i] != 0) {
+     continue;
+   }
+   out = out + "  " + string(i, 10) + ":" + string(so_far, 10);
+   so_far = 0;
+  }
+  assert(out == "  1:1  5:9");
+}
+
+{
+  # bug
+  # value propagation must not ignore break statements in lookahead mode.
+ 
+  x: array of int = { 1 };
+  a: int = -1;
+  b: int = -1;
+  for (i: int = 0; i < 2; i++) {
+    while (true) {
+      b = a;
+      a = 0;
+      break;
+    }
+  }
+  assert(b == 0);
+}
+
+{
+  # bug
+  # "j" was incorrectly assumed to be defined within the loop
+  # during the first iteration.
+
+  for (i := 0; i < 2; j := 0) {
+    assert(def(j) == (i != 0));
+    i++;
+  }
+}
+
+{
+  # bug - && and || - bad warning about undefined; constant folding
+
+  undef: bool;
+  y: bool = (nrand(1) == 2);
+  def(true || undef);             # should not warn about undef
+  def(false && undef);            # should not warn about undef
+  def(1 / (1 - int(true || y)));  # should warn about divide by zero
+  def(1 / int(false && y));       # should warn about divide by zero
+}

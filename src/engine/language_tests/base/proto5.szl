@@ -1,0 +1,54 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# From bug 1224520.
+# Verify that when a protocol buffer does not have enough data to read
+# a field, or has a duplicate tag, the result field is not changed.
+
+type T = parsedmessage {
+  x: bytes @ 1: string,
+  y: int @ 2: int32,
+  z: int @ 3: int32
+};
+
+# Field "y" is coded as varint but truncated.
+b1 := X"0a03616263108182";
+c1 := T(b1);
+assert(string(c1.x) == "abc");
+assert(c1.y == 0);
+assert(c1.z == 0);
+assert(inproto(c1.x));
+assert(!inproto(c1.y));
+assert(!inproto(c1.z));
+
+# Field "y" is coded as double but truncated (first seven bytes of 123.0).
+b2 := X"0a03616263110000000000C05E";
+c2 := T(b2);
+assert(string(c2.x) == "abc");
+assert(c2.y == 0);
+assert(c2.z == 0);
+assert(inproto(c2.x));
+assert(!inproto(c2.y));
+assert(!inproto(c2.z));
+
+# Field "y" appears more than once (values 5 then 3).
+b3 := X"0a03616263100518011003";
+c3 := T(b3);
+assert(string(c3.x) == "abc");
+assert(c3.y == 5);
+assert(c3.z == 1);
+assert(inproto(c3.x));
+assert(inproto(c3.y));
+assert(inproto(c3.z));

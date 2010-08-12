@@ -1,0 +1,116 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+#desc: Pattern is insufficient to span the entire string.
+#desc: Use of skip.
+
+arr: array of string;
+arrLen: int;
+
+arr = saw("http://www.google.com/search?q=Google", 
+          `\w+`, skip `://`, `[\w.]+`);
+
+DEBUG("print", `saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+")`);
+DEBUG("print", "\n");
+arrLen = len(arr);
+DEBUG("print", "Array length = %d\n", arrLen);
+DEBUG("print", "Protocol = %s\n", arr[0]);
+DEBUG("print", "Domain = %s\n", arr[1]);
+DEBUG("print", "\n");
+
+#desc: Regular expressions define whether the substrings match are abut or not.
+
+arr = saw("emacs@localhost.localdomain", `\w+`, `\w+`, `\w+`);
+
+arrLen = len(arr);
+DEBUG("print", `saw("emacs@localhost.localdomain", "\w+", "\w+", "\w+")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+arr = saw("emacs@localhost.localdomain", `^\w+`, `^\w+`, `^\w+`);
+
+arrLen = len(arr);
+DEBUG("print", `saw("emacs@localhost.localdomain", "^\w+", "^\w+", "^\w+")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+#desc: sawn loops for the number specified only
+
+arr = sawn(0, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`);
+
+arrLen = len(arr);
+DEBUG("print", `sawn(0, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+arr = sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`);
+
+arrLen = len(arr);
+DEBUG("print", `sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+arr = sawn(10, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`);
+
+arrLen = len(arr);
+DEBUG("print", `sawn(10, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");
+
+#desc: sawzall loops till there is input.
+
+arr = sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels",
+           `\w+`, skip `\s*:\s*`, `\w+`, skip `,`);
+
+arrLen = len(arr);
+DEBUG("print", `sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")`);
+DEBUG("print", "\n");
+DEBUG("print", "Array length = %d\n", arrLen);
+for (i: int = 0; i < arrLen; i++)
+{
+    DEBUG("print", "arr[%d] = %s ", i, arr[i]);
+}
+DEBUG("print", "\n\n");

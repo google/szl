@@ -1,0 +1,189 @@
+operators/boolean_bad.szl:50: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:54: binary operator '||' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:58: boolean 'not' applied to non-bool i1
+operators/boolean_bad.szl:63: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:67: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:67: binary operator 'and' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:71: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:71: binary operator 'or' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:75: boolean 'not' applied to non-bool i1
+operators/boolean_bad.szl:80: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:80: binary operator 'and' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:86: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:90: binary operator '||' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:94: boolean 'not' applied to non-bool f1
+operators/boolean_bad.szl:99: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:103: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:103: binary operator 'and' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:107: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:107: binary operator 'or' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:111: boolean 'not' applied to non-bool f1
+operators/boolean_bad.szl:116: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:116: binary operator 'and' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:122: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:126: binary operator '||' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:130: boolean 'not' applied to non-bool by1
+operators/boolean_bad.szl:135: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:139: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:139: binary operator 'and' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:143: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:143: binary operator 'or' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:147: boolean 'not' applied to non-bool by1
+operators/boolean_bad.szl:152: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:152: binary operator 'and' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:158: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:162: binary operator '||' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:166: boolean 'not' applied to non-bool s1
+operators/boolean_bad.szl:171: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:175: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:175: binary operator 'and' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:179: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:179: binary operator 'or' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:183: boolean 'not' applied to non-bool s1
+operators/boolean_bad.szl:188: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:188: binary operator 'and' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:194: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:198: binary operator '||' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:202: boolean 'not' applied to non-bool fg1
+operators/boolean_bad.szl:207: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:211: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:211: binary operator 'and' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:215: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:215: binary operator 'or' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:219: boolean 'not' applied to non-bool fg1
+operators/boolean_bad.szl:224: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:224: binary operator 'and' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:230: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:234: binary operator '||' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:238: boolean 'not' applied to non-bool t1
+operators/boolean_bad.szl:243: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:247: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:247: binary operator 'and' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:251: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:251: binary operator 'or' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:255: boolean 'not' applied to non-bool t1
+operators/boolean_bad.szl:260: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:260: binary operator 'and' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:268: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:272: binary operator '||' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:276: boolean 'not' applied to non-bool Ai1
+operators/boolean_bad.szl:281: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:285: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:285: binary operator 'and' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:289: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:289: binary operator 'or' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:293: boolean 'not' applied to non-bool Ai1
+operators/boolean_bad.szl:298: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:298: binary operator 'and' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:306: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:310: binary operator '||' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:314: boolean 'not' applied to non-bool Mi1
+operators/boolean_bad.szl:319: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:323: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:323: binary operator 'and' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:327: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:327: binary operator 'or' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:331: boolean 'not' applied to non-bool Mi1
+operators/boolean_bad.szl:336: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:336: binary operator 'and' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:342: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:346: binary operator '||' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:350: boolean 'not' applied to non-bool Pi1
+operators/boolean_bad.szl:355: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:359: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:359: binary operator 'and' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:363: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_bad.szl:363: binary operator 'or' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:367: boolean 'not' applied to non-bool Pi1
+operators/boolean_bad.szl:372: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_bad.szl:372: binary operator 'and' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:379: type mismatch: true (type bool) && i1 (type int)
+operators/boolean_bad.szl:383: type mismatch: true (type bool) && f1 (type float)
+operators/boolean_bad.szl:387: type mismatch: true (type bool) && by1 (type bytes)
+operators/boolean_bad.szl:391: type mismatch: true (type bool) && s1 (type string)
+operators/boolean_bad.szl:395: type mismatch: true (type bool) && fg1 (type fingerprint)
+operators/boolean_bad.szl:399: type mismatch: true (type bool) && t1 (type time)
+operators/boolean_bad.szl:403: type mismatch: true (type bool) && Ai1 (type array of int)
+operators/boolean_bad.szl:407: type mismatch: true (type bool) && Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:411: type mismatch: true (type bool) && Pi1 (type {x: int})
+operators/boolean_bad.szl:415: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:419: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:423: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:427: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:431: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:435: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:439: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:443: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:447: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:451: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:455: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:459: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:463: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:467: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:471: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:475: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:479: binary operator '&&' cannot be applied to i1 (type int)
+operators/boolean_bad.szl:483: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:487: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:491: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:495: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:499: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:503: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:507: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:511: binary operator '&&' cannot be applied to f1 (type float)
+operators/boolean_bad.szl:515: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:519: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:523: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:527: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:531: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:535: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:539: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:543: binary operator '&&' cannot be applied to s1 (type string)
+operators/boolean_bad.szl:548: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:552: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:556: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:560: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:564: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:568: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:572: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:576: binary operator '&&' cannot be applied to by1 (type bytes)
+operators/boolean_bad.szl:582: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:586: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:590: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:594: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:598: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:602: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:606: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:610: binary operator '&&' cannot be applied to fg1 (type fingerprint)
+operators/boolean_bad.szl:615: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:619: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:623: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:627: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:631: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:635: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:639: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:643: binary operator '&&' cannot be applied to t1 (type time)
+operators/boolean_bad.szl:648: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:652: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:656: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:660: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:664: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:668: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:672: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:676: binary operator '&&' cannot be applied to Ai1 (type array of int)
+operators/boolean_bad.szl:681: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:685: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:689: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:693: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:697: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:701: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:705: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:709: binary operator '&&' cannot be applied to Mi1 (type map [x: int] of int)
+operators/boolean_bad.szl:714: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:718: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:722: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:726: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:730: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:734: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:738: binary operator '&&' cannot be applied to Pi1 (type {x: int})
+operators/boolean_bad.szl:742: binary operator '&&' cannot be applied to Pi1 (type {x: int})

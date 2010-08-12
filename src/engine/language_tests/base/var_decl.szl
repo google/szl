@@ -1,0 +1,36 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+x: int = 3;
+xi := 3;
+assert(x == xi);
+
+static y: float = 3.14;
+static yi := 3.14;
+assert(y == yi);
+
+f: function(n: int): int { return n; };
+fi := function(n: int): int { return n; };
+assert(f(0) == fi(0));
+
+type T = { x: int, y: float };
+t: T = { 0, 0.0 };
+ti := T({ 0, 0.0 });
+assert(t == ti);
+
+type P = proto { x: int, y: float };
+p: P = { 0, 0.0 };
+pi := P({ 0, 0.0 });
+assert(p == pi);

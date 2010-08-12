@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["type_declarations/array_badoperation.szl:24: Ai2[1] = 10; (probably because \"Ai2\" was undefined due to an error at type_declarations/array_badoperation.szl:23: {\"hi\",\"\",\"hello\"} (string \"hi\" contains no int))"] <- 1;

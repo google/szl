@@ -1,0 +1,146 @@
+f: function(i: int) {
+	assert(false, "this should print a stack trace");
+}
+;
+g: function(i: int) {
+	f(i);
+}
+;
+g(23);
+if (nrand(1) == 100)
+{
+	assert(false, "always false");
+}
+assert(true, "always true");
+assert(nrand(10) > -1);
+const_msg: string = "a literal";
+bool_var: bool = nrand(10) > -1;
+string_var: string = function(): string {
+	return "message variable";
+}
+();
+assert(bool_var, const_msg);
+assert(bool_var, string_var);
+assert(nrand(10) > -1, const_msg);
+assert(nrand(10) > -1, "prefix" + "suffix");
+assert(nrand(10) > -1, string_var + string_var);
+bool_fun: function(): bool {
+	return true;
+}
+;
+string_fun: function(): string {
+	return "message from function";
+}
+;
+assert(bool_fun(), const_msg);
+assert(bool_fun(), string_fun());
+true_string_fun: function(): string {
+	return "true";
+}
+;
+assert(convert(bool, true_string_fun()), const_msg);
+assert(convert(bool, true_string_fun()), convert(string, bool_var));
+assert(new(array of bool, 1, true)[0], const_msg);
+assert(new(array of bool, 1, true)[0], new(array of string, 1, "array message")[0]);
+t1: {condition: bool} = {true};
+t2: {message: string} = {"tuple_message"};
+assert(t1.condition, const_msg);
+assert(t1.condition, t2.message);
+assert(?{
+	result true;
+}
+, const_msg);
+assert(?{
+	result true;
+}
+, ?{
+	result "statement expression message";
+}
+);
+function() {
+	assert(bool_var, string_var);
+}
+();
+assert(?{
+	assert(bool_var, string_var);
+	result bool_var;
+}
+, string_var);
+f: function(i: int) {
+	assert(false, "this should print a stack trace");
+}
+;
+g: function(i: int) {
+	f(i);
+}
+;
+g(23);
+if (nrand(1) == 100)
+{
+	assert(false, "always false");
+}
+assert(true, "always true");
+assert(nrand(10) > -1);
+const_msg: string = "a literal";
+bool_var: bool = nrand(10) > -1;
+string_var: string = function(): string {
+	return "message variable";
+}
+();
+assert(bool_var, "a literal");
+if (!bool_var)
+	assert(false, string_var);
+assert(nrand(10) > -1, "a literal");
+assert(nrand(10) > -1, "prefixsuffix");
+if (!(nrand(10) > -1))
+	assert(false, string_var + string_var);
+bool_fun: function(): bool {
+	return true;
+}
+;
+string_fun: function(): string {
+	return "message from function";
+}
+;
+assert(bool_fun(), "a literal");
+if (!bool_fun())
+	assert(false, string_fun());
+true_string_fun: function(): string {
+	return "true";
+}
+;
+assert(convert(bool, true_string_fun()), "a literal");
+if (!convert(bool, true_string_fun()))
+	assert(false, convert(string, bool_var));
+assert(new(array of bool, 1, true)[0], "a literal");
+if (!new(array of bool, 1, true)[0])
+	assert(false, new(array of string, 1, "array message")[0]);
+t1: {condition: bool} = {true};
+t2: {message: string} = {"tuple_message"};
+assert(t1.condition, "a literal");
+if (!t1.condition)
+	assert(false, t2.message);
+assert(?{
+	result true;
+}
+, "a literal");
+if (!?{
+	result true;
+}
+)
+	assert(false, ?{
+	result "statement expression message";
+}
+);
+function() {
+	if (!bool_var)
+		assert(false, string_var);
+}
+();
+if (!?{
+	if (!bool_var)
+		assert(false, string_var);
+	result bool_var;
+}
+)
+	assert(false, string_var);

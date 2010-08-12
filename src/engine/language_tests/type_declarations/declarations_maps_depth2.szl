@@ -1,0 +1,144 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options -noexecute
+
+#desc: Declaring 
+
+# Composite types
+
+type MIAI = map[int] of array of int;
+type MIAS = map[int] of array of string;
+type MIAF = map[int] of array of float;
+type MIAFG = map[int] of array of fingerprint;
+type MIAB = map[int] of array of bool;
+type MIABY = map[int] of array of bytes;
+type MIAT = map[int] of array of time;
+
+type MIMII = map[int] of map[int] of int;
+type MIMIS = map[int] of map[int] of string;
+type MIMIF = map[int] of map[int] of float;
+type MIMIFG = map[int] of map[int] of fingerprint;
+type MIMIB = map[int] of map[int] of bool;
+type MIMIBY = map[int] of map[int] of bytes;
+type MIMIT = map[int] of map [int] of time;
+
+
+type MIMSI = map[int] of map[string] of int;
+type MIMSS = map[int] of map[string] of string;
+type MIMSF = map[int] of map[string] of float;
+type MIMSFG = map[int] of map[string] of fingerprint;
+type MIMSB = map[int] of map[string] of bool;
+type MIMSBY = map[int] of map[string] of bytes;
+type MIMST = map[int] of map [string] of time;
+
+type MIMFI = map[int] of map[float] of int;
+type MIMFS = map[int] of map[float] of string;
+type MIMFF = map[int] of map[float] of float;
+type MIMFFG = map[int] of map[float] of fingerprint;
+type MIMFB = map[int] of map[float] of bool;
+type MIMFBY = map[int] of map[float] of bytes;
+type MIMFT = map[int] of map [float] of time;
+
+type MIMFGI = map[int] of map[fingerprint] of int;
+type MIMFGS = map[int] of map[fingerprint] of string;
+type MIMFGF = map[int] of map[fingerprint] of float;
+type MIMFGFG = map[int] of map[fingerprint] of fingerprint;
+type MIMFGB = map[int] of map[fingerprint] of bool;
+type MIMFGBY = map[int] of map[fingerprint] of bytes;
+type MIMFGT = map[int] of map [fingerprint] of time;
+
+type MIMBI = map[int] of map[bool] of int;
+type MIMBS = map[int] of map[bool] of string;
+type MIMBF = map[int] of map[bool] of float;
+type MIMBFG = map[int] of map[bool] of fingerprint;
+type MIMBB = map[int] of map[bool] of bool;
+type MIMBBY = map[int] of map[bool] of bytes;
+type MIMBT = map[int] of map [bool] of time;
+
+type MIMBYI = map[int] of map[bytes] of int;
+type MIMBYS = map[int] of map[bytes] of string;
+type MIMBYF = map[int] of map[bytes] of float;
+type MIMBYFG = map[int] of map[bytes] of fingerprint;
+type MIMBYB = map[int] of map[bytes] of bool;
+type MIMBYBY = map[int] of map[bytes] of bytes;
+type MIMBYT = map[int] of map [bytes] of time;
+
+type MIMTI = map[int] of map[time] of int;
+type MIMTS = map[int] of map[time] of string;
+type MIMTF = map[int] of map[time] of float;
+type MIMTFG = map[int] of map[time] of fingerprint;
+type MIMTB = map[int] of map[time] of bool;
+type MIMTBY = map[int] of map[time] of bytes;
+type MIMTT = map[int] of map [time] of time;
+
+type MITII = map[int] of {i0:int,i:int};
+type MITIS = map[int] of {i0:int,s:string};
+type MITIF = map[int] of {i0:int,f:float};
+type MITIFG = map[int] of {i0:int,fg:fingerprint};
+type MITIB = map[int] of {i0:int,b:bool};
+type MITIBY = map[int] of {i0:int,by:bytes};
+type MITIT = map[int] of {i0:int,t:time};
+
+type MITSI = map[int] of {s0:string,i:int};
+type MITSS = map[int] of {s0:string,s:string};
+type MITSF = map[int] of {s0:string,f:float};
+type MITSFG = map[int] of {s0:string,fg:fingerprint};
+type MITSB = map[int] of {s0:string,b:bool};
+type MITSBY = map[int] of {s0:string,by:bytes};
+type MITST = map[int] of {s0:string,t:time};
+
+type MITFI = map[int] of {f0:float,i:int};
+type MITFS = map[int] of {f0:float,s:string};
+type MITFF = map[int] of {f0:float,f:float};
+type MITFFG = map[int] of {f0:float,fg:fingerprint};
+type MITFB = map[int] of {f0:float,b:bool};
+type MITFBY = map[int] of {f0:float,by:bytes};
+type MITFT = map[int] of {f0:float,t:time};
+
+type MITFGI = map[int] of {fg0:fingerprint,i:int};
+type MITFGS = map[int] of {fg0:fingerprint,s:string};
+type MITFGF = map[int] of {fg0:fingerprint,f:float};
+type MITFGFG = map[int] of {fg0:fingerprint,fg:fingerprint};
+type MITFGB = map[int] of {fg0:fingerprint,b:bool};
+type MITFGBY = map[int] of {fg0:fingerprint,by:bytes};
+type MITFGT = map[int] of {fg0:fingerprint,t:time};
+
+type MITBI = map[int] of {b0:bool,i:int};
+type MITBS = map[int] of {b0:bool,s:string};
+type MITBF = map[int] of {b0:bool,f:float};
+type MITBFG = map[int] of {b0:bool,fg:fingerprint};
+type MITBB = map[int] of {b0:bool,b:bool};
+type MITBBY = map[int] of {b0:bool,by:bytes};
+type MITBT = map[int] of {b0:bool,t:time};
+
+type MITBYI = map[int] of {by0:bytes,i:int};
+type MITBYS = map[int] of {by0:bytes,s:string};
+type MITBYF = map[int] of {by0:bytes,f:float};
+type MITBYFG = map[int] of {by0:bytes,fg:fingerprint};
+type MITBYB = map[int] of {by0:bytes,b:bool};
+type MITBYBY = map[int] of {by0:bytes,by:bytes};
+type MITBYT = map[int] of {by0:bytes,t:time};
+
+type MITTI = map[int] of {t0:time,i:int};
+type MITTS = map[int] of {t0:time,s:string};
+type MITTF = map[int] of {t0:time,f:float};
+type MITTFG = map[int] of {t0:time,fg:fingerprint};
+type MITTB = map[int] of {t0:time,b:bool};
+type MITTBY = map[int] of {t0:time,by:bytes};
+type MITTT = map[int] of {t0:time,t:time};
+

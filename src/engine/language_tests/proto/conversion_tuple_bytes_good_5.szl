@@ -1,0 +1,43 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc:   Conversion between proto tuples and bytes and reverse conversions
+
+type ProtoTuple = {
+    t0: {i0: int @ 1, by0: bytes @ 2} @ 3
+};
+
+pt0: ProtoTuple = {{10,{66,67,68}}};
+pt1: ProtoTuple; 
+
+by0:bytes;
+
+by0 = bytes(pt0);           # conversion to bytes
+pt1 = ProtoTuple(by0);      # conversion to tuple
+
+
+# equality checking for fingerprint of orginal value with value 
+# got after proto-conversion.
+if (fingerprintof(pt0) != fingerprintof(pt1)) {
+    DEBUG("print", "\n Equality with fingerprint failed.");
+}
+
+# field by field equality comparison of original value with value 
+# got after proto-conversion.
+if (pt0.t0.i0 != pt1.t0.i0 || pt0.t0.by0 != pt1.t0.by0) {
+    DEBUG("print","\n Individual field values are different after conversion");
+}

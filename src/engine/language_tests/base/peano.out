@@ -1,0 +1,34 @@
+p: function(x: int): int {
+	return x - 1;
+}
+;
+s: function(x: int): int {
+	return x + 1;
+}
+;
+z: function(): int {
+	return 0;
+}
+;
+a: function(x: int, y: int): int {
+	if (x > z())
+		return s(a(p(x), y));
+	else
+		return y;
+}
+;
+m: function(x: int, y: int): int {
+	if (x > s(z()))
+		return a(y, m(p(x), y));
+	else
+		return y;
+}
+;
+f: function(n: int): int {
+	if (n > z())
+		return m(n, f(p(n)));
+	else
+		return s(z());
+}
+;
+assert(f(8) == 40320);

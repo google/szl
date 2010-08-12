@@ -1,0 +1,172 @@
+type tuple = {s: string, i: int, l: int};
+static l0i: int = 10;
+static l0f: float = 2.0;
+static l0t: tuple = {"l", 3, 0};
+l1i: int = 11;
+l1f: float = 2.1;
+l1t: tuple = {"l", 3, 1};
+f1: function(name: string): int {
+	switch (name) {
+		case "l0i":
+			{
+return l0i % 10;
+}
+		case "l0f":
+			{
+return convert(int, l0f * 10.0) % 10;
+}
+		case "l0t":
+			{
+return l0t.l;
+}
+		case "l1i":
+			{
+return l1i % 10;
+}
+		case "l1f":
+			{
+return convert(int, l1f * 10.0) % 10;
+}
+		case "l1t":
+			{
+return l1t.l;
+}
+		default:
+			{
+return -1;
+}
+	}
+}
+;
+assert(f1("l0i") == 0, "l0i");
+assert(f1("l0f") == 0, "l0f");
+assert(f1("l0t") == 0, "l0t");
+assert(f1("l1i") == 1, "l1i");
+assert(f1("l1f") == 1, "l1f");
+assert(f1("l1t") == 1, "l1t");
+x0: int;
+g1: function(x1: int): int {
+	return x0 + x1;
+}
+;
+h1: function(x1: int): int {
+	h2: function(x2: int): int 	{
+		h3: function(x3: int): int 		{
+			return (g1(x1) + x2) + x3;
+		}
+;
+		return x1 + h3(x2);
+	}
+;
+	g2: function(x2: int): int 	{
+		x0 = x2;
+		return x2 + 1;
+	}
+;
+	return h2(g2(x1));
+}
+;
+assert(h1(1) == 7, "h1");
+f2: function() {
+	v1: int;
+	if ((nrand(5) * nrand(5)) == 17)
+		v1 = 0;
+	v2: int = 0 / nrand(1);
+	v3: int = v2;
+	f3: function(i: int): bool 	{
+		switch (i) {
+			case 1:
+				{
+return def(v1);
+}
+			case 2:
+				{
+return def(v2);
+}
+			case 3:
+				{
+return def(v3);
+}
+			default:
+				{
+;
+}
+		}
+	}
+;
+	assert(!f3(1));
+	assert(!f3(2));
+	assert(!f3(3));
+}
+;
+f2();
+f4: function() {
+	v1: int = 1;
+	v2: float = 2.0;
+	v3: string = "hello";
+	f5: function(i: int) 	{
+		switch (i) {
+			case 1:
+				{
+v1 = 0 / nrand(1);
+}
+			case 2:
+				{
+v2 = convert(float, v1);
+}
+			case 3:
+				{
+v3 = convert(string, v2);
+}
+			default:
+				{
+;
+}
+		}
+	}
+;
+	f6: function(i: int): bool 	{
+		switch (i) {
+			case 1:
+				{
+return def(v1);
+}
+			case 2:
+				{
+return def(v2);
+}
+			case 3:
+				{
+return def(v3);
+}
+			default:
+				{
+;
+}
+		}
+	}
+;
+	f5(1);
+	f5(2);
+	f5(3);
+	assert(!f6(1));
+	assert(!f6(2));
+	assert(!f6(3));
+}
+;
+f4();
+f7: function(i: int): int {
+	f8: function(i: int): int 	{
+		if (i == 1)
+			return f7(0);
+		return 9;
+	}
+;
+	return (10 * f8(i)) + 9;
+}
+;
+assert(f7(1) == 999);
+emit _undef_cnt <- 1;
+emit _undef_details["base/fnesting.szl:113: v1 = 0/nrand(1); (divide by zero error: 0 / 0)"] <- 1;
+emit _undef_details["base/fnesting.szl:114: v2 = float(v1); (probably because \"v1\" was undefined due to an error at base/fnesting.szl:113: v1 = 0/nrand(1); (divide by zero error: 0 / 0))"] <- 1;
+emit _undef_details["base/fnesting.szl:115: v3 = string(v2); (probably because \"v2\" was undefined due to an error at base/fnesting.szl:113: v1 = 0/nrand(1); (divide by zero error: 0 / 0))"] <- 1;

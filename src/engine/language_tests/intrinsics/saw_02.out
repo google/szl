@@ -1,0 +1,10 @@
+protocol = http, domain = www.google.com
+
+ai length = 3
+ai[0] = 111 ai[1] = 222 ai[2] = 333 
+af length = 2
+ai[0] = 111.000000 ai[1] = 222.333000 
+t1.x = 111, t1.y = 222
+
+t2.x = 111.000000, t2.y = 222.333000
+

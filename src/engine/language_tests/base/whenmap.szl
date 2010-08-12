@@ -1,0 +1,168 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Return a printed form of the map in the format used by the tests.
+AllStrings: function(m: map[string] of string): string {
+  all_strings: string = "";
+  k: array of string = keys(m);
+  for (i: int = 0; i < len(k); i++)
+    all_strings = all_strings + format("%s:%s ", k[i], m[k[i]]);
+  return all_strings;
+};
+
+# Return the string sliced into its components
+Elements: function(s: string): array of string {
+  return sawzall(s, `[^ ]+`);
+};
+
+# Return the printed form as an array.
+AllStringsArray: function(m: map[string] of string): array of string {
+  return Elements(AllStrings(m));
+};
+
+# Is string s present in array a?
+Present: function(s: string, a: array of string): bool {
+  when (i: some int; a[i] == s)
+    return true;
+  return false;
+};
+
+# Verify complete equivalence
+Check: function(msg: string, s1: string, s2: string) {
+  a1: array of string = Elements(s1);
+  a2: array of string = Elements(s2);
+  # Lengths must be the same
+  assert(len(a1) == len(a2));
+  # Each element of a1 must be in a2 and vice versa
+  all_good: bool = false;
+  for (i: int = 0; i < len(a1); i++) {
+    assert(Present(a1[i], a2) && Present(a2[i], a1));
+  }
+};
+
+a: array of string = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A",
+                       "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C",
+                       "V", "B", "N", "M",  };
+m: map[string] of string = {:};
+for (i: int = 0; i < len(a); i++)
+  m[lowercase(a[i])] = a[i];
+all_strings: string = AllStrings(m);
+all_strings_array: array of string = AllStringsArray(m);
+
+s: string;
+result: string;
+success: bool;
+
+# First test the three simple cases.
+result = "";
+when (s: some string; m[s] == "X")
+  result = result + format("%s:%s ", s, m[s]);
+Check("s: some string", "x:X ", result);
+
+result = "";
+when (s: each string; m[s] == "X" || m[s] == "Y")
+  result = result + format("%s:%s ", s, m[s]);
+Check("s: each string", "x:X y:Y ", result);
+
+success = false;
+when (s: all string; m[s] != "not present")
+  success = true;
+assert(success);
+
+success = true;
+when (s: all string; m[s] == "X")
+  success = false;
+assert(success);
+
+# Now test some multi-variate cases
+result1: string = "";
+result2: string = "";
+when (s: some string; t: some string; m[s] == m[t]) {
+  result1 = result1 + format("%s:%s", s, m[s]);  # note: no trailing ' '
+  result2 = result2 + format("%s:%s", t, m[t]);  # note: no trailing ' '
+}
+assert(result1 == result2 && Present(result1, all_strings_array));
+
+result1 = "";
+result2 = "";
+when (s: each string; t: each string; m[s] == m[t]) {
+  result1 = result1 + format("%s:%s ", s, m[s]);
+  result2 = result2 + format("%s:%s ", t, m[t]);
+}
+assert(result1 == result2);
+
+Check("s: each string; t: each string", all_strings, result1);
+Check("s: each string; t: each string", all_strings, result2);
+
+success = false;
+when (s: all string; t: all string; m[s] != "1" && m[t] != "2")
+  success = true;
+assert(success);
+
+success = true;
+when (s: all string; t: all string; m[s] == "X" || m[t] == "Y")
+  success = false;
+assert(success);
+
+n: map[string] of string = { "1" : "Y", "2" : "X", "3" : "Y", "4" : "X" };
+k: array of string = keys(n);
+all_strings_n_array: array of string = AllStringsArray(n);
+
+result1 = "";
+result2 = "";
+when (s: some string; t: each string; m[s] == n[t]) {
+  result1 = result1 + format("%s:%s ", s, m[s]);
+  result2 = result2 + format("%s:%s ", t, n[t]);
+}
+a1: array of string = Elements(result1);
+for (i: int = 1; i < len(a1); i++)
+  assert(a1[i] == a1[0]);
+
+assert(Present(a1[0], all_strings_array));
+
+a2: array of string = Elements(result2);
+for (i: int = 0; i < len(a2); i++)
+  assert(Present(a2[i], all_strings_n_array));
+
+# Finally, we test that arrays and maps can interact
+o: map[string] of int = { "1" : 1, "2" : 2, "3" : 3, "4" : 4 };
+p: array of int = { 1, 2, 3, 4, 1, 2, 3, 4 };
+k = keys(o);
+all_strings_o: string = "";
+for (i: int = 0; i < len(k); i++)
+  all_strings_o = all_strings_o + format("%s:%d ", k[i], o[k[i]]);
+all_strings_o_array: array of string = Elements(all_strings_o);
+all_strings_p: string = "";
+for (i: int = 0; i < len(p); i++)
+  all_strings_p = all_strings_p + format("%d:%d ", i, p[i]);
+all_strings_p_array: array of string = Elements(all_strings_p);
+
+result1 = "";
+result2 = "";
+when (s: some string; i: each int; o[s] == p[i]) {
+  result1 = result1 + format("%s:%d ", s, o[s]);
+  result2 = result2 + format("%d:%d ", i, p[i]);
+}
+a1 = Elements(result1);
+assert(len(a1) == 2);
+
+for (i: int = 1; i < len(a1); i++)
+  assert(a1[i] == a1[0]);
+
+assert(Present(a1[0], all_strings_o_array));
+
+a2 = Elements(result2);
+for (i: int = 0; i < len(a2); i++)
+  assert(Present(a2[i], all_strings_p_array));

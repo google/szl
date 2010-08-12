@@ -1,0 +1,131 @@
+ai[0] * 10 = 120
+ai[1] * 10 = 120
+ai[2] * 10 = 2340
+ai[3] * 10 = 430
+ai[4] * 10 = 670
+ai[5] * 10 = 10
+ai[6] * 10 = 450
+ai[7] * 10 = 5460
+ai[8] * 10 = 740
+ai[9] * 10 = 760
+
+Array of Strings
+as[0] = first
+as[1] = second
+as[2] = third
+as[3] = fourth
+as[4] = fifth
+as[5] = sixth
+as[6] = seventh
+as[7] = eighth
+as[8] = nineth
+as[9] = tenth
+
+Array of floats
+af[0] = 0.000000
+af[1] = 1.010000
+af[2] = 2.020000
+af[3] = 3.030000
+af[4] = 4.040000
+af[5] = 5.050000
+af[6] = 6.060000
+af[7] = 7.070000
+af[8] = 8.080000
+af[9] = 9.090000
+
+Array of bools
+ab[0] = true
+ab[1] = true
+ab[2] = false
+ab[3] = false
+ab[4] = true
+ab[5] = false
+ab[6] = true
+ab[7] = false
+ab[8] = false
+ab[9] = true
+
+Array of fingerprint
+afg[0] = 1
+afg[1] = 1
+afg[2] = 1
+afg[3] = 1
+afg[4] = 1
+afg[5] = 1
+afg[6] = 1
+afg[7] = 1
+afg[8] = 1
+afg[9] = 1
+
+Array of bytes
+aby[0] = ab�c
+aby[1] = ab�+#+c
+
+Array of time
+at[0] = Tue Jul 20 11:44:46 PDT 2004
+at[1] = Tue Jul 20 11:44:46 PDT 2004
+at[2] = Tue Jul 20 11:44:46 PDT 2004
+at[3] = Tue Jul 20 11:44:46 PDT 2004
+at[4] = Tue Jul 20 11:44:46 PDT 2004
+at[5] = Tue Jul 20 11:44:46 PDT 2004
+at[6] = Tue Jul 20 11:44:46 PDT 2004
+at[7] = Tue Jul 20 11:44:46 PDT 2004
+at[8] = Tue Jul 20 11:44:46 PDT 2004
+at[9] = Tue Jul 20 11:44:46 PDT 2004
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+Hello  world!
+0	Hello
+1	Hello
+2	Hello
+3	Hello
+4	Hello
+5	Hello
+6	Hello
+7	Hello
+8	Hello
+9	Hello
+0	World
+10	World
+20	World
+30	World
+40	World
+50	World
+60	World
+70	World
+80	World
+90	World
+
+Array of {map:string}
+ATMIIS[0].m[0]  = 10
+ATMIIS[0].m[1]  = 20
+ATMIIS[0].m[2]  = 30
+ATMIIS[0].m[3]  = 40
+ATMIIS[0].s]  = 0
+ATMIIS[1].m[1]  = 11
+ATMIIS[1].m[2]  = 21
+ATMIIS[1].m[3]  = 31
+ATMIIS[1].m[4]  = 41
+ATMIIS[1].s]  = 1
+ATMIIS[2].m[2]  = 12
+ATMIIS[2].m[3]  = 22
+ATMIIS[2].m[4]  = 32
+ATMIIS[2].m[5]  = 42
+ATMIIS[2].s]  = 2
+ATMIIS[3].m[3]  = 13
+ATMIIS[3].m[4]  = 23
+ATMIIS[3].m[5]  = 33
+ATMIIS[3].m[6]  = 43
+ATMIIS[3].s]  = 3
+ATMIIS[4].m[4]  = 14
+ATMIIS[4].m[5]  = 24
+ATMIIS[4].m[6]  = 34
+ATMIIS[4].m[7]  = 44
+ATMIIS[4].s]  = 4

@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["for_statements/good_06.szl:27: b < 4 (probably because \"b\" had not been defined)"] <- 1;

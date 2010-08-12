@@ -1,0 +1,64 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# functions using unreachable variables outside static declarations
+
+x: int = 0;
+
+static f1: function(): int {
+  return x;
+};
+
+f2: function() {
+  static f3: function(): int { return x; };
+  y: int = 1;
+  static f4: function(): int { return y; };
+};
+
+f3: function() {
+  y: int = 2;
+  static f4: function() {
+    z: int = 3;
+    f5: function(): int {
+      static f6: function(): int { return x; };
+      static f7: function(): int { return y; };
+      static f8: function(): int { return z; };
+      return z;  # but no error here
+    };
+  };
+};
+
+# Specifically test assigning a variable containing a function value
+# to a variable in a function body in a static declaration, where
+# this would cause a highly misleading error message incorrectly
+# saying that the rvalue is in an outer scope.  This confirms that
+# we are not comparing incompatible level values in Parser::ParseAssignment.
+
+g0: function() {
+  g1: function() { };
+  g2: function() {
+    static g3: function() {
+      g4: function();
+      g4 = g1;  # should be message about access, not assigning to outer
+      g5: function() = g1;  # same here
+      g1 = g4;  # just to be sure, check the other way too (static error)
+    };
+    g6: function() {
+      g7: function();
+      g7 = g1;  # should be no error at all here
+      g8: function() = g1;  # same here
+    };
+  };
+};

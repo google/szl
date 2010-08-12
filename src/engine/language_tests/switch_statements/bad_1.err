@@ -1,0 +1,4 @@
+switch_statements/bad_1.szl:25:  label 97 (type int) should be of type string
+switch_statements/bad_1.szl:26:  label 97 (type int) should be of type string
+switch_statements/bad_1.szl:31:  label "a" (type string) should be of type int
+switch_statements/bad_1.szl:36: switch tag {10, 11, 12, 13} (incomplete) - must be basic type

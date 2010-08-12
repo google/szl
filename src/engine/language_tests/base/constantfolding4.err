@@ -1,0 +1,9 @@
+base/constantfolding4.szl:27: warning: divide by zero
+base/constantfolding4.szl:30: warning: divide by zero
+base/constantfolding4.szl:31: warning: index out of bounds (index = 5, string length = 5)
+base/constantfolding4.szl:34: warning: divide by zero
+base/constantfolding4.szl:35: warning: negative length in new(string): -1
+base/constantfolding4.szl:38: warning: divide by zero
+base/constantfolding4.szl:39: warning: index out of bounds (indices = [2:6], string length = 5)
+base/constantfolding4.szl:44: warning: divide by zero
+base/constantfolding4.szl:48: warning: divide by zero

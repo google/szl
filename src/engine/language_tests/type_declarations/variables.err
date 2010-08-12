@@ -1,0 +1,2 @@
+type_declarations/variables.szl:69: warning: declaration of "string" hides the Sawzall predefined identifier "string"
+type_declarations/variables.szl:73: warning: declaration of "int" hides the Sawzall predefined identifier "int"

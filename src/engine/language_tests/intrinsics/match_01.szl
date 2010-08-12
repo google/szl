@@ -1,0 +1,88 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: match/matchposns/matchstrs intrinsic function call.
+
+retVal: bool;
+arrI: array of int;
+arrS: array of string;
+
+#inst: no match.
+retVal = match("w", "does str match regular expression pat?");
+if (retVal == true)
+{
+    emit stdout <- "match Failed !!!";
+}
+
+arrI = matchposns("w", "does str match regular expression pat?");
+if (len(arrI) > 0)
+{
+    emit stdout <- "matchposns Failed !!!";
+}
+
+arrS = matchstrs("w", "does str match regular expression pat?");
+if (len(arrS) > 0)
+{
+    emit stdout <- "matchstrs Failed !!!";
+}
+
+#inst: single match.
+retVal = match("es", "does str match regular expression pat?");
+if (retVal == false)
+{
+    emit stdout <- "match Failed !!!";
+}
+
+arrI = matchposns("es", "does str match regular expression pat?");
+if (len(arrI) == 0)
+{
+    emit stdout <- "matchposns Failed !!!";
+}
+for (i: int = 0; i < len(arrI); i++)
+{
+    emit stdout <- format("arrI[%d] = %d", i, arrI[i]);
+}
+
+arrS = matchstrs("es", "does str match regular expression pat?");
+if (len(arrS) == 0)
+{
+    emit stdout <- "matchstrs Failed !!!";
+}
+for (i: int = 0; i < len(arrS); i++)
+{
+    emit stdout <- format("arrS[%d] = %s", i, arrS[i]);
+}
+
+
+#inst: multiple match.
+x:int;
+s:string = "abcx1234ab1234xtt";
+p:string = "(x.)(.*)(.x)";
+
+x = DEBUG("print", "%b\n", match(p, s));
+
+a:array of string = matchstrs(p, s);
+x = DEBUG("print", "%d matched strings\n", len(a));
+for(i:int = 0; i < len(a); i = i + 1)
+	x = DEBUG("print", "(%d)=%s\n", i, a[i]);
+
+l:array of int = matchposns(p, s);
+x = DEBUG("print", "%d positions\n", len(l));
+for(i:int = 0; i < len(l); i = i + 2)
+	x = DEBUG("print", "(%d)=[%d:%d]=%s\n", i/2, l[i], l[i+1], s[l[i]:l[i+1]]);
+

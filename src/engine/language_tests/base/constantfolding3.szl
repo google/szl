@@ -1,0 +1,195 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Constant folding of intrinsics and extensions.
+# Relies on getting a warning for divide by zero, so we can tell
+# that the folding must actually have occurred.
+# Also tests generation of warnings for folding operations that fail.
+
+empty: string = new(string, nrand(1), 1);
+
+if (nrand(5) == 17) {
+  1/int(tobase64(B"google",true) == B"Z29vZ2xl");
+  1/int(tobase64(B"google",true) != B"Z29vZ2xl");
+  1/int(frombase64(B"Z29vZ2xl",true) == B"google");
+  1/int(frombase64(B"Z29vZ2xl",true) != B"google");
+  frombase64(B"Z29#Z2xl", true);
+  1/(int(fingerprintof("abc")) - 0x0d05ec653abf0ace);
+  1/(int(fingerprintof("abc")) - 0x0d05ec653abf0acd);
+  1/int(format("%d",123) == "123");
+  1/int(format("%d",123) != "123");
+  1/(len("abc") - 4);
+  1/(len("abc") - 3);
+  1/abs(1);
+  1/abs(0);
+  1.0/abs(1.0);
+  1.0/abs(0.0);
+  1/min(3,1);
+  1/min(3,0);
+  1/max(-3,1);
+  1/max(-3,0);
+  1.0/min(3.0,1.0);
+  1.0/min(3.0,0.0);
+  1.0/max(-3.0,1.0);
+  1.0/max(-3.0,0.0);
+
+  1/int(match("a.c","abc"));
+  1/int(match("a.c","xxx"));
+  # constant RE error even without constant folding
+  match("a[b", "abc");
+  # when RE constant due to folding, is still error, not warning
+  match("b[c"+"def", "abc");
+  # even if we were not going to try folding the intrinsic
+  match("c[d"+"efg", "abc"+empty);
+  # the only other match error is an "unexpected pcre error" (exceeded limit)
+  # (taken from the Wikipedia page on PCRE)
+  match(".X(.+)+X","bbbbXcXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+  # constant RE error even without constant folding
+  matchposns("d[e", "abc");
+  # when RE constant due to folding, is still error, not warning
+  matchposns("e[f"+"ghi", "abc");
+
+  # constant RE error even without constant folding
+  matchstrs("f[g", "abc");
+  # when RE constant due to folding, is still error, not warning
+  matchstrs("g[h"+"ijk", "abc");
+
+  1/(int(addday(1234567887654321T,3)) - 1234827087654320);
+  1/(int(addday(1234567887654321T,3)) - 1234827087654321);
+  addday(1234567887654321T, 3, "Lower_Slobovia");
+  1/(int(addmonth(1234567887654321T,3)) - 1242253887654320);
+  1/(int(addmonth(1234567887654321T,3)) - 1242253887654321);
+  addmonth(1234567887654321T, 3, "Lower_Slobovia");
+  1/(int(addweek(1234567887654321T,3)) - 1236382287654320);
+  1/(int(addweek(1234567887654321T,3)) - 1236382287654321);
+  addweek(1234567887654321T, 3, "Lower_Slobovia");
+  1/(int(addyear(1234567887654321T,3)) - 1329175887654320);
+  1/(int(addyear(1234567887654321T,3)) - 1329175887654321);
+  addyear(1234567887654321T, 3, "Lower_Slobovia");
+
+  1/(dayofmonth(1234567887654321T) - 14);
+  1/(dayofmonth(1234567887654321T) - 13);
+  dayofmonth(1234567887654321T, "Lower_Slobovia");
+  1/(dayofweek(1234567887654321T) - 6);
+  1/(dayofweek(1234567887654321T) - 5);
+  dayofweek(1234567887654321T, "Lower_Slobovia");
+  1/(dayofyear(1234567887654321T) - 45);
+  1/(dayofyear(1234567887654321T) - 44);
+  dayofyear(1234567887654321T, "Lower_Slobovia");
+  1/(hourof(1234567887654321T) - 16);
+  1/(hourof(1234567887654321T) - 15);
+  hourof(1234567887654321T, "Lower_Slobovia");
+  1/(minuteof(1234567887654321T) - 32);
+  1/(minuteof(1234567887654321T) - 31);
+  minuteof(1234567887654321T, "Lower_Slobovia");
+  1/(monthof(1234567887654321T) - 3);
+  1/(monthof(1234567887654321T) - 2);
+  monthof(1234567887654321T, "Lower_Slobovia");
+  1/(secondof(1234567887654321T) - 28);
+  1/(secondof(1234567887654321T) - 27);
+  secondof(1234567887654321T, "Lower_Slobovia");
+  1/(yearof(1234567887654321T) - 2010);
+  1/(yearof(1234567887654321T) - 2009);
+  yearof(1234567887654321T, "Lower_Slobovia");
+
+  1/(int(trunctoday(1234567887654321T)) - 1234512000000001);
+  1/(int(trunctoday(1234567887654321T)) - 1234512000000000);
+  trunctoday(1234567887654321T, "Lower_Slobovia");
+  1/(int(trunctohour(1234567887654321T)) - 1234566000000001);
+  1/(int(trunctohour(1234567887654321T)) - 1234566000000000);
+  trunctohour(1234567887654321T, "Lower_Slobovia");
+  1/(int(trunctominute(1234567887654321T)) - 1234567860000001);
+  1/(int(trunctominute(1234567887654321T)) - 1234567860000000);
+  trunctominute(1234567887654321T, "Lower_Slobovia");
+  1/(int(trunctomonth(1234567887654321T)) - 1233475200000001);
+  1/(int(trunctomonth(1234567887654321T)) - 1233475200000000);
+  trunctomonth(1234567887654321T, "Lower_Slobovia");
+  1/(int(trunctosecond(1234567887654321T)) - 1234567887000001);
+  1/(int(trunctosecond(1234567887654321T)) - 1234567887000000);
+  # Should probably be an error, but TZ ignored in trunctosecond() for now.
+  trunctosecond(1234567887654321T, "Lower_Slobovia");
+  1/(int(trunctoyear(1234567887654321T)) - 1230796800000001);
+  1/(int(trunctoyear(1234567887654321T)) - 1230796800000000);
+  trunctoyear(1234567887654321T, "Lower_Slobovia");
+
+  1/(highbit(42) - 7);
+  1/(highbit(42) - 6);
+  1/int(lowercase("ABC") == "abc");
+  1/int(lowercase("ABC") != "abc");
+  1/int(uppercase("abc") == "ABC");
+  1/int(uppercase("abc") != "ABC");
+  1/(strfind("oo","google") - 2);
+  1/(strfind("oo","google") - 1);
+  1/(strrfind("oo","google") - 2);
+  1/(strrfind("oo","google") - 1);
+  1/int(strreplace("google","og","gg",true) == "goggle");
+  1/int(strreplace("google","og","gg",true) != "goggle");
+
+  1.0/(round(ln(0.5)*100.0) + 169.0);
+  1.0/(round(ln(0.5)*100.0) + 69.0);
+  1.0/(round(log10(0.5)*100.0) + 130.0);
+  1.0/(round(log10(0.5)*100.0) + 30.0);
+  1.0/(round(exp(0.5)*100.0) - 65.0);
+  1.0/(round(exp(0.5)*100.0) - 165.0);
+  1.0/(round(sqrt(0.5)*100.0) - 171.0);
+  1.0/(round(sqrt(0.5)*100.0) - 71.0);
+  1.0/(round(pow(0.5,0.5)*100.0) - 171.0);
+  1.0/(round(pow(0.5,0.5)*100.0) - 71.0);
+  1.0/(round(sin(0.5)*100.0) - 148.0);
+  1.0/(round(sin(0.5)*100.0) - 48.0);
+  1.0/(round(cos(0.5)*100.0) - 188.0);
+  1.0/(round(cos(0.5)*100.0) - 88.0);
+  1.0/(round(tan(0.5)*100.0) - 155.0);
+  1.0/(round(tan(0.5)*100.0) - 55.0);
+  1.0/(round(asin(0.5)*100.0) - 152.0);
+  1.0/(round(asin(0.5)*100.0) - 52.0);
+  1.0/(round(acos(0.5)*100.0) - 5.0);
+  1.0/(round(acos(0.5)*100.0) - 105.0);
+  1.0/(round(atan(0.5)*100.0) - 146.0);
+  1.0/(round(atan(0.5)*100.0) - 46.0);
+  1.0/(round(atan2(0.5,0.5)*100.0) - 179.0);
+  1.0/(round(atan2(0.5,0.5)*100.0) - 79.0);
+  1.0/(round(sinh(0.5)*100.0) - 152.0);
+  1.0/(round(sinh(0.5)*100.0) - 52.0);
+  1.0/(round(cosh(0.5)*100.0) - 13.0);
+  1.0/(round(cosh(0.5)*100.0) - 113.0);
+  1.0/(round(tanh(0.5)*100.0) - 146.0);
+  1.0/(round(tanh(0.5)*100.0) - 46.0);
+  1.0/(round(asinh(0.5)*100.0) - 148.0);
+  1.0/(round(asinh(0.5)*100.0) - 48.0);
+  1.0/(round(acosh(1.5)*100.0) - 196.0);
+  1.0/(round(acosh(1.5)*100.0) - 96.0);
+  1.0/(round(atanh(0.7)*100.0) - 187.0);
+  1.0/(round(atanh(0.7)*100.0) - 87.0);
+  1.0/(fabs(-1.5) - 0.5);
+  1.0/(fabs(-1.5) - 1.5);
+  1.0/(ceil(-3.3) + 4.0);
+  1.0/(ceil(-3.3) + 3.0);
+  1.0/(floor(-3.3) + 3.0);
+  1.0/(floor(-3.3) + 4.0);
+  1.0/(round(-3.6) + 3.0);
+  1.0/(round(-3.6) + 4.0);
+  1.0/(trunc(-3.6) + 4.0);
+  1.0/(trunc(-3.6) + 3.0);
+  1/int(isnan(sqrt(-1.0)));
+  1/int(isnan(sqrt(1.0)));
+  1/int(isinf(ln(0.0)));
+  1/int(isinf(ln(1.0)));
+  1/int(isfinite(ln(1.0)));
+  1/int(isfinite(ln(0.0)));
+  1/int(isnormal(1.0));
+  1/int(isnormal(1e-320));
+}

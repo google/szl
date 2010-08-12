@@ -1,0 +1,364 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Ill-formed function declarations that cause compile-time errors
+
+#
+# Helper types
+#
+
+type T0 = { x: array of int, y: map [key: string] of value: string };
+
+type M0 = map [key: string] of value: T0;
+type M1 = map [key: string] of value: map [key: string]
+                            of map [key: string]
+                            of int;
+
+type Ab = array of bool;
+type Aby = array of bytes;
+type Af = array of float;
+type Afg = array of fingerprint;
+type At = array of time;
+type AM0 = array of map [key: string]
+                 of value: T0;
+type AM1 = array of map [key: string] 
+                 of value: map [key: string]
+                 of map [key: string]
+                 of int;
+type AT0 = array of { x: array of int,
+                      y: map [key: string] of value: string };
+
+#
+# Function declarations without return types
+#
+
+# Parameter is incorrect (use extra ; to reset to statement boundary)
+x0: function(bool) {};;
+x1: function(x) {};;
+x2: function(:bool) {};
+x3: function(x bool) {};
+x4: function(array: int) {};
+x5: function(array of int) {};
+x6: function(map [key: string] of value: { x:float, y: float });
+x7: function(map [key: string] of value: { x:float, y: float });
+x8: function(map of value: { x:float, y: float });
+x9: function(map [key: string] of value: { x:float, y:  });;
+x10: function(map [key: ] of value: { x:float, y: float });
+x11: function({ x: float, y: string });
+
+# Test if the parser takes any junk (use extra ; to reset to statement boundary)
+x12: function(;); ;;
+x13: function({}); ;;
+x14: function(()); ;;
+x15: function(#@);
+    ;;;;;
+x16: function; ;;;;;;
+x17: function{}; ;;;
+
+# One of the parameter is incorrect
+x18: function(x: string, : int);;
+x19: function(x: string, y: );;
+x20: function(x: string, y int);;
+
+# Two parameters having same name (no error for declarations w/t definition)
+x21: function(x: string, x: int) {};
+x22: function(x: string, y: int, x: float) {};
+
+# Wrong way of declaring function (= sign instead of :)
+x23= function(x: bool) {};
+
+# One of the parameters is missing
+x24: function(, x: string);
+
+# Cascading errors
+x25: function(x: string, );
+x26: function(x: bool);
+
+# Redeclaration of previously declared function
+x18: function(x: bool);
+
+x27: function(x:bool);
+x27: function(x:bool);
+
+# Optional parameters are not supported
+x28: function(x: int, y: int = 888) {
+  x;
+  y;
+};
+
+#
+# Function declarations with different return types
+#
+
+# Complex parameter types have already been tested above.
+# So just considering the case with single parameter type of string type
+# as the string type is to and from convertible from any type.
+
+# Basic return types - without return statement
+# NOTE: not caught at parsing
+f1: function(x: string) : bool {
+};
+
+f2: function(x: string) : bytes {
+};
+
+f3: function(x: string) : int {
+};
+
+f4: function(x: string) : float {
+};
+
+f5: function(x: string) : time {
+};
+
+f6: function(x: string) : fingerprint {
+};
+
+f7: function(x: string) : string {
+};
+
+# Basic return types - incompatible return type
+f8: function(x: string) : bool {
+   return "abc";
+};
+
+f9: function(x: string) : bytes {
+   return "abc";
+};
+
+f10: function(x: string) : int {
+   return "abc";
+};
+
+f11: function(x: string) : float {
+   return "abc";
+};
+
+f12: function(x: string) : time {
+   return "abc";
+};
+
+f13: function(x: string) : fingerprint {
+   return "abc";
+};
+
+f14: function(x: string) : string {
+   return 4;
+};
+
+# Complex return types - without return statement
+f15: function(x: string) : T0 {
+};
+
+f16: function(x: string) : { x: array of int, 
+                            y: map [key: string] of value: string } {
+};
+
+f17: function(x: string) : M0 {
+};
+
+f18: function(x: string) : map [key: string] of value: T0 {
+};
+
+f19: function(x: string) : M1 {
+};
+
+f20: function(x: string) : map [key: string] of value: map [key: string] 
+                                             of map [key: string] 
+                                             of int {
+};
+
+f21: function(x: string) : Ab {
+};
+
+f22: function(x: string) : array of bool {
+};
+
+f23: function(x: string) : Aby {
+};
+
+f24: function(x: string) : array of bytes {
+};
+
+f25: function(x: string) : Af {
+};
+
+f26: function(x: string) : array of float {
+};
+
+f27: function(x: string) : Afg {
+};
+
+f28: function(x: string) : array of fingerprint {
+};
+
+f29: function(x: string) : At {
+};
+
+f30: function(x: string) : array of time {
+};
+
+f31: function(x: string) : AM0 {
+};
+
+f32: function(x: string) : array of map [key: string] 
+                                 of value: T0 {
+};
+
+f33: function(x: string) : AM1 {
+};
+
+f34: function(x: string) : array of map [key: string] 
+                                 of value: map [key: string] 
+                                 of map [key: string] 
+                                 of int {
+};
+
+f35: function(x: string) : AT0 {
+};
+
+f36: function(x: string) : array of { x: array of int, 
+                                      y: map [key: string] of value: string } {
+};
+
+# Complex return types - incompatible return type
+f37: function(x: string) : T0 {
+   return { {10, 12} };
+};
+
+f38: function(x: string) : { x: array of int, 
+                            y: map [key: string] of value: string } {
+   return { {10, 12} };
+};
+
+f39: function(x: string) : array of bool {
+   return { true, 10 };
+};
+
+f40: function(x: string) : array of bytes {
+   return { bytes("abc"), 10 };
+};
+
+f41: function(x: string) : array of float {
+   return { 10, 10.23 };
+};
+
+f42: function(x: string) : array of fingerprint {
+   return { fingerprint(10) };
+};
+
+f43: function(x: string) : array of time {
+   return "abc";
+};
+
+f44: function(x: string) : array of { x: array of int, 
+                                      y: map [key: string] of value: string } {
+   return { {10, 12, 256}, 
+            { "R" : "RED", "B" : "BLUE", "G" : "GREEN" } 
+          } ;
+};
+
+# Two return statements.
+f45: function(x: string) : string {
+   return "abc";
+   return "abc";
+};
+
+f46: function(x: string) : string {
+   return "abc";
+   return 5;
+};
+
+f47: function(x: string) : string {
+   return 5;
+   return "abc";
+};
+
+# Bad syntax  (use extra ; to reset to statement boundary)
+f48: function(x: string) : {
+   return "abc";
+};
+
+f49: function(x: string) int {
+};
+
+f50: function(x: string) : array of { x: array of int,
+                                      y: map [key: string] of value: string  {
+};
+
+f51: function(x: string) : array of { x: array of int
+                                      y: map [key: string] of value: string } {
+};
+
+# Giving return even if no return specs
+f52: function(x: string) {
+   return x;
+};
+
+# Return expression with no expression in a function with a return type
+f53: function(x: string) : string {
+   return;
+};
+
+
+#
+# Function nesting and accessing variables not in scope
+#
+
+# Calling function not in scope (fully defined)
+# NOTE: not caught at parsing
+h01: function(x1: int) : int {
+
+   h2: function(x2: int) : int {
+
+      h3: function(x3: int) : int {
+         return h2(x3); # h2 is not fully defined then also no error at compile
+      };
+
+      return h3(x2);
+   };
+
+   return h2(10);
+};
+
+
+# Accesing variable not in scope
+h02: function(x1: int) : int {
+
+   h2: function(x2: int) : int {
+
+      i0: int;
+
+      h3: function(x3: int) : int {
+         return h2(x3 * i0);
+      };
+
+      return h3(x2);
+   };
+
+   return h2(10 * i0);
+};
+
+
+#
+# Break statement in the function
+#
+
+unbreakable: function() { break; };

@@ -1,0 +1,90 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+static NUnicode: int = 65536;
+static NIter: int = 1000;
+static NProbe: int = 100;
+static Size: int = 10;
+
+# A custom random number generator, to guarantee reproducibility.
+# (There is no srand() in Sawzall and little need for one.)
+# Adapted from K&R.
+
+next: int = 1;
+randx: function(): int {
+  next = (next * 1103515245 + 12345) & ~(1 << 63);
+  return  (next >> 32) & ((1 << 31) - 1);
+};
+
+rand62: function(): int {
+  return (randx() << 31) + randx();
+};
+
+nrandx: function(n: int): int {
+  return rand62() % n;
+};
+
+# See that we pack and unpack strings correctly by building
+# strings from variant-sized characters (in UTF-8 encoding)
+# and then inserting characters in the middle, checking that
+# the result is the same computed several different ways and
+# that the preceding and succeeding characters are unaffected.
+# These tests check our ability to insert into a UTF-8 string.
+Test: function(c: int) {
+  for (i: int = 0; i < NProbe; i++) {
+    a: string = new(string, nrandx(Size) + 1, c);
+    s: string = a;
+    index: int = nrandx(len(s));
+    char: int;
+    # Avoid surrogates
+    do {
+      char = nrandx(NUnicode - 1) + 1;
+    } while (0xD800 <= char && char <= 0xDFFF);
+    s[index] = char;
+    c1: int = s[index];
+    assert(c1 == char);
+    if (index > 0) {
+      c2: int = s[index - 1];
+      assert(c2 == c);
+    }
+    if (index < len(s) - 1) {
+      c3: int = s[index + 1];
+      assert(c3 == c);
+    }
+    t: string = (new(string, index, c) + new(string, 1, char) +
+                 new(string, len(s) - index - 1, c));
+    assert(s == t);
+    u: string = format("%s%c%s", a[0:index], char, a[index+1:$]);
+    assert(s == u);
+    v: string = format("%s%c%s", s[0:index], char, s[index+1:$]);
+    assert(s == v);
+  }
+};
+
+
+# These characters have one-, two-, and three-byte UTF-8 encodings.
+static OneByteChar: int = 0x61;  # lower case a
+static TwoByteChar: int = 0x3b1;  # lower case alpha
+static ThreeByteChar: int = 0x65e5; # 'ni' in 'nihongo'
+
+assert(len(bytes(new(string, 1, OneByteChar))) == 1);
+assert(len(bytes(new(string, 1, TwoByteChar))) == 2);
+assert(len(bytes(new(string, 1, ThreeByteChar))) == 3);
+
+for (i: int = 0; i < NIter; i++) {
+  Test(OneByteChar);
+  Test(TwoByteChar);
+  Test(ThreeByteChar);
+}

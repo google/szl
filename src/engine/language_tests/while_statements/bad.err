@@ -1,0 +1,7 @@
+while_statements/bad.szl:26: function $main does not expect a result
+while_statements/bad.szl:34: factor expected, found ')'
+while_statements/bad.szl:38: expression 10 + (2 % 6) (int) must be of type bool
+while_statements/bad.szl:41: expression 10.23 * 5.7 (float) must be of type bool
+while_statements/bad.szl:46: expression f() (void) must be of type bool
+while_statements/bad.szl:62: x undeclared
+while_statements/bad.szl:74: x undeclared

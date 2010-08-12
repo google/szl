@@ -1,0 +1,640 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# For more output type and variable tests see:
+#   base/emit.szl
+#   type_declarations/outputType_good.szl
+#   emitter/*good*
+
+# Predefined output variables
+
+emit stdout <- "hello world!";
+emit stderr <- "goodbye world!";
+emit output <- B"hello world again!\n";
+emit _undef_cnt <- 0;
+emit _undef_details["ok"] <- 0;
+
+#
+# Output variables can be loaded, def-checked and emitted to
+#
+
+# The tests below are grouped by table kind. Each kind includes the most basic
+# emitting declaration plus one declaration per applicable table attribute.
+# Each declared table variable is then referenced to test basic operations.
+#
+# The same index, element and weight identifiers are used for consistency.
+
+# collection
+tCO: table collection of e: int;
+tCO;
+assert(def(tCO));
+emit tCO <- 1;
+
+tCOfm: table collection of e: int format("*%d*", e);
+tCOfm;
+assert(def(tCOfm));
+emit tCOfm <- 1;
+
+tCOfl: table collection of e: int file("/dev/stdout") format("*%d*", e);
+tCOfl;
+assert(def(tCOfl));
+emit tCOfl <- 1;
+
+tCOpc: table collection of e: int proc("sleep 1") format("*%d*", e);
+tCOpc;
+assert(def(tCOpc));
+emit tCOpc <- 1;
+
+# sum
+tSU: table sum of e: int;
+tSU;
+assert(def(tSU));
+emit tSU <- 1;
+
+# text
+tTE: table text of e: string;
+tTE;
+assert(def(tTE));
+emit tTE <- "1";
+
+tTEfm: table text of e: string format("*%s*", e);
+tTEfm;
+assert(def(tTEfm));
+emit tTEfm <- "1";
+
+# mrcounter
+tMR: table mrcounter of e: int;
+tMR;
+assert(def(tMR));
+emit tMR <- 1;
+
+# sample
+tSA: table sample(10) of e: int;
+tSA;
+assert(def(tSA));
+emit tSA <- 1;
+
+tSAfm: table sample(10) of e: int format("*%d*", e);
+tSAfm;
+assert(def(tSAfm));
+emit tSAfm <- 1;
+
+# set
+tSE: table set(10) of e: int;
+tSE;
+assert(def(tSE));
+emit tSE <- 1;
+
+tSEfm: table set(10) of e: int format("*%d*", e);
+tSEfm;
+assert(def(tSEfm));
+emit tSEfm <- 1;
+
+# quantile
+tQU: table quantile(10) of e: int;
+tQU;
+assert(def(tQU));
+
+tQUfm: table quantile(10) of e: int format("*%d*", e);
+tQUfm;
+assert(def(tQUfm));
+emit tQUfm <- 1;
+
+# unique
+tUN: table unique(10) of e: int;
+tUN;
+assert(def(tUN));
+emit tCO <- 1;
+
+tUNfm: table unique(10) of e: int format("*%d*", e);
+tUNfm;
+assert(def(tUNfm));
+emit tUNfm <- 1;
+
+# recordio
+tRE: table recordio(10) of e: int;
+tRE;
+assert(def(tRE));
+emit tRE <- 1;
+
+tREfm: table recordio(10) of e: int format("*%d*", e);
+tREfm;
+assert(def(tREfm));
+emit tREfm <- 1;
+
+# top
+tTO: table top(10) of e: int weight w: int;
+tTO;
+assert(def(tTO));
+emit tTO <- 1 weight 1;
+
+tTOfm: table top(10) of e: int weight w: int format("*%d*", e);
+tTOfm;
+assert(def(tTOfm));
+emit tTOfm <- 1 weight 1;
+
+# maximum
+tMA: table maximum(10) of e: int weight w: int;
+tMA;
+assert(def(tMA));
+emit tMA <- 1 weight 1;
+
+tMAfm: table maximum(10) of e: int weight w: int format("*%d*", e);
+tMAfm;
+assert(def(tMAfm));
+emit tMAfm <- 1 weight 1;
+
+# minimum
+tMI: table minimum(10) of e: int weight w: int;
+tMI;
+assert(def(tMI));
+emit tMI <- 1 weight 1;
+
+tMIfm: table minimum(10) of e: int weight w: int format("*%d*", e);
+tMIfm;
+assert(def(tMIfm));
+emit tMIfm <- 1 weight 1;
+
+# distinctsample
+tDI: table distinctsample(10) of e: int weight w: int;
+tDI;
+assert(def(tDI));
+emit tDI <- 1 weight 1;
+
+tDIfm: table distinctsample(10) of e: int weight w: int format("*%d*", e);
+tDIfm;
+assert(def(tDIfm));
+emit tDIfm <- 1 weight 1;
+
+# inversehistogram
+tIN: table inversehistogram(10) of e: int weight w: int;
+tIN;
+assert(def(tIN));
+emit tIN <- 1 weight 1;
+
+tINfm: table inversehistogram(10) of e: int weight w: int format("*%d*", e);
+tINfm;
+assert(def(tINfm));
+emit tINfm <- 1 weight 1;
+
+# weightedsample
+tWE: table weightedsample(10) of e: int weight w: float;
+tWE;
+assert(def(tWE));
+emit tWE <- 1 weight inf;
+
+tWEfm: table weightedsample(10) of e: int weight w: float format("*%d*", e);
+tWEfm;
+assert(def(tWEfm));
+emit tWEfm <- 1 weight inf;
+
+
+# Some additional output var / emit combinations
+
+t1: table collection of i: int file("/dev/stdout") format("i = %d\n", i);
+for (i: int = 0; i < 5; i++)
+  emit t1 <- i;
+
+t2: table collection[selector: string] of t: { i: int, s: string }
+    file("/dev/std%s", selector) format("selected %s: i = %d\n", t.s, t.i);
+for (i: int = 0; i < 5; i++) {
+  emit t2["out"] <- { i, "out" };
+  emit t2["err"] <- { i, "err" };
+}
+
+# When only static variables are referenced in format and file/proc
+# attributes, the output variable may be declared or used in static
+# or non-static scope
+
+static kJ: int = nrand(7) / 7 + 6;
+static kStdout := "/dev/stdout";
+t3: table collection of i: int file("%s", kStdout) format("j=%d\n", kJ);
+type T3 = table collection of i: int file("%s", kStdout) format("j=%d\n", kJ);
+t3t: T3;
+emit t3 <- 0;
+emit t3t <- 0;
+f0: function() { emit t3 <- 1; emit t3t <- 1; };
+f0();
+f1: function() { function() { emit t3 <- 1; emit t3t <- 1; } (); };
+f1();
+static f2: function() { emit t3 <- 2; emit t3t <- 2; };
+f2();
+f3: function() { static f: function() { emit t3 <- 1; emit t3t <- 1; }; f(); };
+f3();
+static f4: function() { f: function() { emit t3 <- 1; emit t3t <- 1; }; f(); };
+f4();
+
+static f5: function() {
+  static kK: int = nrand(7) / 7 + 6;
+  static kSleep1 := "sleep 1";
+  t4: table collection of i: int proc("%s", kSleep1) format("k=%d\n", kK);
+  type T4 = table collection of i: int proc("%s", kSleep1) format("k=%d\n", kK);
+  t4t: T4;
+  emit t4 <- 1;
+  emit t4t <- 1;
+};
+f5();
+
+# When non-static variables are referenced in format or file/proc attributes,
+# the output variable may be declared and used in non-static scope only
+
+j: int = nrand(7) / 7 + 6;
+dev_stdout := "/dev/stdout";
+t5: table collection of i: int file("%s", dev_stdout) format("j=%d\n", j);
+type T5 = table collection of i: int file("%s", dev_stdout) format("j=%d\n", j);
+t5t: T5;
+emit t5 <- 0;
+emit t5t <- 0;
+# the next two lines die with a segfault
+#function() { emit t5 <- 1; emit t5t <- 1; } ();
+#function() { function() { emit t5 <- 1; emit t5t <- 1; } (); } ();
+
+function() {
+  k: int = nrand(7) / 7 + 6;
+  sleep_1 := "sleep 1";
+  t6: table collection of i: int proc("%s", sleep_1) format("k=%d\n", k);
+  type T6 = table collection of i: int proc("%s", sleep_1) format("k=%d\n", k);
+  t6t: T6;
+  emit t6 <- 1;
+  emit t6t <- 1;
+} ();
+
+#
+# Output variables are passable as parameters to functions
+#
+
+# Tests below are broken into the following categories:
+#   equality checks
+#     for each feature (while fixing all otherss)
+#   variable loads
+#     statement expression for all kinds
+#     def-check for all kinds
+#   emits
+#     no attributes for all kinds
+#     for each attribute for all kinds
+#
+# Default index, element, weight identifiers (i, e, w) indicate
+# the fields that don't have an affect on the test case.
+#
+
+# Output type equality checks: the argument list is compatible
+
+# kinds must match
+tCOtk: table collection of e: int;
+function(t: table collection of e: int) {}(tCOtk);
+tSUtk: table sum of e: int;
+function(t: table sum of e: int) {}(tSUtk);
+tTEtk: table text of e: string;
+function(t: table text of e: string) {}(tTEtk);
+tMRtk: table mrcounter of e: int;
+function(t: table mrcounter of e: int) {}(tMRtk);
+tSAtk: table sample(10) of e: int;
+function(t: table sample(10) of e: int) {}(tSAtk);
+tSEtk: table set(10) of e: int;
+function(t: table set(10) of e: int) {}(tSEtk);
+tQUtk: table quantile(10) of e: int;
+function(t: table quantile(10) of e: int) {}(tQUtk);
+tUNtk: table unique(10) of e: int;
+function(t: table unique(10) of e: int) {}(tUNtk);
+tREtk: table recordio(10) of e: int;
+function(t: table recordio(10) of e: int) {}(tREtk);
+tTOtk: table top(10) of e: int weight w: int;
+function(t: table top(10) of e: int weight w: int) {}(tTOtk);
+tMAtk: table maximum(10) of e: int weight w: int;
+function(t: table maximum(10) of e: int weight w: int) {}(tMAtk);
+tMItk: table minimum(10) of e: int weight w: int;
+function(t: table minimum(10) of e: int weight w: int) {}(tMItk);
+tDItk: table distinctsample(10) of e: int weight w: int;
+function(t: table distinctsample(10) of e: int weight w: int) {}(tDItk);
+tINtk: table inversehistogram(10) of e: int weight w: int;
+function(t: table inversehistogram(10) of e: int weight w: int) {}(tINtk);
+tWEtk: table weightedsample(10) of e: int weight w: float;
+function(t: table weightedsample(10) of e: int weight w: float) {}(tWEtk);
+
+
+
+# params must match
+tSEtpl: table set(10) of e: int;
+function(t: table set(10) of e: int) {}(tSEtpl);
+static kInt := 5;
+tSEtpc: table set(kInt) of e: int;
+function(t: table set(kInt) of e: int) {}(tSEtpc);
+
+# index types must match (identifiers matter)
+tSUtii: table sum[i: int] of e: int;
+function(t: table sum[i: int] of e: int) {}(tSUtii);
+tSUtiA: table sum[A: array of int] of e: int;
+function(t: table sum[A: array of int] of e: int) {}(tSUtiA);
+tSUtiM: table sum[M: map[int] of int] of e: int;
+function(t: table sum[M: map[int] of int] of e: int) {}(tSUtiM);
+tSUtiT: table sum[T: { i: int, f: float}] of e: int;
+function(t: table sum[T: { i: int, f: float}] of e: int) {}(tSUtiT);
+tSUtiP: table sum[P: proto { f: float }] of e: int;
+function(t: table sum[P: parsedmessage { f: float @1 }] of e: int) {}(tSUtiP);
+tSUti3: table sum[int][float][array of string] of e: int;
+function(t: table sum[int][float][array of string] of e: int) {}(tSUti3);
+
+# element types must match (identifiers matter)
+tSAtei: table sample(10) of i: int;
+function(t: table sample(10) of i: int) {}(tSAtei);
+tSAteA: table sample(10) of A: array of int;
+function(t: table sample(10) of A: array of int) {}(tSAteA);
+tSAteM: table sample(10) of M: map[int] of int;
+function(t: table sample(10) of M: map[int] of int) {}(tSAteM);
+tSAteT: table sample(10) of T: { i: int, f: float };
+function(t: table sample(10) of T: { i: int, f: float }) {}(tSAteT);
+tSAteP: table sample(10) of P: proto { i: int @1, f: float @2 };
+function(t: table sample(10) of P: { i: int @1, f: float @2 }) {}(tSAteP);
+
+# weight types must match (identifiers don't matter)
+tTOtwi: table top(3) of e: int weight i: int;
+function(t: table top(3) of e: int weight i: int) {}(tTOtwi);
+function(t: table top(3) of e: int weight x: int) {}(tTOtwi);
+function(t: table top(3) of e: int weight int) {}(tTOtwi);
+tTOtwT: table top(3) of e: int weight T: { i: int, f: float };
+function(t: table top(3) of e: int weight T: { i: int, f: float }) {}(tTOtwT);
+function(t: table top(3) of e: int weight x: { i: int, f: float }) {}(tTOtwT);
+function(t: table top(3) of e: int weight { i: int, f: float }) {}(tTOtwT);
+tTOtwP: table top(3) of e: int weight P: proto { f: float @1 };
+function(t: table top(3) of e: int weight P: { f: float @1 }) {}(tTOtwP);
+function(t: table top(3) of e: int weight x: { f: float @1 }) {}(tTOtwP);
+function(t: table top(3) of e: int weight { f: float @1 }) {}(tTOtwP);
+
+# file/proc index formats must match
+tCOtfll: table collection of e: bytes file("/tmp/foo");
+function(t: table collection of e: bytes file("/tmp/bar")) {}(tCOtfll);
+tCOtfli: table collection[i: { j: int, k: int }] of e: bytes
+  file("/tmp/i%d.%d", i.j, i.k);
+function(t: table collection[i: { j: int, k: int }] of e: bytes
+         file("/tmp/i%d%d", i.k, i.j)) {}(tCOtfli);
+tCOtpcl: table collection of e: bytes proc("echo foo");
+function(t: table collection of e: bytes proc("echo bar")) {}(tCOtpcl);
+tCOtpci: table collection[i: { j: int, k: int }] of e: bytes
+  proc("echo %d %d", i.j, i.k);
+function(t: table collection[i: { j: int, k: int }] of e: bytes
+         proc("echo %d%d", i.k, i.j)) {}(tCOtpci);
+
+# element formats must match
+tUNtfml: table unique(7) of e: int format("foo");
+function(t: table unique(7) of e: int format("bar")) {}(tUNtfml);
+tUNtfme: table unique(7) of e: { i: int, t: { j: int } }
+format("%d%d", e.i, e.t.j);
+function(t: table unique(7) of e: { i: int, t: { j: int } }
+         format("%d%d", e.t.j, e.i)) {}(tUNtfme);
+
+# Variable loads
+
+# expression statement
+tCOv: table collection of e: int;
+function(t: table collection of e: int) { t; }(tCOv);
+tSUv: table sum of e: int;
+function(t: table sum of e: int) { t; }(tSUv);
+tTEv: table text of e: string;
+function(t: table text of e: string) { t; }(tTEv);
+tMRv: table mrcounter of e: int;
+function(t: table mrcounter of e: int) { t; }(tMRv);
+tSAv: table sample(10) of e: int;
+function(t: table sample(10) of e: int) { t; }(tSAv);
+tSEv: table set(10) of e: int;
+function(t: table set(10) of e: int) { t; }(tSEv);
+tQUv: table quantile(10) of e: int;
+function(t: table quantile(10) of e: int) { t; }(tQUv);
+tUNv: table unique(10) of e: int;
+function(t: table unique(10) of e: int) { t; }(tUNv);
+tREv: table recordio(10) of e: int;
+function(t: table recordio(10) of e: int) { t; }(tREv);
+tTOv: table top(10) of e: int weight w: int;
+function(t: table top(10) of e: int weight w: int) { t; }(tTOv);
+tMAv: table maximum(10) of e: int weight w: int;
+function(t: table maximum(10) of e: int weight w: int) { t; }(tMAv);
+tMIv: table minimum(10) of e: int weight w: int;
+function(t: table minimum(10) of e: int weight w: int) { t; }(tMIv);
+tDIv: table distinctsample(10) of e: int weight w: int;
+function(t: table distinctsample(10) of e: int weight w: int) { t; }(tDIv);
+tINv: table inversehistogram(10) of e: int weight w: int;
+function(t: table inversehistogram(10) of e: int weight w: int) { t; }(tINv);
+tWEv: table weightedsample(10) of e: int weight w: float;
+function(t: table weightedsample(10) of e: int weight w: float) { t; }(tWEv);
+
+
+# def check
+tCOd: table collection of e: int;
+function(t: table collection of e: int) {
+  assert(def(t)); }(tCOd);
+tSUd: table sum of e: int;
+function(t: table sum of e: int) {
+  assert(def(t)); }(tSUd);
+tTEd: table text of e: string;
+function(t: table text of e: string) {
+  assert(def(t)); }(tTEd);
+tMRd: table mrcounter of e: int;
+function(t: table mrcounter of e: int) {
+  assert(def(t)); }(tMRd);
+tSAd: table sample(10) of e: int;
+function(t: table sample(10) of e: int) {
+  assert(def(t)); }(tSAd);
+tSEd: table set(10) of e: int;
+function(t: table set(10) of e: int) {
+  assert(def(t)); }(tSEd);
+tQUd: table quantile(10) of e: int;
+function(t: table quantile(10) of e: int) {
+  assert(def(t)); }(tQUd);
+tUNd: table unique(10) of e: int;
+function(t: table unique(10) of e: int) {
+  assert(def(t)); }(tUNd);
+tREd: table recordio(10) of e: int;
+function(t: table recordio(10) of e: int) {
+  assert(def(t)); }(tREd);
+tTOd: table top(10) of e: int weight w: int;
+function(t: table top(10) of e: int weight w: int) {
+  assert(def(t)); }(tTOd);
+tMAd: table maximum(10) of e: int weight w: int;
+function(t: table maximum(10) of e: int weight w: int) {
+  assert(def(t)); }(tMAd);
+tMId: table minimum(10) of e: int weight w: int;
+function(t: table minimum(10) of e: int weight w: int) {
+  assert(def(t)); }(tMId);
+tDId: table distinctsample(10) of e: int weight w: int;
+function(t: table distinctsample(10) of e: int weight w: int) {
+  assert(def(t)); }(tDId);
+tINd: table inversehistogram(10) of e: int weight w: int;
+function(t: table inversehistogram(10) of e: int weight w: int) {
+  assert(def(t)); }(tINd);
+tWEd: table weightedsample(10) of e: int weight w: float;
+function(t: table weightedsample(10) of e: int weight w: float) {
+  assert(def(t)); }(tWEd);
+
+
+# Emits
+
+# no attributes
+tCOe: table collection[i: int][s: string] of e: int;
+function(t: table collection[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tCOe);
+tSUe: table sum[i: int][s: string] of e: int;
+function(t: table sum[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tSUe);
+tTEe: table text of e: string;
+function(t: table text of e: string) {
+  emit t <- "1"; }(tTEe);
+tMRe: table mrcounter of e: int;
+function(t: table mrcounter of e: int) {
+  emit t <- 1; }(tMRe);
+tSAe: table sample(10)[i: int][s: string] of e: int;
+function(t: table sample(10)[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tSAe);
+tSEe: table set(10)[i: int][s: string] of e: int;
+function(t: table set(10)[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tSEe);
+tQUe: table quantile(10)[i: int][s: string] of e: int;
+function(t: table quantile(10)[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tQUe);
+tUNe: table unique(10)[i: int][s: string] of e: int;
+function(t: table unique(10)[i: int][s: string] of e: int) {
+  emit t[1][""] <- 1; }(tUNe);
+tREe: table recordio(10) of e: int;
+function(t: table recordio(10) of e: int) {
+  emit t <- 1; }(tREe);
+tTOe: table top(10)[i: int][s: string] of e: int weight w: int;
+function(t: table top(10)[i: int][s: string] of e: int weight w: int) {
+  emit t[1][""] <- 1 weight 1; }(tTOe);
+tMAe: table maximum(10)[i: int][s: string] of e: int weight w: int;
+function(t: table maximum(10)[i: int][s: string] of e: int weight w: int) {
+  emit t[1][""] <- 1 weight 1; }(tMAe);
+tMIe: table minimum(10)[i: int][s: string] of e: int weight w: int;
+function(t: table minimum(10)[i: int][s: string] of e: int weight w: int) {
+  emit t[1][""] <- 1 weight 1; }(tMIe);
+tDIe: table distinctsample(10)[i: int][s: string] of e: int weight w: int;
+function(t: table distinctsample(10)[i: int][s: string] of e: int
+	 weight w: int) { emit t[1][""] <- 1 weight 1; }(tDIe);
+tINe: table inversehistogram(10)[i: int][s: string] of e: int weight w: int;
+function(t: table inversehistogram(10)[i: int][s: string] of e: int
+	 weight w: int) { emit t[1][""] <- 1 weight 1; }(tINe);
+tWEe: table weightedsample(10)[i: int][s: string] of e: int weight w: float;
+function(t: table weightedsample(10)[i: int][s: string] of e: int
+	 weight w: float) { emit t[1][""] <- 1 weight inf; }(tWEe);
+
+
+# format
+tCOefm: table collection of e: int format("*%d*", e);
+function(t: table collection of e: int format("*%d*", e)) {
+  emit t <- 1; }(tCOefm);
+tTEefm: table text of e: string format("*%s*", e);
+function(t: table text of e: string format("*%s*", e)) {
+  emit t <- "1"; }(tTEefm);
+tSAefm: table sample(10) of e: int format("*%d*", e);
+function(t: table sample(10) of e: int format("*%d*", e)) {
+  emit t <- 1; }(tSAefm);
+tSEefm: table set(10) of e: int format("*%d*", e);
+function(t: table set(10) of e: int format("*%d*", e)) {
+  emit t <- 1; }(tSEefm);
+tQUefm: table quantile(10) of e: int format("*%d*", e);
+function(t: table quantile(10) of e: int format("*%d*", e)) {
+  emit t <- 1; }(tQUefm);
+tUNefm: table unique(10) of e: int format("*%d*", e);
+function(t: table unique(10) of e: int format("*%d*", e)) {
+  emit t <- 1; }(tUNefm);
+tREefm: table recordio(10) of e: int format("*%d*", e);
+function(t: table recordio(10) of e: int format("*%d*", e)) {
+  emit t <- 1; }(tREefm);
+tTOefm: table top(10) of e: int weight w: int format("*%d*", e);
+function(t: table top(10) of e: int weight w: int format("*%d*", e)) {
+  emit t <- 1 weight 1; }(tTOefm);
+tMAefm: table maximum(10) of e: int weight w: int format("*%d*", e);
+function(t: table maximum(10) of e: int weight w: int format("*%d*", e)) {
+  emit t <- 1 weight 1; }(tMAefm);
+tMIefm: table minimum(10) of e: int weight w: int format("*%d*", e);
+function(t: table minimum(10) of e: int weight w: int format("*%d*", e)) {
+  emit t <- 1 weight 1; }(tMIefm);
+tDIefm: table distinctsample(10) of e: int weight w: int format("*%d*", e);
+function(t: table distinctsample(10) of e: int weight w: int
+	 format("*%d*", e)) { emit t <- 1 weight 1; }(tDIefm);
+tINefm: table inversehistogram(10) of e: int weight w: int format("*%d*", e);
+function(t: table inversehistogram(10) of e: int weight w: int
+	 format("*%d*", e)) { emit t <- 1 weight 1; }(tINefm);
+tWEefm: table weightedsample(10) of e: int weight w: float format("*%d*", e);
+function(t: table weightedsample(10) of e: int weight w: float
+	 format("*%d*", e)) { emit t <- 1 weight inf; }(tWEefm);
+
+
+# file/proc
+tCOefl: table collection[i: string] of e: bytes file("/dev/%s", i);
+function(t: table collection[i: string] of e: bytes file("/dev/%s", i)) {
+  emit t["stdout"] <- B"111\n"; }(tCOefl);
+tCOepc: table collection[i: string] of e: bytes proc("%s", i);
+function(t: table collection[i: string] of e: bytes proc("%s", i)) {
+  emit t["sleep 1"] <- B"1"; }(tCOepc);
+
+# Predeclared 'output' table emitter index is at bp[2] in the INIT frame
+# By allocating one local, we ensure that in nonative mode t's offset in
+# the local frame is also 2, so if we accidentally use this local offset
+# instead of INIT offset of the referenced static table, emitting to t
+# will use 'output' slots for formatting and break the 'output' table,
+# causing a seg fault when we emit to 'output' afterwards.
+function(t: table collection of e: int format("*%d*", e)) {
+  i: int = 10;
+  emit t <- i;
+  emit output <- B"";
+}(tCOefm);
+function(t: table collection[i: string] of e: bytes file("/dev/%s", i)) {
+  i: int = 10;
+  emit t["stdout"] <- B"111\n";
+  emit output <- B"";
+}(tCOefl);
+function(t: table collection[i: string] of e: bytes proc("%s", i)) {
+  i: int = 10;
+  emit t["sleep 1"] <- B"1";
+  emit output <- B"";
+}(tCOepc);
+
+
+# nested functions
+
+tCOnf: table collection[i: int][s: string] of e: int;
+function(t: table collection[i: int][s: string] of e: int) {
+  function(tt: table collection[i: int][s: string] of e: int) {
+    function(ttt: table collection[i: int][s: string] of e: int) {
+      emit ttt[1][""] <- 1;
+      assert(def(ttt));
+      ttt;
+      emit tt[2][""] <- 2;
+      assert(def(tt));
+      tt;
+      emit t[3][""] <- 3;
+      assert(def(t));
+      t;
+    }(tt);
+  }(t);
+}(tCOnf);
+
+# predefined types
+
+type SU = table sum of int;
+tSUt: SU;
+function(t: SU) { t; emit t <- 1; }(tSUt);
+function(t: table sum of int) { t; emit t <- 1; }(tSUt);
+
+# predefined output variables
+
+function(t: table collection of bytes
+         file("/dev/stdout")) { t; emit t <- B"to be or not to be"; }(output);
+function(t: table collection of s: string file("/dev/stdout")
+         format("%s\n", s)) { t; emit t <- ", that is the question"; }(stdout);
+function(t: table collection of s: string file("/dev/stderr")
+         format("%s\n", s)) { t; emit t <- "not an error"; }(stderr);
+function(t: table sum of int
+         ) { t; emit t <- 0; }(_undef_cnt);
+function(t: table sum[msg: string] of int
+         ) { t; emit t["ok"] <- 0; }(_undef_details);

@@ -1,0 +1,110 @@
+m1: map [string] of int = {"one": 1, "two": 2, "four": 44};
+m2: map [string] of int = {"three": 3, "two": 2, "one": 1, "four": 4, "five": 5};
+m3: map [string] of int = {"one": 1, "two": 2, "four": 4};
+m4: map [string] of int = {"a": 1};
+m5: map [string] of int = {"b": 2, "a": 1};
+validate: function(m1: map [string] of int, m2: map [string] of int) {
+	assert(m1 == m2);
+}
+;
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		def(m1[s]) || def(m1[s])
+	)
+	{
+		m[s] = m1[s];
+	}
+	validate(m, {"one": 1, "two": 2, "four": 44});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		def(m1[s]) || def(m2[s])
+	)
+	{
+		if (haskey(m1, s))
+			m[s] = m1[s];
+		else
+			m[s] = m2[s];
+	}
+	validate(m, {"one": 1, "two": 2, "three": 3, "four": 44, "five": 5});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		m1[s] == m2[s]
+	)
+	{
+		m[s] = m1[s];
+	}
+	validate(m, {"one": 1, "two": 2});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		m1[s] != m2[s]
+	)
+	{
+		m[s] = m1[s];
+	}
+	validate(m, {"four": 44});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		def(m2[s]) && (!def(m1[s]))
+	)
+	{
+		m[s] = 0;
+	}
+	validate(m, {"three": 0, "five": 0});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		t: each string;
+		(m1[s] == (m2[t] + 40)) || (m2[s] != m3[t])
+	)
+	{
+		m[(s + " ") + t] = 0;
+	}
+	validate(m, {"one four": 0, "one two": 0, "two four": 0, "two one": 0, "four four": 0, "four one": 0, "four two": 0});
+}
+{
+	m: map [string] of int = {:};
+	when (
+		s: each string;
+		def(m4[s]) && def(m5[s])
+	)
+	{
+		m[s] = m4[s];
+	}
+	validate(m, {"a": 1});
+	m = {:};
+	when (
+		s: each string;
+		def(m5[s]) && def(m4[s])
+	)
+	{
+		m[s] = m4[s];
+	}
+	validate(m, {"a": 1});
+}
+{
+	never_entered: bool = true;
+	when (
+		s: some string;
+		m1[s] == m5[s]
+	)
+	{
+		never_entered = false;
+	}
+	assert(never_entered);
+}

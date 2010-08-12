@@ -1,0 +1,9 @@
+sort/sort_bad_04.szl:46: too few arguments to sortx()
+sort/sort_bad_04.szl:47: too many arguments to sortx()
+sort/sort_bad_04.szl:48: sortx: the array element type (int) doesn't match the comparison function arguments (float)
+sort/sort_bad_04.szl:49: sortx: the comparison function must return an int
+sort/sort_bad_04.szl:50: sortx: the comparison function takes two matching arguments
+sort/sort_bad_04.szl:51: sortx: the comparison function (cmp4: function(i: int): int) takes exactly two arguments
+sort/sort_bad_04.szl:52: sortx: the comparison function (cmp5: function(i: int, j: int, k: int): int) takes exactly two arguments
+sort/sort_bad_04.szl:53: sortx: ia (type array of int) not a function type
+sort/sort_bad_04.szl:54: sortx: cmp5 (type function(i: int, j: int, k: int): int) not an array type

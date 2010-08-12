@@ -1,0 +1,2 @@
+conversion/composite_bad.szl:41: cannot convert ai0[0] (type int) to bool
+conversion/composite_bad.szl:43: cannot convert af0[0] (type float) to bool

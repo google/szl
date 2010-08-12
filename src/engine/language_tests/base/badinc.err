@@ -1,0 +1,32 @@
+base/badinc.szl:33: cannot apply '++' to v_bool of type bool
+base/badinc.szl:34: cannot apply '--' to v_bool of type bool
+base/badinc.szl:35: cannot apply '++' to v_bytes of type bytes
+base/badinc.szl:36: cannot apply '--' to v_bytes of type bytes
+base/badinc.szl:37: cannot apply '++' to v_fingerprint of type fingerprint
+base/badinc.szl:38: cannot apply '--' to v_fingerprint of type fingerprint
+base/badinc.szl:39: cannot apply '++' to v_float of type float
+base/badinc.szl:40: cannot apply '--' to v_float of type float
+base/badinc.szl:43: cannot apply '++' to v_string of type string
+base/badinc.szl:44: cannot apply '--' to v_string of type string
+base/badinc.szl:45: cannot apply '++' to v_time of type time
+base/badinc.szl:46: cannot apply '--' to v_time of type time
+base/badinc.szl:47: cannot apply '++' to v_array of type array of int
+base/badinc.szl:48: cannot apply '--' to v_array of type array of int
+base/badinc.szl:49: cannot apply '++' to v_function of type function()
+base/badinc.szl:50: cannot apply '--' to v_function of type function()
+base/badinc.szl:51: cannot apply '++' to v_map of type map [int] of int
+base/badinc.szl:52: cannot apply '--' to v_map of type map [int] of int
+base/badinc.szl:53: cannot apply '++' to v_output of type table collection of int
+base/badinc.szl:54: cannot apply '--' to v_output of type table collection of int
+base/badinc.szl:55: cannot apply '++' to v_tuple of type {x: int, y: int}
+base/badinc.szl:56: cannot apply '--' to v_tuple of type {x: int, y: int}
+base/badinc.szl:87: cannot apply '++' to fa()[1]
+base/badinc.szl:88: cannot apply '--' to fa()[1]
+base/badinc.szl:89: cannot apply '++' to fm()[1]
+base/badinc.szl:90: cannot apply '--' to fm()[1]
+base/badinc.szl:91: cannot apply '++' to fs()[1]
+base/badinc.szl:92: cannot apply '--' to fs()[1]
+base/badinc.szl:93: cannot apply '++' to fb()[1]
+base/badinc.szl:94: cannot apply '--' to fb()[1]
+base/badinc.szl:95: cannot apply '++' to ft().y
+base/badinc.szl:96: cannot apply '--' to ft().y

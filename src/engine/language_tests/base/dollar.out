@@ -1,0 +1,47 @@
+a: array of int = new(array of int, 10 + nrand(1), nrand(1));
+aa: array of array of int = {{}, a, {}};
+fcount: int = 0;
+gcount: int = 0;
+f: function(): array of int {
+	fcount++;
+	return a;
+}
+;
+g: function(x: int): int {
+	gcount++;
+	return x + nrand(1);
+}
+;
+a[3] = 123;
+assert(f()[$ - 7] == 123);
+assert(fcount == 1);
+aa[1][4] = 456;
+assert(aa[g(1)][$ - 6] == 456);
+assert(gcount == 1);
+aa[g(1)][$ - 5] = 789;
+assert(aa[1][5] == 789);
+assert(gcount == 2);
+aa[g(1)][$ - 5]++;
+assert(aa[1][5] == 790);
+assert(gcount == 3);
+i: int = {123, g(456), 789}[$ - 2];
+assert(i == 456);
+assert(gcount == 4);
+s: string = new(string, 10 + nrand(1), 32);
+as: array of string = {"", s, ""};
+hcount: int = 0;
+h: function(): string {
+	hcount++;
+	return s;
+}
+;
+gcount = 0;
+s[3 : 5] = "ab";
+assert(h()[$ - 7 : $ - 5] == "ab");
+assert(hcount == 1);
+as[1][5 : 7] = "cd";
+assert(as[g(1)][$ - 5 : $ - 3] == "cd");
+assert(gcount == 1);
+as[g(1)][$ - 3 : $ - 1] = "ef";
+assert(as[1][7 : 9] == "ef");
+assert(gcount == 2);

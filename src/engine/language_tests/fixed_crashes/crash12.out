@@ -1,0 +1,9 @@
+emit tbl1 <- {1};
+emit tbl2 <- {{1}};
+emit tbl3 <- {{1}: {1}};
+emit tbl4[{1}] <- 0 weight 0;
+emit tbl5[{{1}}] <- 0 weight 0;
+emit tbl6[{{1}: {1}}] <- 0 weight 0;
+emit tbl7[0] <- 0 weight {1};
+emit tbl8[0] <- 0 weight {{1}};
+emit tbl9[0] <- 0 weight {{1}: {1}};

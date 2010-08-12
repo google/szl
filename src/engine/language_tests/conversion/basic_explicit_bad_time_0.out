@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["conversion/basic_explicit_bad_time_0.szl:19: t0= time(\"hello world!\" + empty); (date conversion failed (\"hello world!\" is not an accepted date string) or time zone \"\" was not recognized)"] <- 1;

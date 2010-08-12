@@ -1,0 +1,10 @@
+operators/boolean_good.szl:72: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_good.szl:73: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_good.szl:74: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_good.szl:75: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_good.szl:77: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_good.szl:78: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_good.szl:79: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_good.szl:80: warning: 'or' operator is deprecated; use '||' instead
+operators/boolean_good.szl:103: warning: 'and' operator is deprecated; use '&&' instead
+operators/boolean_good.szl:121: warning: 'or' operator is deprecated; use '||' instead

@@ -1,0 +1,2 @@
+szl: can't open /usr/local/bin/temp.txt: Permission denied
+szl: fatal: write error for 'ocs': Bad file descriptor

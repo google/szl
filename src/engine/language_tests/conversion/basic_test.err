@@ -1,0 +1,5 @@
+conversion/basic_test.szl:25: warning: 10 already of type int; conversion suppressed
+conversion/basic_test.szl:52: warning: 10.32 already of type float; conversion suppressed
+conversion/basic_test.szl:63: warning: "Hello" already of type string; conversion suppressed
+conversion/basic_test.szl:90: warning: true already of type bool; conversion suppressed
+conversion/basic_test.szl:123: warning: convert(fingerprint, 100) already of type fingerprint; conversion suppressed

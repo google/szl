@@ -1,0 +1,58 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Sorting by using a binary tree.
+
+type Node = {
+  left: array of Node,
+  value: string,
+  right: array of Node
+};
+
+tree: array of Node = { };
+
+AddToNode: function(n: array of Node, s: string): array of Node {
+  if (len(n) == 0)
+    return { { { }, s, { } } };
+  else if (n[0].value == s)
+    return n;
+  else if (s < n[0].value)
+    return { { AddToNode(n[0].left, s), n[0].value, n[0].right } };
+  else
+    return { { n[0].left, n[0].value, AddToNode(n[0].right, s) } };
+};
+
+
+PrintNode: function(n: array of Node, indent: string) {
+  if (len(n) != 0) {
+    PrintNode(n[0].left, indent + "  ");
+    emit stdout <- indent + n[0].value;
+    PrintNode(n[0].right, indent + "  ");
+  }
+};
+
+
+words: array of string = {
+  "the", "road", "was", "a", "ribbon", "of", "moonlight", "looping", "the",
+  "purple", "moor", "and", "the", "highwayman", "came", "riding", "up", "to",
+  "the", "old", "inn", "door"
+};
+
+
+for (i: int = 0; i < len(words); i++)
+  tree = AddToNode(tree, words[i]);
+
+
+PrintNode(tree, "  ");

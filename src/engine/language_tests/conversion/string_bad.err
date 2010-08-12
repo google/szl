@@ -1,0 +1,2 @@
+conversion/string_bad.szl:26: cannot convert t (type table sum of int) to string
+conversion/string_bad.szl:27: cannot convert stdout (type table collection of s: string file("/dev/stdout") format("%s\n", s)) to string

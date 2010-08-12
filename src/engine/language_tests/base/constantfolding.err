@@ -1,0 +1,112 @@
+base/constantfolding.szl:54: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:55: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:56: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:57: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:58: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:59: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:60: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:61: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:62: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:63: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:64: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:65: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:66: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:67: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:68: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:69: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:70: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:71: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:109: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:110: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:111: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:112: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:113: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:114: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:115: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:116: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:117: warning: 'and' operator is deprecated; use '&&' instead
+base/constantfolding.szl:118: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:119: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:120: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:121: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:122: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:123: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:124: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:125: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:126: warning: 'or' operator is deprecated; use '||' instead
+base/constantfolding.szl:37: warning: divide by zero
+base/constantfolding.szl:39: warning: divide by zero
+base/constantfolding.szl:45: warning: divide by zero
+base/constantfolding.szl:49: warning: divide by zero
+base/constantfolding.szl:55: warning: divide by zero
+base/constantfolding.szl:57: warning: divide by zero
+base/constantfolding.szl:58: warning: divide by zero
+base/constantfolding.szl:67: warning: divide by zero
+base/constantfolding.szl:73: warning: divide by zero
+base/constantfolding.szl:75: warning: divide by zero
+base/constantfolding.szl:76: warning: divide by zero
+base/constantfolding.szl:77: warning: divide by zero
+base/constantfolding.szl:85: warning: divide by zero
+base/constantfolding.szl:91: warning: divide by zero
+base/constantfolding.szl:95: warning: divide by zero
+base/constantfolding.szl:101: warning: divide by zero
+base/constantfolding.szl:103: warning: divide by zero
+base/constantfolding.szl:109: warning: divide by zero
+base/constantfolding.szl:118: warning: divide by zero
+base/constantfolding.szl:119: warning: divide by zero
+base/constantfolding.szl:121: warning: divide by zero
+base/constantfolding.szl:127: warning: divide by zero
+base/constantfolding.szl:136: warning: divide by zero
+base/constantfolding.szl:137: warning: divide by zero
+base/constantfolding.szl:138: warning: divide by zero
+base/constantfolding.szl:139: warning: divide by zero
+base/constantfolding.szl:161: warning: divide by zero
+base/constantfolding.szl:163: warning: divide by zero
+base/constantfolding.szl:165: warning: divide by zero
+base/constantfolding.szl:167: warning: divide by zero
+base/constantfolding.szl:169: warning: divide by zero
+base/constantfolding.szl:171: warning: divide by zero
+base/constantfolding.szl:173: warning: divide by zero
+base/constantfolding.szl:175: warning: divide by zero
+base/constantfolding.szl:177: warning: divide by zero
+base/constantfolding.szl:179: warning: divide by zero
+base/constantfolding.szl:181: warning: divide by zero
+base/constantfolding.szl:183: warning: divide by zero
+base/constantfolding.szl:185: warning: divide by zero
+base/constantfolding.szl:187: warning: divide by zero
+base/constantfolding.szl:189: warning: divide by zero
+base/constantfolding.szl:191: warning: divide by zero
+base/constantfolding.szl:199: warning: divide by zero
+base/constantfolding.szl:201: warning: divide by zero
+base/constantfolding.szl:203: warning: divide by zero
+base/constantfolding.szl:205: warning: divide by zero
+base/constantfolding.szl:207: warning: divide by zero
+base/constantfolding.szl:209: warning: divide by zero
+base/constantfolding.szl:211: warning: divide by zero
+base/constantfolding.szl:213: warning: divide by zero
+base/constantfolding.szl:215: warning: divide by zero
+base/constantfolding.szl:217: warning: divide by zero
+base/constantfolding.szl:225: warning: divide by zero
+base/constantfolding.szl:227: warning: divide by zero
+base/constantfolding.szl:229: warning: divide by zero
+base/constantfolding.szl:231: warning: divide by zero
+base/constantfolding.szl:233: warning: divide by zero
+base/constantfolding.szl:235: warning: divide by zero
+base/constantfolding.szl:237: warning: divide by zero
+base/constantfolding.szl:239: warning: divide by zero
+base/constantfolding.szl:248: warning: divide by zero
+base/constantfolding.szl:250: warning: divide by zero
+base/constantfolding.szl:252: warning: divide by zero
+base/constantfolding.szl:261: warning: divide by zero
+base/constantfolding.szl:263: warning: divide by zero
+base/constantfolding.szl:265: warning: divide by zero
+base/constantfolding.szl:267: warning: divide by zero
+base/constantfolding.szl:269: warning: divide by zero
+base/constantfolding.szl:271: warning: divide by zero
+base/constantfolding.szl:281: warning: divide by zero
+base/constantfolding.szl:283: warning: divide by zero
+base/constantfolding.szl:285: warning: divide by zero
+base/constantfolding.szl:287: warning: divide by zero
+base/constantfolding.szl:289: warning: divide by zero
+base/constantfolding.szl:291: warning: divide by zero
+base/constantfolding.szl:293: warning: divide by zero

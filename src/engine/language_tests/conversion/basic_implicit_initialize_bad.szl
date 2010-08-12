@@ -1,0 +1,42 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc: Illegal conversion with initialization
+
+i0:int = bytes({10,11,12,13,14});	#bytes
+
+f0:float = true;		  	#bool
+f1:float = bytes({10,11,12,13,14});     #bytes
+f2:float = fingerprint(100);      	#fingerprint
+f3:float = now();                 	#time
+
+b0:bool= 10;                    	#int
+b1:bool= bytes({10,11,12,13,14});       #bytes
+b2:bool= fingerprint(100);      	#fingerprint
+b3:bool= 10.32;                 	#float
+b4:bool= now();                 	#time
+
+by0:bytes= 10;                    	#int
+by1:bytes= true;                  	#bool
+#by2:bytes= fingerprint(100);      	#fingerprint
+by3:bytes= 10.32;                 	#float
+by4:bytes= now();                 	#time
+
+t0:time = true;                  	#bool
+t1:time = bytes({10,11,12,13,14});     	#bytes
+t2:time = fingerprint(100);      	#fingerprint
+t3:time = 10.32;                 	#float

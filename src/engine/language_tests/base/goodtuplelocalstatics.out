@@ -1,0 +1,19 @@
+static sum: function(a: int, b: int): int {
+	return a + b;
+}
+;
+type T = {y: int, static c: int = 123, static d: int = sum(3, 4), static e: int = T.c + 2};
+t: T;
+assert(T.c == 123);
+assert(T.d == 7);
+assert(T.e == 125);
+assert(T.c == 123);
+assert(T.d == 7);
+assert(T.e == 125);
+type Point = {x: int, y: int, static tostring: function(p: Point): string {
+	return format("(%d,%d)", p.x, p.y);
+}
+};
+x: Point = {5, 6};
+assert(Point.tostring(x) == "(5,6)");
+assert(Point.tostring(x) == "(5,6)");

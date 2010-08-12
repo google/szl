@@ -1,0 +1,61 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# bad uses of def() and undefine() intrinsics
+
+x: int = 314;
+y: string = "foo";
+g: function() { };
+
+# wrong number of arguments
+def();
+def(x, y);
+___undefine();
+___undefine(x, y);
+
+# wrong argument types
+___undefine(false);
+___undefine(0);
+___undefine(g());
+def(g());
+
+# undefine doesn't return a result
+x = ___undefine(y);
+
+# undefine expects a variable, not an lvalue
+a: array of int = { 3, 1, 4 };
+t: { f: fingerprint } = { 0p };
+m: map [int] of bytes = { 0 : {} };
+___undefine(a[0]);
+___undefine(t.f);
+___undefine(m[0]);
+
+# cannot undefine a static variable
+static v: int = 0;
+___undefine(v);
+
+# cannot undefine a table (static variable)
+c: table collection of int;
+___undefine(c);
+
+# cannot undefine a quantifier
+when (i: some int; a[i] == 0)
+  ___undefine(i);
+
+when (i: each int; a[i] == 0)
+  ___undefine(i);
+
+when (i: all int; a[i] == 0)
+  ___undefine(i);

@@ -1,0 +1,70 @@
+intrinsics/saw_bad_06.szl:22: intrinsic function 'saw' cannot be used as value
+intrinsics/saw_bad_06.szl:23: intrinsic function 'sawn' cannot be used as value
+intrinsics/saw_bad_06.szl:24: intrinsic function 'sawzall' cannot be used as value
+intrinsics/saw_bad_06.szl:27: saw() is missing string and regular expression arguments
+intrinsics/saw_bad_06.szl:28: sawzall() is missing string and regular expression arguments
+intrinsics/saw_bad_06.szl:31: saw needs at least 1 regular expression
+intrinsics/saw_bad_06.szl:32: sawzall needs at least 1 regular expression
+intrinsics/saw_bad_06.szl:47: source argument of saw is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:48: source argument of saw is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:49: source argument of saw is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:50: source argument of saw is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:51: source argument of saw is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:52: source argument of saw is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:53: source argument of saw is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:54: source argument of saw is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:55: source argument of saw is p0 (type {x: int, y: string}); should be string
+intrinsics/saw_bad_06.szl:57: source argument of sawzall is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:58: source argument of sawzall is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:59: source argument of sawzall is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:60: source argument of sawzall is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:61: source argument of sawzall is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:62: source argument of sawzall is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:63: source argument of sawzall is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:64: source argument of sawzall is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:65: source argument of sawzall is p0 (type {x: int, y: string}); should be string
+intrinsics/saw_bad_06.szl:68: first argument of sawn is b0 (type bool); should be int
+intrinsics/saw_bad_06.szl:69: first argument of sawn is f0 (type float); should be int
+intrinsics/saw_bad_06.szl:70: first argument of sawn is s0 (type string); should be int
+intrinsics/saw_bad_06.szl:71: first argument of sawn is by0 (type bytes); should be int
+intrinsics/saw_bad_06.szl:72: first argument of sawn is t0 (type time); should be int
+intrinsics/saw_bad_06.szl:73: first argument of sawn is fg0 (type fingerprint); should be int
+intrinsics/saw_bad_06.szl:74: first argument of sawn is a0 (type array of int); should be int
+intrinsics/saw_bad_06.szl:75: first argument of sawn is m0 (type map [key: string] of int); should be int
+intrinsics/saw_bad_06.szl:76: first argument of sawn is p0 (type {x: int, y: string}); should be int
+intrinsics/saw_bad_06.szl:80: argument #3 of saw is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:81: argument #3 of saw is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:82: argument #3 of saw is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:83: argument #3 of saw is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:84: argument #3 of saw is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:85: argument #3 of saw is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:86: argument #3 of saw is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:87: argument #3 of saw is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:88: argument #3 of saw is p0 (type {x: int, y: string}); should be string
+intrinsics/saw_bad_06.szl:90: argument #3 of sawzall is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:91: argument #3 of sawzall is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:92: argument #3 of sawzall is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:93: argument #3 of sawzall is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:94: argument #3 of sawzall is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:95: argument #3 of sawzall is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:96: argument #3 of sawzall is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:97: argument #3 of sawzall is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:98: argument #3 of sawzall is p0 (type {x: int, y: string}); should be string
+intrinsics/saw_bad_06.szl:100: source argument of sawn is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:101: source argument of sawn is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:102: source argument of sawn is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:103: source argument of sawn is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:104: source argument of sawn is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:105: source argument of sawn is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:106: source argument of sawn is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:107: source argument of sawn is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:108: source argument of sawn is p0 (type {x: int, y: string}); should be string
+intrinsics/saw_bad_06.szl:110: argument #3 of sawn is b0 (type bool); should be string
+intrinsics/saw_bad_06.szl:111: argument #3 of sawn is i0 (type int); should be string
+intrinsics/saw_bad_06.szl:112: argument #3 of sawn is f0 (type float); should be string
+intrinsics/saw_bad_06.szl:113: argument #3 of sawn is by0 (type bytes); should be string
+intrinsics/saw_bad_06.szl:114: argument #3 of sawn is t0 (type time); should be string
+intrinsics/saw_bad_06.szl:115: argument #3 of sawn is fg0 (type fingerprint); should be string
+intrinsics/saw_bad_06.szl:116: argument #3 of sawn is a0 (type array of int); should be string
+intrinsics/saw_bad_06.szl:117: argument #3 of sawn is m0 (type map [key: string] of int); should be string
+intrinsics/saw_bad_06.szl:118: argument #3 of sawn is p0 (type {x: int, y: string}); should be string

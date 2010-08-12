@@ -1,0 +1,45 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+s: string = "abcx1234ab1234xtt";
+p: string = "(x.)(.*)(.x)";
+s_by_p: array of string = { "x1234ab1234x", "x1", "234ab123", "4x" };
+
+assert(match(p, s));
+
+a: array of string = matchstrs(p, s);
+assert(len(a) == 4);
+assert(a == s_by_p);
+
+l: array of int = matchposns(p, s);
+assert(len(l) == 8);
+for (i: int = 0; i < len(l); i = i + 2)
+  assert(s[l[i]:l[i+1]] == s_by_p[i/2]);
+
+s = "abc日本語xyz";
+r: string = "";
+for (i: int = 0; i < len(s); i++)
+  r = r + "(.)";
+ai: array of int = matchposns(r, s);
+assert(len(ai) == 2 * (1 + len(s)));
+assert(ai[0] == 0 && ai[1] == len(s));
+for (i: int = 0; i < len(s); i++)
+  assert(ai[2 + 2 * i] == i && ai[2 + 2 * i + 1] == i + 1);
+
+a = matchstrs(r, s);
+assert(len(a) == (1 + len(s)));
+assert(a[0] == s);
+for (i: int = 0; i < len(s); i++)
+  assert(a[1 + i] == s[i:i+1]);

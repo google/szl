@@ -1,0 +1,154 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# These tests verify that the ref count of arrays and maps
+# are properly maintained in the presence of traps. These
+# tests could probably be more elaborate, but for now they
+# verify that at least a certain kind of bug is not present.
+
+s: array of string = {};
+for (i: int = 0; i < 10; i++) {
+  if (DEBUG("ref", s) != 1)
+    emit stdout <- "wrong ref = " + string(DEBUG("ref", s));
+  if (def(s[0]))
+    ;
+}
+
+
+m: map[int] of int  = {:};
+for (i: int = 0; i < 10; i++) {
+  if (DEBUG("ref", m) != 1)
+    emit stdout <- "wrong ref = " + string(DEBUG("ref", m));
+  if (def(m[0]))
+    ;
+}
+
+
+m[0] = 0;
+for (i: int = 0; i < 10; i++) {
+  if (DEBUG("ref", m) != 1)
+   emit stdout <- "wrong ref = " + string(DEBUG("ref", m));
+  if (def(m[0]))
+    ;
+}
+
+
+# This test used to cause an assertion failure because the
+# assignment 'a[n][0] = 3;' caused a non-zero ref count in
+# an object that was not used anymore. See also CL 2012955.
+# Since the object is not referenced anymore, we cannot
+# easily test it's ref count from within Sawzall.
+
+type B = array of int;
+type A = array of B;
+n: int = 10;
+a: A = new(A, n, new(B, n, 0));
+a[n][0] = 3;  # causes an undef trap, run with --ignore_undefs
+assert(! def(a));
+
+
+# This test verifies that the trap handler decrements the
+# ref count of function arguments already pushed on the
+# stack when a trap occurs before the function is called.
+# Nested function calls are also tested.
+
+type T = array of int;
+f: function(a: T, b: T): T { return a; };
+x: T;
+y: T = {1, 1};
+if (nrand(5) == 17)  # defeat value propagation
+  x = y;
+
+if (def(f(x, y)))  # x causes an undef trap, y is already on the stack
+  ;
+if (DEBUG("ref", y) != 1)
+  emit stdout <- "wrong ref = " + string(DEBUG("ref", y));
+
+if (def(f(f(x, y), y)))  # x causes an undef trap, y is on the stack twice
+  ;
+if (DEBUG("ref", y) != 1)
+  emit stdout <- "wrong ref = " + string(DEBUG("ref", y));
+
+
+# This test verifies that, in an assignment to a variable,
+# the undef check of the new value is performed before
+# decrementing the ref count of the old value; if this order
+# was reversed, the old value's ref count would be decremented
+# twice, since the trap handler always does it.
+
+type Z = array of int;
+zap: function(): Z {
+  undef: Z;
+  # Prevent the optimizer from figuring out that the assignment is dead code.
+  if (nrand(5)*nrand(5) == 17)
+    undef = { };
+  return undef;
+};
+z: Z = {1, 1};
+alias: Z = z;
+if (DEBUG("ref", alias) != 2)
+  emit stdout <- "wrong ref = " + string(DEBUG("ref", alias));
+z = zap();  # zap's undef result causes a trap, z is now undef
+if (DEBUG("ref", alias) != 1)
+  emit stdout <- "wrong ref = " + string(DEBUG("ref", alias));
+
+
+# This test verifies that the trap handler decrements the
+# ref count of the spilled operands of binary operators.
+
+first: function(a: float, b: float): float { return a; };
+u: float;
+v: float = 0.1;
+if (nrand(5) == 17)  # defeat value propagation
+  u = v;
+# compile time constants have a special value as ref cnt, use run time values:
+v = 2.0*v + float(nrand(1));
+
+# u causes an undef trap
+if (def(v + u))
+  ;
+if (def(v + first(u, v)))
+  ;
+if (def(first(v, v) + u))
+  ;
+if (def(first(v, v) + first(u, v)))
+  ;
+if (DEBUG("ref", v) != 1)
+  emit stdout <- "wrong ref = " + string(DEBUG("ref", v));
+
+
+# This test verifies that the trap handler undefines the correct variable
+# when an intervening function has no entry in the static frame list.
+
+outer: function() {
+  x: int = 1;
+  # Since inner() does not reference any local variables in g(), the linked list
+  # of static contexts that h() sees does not contain g(), and the delta
+  # computation must take that into account.
+  middle: function() {
+    inner: function() {
+      y: int;
+      # Prevent the optimizer from figuring out the assignment is dead code.
+      if (nrand(5)*nrand(5) == 17)
+        y = 0;
+      x = y + y;
+    };
+    inner();
+  };
+  middle();
+  if (def(x))
+    emit stdout <- "failed to undefine an outer scope variable";
+};
+outer();

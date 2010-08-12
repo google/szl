@@ -1,0 +1,70 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# This test looks at three strings containing problematic UTF-8 sequences.
+#
+# string 1:  78 f5 a4 b7 a4 79
+#   The middle character in this sequence is mapped from four bytes to three
+#   (one error character).
+#
+# string 2:  78 f9 a4 ac a5 a4 79
+#   The middle character in this sequence is mapped from five bytes to fifteen
+#   (five error characters).
+#
+# string 3:  78 f5 a4 b7 a4 f5 a4 b7 a4 f5 a4 b7 a4 f5 a4 b7
+#            a4 f5 a4 b7 a4 f5 a4 b7 a4 f5 a4 b7 a4 f5 a4 b7
+#            a4 f5 a4 b7 a4 f5 a4 b7 a4 79 f9 a4 ac a5 a4 7a
+#   This sequence is designed to balance the above errors. 
+
+s1: string = string(bytes({
+  0x78, 0xf5, 0xa4, 0xb7, 0xa4, 0x79
+}));
+s2: string = string(bytes({
+  0x78, 0xf9, 0xa4, 0xac, 0xa5, 0xa4, 0x79
+}));
+s3: string = string(bytes({
+  0x78, 0xf5, 0xa4, 0xb7, 0xa4, 0xf5, 0xa4, 0xb7,
+  0xa4, 0xf5, 0xa4, 0xb7, 0xa4, 0xf5, 0xa4, 0xb7,
+  0xa4, 0xf5, 0xa4, 0xb7, 0xa4, 0xf5, 0xa4, 0xb7,
+  0xa4, 0xf5, 0xa4, 0xb7, 0xa4, 0xf5, 0xa4, 0xb7,
+  0xa4, 0xf5, 0xa4, 0xb7, 0xa4, 0xf5, 0xa4, 0xb7,
+  0xa4, 0x79, 0xf9, 0xa4, 0xac, 0xa5, 0xa4, 0x7a
+}));
+
+
+# Verify the lengths are what we expect.
+# Access all characters in each string to verify that the lengths are correct.
+
+assert(len(s1) == 3, "len(s1)");
+a1: array of int = convert(array of int, s1, "unicode");
+b1: bytes = bytes(convert(string, a1, "unicode"));
+assert(len(b1) == 5, "len(b1)");
+for (i: int = 0; i < len(s1); i++)
+  s1[i];
+
+assert(len(s2) == 7, "len(s2)");
+a2: array of int = convert(array of int, s2, "unicode");
+b2: bytes = bytes(convert(string, a2, "unicode"));
+assert(len(b2) == 17, "len(b2)");
+for (i: int = 0; i < len(s2); i++)
+  s2[i];
+
+
+assert(len(s3) == 18, "len(s3)");
+a3: array of int = convert(array of int, s3, "unicode");
+b3: bytes = bytes(convert(string, a3, "unicode"));
+assert(len(b3) == 48, "len(b3)");
+for (i: int = 0; i < len(s3); i++)
+  s3[i];

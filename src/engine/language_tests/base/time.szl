@@ -1,0 +1,46 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+t: time = time(1050713984 * 1000 * 1000);
+assert(string(t) == "Fri Apr 18 17:59:44 PDT 2003");
+
+# check that the following intrinsics take and return time
+assert(trunctosecond(t) == T"Fri Apr 18 17:59:44 PDT 2003");
+assert(trunctominute(t) == T"Fri Apr 18 17:59:00 PDT 2003");
+assert(trunctohour(t) == T"Fri Apr 18 17:00:00 PDT 2003");
+assert(trunctoday(t) == T"Fri Apr 18 00:00:00 PDT 2003");
+assert(trunctomonth(t) == T"Tue Apr  1 00:00:00 PST 2003");
+assert(trunctoyear(t) == T"Wed Jan  1 00:00:00 PST 2003");
+assert(addday(t) == T"Sat Apr 19 17:59:44 PDT 2003");
+assert(addday(t, -2) == T"Wed Apr 16 17:59:44 PDT 2003");
+assert(addmonth(t) == T"Sun May 18 17:59:44 PDT 2003");
+assert(addmonth(t, -2) == T"Tue Feb 18 17:59:44 PST 2003");
+assert(addweek(t) == T"Fri Apr 25 17:59:44 PDT 2003");
+assert(addweek(t, -2) == T"Fri Apr  4 17:59:44 PST 2003");
+assert(addyear(t) == T"Sun Apr 18 17:59:44 PDT 2004");
+assert(addyear(t, -2) == T"Wed Apr 18 17:59:44 PDT 2001");
+
+# check time conversions
+assert(time("Wed Apr 23 13:07:56 PST 2003") == T"Wed Apr 23 14:07:56 PDT 2003");
+# check that time zone can be missing
+assert(time("Mon Nov  8 10:50:35     2004") == T"Mon Nov  8 10:50:35 PST 2004");
+assert(time("Tue Jun  8 10:50:35     2004") == T"Tue Jun  8 10:50:35 PDT 2004");
+# check that day of the week can be missing
+assert(time("    Nov  8 10:50:35     2004") == T"Mon Nov  8 10:50:35 PST 2004");
+assert(time("    Jun  8 10:50:35     2004") == T"Tue Jun  8 10:50:35 PDT 2004");
+# check that both day of the week, time zone and seconds can be missing
+assert(time("    Oct 31 23:59        2005") == T"Mon Oct 31 23:59:00 PST 2005");
+# check that fractions of second can be specified
+assert(time(int(t) + 123456)  == T"Fri Apr 18 17:59:44.123456 PDT 2003");

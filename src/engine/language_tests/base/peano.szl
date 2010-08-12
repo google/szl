@@ -1,0 +1,56 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# factorial using peano axioms
+
+p: function (x: int): int {
+  return x - 1;
+};
+
+
+s: function (x: int): int {
+  return x + 1;
+};
+
+
+z: function (): int {
+  return 0;
+};
+
+
+a: function (x: int, y: int): int {
+  if (x > z())
+    return s(a(p(x), y));
+  else
+    return y;
+};
+
+
+m: function (x: int, y: int): int {
+  if (x > s(z()))
+    return a(y, m(p(x), y));
+  else
+    return y;
+};
+
+
+f: function (n: int): int {
+  if (n > z())
+    return m(n, f(p(n)));
+  else
+    return s(z());
+};
+
+assert(f(8) == 40320);

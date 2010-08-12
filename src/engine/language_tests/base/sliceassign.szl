@@ -1,0 +1,291 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+abc: string = "abcdefg";
+
+for (i: int = 0; i < len(abc); i++) {
+  for (j: int = i; j < len(abc); j++) {
+    for (k: int = 0; k < j - i; k++) {
+      t: string = "ABCDEFGHIJKLMNOP"[0:k];
+      s: string = abc;
+      s[i:j] = t;
+      result: string = abc[0:i] + t + abc[j:$];
+      assert(s == result);
+    }
+  }
+}
+
+for (i: int = 0; i < len(abc); i++) {
+  for (j: int = i; j < len(abc); j++) {
+    for (k: int = 0; k < j - i; k++) {
+      t: string = "ABCDEFGHIJKLMNOP"[0:k];
+      s: bytes = abc;
+      s[i:j] = bytes(t);
+      result: bytes = abc[0:i] + t + abc[j:$];
+      assert(s == result);
+    }
+  }
+}
+
+abci: array of int = { 0, 1, 2, 3, 4, 5 };
+for (i: int = 0; i < len(abci); i++) {
+  for (j: int = i; j < len(abci); j++) {
+    for (k: int = 0; k < j - i; k++) {
+      t: array of int = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+      t = t[0:k];
+      s: array of int = abci;
+      s[i:j] = t;
+      result: array of int = abci[0:i] + t + abci[j:$];
+      assert(s == result);
+    }
+  }
+}
+
+abcs: array of string = { "a", "b", "c", "d", "e", "f" };
+for (i: int = 0; i < len(abcs); i++) {
+  for (j: int = i; j < len(abcs); j++) {
+    for (k: int = 0; k < j - i; k++) {
+      t: array of string = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+      t = t[0:k];
+      s: array of string = abcs;
+      s[i:j] = t;
+      result: array of string = abcs[0:i] + t + abcs[j:$];
+      assert(s == result);
+    }
+  }
+}
+
+# Test string growth when assigning larger UTF8 chars to string elements.
+
+# Create a string with no non-ASCII characters.
+s: string = new(string, 1000, ' ');
+
+# Replace every character with one requiring a three-byte UTF sequence.
+for (i: int = 0; i < len(s); i++)
+  s[i] = 0x801;  # 0x0800 - 0xD7FF require three bytes
+
+# Try again but take a substring first (used to be an assert).
+t: string = new(string, 1000, ' ');
+u: string = t[100:900];
+for (i: int = 0; i < len(u); i++)
+  u[i] = 0x801;
+
+
+# Test that assigning to an element of a slice makes a copy rather than
+# modifying the original when there are multiple references to the original
+# but not the slice.
+
+s1: string = "abcde";
+s2: string = s1[1:4];
+s2[1] = 'x';
+assert(s1 == "abcde");
+assert(s2 == "bxd");
+
+a1: array of int = { 1, 2, 3, 4, 5 };
+a2: array of int = a1[1:4];
+a2[1] = -1;
+assert(a1 == convert(array of int, { 1, 2, 3, 4, 5 }));
+assert(a2 == convert(array of int, { 2, -1, 4 }));
+
+b1: bytes = { 1, 2, 3, 4, 5 };
+b2: bytes = b1[1:4];
+b2[1] = -1;
+assert(b1 == convert(bytes, { 1, 2, 3, 4, 5 }));
+assert(b2 == convert(bytes, { 2, -1, 4 }));
+
+# Also when there are multiple references to the slice but not the original.
+
+s3: string = "abcde";
+s4: string = s3[1:4];
+s3 = s4;
+s4[1] = 'x';
+assert(s3 == "bcd");
+assert(s4 == "bxd");
+
+a3: array of int = { 1, 2, 3, 4, 5 };
+a4: array of int = a3[1:4];
+a3 = a4;
+a4[1] = -1;
+assert(a3 == convert(array of int, { 2, 3, 4 }));
+assert(a4 == convert(array of int, { 2, -1, 4 }));
+
+b3: bytes = { 1, 2, 3, 4, 5 };
+b4: bytes = b3[1:4];
+b3 = b4;
+b4[1] = -1;
+assert(b3 == convert(bytes, { 2, 3, 4 }));
+assert(b4 == convert(bytes, { 2, -1, 4 }));
+
+# And when there are multiple references to both the slice and the original.
+
+s5: string = "abcde";
+s6: string = s5[1:4];
+s7: string = s6;
+s6[1] = 'x';
+assert(s5 == "abcde");
+assert(s6 == "bxd");
+assert(s7 == "bcd");
+
+a5: array of int = { 1, 2, 3, 4, 5 };
+a6: array of int = a5[1:4];
+a7: array of int = a6;
+a6[1] = -1;
+assert(a5 == convert(array of int, { 1, 2, 3, 4, 5 }));
+assert(a6 == convert(array of int, { 2, -1, 4 }));
+assert(a7 == convert(array of int, { 2, 3, 4 }));
+
+b5: bytes = { 1, 2, 3, 4, 5 };
+b6: bytes = b5[1:4];
+b7: bytes = b6;
+b6[1] = -1;
+assert(b5 == convert(bytes, { 1, 2, 3, 4, 5 }));
+assert(b6 == convert(bytes, { 2, -1, 4 }));
+assert(b7 == convert(bytes, { 2, 3, 4 }));
+
+
+# Again, for increment.
+
+s11: string = "abcde";
+s12: string = s11[1:4];
+s12[1]++;
+assert(s11 == "abcde");
+assert(s12 == "bdd");
+
+a11: array of int = { 1, 2, 3, 4, 5 };
+a12: array of int = a11[1:4];
+a12[1]++;
+assert(a11 == convert(array of int, { 1, 2, 3, 4, 5 }));
+assert(a12 == convert(array of int, { 2, 4, 4 }));
+
+b11: bytes = { 1, 2, 3, 4, 5 };
+b12: bytes = b11[1:4];
+b12[1]++;
+assert(b11 == convert(bytes, { 1, 2, 3, 4, 5 }));
+assert(b12 == convert(bytes, { 2, 4, 4 }));
+
+
+s13: string = "abcde";
+s14: string = s13[1:4];
+s13 = s14;
+s14[1]++;
+assert(s13 == "bcd");
+assert(s14 == "bdd");
+
+a13: array of int = { 1, 2, 3, 4, 5 };
+a14: array of int = a13[1:4];
+a13 = a14;
+a14[1]++;
+assert(a13 == convert(array of int, { 2, 3, 4 }));
+assert(a14 == convert(array of int, { 2, 4, 4 }));
+
+b13: bytes = { 1, 2, 3, 4, 5 };
+b14: bytes = b13[1:4];
+b13 = b14;
+b14[1]++;
+assert(b13 == convert(bytes, { 2, 3, 4 }));
+assert(b14 == convert(bytes, { 2, 4, 4 }));
+
+
+s15: string = "abcde";
+s16: string = s15[1:4];
+s17: string = s16;
+s16[1]++;
+assert(s15 == "abcde");
+assert(s16 == "bdd");
+assert(s17 == "bcd");
+
+a15: array of int = { 1, 2, 3, 4, 5 };
+a16: array of int = a15[1:4];
+a17: array of int = a16;
+a16[1]++;
+assert(a15 == convert(array of int, { 1, 2, 3, 4, 5 }));
+assert(a16 == convert(array of int, { 2, 4, 4 }));
+assert(a17 == convert(array of int, { 2, 3, 4 }));
+
+b15: bytes = { 1, 2, 3, 4, 5 };
+b16: bytes = b15[1:4];
+b17: bytes = b16;
+b16[1]++;
+assert(b15 == convert(bytes, { 1, 2, 3, 4, 5 }));
+assert(b16 == convert(bytes, { 2, 4, 4 }));
+assert(b17 == convert(bytes, { 2, 3, 4 }));
+
+
+# And yet again, for slice assignment.
+
+s21: string = "abcdef";
+s22: string = s21[1:5];
+s22[1:3] = "xy";
+assert(s21 == "abcdef");
+assert(s22 == "bxye");
+
+a21: array of int = { 1, 2, 3, 4, 5, 6 };
+a22: array of int = a21[1:5];
+a22[1:3] = { -1, -2 };
+assert(a21 == convert(array of int, { 1, 2, 3, 4, 5, 6 }));
+assert(a22 == convert(array of int, { 2, -1, -2, 5 }));
+
+b21: bytes = { 1, 2, 3, 4, 5, 6 };
+b22: bytes = b21[1:5];
+b22[1:3] = { -1, -2 };
+assert(b21 == convert(bytes, { 1, 2, 3, 4, 5, 6 }));
+assert(b22 == convert(bytes, { 2, -1, -2, 5 }));
+
+
+s23: string = "abcdef";
+s24: string = s23[1:5];
+s23 = s24;
+s24[1:3] = "xy";
+assert(s23 == "bcde");
+assert(s24 == "bxye");
+
+a23: array of int = { 1, 2, 3, 4, 5, 6 };
+a24: array of int = a23[1:5];
+a23 = a24;
+a24[1:3] = { -1, -2 };
+assert(a23 == convert(array of int, { 2, 3, 4, 5 }));
+assert(a24 == convert(array of int, { 2, -1, -2, 5 }));
+
+b23: bytes = { 1, 2, 3, 4, 5, 6 };
+b24: bytes = b23[1:5];
+b23 = b24;
+b24[1:3] = { -1, -2 };
+assert(b23 == convert(bytes, { 2, 3, 4, 5 }));
+assert(b24 == convert(bytes, { 2, -1, -2, 5 }));
+
+
+s25: string = "abcdef";
+s26: string = s25[1:5];
+s27: string = s26;
+s26[1:3] = "xy";
+assert(s25 == "abcdef");
+assert(s26 == "bxye");
+assert(s27 == "bcde");
+
+a25: array of int = { 1, 2, 3, 4, 5, 6 };
+a26: array of int = a25[1:5];
+a27: array of int = a26;
+a26[1:3] = { -1, -2 };
+assert(a25 == convert(array of int, { 1, 2, 3, 4, 5, 6 }));
+assert(a26 == convert(array of int, { 2, -1, -2, 5 }));
+assert(a27 == convert(array of int, { 2, 3, 4, 5 }));
+
+b25: bytes = { 1, 2, 3, 4, 5, 6 };
+b26: bytes = b25[1:5];
+b27: bytes = b26;
+b26[1:3] = { -1, -2 };
+assert(b25 == convert(bytes, { 1, 2, 3, 4, 5, 6 }));
+assert(b26 == convert(bytes, { 2, -1, -2, 5 }));
+assert(b27 == convert(bytes, { 2, 3, 4, 5 }));

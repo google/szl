@@ -1,0 +1,360 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# The output of this test depends on the order in which the hash_map iterator
+# returns elements of the map.  The hash algorithms for ext/hash_map
+# and tr1/unordered_map are different, and so the order of lines in the output
+# depend on which implementation is used.  The initial version of the
+# expected output for this file is based on tr1/unordered_map.
+
+type T = { y: float, x: int };
+type M = map[k: string] of T;
+
+sumy: table sum [i: int] of float;
+sumx: table sum [i: int] of int;
+sumt: table sum [i: int] of time;
+sumTu: table sum [i: int] of T;
+sumMa: table sum [int] of M;
+
+strings_by_numresults: table collection[num_results: int] of str: string;
+
+maxtable: table maximum(3)[string] of int weight float;
+mintable: table minimum(3)[string] of int weight float;
+
+setx: table set(3)[i: int] of string;
+
+topcountry: table top(2) of country: string weight count: int;
+
+str_refinement: table sample(3)[previous_str: string] of str: string;
+
+str_histogram: table inversehistogram(5) of str: string weight count: int;
+
+num_keywords: table quantile(4)[lang: string] of num: int;
+
+strings_by_language: table distinctsample(4)[language: string]
+    of str: string weight frequency: int;
+
+str_count: table unique(10) of str: string;
+
+biased_sample: table weightedsample(3)[int] of string weight float;
+
+bootstrap_y: table bootstrapsum(5)[i: int] of float weight w: fingerprint;
+bootstrap_x: table bootstrapsum(5)[i: int] of int weight w: fingerprint;
+bootstrap_tuple: table bootstrapsum(5)[i: int] of T weight w: fingerprint;
+bootstrap_w: table bootstrapsum(5) of int weight fingerprint;
+
+n: int = 5;
+for (i: int = 0; i < n; i++) {
+  z: bool = i & 1 == 0;
+  b: bytes = input;
+  f: fingerprint = fingerprint(i);
+  y: float = i;
+  x: int = i;
+  s: string = 3*i;
+  t: time = 4*i;
+  tp: T = {y, x};
+  mp: M = { s:tp, "a":{ 0.1, 1 } };
+
+  for (j: int = 0; j < 2; j++) {
+    emit sumy[4*i] <- y;
+    emit sumx[5*i] <- x;
+    emit sumt[7*i] <- t;
+    emit sumTu[5*i] <- tp;
+    emit sumMa[3*i] <- mp;
+    emit sumMa[0] <- mp;
+
+    # Parallel sumy,sumx, sumTu for bootstrap test.
+    emit bootstrap_y[4 * i] <- y weight fingerprint(0);
+    emit bootstrap_x[5 * i] <- x weight fingerprint(0);
+    emit bootstrap_tuple[5 * i] <- tp weight fingerprint(0);
+    emit bootstrap_w <- x weight fingerprintof("bootsum");
+  }
+}
+
+emit strings_by_numresults[1] <- "str1";
+emit strings_by_numresults[1] <- "str1";
+emit strings_by_numresults[1] <- "str2";
+emit strings_by_numresults[2] <- "str1";
+emit strings_by_numresults[10] <- "str2";
+
+emit maxtable["x"] <- 2 weight 2.5;
+emit maxtable["x"] <- 1 weight 5.5;
+emit maxtable["x"] <- 4 weight 1.5;
+emit maxtable["x"] <- 3 weight 6.5;
+emit maxtable["y"] <- 1 weight 2.5;
+
+emit mintable["x"] <- 2 weight 2.5;
+emit mintable["x"] <- 1 weight 5.5;
+emit mintable["x"] <- 4 weight 1.5;
+emit mintable["x"] <- 3 weight 6.5;
+emit mintable["y"] <- 1 weight 2.5;
+
+emit setx[1] <- "x";
+emit setx[1] <- "x";
+emit setx[1] <- "y";
+emit setx[1] <- "z";
+emit setx[2] <- "m";
+emit setx[2] <- "n";
+# Exceed capacity of set, causing index to be ignored.
+emit setx[3] <- "q";
+emit setx[3] <- "q";
+emit setx[3] <- "r";
+emit setx[3] <- "s";
+emit setx[3] <- "t";
+
+emit topcountry <- "usa" weight 1;
+emit topcountry <- "usa" weight 1;
+emit topcountry <- "chn" weight 1;
+emit topcountry <- "jpn" weight 1;
+emit topcountry <- "ind" weight 1;
+emit topcountry <- "chn" weight 1;
+emit topcountry <- "usa" weight 1;
+
+emit str_refinement["ipod"] <- "iphone";
+emit str_refinement["ipod"] <- "iphone";
+emit str_refinement["mazda"] <- "ford";
+
+emit str_histogram <- "flowers" weight 1;
+emit str_histogram <- "flower delivery" weight 1;
+emit str_histogram <- "flowers" weight 1;
+emit str_histogram <- "tv guide" weight 1;
+emit str_histogram <- "tv guide" weight 2;
+emit str_histogram <- "air tickets" weight 1;
+
+emit num_keywords["en"] <- 1;
+emit num_keywords["en"] <- 1;
+emit num_keywords["en"] <- 1;
+emit num_keywords["en"] <- 1;
+emit num_keywords["en"] <- 3;
+emit num_keywords["en"] <- 2;
+emit num_keywords["en"] <- 3;
+emit num_keywords["en"] <- 3;
+emit num_keywords["en"] <- 2;
+
+emit strings_by_language["en"] <- "every" weight 1;
+emit strings_by_language["en"] <- "every" weight 1;
+emit strings_by_language["en"] <- "good" weight 1;
+emit strings_by_language["en"] <- "boy" weight 1;
+emit strings_by_language["en"] <- "good" weight 1;
+emit strings_by_language["en"] <- "does" weight 1;
+emit strings_by_language["en"] <- "every" weight 1;
+emit strings_by_language["en"] <- "every" weight 1;
+
+emit str_count <- "str1";
+emit str_count <- "str2";
+emit str_count <- "str3";
+emit str_count <- "str4";
+emit str_count <- "str5";
+emit str_count <- "str2";
+emit str_count <- "str3";
+emit str_count <- "str4";
+
+emit biased_sample[1] <- "-1" weight -1.0;
+emit biased_sample[1] <- "0" weight 0.0;
+emit biased_sample[1] <- "nan" weight nan;
+emit biased_sample[1] <- "minus infinty" weight -inf;
+emit biased_sample[1] <- "infinty" weight inf;
+
+#
+# Tests for table collection of map.
+#
+
+# Simple map.
+t1: table collection of map[string] of int;
+
+emit t1 <- { "b":5, "z":3, "":4 };
+emit t1 <- {:};
+emit t1 <- { "z":2, "a":5, "c":5 };
+emit t1 <- { "":1 };
+
+# Element of map is tuple with embedded maps.
+t2: table collection of map[string] of { map[int] of float, map[string] of int };
+
+emit t2 <- { "-":{{ 5:3.0 }, {:}}, "":{{:},{:}}, "a":{{1:1.0}, {"z":1, "d":3}} };
+emit t2 <- { "":{{:}, {:}} };
+emit t2 <- {:};
+emit t2 <- { "a":{{0:5.0, 1:4.0}, {"z":4, "a":5}} };
+emit t2 <- { "a":{{:}, {"z":2}} };
+
+# Key of table is simple map
+t3: table collection[map[string] of string] of int;
+
+emit t3[{"a":"b", "A":"B"}] <- 1;
+emit t3[{"A":"B", "a":"b"}] <- 3;  # Same
+emit t3[{"A":"B"}] <- 6;
+emit t3[{:}] <- 5;
+emit t3[{:}] <- 3;
+emit t3[{"":""}] <- 10;
+
+# Key of table is complex structure with embedded maps. (^_^)
+t4: table collection[map[{int, string}] of { string, map[int] of int }] of int;
+
+emit t4[{ {1, "a"}:{"v1", {0:2, 3:1, 4:3}},
+            {0, "z"}:{"zz", {:}} }] <- 5;
+# Same key as previous emit.
+emit t4[{ {0, "z"}:{"zz", {:}},
+            {1, "a"}:{"v1", {3:1, 0:2, 4:3}} }] <- 6;
+emit t4[{:}] <- 20;
+
+#
+# Tests for table minimum/maximum of maps.
+#
+
+# Simple map.
+max1: table maximum(10) of map[string] of int weight int;
+min1: table minimum(10) of map[string] of int weight int;
+
+emit max1 <- { "b":5, "z":3, "":4 } weight 1;
+emit max1 <- {:} weight 2;
+emit max1 <- { "":1 } weight 3;
+emit max1 <- { "z":3, "":4, "b":5 } weight 4;
+emit max1 <- { "":1 } weight 5;
+
+emit min1 <- { "b":5, "z":3, "":4 } weight 1;
+emit min1 <- {:} weight 2;
+emit min1 <- { "":1 } weight 3;
+emit min1 <- { "z":3, "":4, "b":5 } weight 4;
+emit min1 <- { "":1 } weight 5;
+
+# Key of table is simple map
+max2: table maximum(10)[map[string] of string] of map[string] of string weight int;
+min2: table minimum(10)[map[string] of string] of map[string] of string weight int;
+
+emit max2[{"a":"b", "A":"B"}] <- { "a":"z", "c":"K", "":"v" } weight 5;
+emit max2[{"A":"B", "a":"b"}] <- {:} weight 4;
+emit max2[{"A":"B"}] <- { "g":"x" } weight 3;
+emit max2[{:}] <- { "":"", "Z":"" } weight 2;
+emit max2[{"":""}] <- {:} weight 1;
+
+emit min2[{"a":"b", "A":"B"}] <- { "a":"z", "c":"K", "":"v" } weight 5;
+emit min2[{"A":"B", "a":"b"}] <- {:} weight 4;
+emit min2[{"A":"B"}] <- { "g":"x" } weight 3;
+emit min2[{:}] <- { "":"", "Z":"" } weight 2;
+emit min2[{"":""}] <- {:} weight 1;
+
+#
+# Tests for table sum of maps.
+#
+
+# Simple map.
+sum1: table sum of map[string] of int;
+
+emit sum1 <- { "b":5, "z":3, "":4 };
+emit sum1 <- {:};
+emit sum1 <- { "z":2, "a":5, "c":5 };
+emit sum1 <- { "":1 };
+
+# Element of map is tuple with single field.
+sum2: table sum of map[string] of { int };
+
+emit sum2 <- { "b":{2}, "z":{4} };
+emit sum2 <- {:};
+emit sum2 <- { "a":{1} };
+emit sum2 <- { "c":{3} };
+
+# Element of map is tuple.
+sum3: table sum of map[int] of { int, float };
+
+emit sum3 <- {:};
+emit sum3 <- { 5:{1,1.0}, 10:{10,10.0}, -1:{3,1.0} };
+emit sum3 <- { -1:{3,4.0} };
+emit sum3 <- { 10:{0,0.0}, 5:{4,4.0}, -1:{-1,-6.0} };
+
+# Element of map is map.
+sum4: table sum of map[string] of map[int] of int;
+
+emit sum4 <- { "d":{5:1, 6:2}, "g":{:} };
+emit sum4 <- { "e":{:}, "g":{:} };
+emit sum4 <- {:};
+emit sum4 <- { "d":{1:1, 5:4, 10:0} };
+
+# Element of map is tuple with embedded maps.
+sum5: table sum of map[string] of { map[int] of float, map[string] of int };
+
+emit sum5 <- { "-":{{ 5:3.0 }, {:}}, "":{{:},{:}}, "a":{{1:1.0}, {"z":1, "d":3}} };
+emit sum5 <- { "":{{:}, {:}} };
+emit sum5 <- {:};
+emit sum5 <- { "a":{{0:5.0, 1:4.0}, {"z":4, "a":5}} };
+emit sum5 <- { "a":{{:}, {"z":2}} };
+
+# Index of map is tuple.
+sum6: table sum of map[{string, int}] of float;
+
+emit sum6 <- {:};
+emit sum6 <- { {"g",3}:1.0, {"g",4}:2.0, {"a",0}:1.0 };
+emit sum6 <- { {"g",4}:3.0, {"a",-1}:2.0 };
+emit sum6 <- { {"",4}:3.0 };
+
+# Map is embedded in tuple at top level.
+sum7: table sum of { map[float] of float };
+
+emit sum7 <- { {4.0:1.0, 1.0:4.0, -1.0:5.0} };
+emit sum7 <- { {1.0:1.0} };
+emit sum7 <- { {-1.0:-5.0} };
+emit sum7 <- { {:} };
+
+# Index of map is an array.
+sum8: table sum of map[array of int] of int;
+
+emit sum8 <- { { 0, 1, 2 }:10, {}:20, { 0 }:30 };
+emit sum8 <- { {}: 10, { 1 }:40, { 0 }:50 };
+emit sum8 <- { { 2, 1, 0 }:15 };
+
+# Key of table is simple map
+sum9: table sum[map[string] of string] of int;
+
+emit sum9[{"a":"b", "A":"B"}] <- 1;
+emit sum9[{"A":"B", "a":"b"}] <- 3;  # Same
+emit sum9[{"A":"B"}] <- 6;
+emit sum9[{:}] <- 5;
+emit sum9[{:}] <- 3;
+emit sum9[{"":""}] <- 10;
+
+# Key of table is complex structure with embedded maps. (^_^)
+sum10: table sum[map[{int, string}] of { string, map[int] of int }] of int;
+
+emit sum10[{ {1, "a"}:{"v1", {0:2, 3:1, 4:3}},
+             {0, "z"}:{"zz", {:}} }] <- 5;
+# Same key as previous emit.
+emit sum10[{ {0, "z"}:{"zz", {:}},
+             {1, "a"}:{"v1", {3:1, 0:2, 4:3}} }] <- 6;
+emit sum10[{:}] <- 20;
+
+# Index of map is a map.
+
+sum11: table sum of map[map[string] of string] of int;
+emit sum11 <- { {"a":"b", "b":"c"}:10 };
+
+#
+# Output a big map.
+#
+
+static max_items := 10000;
+
+x: table sum of map[string] of int;
+r: map[string] of int = new(map[string] of int, max_items);
+
+for (i: int = 0; i < 100; i++) {
+  n: int = 100;
+  for (j: int = 0; j < n; j++) {
+    s: string = format("s%06d", (j*11454 + i*230045 + 12334) % max_items);
+    r[s] = 1;
+  }
+  emit x <- r;
+}
+for (i: int = 0; i < max_items; i++) {
+  s: string = format("s%06d", i % max_items);
+  emit x <- { s:1000 };
+}

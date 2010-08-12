@@ -1,0 +1,41 @@
+Stack trace:
+  0. g: function(n: int)
+     n: int = 0
+
+  1. g: function(n: int)
+     n: int = 1
+
+  2. g: function(n: int)
+     n: int = 2
+
+  3. g: function(n: int)
+     n: int = 3
+
+  4. g: function(n: int)
+     n: int = 4
+
+  5. g: function(n: int)
+     n: int = 5
+
+  6. g: function(n: int)
+     n: int = 6
+
+  7. g: function(n: int)
+     n: int = 7
+
+  8. g: function(n: int)
+     n: int = 8
+
+  9. g: function(n: int)
+     n: int = 9
+
+ 10. g: function(n: int)
+     n: int = 10
+
+ 11. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     f: function() = f
+     g: function(n: int) = g
+
+szl: fatal: stack overflow: set --stack_size >= 12296

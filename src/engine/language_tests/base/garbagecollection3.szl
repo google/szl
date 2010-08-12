@@ -1,0 +1,73 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#
+# test that output temporaries particpate in pointer adjustment in GC
+#
+# Requires "--memory_limit=400"
+
+# Background: output tuple temporaries are created to hold the emit value
+# and the index values for using "format" in emit statements.
+# The temporaries are stored with the static variables, and so the normal
+# value pointer adjustment done in memory compaction does not find them.
+# This test verifies that the memory manager handles these values as
+# a special case.
+
+# Sequence of events:
+# - the emit value or index values are evaluated
+# - the temporary tuple is created
+# - the arguments to format() are evaluated; an emit or index value is
+#   referenced in the generated code as "temp.x"
+# - format() is called
+
+# Strategy: if the temporary tuple moves due to compaction during the
+# evaluation of the arguments to format(), subsequent references to the
+# temporary tuple get the wrong value unless it has been adjusted.
+# Force a compaction before the last reference to the temporary.
+# Check the address of a value before and after the expected compaction
+# to verify that it was done (else we did not really perform the test).
+# We call gc() before and after the use of "x" so that the order of argument
+# evaluation does not matter (except that it be either forwards or backwards,
+# not random).
+
+
+first_gc: bool = true;
+
+# Force compaction.  Check whether the passed value moves.
+
+gc: function(s: string): string {
+  start_addr: int = ___addressof(s);
+  # Force compaction; should use up about 500MB.
+  compactor: string = new(string, 100000, 'w');
+  for (i: int = 0; i < 5000; i++)
+    compactor = "z" + compactor;
+  compactor = "";
+  # The string should only move the first time
+  end_addr: int = ___addressof(s);
+  assert((start_addr != end_addr) == first_gc);
+  first_gc = false;
+  return s;
+};
+
+
+# Use up some memory, but not enough to force compaction.
+
+s: string = new(string, 100000, 'w');
+s = "";
+
+# Force compaction in the middle of an emit.
+
+t: table collection of x: string format("%s %s %s", gc(x), x, gc(x));
+emit t <- new(string, 3, 'x'+nrand(1));   # must not be a constant

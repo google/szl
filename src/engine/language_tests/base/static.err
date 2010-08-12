@@ -1,0 +1,8 @@
+base/static.szl:16: static variable x must be initialized
+base/static.szl:17: x is static; cannot assign to it
+base/static.szl:20: a is static; cannot assign to it
+base/static.szl:21: a[0] is static; cannot assign to it
+base/static.szl:23: static variable aa must be initialized
+base/static.szl:24: aa[0] is static; cannot assign to it
+base/static.szl:28: t is static; cannot assign to it
+base/static.szl:29: t.i is static; cannot assign to it

@@ -1,0 +1,9 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     from_0_to_3: array of int = { 0, 1, 2, 3 }
+     a: int = 1
+     b: int = <undefined>
+
+szl: fatal: undefined value at for_statements/good_06.szl:27: b < 4 (probably because "b" had not been defined)

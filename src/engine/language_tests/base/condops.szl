@@ -1,0 +1,76 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# tests conditional operators
+
+x: int = 3;
+y: int = 5;
+z: int = 7;
+
+u: float = -3.0;
+v: float = -5.0;
+w: float = -7.0;
+
+a: bool = x < y;  # true
+b: bool = y > z;  # false
+c: bool = u < v;  # false
+d: bool = v > w;  # true
+
+# test setup
+assert(a);
+assert(b == false);
+assert(c == false);
+assert(d);
+
+
+# test conditionals
+assert((b || c || a || d) && x < y);
+
+assert((a || b) && c == false);
+assert(a && b || c == false);
+assert(a && (b || c) == false);
+assert(a || (b && c));
+
+assert(a && b && c && d || u > v);
+assert(a && (b || c && d) || u < v || true);
+
+
+# make sure, "intermediate" truth values are properly reincarnated
+f: function (c: int, x: bool, r: bool) {
+  assert(x == r, format("%d. %b == %b", c, x, r));
+};
+
+f(0, true || true, true);
+f(1, true || false, true);
+f(2, false || true, true);
+f(3, false || false, false);
+
+f(0, true && true, true);
+f(1, true && false, false);
+f(2, false && true, false);
+f(3, false && false, false);
+
+# 'or' and 'and' used to cause high register pressure in native code due to
+# right associativity instead of left associativity
+country: string;
+country = "fra";
+
+assert(((country == "usa") or (country == "deu") or (country == "gbr") or
+        (country == "jpn") or (country == "chn") or (country == "can") or
+        (country == "fra")) == true);
+
+assert(((country == "usa") and (country == "deu") and (country == "gbr") and
+        (country == "jpn") and (country == "chn") and (country == "can") and
+        (country == "fra")) == false);

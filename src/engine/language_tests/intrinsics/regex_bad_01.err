@@ -1,0 +1,16 @@
+intrinsics/regex_bad_01.szl:22: intrinsic function 'regex' cannot be used as value
+intrinsics/regex_bad_01.szl:25: type expected; ')' found
+intrinsics/regex_bad_01.szl:28: ';' expected; found 'regex'
+intrinsics/regex_bad_01.szl:29: type expected; int literal found
+intrinsics/regex_bad_01.szl:30: type expected; float literal found
+intrinsics/regex_bad_01.szl:31: true is not a type
+intrinsics/regex_bad_01.szl:32: type expected; int literal found
+intrinsics/regex_bad_01.szl:35: s0 is not a type
+intrinsics/regex_bad_01.szl:38: i0 is not a type
+intrinsics/regex_bad_01.szl:41: b0 is not a type
+intrinsics/regex_bad_01.szl:44: t0 is not a type
+intrinsics/regex_bad_01.szl:47: by0 is not a type
+intrinsics/regex_bad_01.szl:49: warning: declaration of "int" hides the Sawzall predefined identifier "int"
+intrinsics/regex_bad_01.szl:50: int is not a type
+intrinsics/regex_bad_01.szl:52: warning: declaration of "float" hides the Sawzall predefined identifier "float"
+intrinsics/regex_bad_01.szl:53: float is not a type

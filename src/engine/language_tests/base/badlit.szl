@@ -1,0 +1,108 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# a test file full of bad sawzall literals
+
+# ints
+i: int;
+i = 0b;
+i = 0b2;
+i = 0bb;
+i = 0bx;
+i = 0b.;
+;
+i = 0x;
+i = 0xg;
+i = 0xx;
+i = 0bb;
+i = 0x.;
+;
+i = 2x4;
+;
+i = 0a9;;
+i = 00000000000012345678;
+i = 00000000000012345678.e;
+i = e-9;
+i = E+0;
+i = .0E;
+;
+i = e0;
+i = 0e;
+i = 0E;
+i = 0xabcdefg;
+i = 9223372036854775808;
+i = 0 -9223372036854775808;
+;
+i = 12341845817458412784518518271823718237128;
+i = 0b1000000000000000000000000000000000000000000000000000000000000000;
+i = 0x8000000000000000;
+;
+
+# floats
+f: float;
+f = 1e50000000;
+f = 1e-50000000;
+f = 0;
+;
+f = .e0;
+f = 00000000009;
+;
+
+# chars
+c: int;
+c = '';
+c = '\0123';
+c = '\024514356134261423561342615234562346132';
+c = 'x	';
+;
+c = 'xx';
+c = 'x;
+c = '\019abc';
+;
+
+# strings
+s: string;
+s = "\x";
+s="hello\0";
+;
+s = "\x2357263895689237568923756892375623895";
+s = ";
+s= "\";
+s = "hello
+";
+s = "\u123";
+s = "\U1234567";
+s = "\udb02";
+;
+
+# fingerprints
+p: fingerprint;
+p = 12341845817458412784518518271823718237128p;
+
+# times
+t: time;
+t = 12341845817458412784518518271823718237128t;
+
+# bytes
+b: bytes;
+b = B"\x";
+b = B"\u1234";
+b = B"\U00101234";
+b = X"12345";
+;
+b = B"
+;
+b = X`
+;

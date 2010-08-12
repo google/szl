@@ -1,0 +1,26 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     x0a: T0 = {  }
+     x1a: T1 = { 1 }
+     x2a: T2 = { 1, 2 }
+     x3a: T3 = { 1, 2, 3 }
+     x4a: T4 = { "3", 4.0 }
+     v0a: array of int = {  }
+     v1a: array of int = { 1 }
+     v2a: array of int = { 1, 2 }
+     v3a: array of int = { 1, 2, 3 }
+     v4a: array of int = { 3, 4 }
+     x0b: T0 = <undefined>
+     x1b: T1 = <undefined>
+     x2b: T2 = <undefined>
+     x3b: T3 = <undefined>
+     x4b: T4 = <undefined>
+     v0b: array of int = { 1 }
+     v1b: array of int = { 1, 2 }
+     v2b: array of int = { 1, 2, 3 }
+     v3b: array of int = {  }
+     v4b: array of int = { 3, 4, 5 }
+
+szl: fatal: undefined value at base/arrayconv2.szl:59: x0b = T0(v0b); (array -> tuple conversion failed: len(v0b) != 0)

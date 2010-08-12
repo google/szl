@@ -1,0 +1,23 @@
+x: int;
+y: int;
+x = 1;
+y = nrand(1);
+w: int = x / y;
+z: int = x % y;
+while (x >= 0)
+{
+	y++;
+	z = x;
+	x = 3 * x;
+}
+assert(x == -6289078614652622815);
+assert(y == 40);
+x = z;
+do
+{
+	x = x / 3;
+	y--;
+}
+while (x > 1);
+assert(x == 1);
+assert(y == 1);

@@ -1,0 +1,90 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+# Some ugly code that exercises just about every Node and Type
+
+; # empty
+type x = int;
+type a = array of int;
+type aa = array of array of int;
+type f = function(a: int) : aa;
+type emptyf = function();
+type m = map[int] of string;
+type o = table maximum(1000) of foo: int weight w: int format("hello");
+type op = table collection of foo: bytes proc("echo");
+type t = { i: int, j: m };
+type p = parsedmessage { i: int = 0 @ 1 };
+
+static static_int := 0;
+type t_with_statics = { static a: int = 0x1234 };
+type t_with_nested_types = {
+  type nested = {
+    type nested_basic = int,
+    type nested_array = array of int,
+    type nested_map = map[int] of int,
+    type nested_tuple = { int },
+    type nested_proto = {},
+    type nested_function = function(),
+    type nested_output = table sum of int
+  },
+  # reference nested types to make sure enclosing tuple type names get printed
+  n: nested,
+  b: nested.nested_basic,
+  a: nested.nested_array,
+  m: nested.nested_map,
+  t: nested.nested_tuple,
+  p: nested.nested_proto,
+  f: nested.nested_function,
+  # cannot have a table field, so use a function parameter instead
+  static o: function(o: nested.nested_output) {}
+};
+
+kCountries: array of string = { "a", "b" };
+country := "abc";
+
+if (1 == 2) { country = "abc"; country = "xyz"; } else country = "def";
+i: int;
+i = 2 + len("xy" + "zy");
+i++;
+b: string;
+aaaa := sawn(3, "hi", "a", regex(int, 10), rest b);
+z := new(string, int("10", 10), "x"[0:$][0]);
+identity: function(s: string): string { return s; };
+z = identity(z);
+switch(z){
+  case "a", "z":
+    emit stdout <- "hi";
+  default:
+    emit stdout <- "bye";
+}
+
+tab: table sum[a: int][b: int] of int;
+for(i = 0; i < 3; ) {
+  emit tab[1][2] <- 3;
+  i = 1000;
+}
+do i = 0; while(i > 0);
+while(i > 0) i = 0;
+if (i > 0);
+
+123;  # expression statement
+y: int = ?{ result 0; };  # statement expression
+
+proto "proto2.proto"
+
+convert({ int }, new(array of int, 1, 1));  # uses run-time guard and temp var

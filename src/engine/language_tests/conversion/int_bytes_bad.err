@@ -1,0 +1,22 @@
+conversion/int_bytes_bad.szl:26: warning: unknown encoding "bad" for conversion of int to bytes
+conversion/int_bytes_bad.szl:27: warning: int value 2294967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:28: warning: int value 2294967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:29: warning: int value -2294967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:30: warning: int value -2294967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:36: warning: unknown encoding "bad" for conversion of uint to bytes
+conversion/int_bytes_bad.szl:37: warning: uint value 4394967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:38: warning: uint value 4394967280 out of range for 32-bit encoding
+conversion/int_bytes_bad.szl:44: warning: unknown encoding "bad" for conversion of bytes to int
+conversion/int_bytes_bad.szl:45: warning: length of bytes value (3) wrong for conversion to int; should be 4
+conversion/int_bytes_bad.szl:46: warning: length of bytes value (5) wrong for conversion to int; should be 4
+conversion/int_bytes_bad.szl:47: warning: length of bytes value (7) wrong for conversion to int; should be 8
+conversion/int_bytes_bad.szl:48: warning: length of bytes value (9) wrong for conversion to int; should be 8
+conversion/int_bytes_bad.szl:49: warning: invalid varint value for decoding
+conversion/int_bytes_bad.szl:50: warning: invalid varint value for decoding
+conversion/int_bytes_bad.szl:56: warning: unknown encoding "bad" for conversion of bytes to uint
+conversion/int_bytes_bad.szl:57: warning: length of bytes value (3) wrong for conversion to uint; should be 4
+conversion/int_bytes_bad.szl:58: warning: length of bytes value (5) wrong for conversion to uint; should be 4
+conversion/int_bytes_bad.szl:59: warning: length of bytes value (7) wrong for conversion to uint; should be 8
+conversion/int_bytes_bad.szl:60: warning: length of bytes value (9) wrong for conversion to uint; should be 8
+conversion/int_bytes_bad.szl:61: warning: invalid varint value for decoding
+conversion/int_bytes_bad.szl:62: warning: invalid varint value for decoding

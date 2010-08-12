@@ -1,0 +1,3 @@
+for_statements/bad_08.szl:23: expression 10 + (2 % 6) (int) must be of type bool
+for_statements/bad_08.szl:28: expression 10.23 * 5.7 (float) must be of type bool
+for_statements/bad_08.szl:37: expression f() (void) must be of type bool

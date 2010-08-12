@@ -1,0 +1,8 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     Ai1: array of int = { 10, 10, 13 }
+     Ai2: array of int = <undefined>
+
+szl: fatal: undefined value at type_declarations/array_badoperation.szl:24: Ai2[1] = 10; (probably because "Ai2" was undefined due to an error at type_declarations/array_badoperation.szl:23: {"hi","","hello"} (string "hi" contains no int))

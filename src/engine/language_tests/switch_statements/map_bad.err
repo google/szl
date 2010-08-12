@@ -1,0 +1,1 @@
+switch_statements/map_bad.szl:23: switch tag m (map [int] of int) - must be basic type

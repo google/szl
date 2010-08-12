@@ -1,0 +1,25 @@
+b: bytes = {};
+str: string;
+l: int;
+a: array of int = {1, 2, 3, 4};
+s: string = "hello";
+l = DEBUG("ref", s);
+{
+	t: time = now();
+	day: array of string = {"", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+	x: int;
+	x = DEBUG("print", "%s %d/%.2d/%d %.2d:%.2d:%.2d [%d]\n", day[dayofweek(t)], yearof(t), monthof(t), dayofmonth(t), hourof(t), minuteof(t), secondof(t), dayofyear(t));
+	x = DEBUG("print", "%s\n%s\n%s\n", convert(string, SEC), convert(string, MIN), convert(string, HR));
+}
+l = dayofmonth(now());
+l = dayofweek(now());
+l = dayofyear(now());
+l = hourof(now());
+l = minuteof(now());
+l = monthof(now());
+l = yearof(now());
+l = len(s);
+l = len(b);
+l = len(a);
+str = lowercase(s);
+b = load(s);

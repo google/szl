@@ -1,0 +1,82 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Constant folding of basic conversions.
+# Relies on getting a warning for divide by zero, so we can tell
+# that the folding must actually have occurred.
+
+if (nrand(5) == 17) {
+  # from bool
+  1/int(string(true) == "true");
+  1/int(string(true) != "true");
+
+  # from int
+  1.0/float(1);
+  1.0/float(0);
+  1/int(time(123456789987654321) == 123456789987654321T);
+  1/int(time(123456789987654321) != 123456789987654321T);
+  1/int(fingerprint(0x1234567887654321) == 0x1234567887654321P);
+  1/int(fingerprint(0x1234567887654321) != 0x1234567887654321P);
+  1/int(string(123) == "123");
+  1/int(string(123) != "123");
+  
+  # from float
+  1/int(1.0);
+  1/int(0.0);
+  1/int(string(123.0) == "123.0");
+  1/int(string(123.0) != "123.0");
+
+  # from time
+  1/int(1T);
+  1/int(0T);
+  1/int(string(1234567899876543T) == "Fri Feb 13 15:31:39 PST 2009");
+  1/int(string(1234567899876543T) != "Fri Feb 13 15:31:39 PST 2009");
+
+  # from fingerprint
+  1/int(1P);
+  1/int(0P);
+  1/int(string(0x1234567887654321P) == "0x1234567887654321p");
+  1/int(string(0x1234567887654321P) != "0x1234567887654321p");
+  1/int(bytes(0x1234567887654321P) == X"1234567887654321");
+  1/int(bytes(0x1234567887654321P) != X"1234567887654321");
+
+  # from string
+  1/int(bool("true"));
+  1/int(bool("false"));
+  1/int("1");
+  1/int("0");
+  1.0/float("1.0");
+  1.0/float("0.0");
+  1/int(time("Fri Feb 13 15:31:39 PST 2009") == 1234567899000000T);
+  1/int(time("Fri Feb 13 15:31:39 PST 2009") != 1234567899000000T);
+  1/int(fingerprint("1234567887654321",16) == 0x1234567887654321P);
+  1/int(fingerprint("1234567887654321",16) != 0x1234567887654321P);
+  1/int(bytes("abc") == B"abc");
+  1/int(bytes("abc") != B"abc");
+  1/int(bytes("---\xe1---", "latin-1") == X"2d2d2de12d2d2d");
+  1/int(bytes("---\xe1---", "latin-1") != X"2d2d2de12d2d2d");
+  1/int(bytes("---\xe1---", "utf-8") == X"2d2d2dc3a12d2d2d");
+  1/int(bytes("---\xe1---", "utf-8") != X"2d2d2dc3a12d2d2d");
+
+  # from bytes
+  1/int(fingerprint(X"1234567887654321") == 0x1234567887654321P);
+  1/int(fingerprint(X"1234567887654321") != 0x1234567887654321P);
+  1/int(string(B"abc") == "abc");
+  1/int(string(B"abc") != "abc");
+  1/int(string(X"2d2d2de12d2d2d", "latin-1") == "---\xe1---");
+  1/int(string(X"2d2d2de12d2d2d", "latin-1") != "---\xe1---");
+  1/int(string(X"2d2d2dc3a12d2d2d", "utf-8") == "---\xe1---");
+  1/int(string(X"2d2d2dc3a12d2d2d", "utf-8") != "---\xe1---");
+}

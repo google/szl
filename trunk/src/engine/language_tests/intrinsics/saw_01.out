@@ -1,0 +1,29 @@
+saw("http://www.google.com/search?q=Google", "\w+", skip "://", "[\w.]+")
+Array length = 2
+Protocol = http
+Domain = www.google.com
+
+saw("emacs@localhost.localdomain", "\w+", "\w+", "\w+")
+Array length = 3
+arr[0] = emacs arr[1] = localhost arr[2] = localdomain 
+
+saw("emacs@localhost.localdomain", "^\w+", "^\w+", "^\w+")
+Array length = 1
+arr[0] = emacs 
+
+sawn(0, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")
+Array length = 0
+
+
+sawn(2, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")
+Array length = 4
+arr[0] = Afghanistan arr[1] = Kabul arr[2] = Algeria arr[3] = Algiers 
+
+sawn(10, "Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")
+Array length = 6
+arr[0] = Afghanistan arr[1] = Kabul arr[2] = Algeria arr[3] = Algiers arr[4] = Belgium arr[5] = Brussels 
+
+sawzall("Afghanistan : Kabul, Algeria : Algiers, Belgium : Brussels", "\w+", skip "\s*:\s*", "\w+", skip ",")
+Array length = 6
+arr[0] = Afghanistan arr[1] = Kabul arr[2] = Algeria arr[3] = Algiers arr[4] = Belgium arr[5] = Brussels 
+

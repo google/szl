@@ -1,0 +1,125 @@
+kIsDST: int = 0;
+kNotDST: int = 1;
+kImpossible: int = 2;
+kAmbiguous: int = 3;
+type local_time_t = {prefix: string, suffix: string, isdst: int};
+local_times: array of local_time_t = {{"Sat Apr  1 12:00:00", "2006", kNotDST}, {"Sun Apr  2 00:00:00", "2006", kNotDST}, {"Sun Apr  2 00:59:59", "2006", kNotDST}, {"Sun Apr  2 01:00:00", "2006", kNotDST}, {"Sun Apr  2 01:59:59", "2006", kNotDST}, {"Sun Apr  2 02:00:00", "2006", kImpossible}, {"Sun Apr  2 02:59:59", "2006", kImpossible}, {"Sun Apr  2 03:00:00", "2006", kIsDST}, {"Sun Apr  2 03:59:59", "2006", kIsDST}, {"Sun Apr  2 04:00:00", "2006", kIsDST}, {"Mon Apr  3 12:00:00", "2006", kIsDST}, {"Sat Oct 28 12:00:00", "2006", kIsDST}, {"Sun Oct 29 00:00:00", "2006", kIsDST}, {"Sun Oct 29 00:59:59", "2006", kIsDST}, {"Sun Oct 29 01:00:00", "2006", kAmbiguous}, {"Sun Oct 29 01:59:59", "2006", kAmbiguous}, {"Sun Oct 29 02:00:00", "2006", kNotDST}, {"Sun Oct 29 02:59:59", "2006", kNotDST}, {"Sun Oct 29 03:00:00", "2006", kNotDST}, {"Sun Oct 29 03:59:59", "2006", kNotDST}, {"Sun Oct 29 04:00:00", "2006", kNotDST}, {"Mon Oct 30 12:00:00", "2006", kNotDST}};
+utc_times: array of int = {1143892800, 1143936000, 1143939599, 1143939600, 1143943199, 1143946800, 1143950399, 1143946800, 1143950399, 1143950400, 1144065600, 1162036800, 1162080000, 1162083599, 1162083600, 1162087199, 1162087200, 1162090799, 1162090800, 1162094399, 1162094400, 1162209600};
+type timezone_t = {in: string, out_std: string, out_dst: string};
+timezones: array of timezone_t = {{"", "PST", "PDT"}, {"A", "A", "A"}, {"B", "B", "B"}, {"C", "C", "C"}, {"D", "D", "D"}, {"E", "E", "E"}, {"F", "F", "F"}, {"G", "G", "G"}, {"H", "H", "H"}, {"I", "I", "I"}, {"K", "K", "K"}, {"L", "L", "L"}, {"M", "M", "M"}, {"N", "N", "N"}, {"O", "O", "O"}, {"P", "P", "P"}, {"Q", "Q", "Q"}, {"R", "R", "R"}, {"S", "S", "S"}, {"T", "T", "T"}, {"U", "U", "U"}, {"V", "V", "V"}, {"W", "W", "W"}, {"X", "X", "X"}, {"Y", "Y", "Y"}, {"Z", "GMT", "GMT"}, {"PST", "PST", "PDT"}, {"PDT", "PST", "PDT"}, {"PST8PDT", "PST", "PDT"}, {"MST", "MST", "MDT"}, {"MDT", "MST", "MDT"}, {"MST7MDT", "MST", "MDT"}, {"CST", "CST", "CDT"}, {"CDT", "CST", "CDT"}, {"CST6CDT", "CST", "CDT"}, {"EST", "EST", "EDT"}, {"EDT", "EST", "EDT"}, {"EST5EDT", "EST", "EDT"}, {"UT", "GMT", "GMT"}, {"GMT", "GMT", "GMT"}, {"America/Los_Angeles", "PST", "PDT"}, {"America/New_York", "EST", "EDT"}};
+AdjustStdToDst: function(s: string): string {
+	old: string = s;
+	s = strreplace(s, "PST", "PDT", false);
+	s = strreplace(s, "MST", "MDT", false);
+	s = strreplace(s, "CST", "CDT", false);
+	s = strreplace(s, "EST", "EDT", false);
+	s = strreplace(s, " 12:", " 13:", false);
+	s = strreplace(s, " 04:", " 05:", false);
+	s = strreplace(s, " 03:", " 04:", false);
+	s = strreplace(s, " 02:", " 03:", false);
+	s = strreplace(s, " 01:", " 02:", false);
+	s = strreplace(s, " 00:", " 01:", false);
+	assert(s != old, "AdjustStdToDst: " + old);
+	return s;
+}
+;
+AdjustDstToStd: function(s: string): string {
+	old: string = s;
+	s = strreplace(s, "PDT", "PST", false);
+	s = strreplace(s, "MDT", "MST", false);
+	s = strreplace(s, "CDT", "CST", false);
+	s = strreplace(s, "EDT", "EST", false);
+	s = strreplace(s, "Sun Apr  2 00:", "Sat Apr  1 23:", false);
+	s = strreplace(s, " 01:", " 00:", false);
+	s = strreplace(s, " 02:", " 01:", false);
+	s = strreplace(s, " 03:", " 02:", false);
+	s = strreplace(s, " 04:", " 03:", false);
+	s = strreplace(s, " 05:", " 04:", false);
+	s = strreplace(s, " 12:", " 11:", false);
+	assert(s != old, "AdjustDstToStd: " + old);
+	return s;
+}
+;
+when (
+	i: each int;
+	def(timezones[i])
+)
+{
+	tz: timezone_t = timezones[i];
+	offset: int = convert(int, convert(time, "Sat Jan 3 12:00:00 GMT 1971")) - convert(int, convert(time, ("Sat Jan 3 12:00:00 " + tz.in) + " 1971"));
+	if (offset == 0)
+	{
+		if (((tz.in != "GMT") && (tz.in != "UT")) && (tz.in != "Z"))
+		{
+			assert(false, "Did not recognize time zone name: " + tz.in);
+		}
+	}
+	when (
+		j: each int;
+		def(local_times[j])
+	)
+	{
+		local_time: local_time_t = local_times[j];
+		s1: string = (((local_time.prefix + " ") + tz.in) + " ") + local_time.suffix;
+		s2: string = (local_time.prefix + " ") + local_time.suffix;
+		t1: time = convert(time, s1);
+		t2: time = convert(time, s2, tz.in);
+		assert(t1 == t2, "Embedded and argument TZ results difer");
+		expected_tz: string;
+		if (tz.out_std == tz.out_dst)
+		{
+			expected_tz = tz.out_std;
+		}
+		else
+			if ((local_time.isdst == kAmbiguous) && (tz.in == tz.out_std))
+			{
+				expected_tz = tz.out_std;
+			}
+			else
+				if ((local_time.isdst == kAmbiguous) && (tz.in == tz.out_dst))
+				{
+					expected_tz = tz.out_dst;
+				}
+				else
+					if (local_time.isdst == kAmbiguous)
+					{
+						expected_tz = tz.out_std;
+					}
+					else
+						if (local_time.isdst == kNotDST)
+						{
+							expected_tz = tz.out_std;
+						}
+						else
+							if (local_time.isdst == kIsDST)
+							{
+								expected_tz = tz.out_dst;
+							}
+							else
+							{
+								expected_tz = tz.out_std;
+							}
+		s3: string = (((local_time.prefix + " ") + expected_tz) + " ") + local_time.suffix;
+		if (tz.out_std != tz.out_dst)
+		{
+			if ((tz.in == tz.out_std) && ((local_time.isdst == kIsDST) || (local_time.isdst == kImpossible)))
+				s3 = AdjustStdToDst(s3);
+			if ((tz.in == tz.out_dst) && ((local_time.isdst == kNotDST) || (local_time.isdst == kImpossible)))
+				s3 = AdjustDstToStd(s3);
+			if (((tz.in != tz.out_std) && (tz.in != tz.out_dst)) && (local_time.isdst == kImpossible))
+				s3 = AdjustStdToDst(s3);
+		}
+		s4: string = convert(string, t1, tz.in);
+		assert(s3 == s4, format("%s => %d => %s\n(expected) %s", s1, convert(int, t1) / 1000000, s4, s3));
+	}
+	when (
+		j: each int;
+		def(utc_times[j])
+	)
+	{
+		t1: time = convert(time, (utc_times[j] * 1000000) - offset);
+		s1: string = convert(string, t1, tz.in);
+		t2: time = convert(time, s1, tz.in);
+		assert(t1 == t2, format("%d => %s => %d", convert(int, t1), s1, convert(int, t2)));
+	}
+}

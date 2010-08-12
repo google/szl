@@ -1,0 +1,96 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# To be used to test --print_tables which triggers backend type conversion.
+# By also enabling --test_backend_type_conversion we can test the conversion
+# in the opposite direction as well.
+
+# Basic types as indices, elements and weights with and without identifiers
+t01: table top(1)[i: int][s: string] of i: int weight w: int;
+t01u: table top(1)[int][string] of int weight int;
+t02: table top(2)[u: uint][s: string] of u: uint weight w: int;
+t02u: table top(2)[uint][string] of uint weight int;
+t03: table top(3)[b: bytes][s: string] of b: bytes weight w: int;
+t03u: table top(3)[bytes][string] of bytes weight int;
+t04: table top(4)[s: string][b: bytes] of s: string weight w: int;
+t04u: table top(4)[string][bytes] of string weight int;
+t05: table top(5)[f: fingerprint][s: string] of f: fingerprint weight w: int;
+t05u: table top(5)[fingerprint][string] of fingerprint weight int;
+t06: table top(6)[t: time][s: string] of t: time weight w: int;
+t06u: table top(6)[time][string] of time weight int;
+t07: table top(7)[b: bool][s: string] of b: bool weight w: int;
+t07u: table top(7)[bool][string] of bool weight int;
+t08: table top(8)[f: float][s: string] of f: float weight w: int;
+t08u: table top(8)[float][string] of float weight int;
+
+# Array types
+t09: table collection of A: array of i: int; # of basic
+t09u: table collection of array of int;
+t10: table collection of A: array of AA: array of i: int; # of array
+t10u: table collection of array of array of int;
+t11: table collection of A: array of M: map[k: int] of v: int; # of map
+t11u: table collection of array of map[int] of int;
+t12: table collection of A: array of T: { i: int, s: string }; # of tuple
+t12u: table collection of array of { int, string };
+
+# Map types
+t13: table collection of M: map[k: int] of v: int; # of basic
+t13u: table collection of map[int] of int;
+t14: table collection of M: map[k: map[int] of int] of v: map[int] of int; # of map
+t14u: table collection of map[map[int] of int] of map[int] of int;
+t15: table collection of M: map[k: array of int] of v: array of int; # of array
+t15u: table collection of map[array of int] of array of int;
+t16: table collection of M: map[k: { i: int }] of v: { s: string }; # of tuple
+t16u: table collection of map[{ int }] of { string };
+
+# Tuple types
+t17: table collection of T: { i: int, s: string }; # of basic
+t17u: table collection of T: { int, string };
+t18: table collection of T: { T: { i: int, s: string } }; # of tuple
+t18u: table collection of { { int, string } };
+t19: table collection of T: { A: array of int }; # of array 
+t19u: table collection of { array of int };
+t20: table collection of T: { M: map[k: int] of v: int }; # of map
+t20u: table collection of { map[int] of int };
+
+# Proto tuple types loose message-ness, but keep the tags
+t21: table collection of P: proto { i: int, a: array of bytes };
+t21u: table collection of proto { int, array of bytes };
+t22: table collection of P: proto { i: int @ 1, a: array of bytes @ 3 }; 
+t23: table collection of P: parsedmessage { i: int @ 2, a: array of bytes @ 3 };
+t24: table collection of P: { i: int @ 3, a: array of bytes @ 5 };
+
+# Elements with format() become elements of type string
+t25: table collection of b: bytes format("abc");
+t25u: table collection of bytes format("abc");
+
+# Type declarations are expanded with nested type and static decls dropped
+type T = { type TT = array of float, static kInt := 5, f: TT };
+t26: table collection of e: T;
+t26u: table collection of T;
+t27: table collection of e: T.TT;
+t27u: table collection of T.TT;
+
+# Tables with non-constant parameters lose their parameter
+t28: table top(nrand(5)) of e: int weight w: int;
+t28u: table top(nrand(5)) of int weight int;
+
+# Non-emitter tables with proc/file are never get converted to backend types
+tproc: table collection of bytes proc("echo hello");
+tfile: table collection of bytes file("foo.txt");

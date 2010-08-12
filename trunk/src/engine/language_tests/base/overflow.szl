@@ -1,0 +1,31 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+empty: string = new(string, nrand(1), 1);
+
+i1: int = int("9223372036854775807" + empty, 0);
+assert(def(i1));  # int 2^63-1 should not overflow
+i2: int = int("9223372036854775808" + empty, 0);
+assert(!def(i2)); # nt 2^63 should overflow
+i3: int = int("-9223372036854775808" + empty, 0);
+assert(def(i3));  # int -2^63 should not overflow
+
+p1: fingerprint = fingerprint("18446744073709551615" + empty);
+assert(def(p1));  # fingerprint 2^64-1 should not overflow
+p2: fingerprint = fingerprint("18446744073709551616" + empty);
+assert(!def(p2)); # fingerprint 2^64 should overflow
+
+f1: float = float("1e1000" + empty);
+assert(!def(f1)); # float 1e1000 should not overflow

@@ -1,0 +1,73 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env  szl
+
+#szl_options
+
+#desc:  Implicit conversions between composite data types
+
+func0: function():array of int{
+	return({1,2,3,4});
+};
+
+# conversion to array
+
+ai0: array of int = {1,2,3,4};			# array of int
+ai1: array of int = {1:1,2:1,3:1,4:1}; 		# map[int] of int
+ai2: array of int = {{1,"Hello"},{3,"World"}};	# tuple {int,string}
+ai3: array of int = func0();			# function call
+ai4: array of int = {{1,2,3,4},{1,2,3,4}};
+#ai5: array of int = {i:int = 3+4;		#function body / block
+#		     j:float =10.32;
+#		    };	
+
+# Conversion to map
+
+mii0: map[int] of int = {1,2,3,4};                  # array of int
+mii1: map[int] of int = {1:1,2:1,3:1,4:1};          # map[int] of int
+mii2: map[int] of int = {{1,"Hello"},{3,"World"}};  # tuple {int,string}
+mii3: map[int] of int = func0();                    # function call
+mii4: map[int] of int = {{1,2,3,4},{1,2,3,4}};
+#mii5: map[int] of int = {i:int = 3+4;              #function body / block
+#                     j:float =10.32;
+#                    };
+
+# Conversion to tuple
+		     
+tii0: {int,int} = {1,2};                      # array of int
+tii1: {int,int} = {1:1,2:1,3:1,4:1};          # map[int] of int
+tii2: {int,int} = {{1,"Hello"},{3,"World"}};  # tuple {int,string}
+tii3: {int,int} = func0();                    # function call
+tii4: {int,int} = {{1,2,3,4},{1,2,3,4}};
+#tii5: {int,int} = {i:int = 3+4;               #function body / block
+#                     j:float =10.32;
+#                    };
+
+
+# Conversion to function
+
+fun1:function(i:int):int = {1,2,3};	                         # array of int
+fun2:function(i:int):int = {1:1,2:1,3:1};                        # map[int] of int
+fun3:function(i:int):int = {{1,"Hello"},{3,"World"}};            # tuple {int,string}
+fun4:function(i:int):int = func0();	                         # Function call
+fun5:function(p:int):int{i:int = 3+4;                            #function body / block
+                          j:float =10.32;
+                         };
+fun6:function(p:int):int = function(p:int):int {i:int = 3+4;     #function body / block
+                          j:float =10.32;
+                         };
+
+

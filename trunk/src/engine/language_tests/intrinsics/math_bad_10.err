@@ -1,0 +1,112 @@
+intrinsics/math_bad_10.szl:22: intrinsic function 'pow' cannot be used as value
+intrinsics/math_bad_10.szl:23: intrinsic function 'ln' cannot be used as value
+intrinsics/math_bad_10.szl:24: intrinsic function 'log10' cannot be used as value
+intrinsics/math_bad_10.szl:25: intrinsic function 'exp' cannot be used as value
+intrinsics/math_bad_10.szl:28: incompatible argument list for pow(): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:29: incompatible argument list for ln(): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:30: incompatible argument list for log10(): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:31: incompatible argument list for exp(): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:34: incompatible argument list for pow(10.0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:37: incompatible argument list for pow(10.0, 1.0, 1.0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:38: incompatible argument list for ln(10.0, 10.0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:39: incompatible argument list for log10(10.0, 10.0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:40: incompatible argument list for exp(10.0, 10.0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:54: incompatible argument list for pow(b0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:55: incompatible argument list for pow(i0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:56: incompatible argument list for pow(by0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:57: incompatible argument list for pow(s0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:58: incompatible argument list for pow(t0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:59: incompatible argument list for pow(fg0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:60: incompatible argument list for pow(a0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:61: incompatible argument list for pow(m0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:62: incompatible argument list for pow(p0, 10.2): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:64: incompatible argument list for pow(10.2, b0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:65: incompatible argument list for pow(10.2, i0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:66: incompatible argument list for pow(10.2, by0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:67: incompatible argument list for pow(10.2, s0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:68: incompatible argument list for pow(10.2, t0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:69: incompatible argument list for pow(10.2, fg0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:70: incompatible argument list for pow(10.2, a0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:71: incompatible argument list for pow(10.2, m0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:72: incompatible argument list for pow(10.2, p0): candidates are:
+    pow: function(x: float, y: float): float
+intrinsics/math_bad_10.szl:74: incompatible argument list for ln(b0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:75: incompatible argument list for ln(i0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:76: incompatible argument list for ln(by0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:77: incompatible argument list for ln(s0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:78: incompatible argument list for ln(t0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:79: incompatible argument list for ln(fg0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:80: incompatible argument list for ln(a0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:81: incompatible argument list for ln(m0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:82: incompatible argument list for ln(p0): candidates are:
+    ln: function(x: float): float
+intrinsics/math_bad_10.szl:84: incompatible argument list for log10(b0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:85: incompatible argument list for log10(i0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:86: incompatible argument list for log10(by0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:87: incompatible argument list for log10(s0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:88: incompatible argument list for log10(t0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:89: incompatible argument list for log10(fg0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:90: incompatible argument list for log10(a0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:91: incompatible argument list for log10(m0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:92: incompatible argument list for log10(p0): candidates are:
+    log10: function(x: float): float
+intrinsics/math_bad_10.szl:94: incompatible argument list for exp(b0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:95: incompatible argument list for exp(i0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:96: incompatible argument list for exp(by0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:97: incompatible argument list for exp(s0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:98: incompatible argument list for exp(t0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:99: incompatible argument list for exp(fg0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:100: incompatible argument list for exp(a0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:101: incompatible argument list for exp(m0): candidates are:
+    exp: function(x: float): float
+intrinsics/math_bad_10.szl:102: incompatible argument list for exp(p0): candidates are:
+    exp: function(x: float): float

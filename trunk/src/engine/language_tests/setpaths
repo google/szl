@@ -1,0 +1,95 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Helper for "regress" and "update".
+# Sets variables for the required paths.
+# Must be source'd, not executed in a separate shell.
+
+# If a variable is not set, set it to the default.
+# If it is already set, it matches $ABS_SRCDIR, and $PWD matches $ABS_SRCDIR,
+# make it relative.  (For base/line_directive3.szl)
+
+# ========== function to make relative path within $ABS_SRCDIR ==========
+
+function relativepath {
+  local path="$1"
+  local pwd="$PWD"
+  if [[ "$path" == /* ]] ; then
+    # Absolute, compare to $ABS_SRCDIR
+    if [[ "$path/" == "$ABS_SRCDIR/"*  && "$pwd/" == "$ABS_SRCDIR/"* ]] ; then
+      # Matches, strip the matching parts from both.
+      local n=${#ABS_SRCDIR}
+      path="${path:$n}"
+      pwd="${PWD:$n}"
+      # Add back enough "../" to get back from $PWD to $ABS_SRCDIR
+      if [[ "$pwd" == "" ]] ; then
+        # We were already at $ABS_SRCDIR, so no "../"; special case 
+        if [[ "$path" == "" ]] ; then
+	  # path was also $ABS_SRCDIR, use "./"
+	  path="./"
+	else
+	  # path is nested in $ABS_SRCDIR, just strip leading /
+	  path="${path/\/}"
+	fi
+      else
+        # We were within $ABS_SRCDIR, emit "../" as needed to get there.
+	# If $path is exactly $ABS_SRCDIR, it is now empty and the result
+	# will end with "..".  If not, it now begins with "/" and
+	# the result will end with "../current-path".
+        local prefix=".."
+        while [[ "$pwd" == */* ]] ; do
+          path="$prefix$path"
+	  pwd="${pwd/\/}"
+	  prefix="../"
+	done
+      fi
+    fi
+  fi
+  echo "$path"
+}
+
+# ============================================================================
+
+
+if [ -n "$SZL" ] ; then
+  SZL="$(relativepath "$SZL")"
+else
+  SZL="szl"                  
+fi
+if [ -n "$SZLEXEC" ] ; then
+  SZLEXEC="$(relativepath "$SZLEXEC")"
+else
+  SZLEXEC="$SZL"             
+fi
+if [ -n "$SZL_TMP" ] ; then
+  SZL_TMP="$(relativepath "$SZL_TMP")"
+else
+  SZL_TMP="."                
+fi
+if [ -n "$PROTOCOL_COMPILER" ] ; then
+  PROTOCOL_COMPILER="$(relativepath "$PROTOCOL_COMPILER")"
+else
+  PROTOCOL_COMPILER="protoc" 
+fi
+if [ -n "$PROTOCOL_COMPILER_PLUGIN" ] ; then
+  PROTOCOL_COMPILER_PLUGIN="$(relativepath "$PROTOCOL_COMPILER_PLUGIN")"
+else
+  PROTOCOL_COMPILER_PLUGIN="protoc-gen-szl"
+fi
+if [ -n "$PROTOCOL_COMPILER_TMP" ] ; then
+  PROTOCOL_COMPILER_TMP="$(relativepath "$PROTOCOL_COMPILER_TMP")"
+else
+  PROTOCOL_COMPILER_TMP="/tmp"
+fi

@@ -1,0 +1,9 @@
+base/badfunstaticvars.szl:21: non-static variable x may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:25: non-static variable x may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:27: non-static variable y may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:35: non-static variable x may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:36: non-static variable y may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:37: non-static variable z may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:54: non-static variable g1 may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:55: non-static variable g1 may not be accessed in an initializer for a static variable
+base/badfunstaticvars.szl:56: non-static variable g1 may not be accessed in an initializer for a static variable

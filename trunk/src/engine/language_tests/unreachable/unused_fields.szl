@@ -1,0 +1,1262 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Test that the address and ssn are recognized as unused fields.
+
+type Person = parsedmessage { name: bytes @ 1: string,
+                              age: int @ 2: int32,
+                              address: bytes @ 3: string,
+                              ssn: int @ 4: int32 };
+
+# Functions get_name and get_age are reachable, so the fields name
+# and age are used.
+get_name: function(p: Person): bytes {
+  return p.name;
+};
+
+get_age: function(p: Person): int {
+  return p.age;
+};
+
+# Functions get_address and get_ssn are unreachable, so the fields
+# address and ssn will be unused.  Printing the referenced tuple field
+# names will confirm this.
+get_address: function(p: Person): bytes {
+  return p.address;
+};
+
+get_ssn: function(p: Person): int {
+  return p.ssn;
+};
+
+# Note that initializing within this program will cause a reference to
+# all of its fields, so we avoid that.
+fred: Person = input;
+
+# Call get_name and get_age so they are reachable.
+emit stdout <- string(get_name(fred));
+
+emit stdout <- format("%d", get_age(fred));
+
+
+# Tests for write-only field elimination.
+
+type Rectangle = parsedmessage {
+  x_min: int @ 1: int32,   # not read or written -> eliminated
+  x_max: int @ 2: int32,   # read but not written -> kept
+  y_min: int @ 3: int32,   # written but not read -> eliminated
+  y_max: int @ 4: int32    # read and written -> kept
+};
+
+# None of the fields of Circle will be read, so they will all be eliminated.
+type Circle = parsedmessage {
+  x: int @ 1: int32,
+  y: int @ 2: int32,
+  diameter: int @ 3: int32
+};
+
+type Message = parsedmessage {
+  english: bytes @ 1 : string,
+  spanish: bytes @ 2 : string,
+  french: bytes @ 3 : string
+};
+
+type Window = parsedmessage {
+  title: bytes @ 1: string,      # write-only -> eliminated
+  bounding_box: Rectangle @ 2,   # both reads and writes -> kept
+  bounding_circle: Circle @ 3,   # no members read -> eliminated
+  messages: array of Message @ 4 # some members read -> kept
+};
+
+print_title: function(): string {
+  title: string = "A Night at the Opera";
+  emit stdout <- title;
+  return title;
+};
+
+print_index: function(): int {
+  index: int = 0;
+  emit stdout <- string(index);
+  return index;
+};
+
+window: Window = X"0a00120808001001180020011a0608001000180122060a0012001a00";
+
+# Preserve function call for its side-effect.
+window.title = bytes(print_title());
+
+read_x_max: int = window.bounding_box.x_max;
+window.bounding_box.y_min = 12;
+window.bounding_box.y_max = window.bounding_box.y_max + 40;
+
+# Preserve function call in index for its side-effect.
+window.messages[print_index()].english = B"Bay Window";
+msg_len: int = len(window.messages[0].spanish);
+
+# Preserve undefined variable error even though field is eliminated.
+undef_window: Window;
+undef_window.title = B"A Day at the Races";
+
+# Test optimization of code within a statement expression.
+ai: array of int = {0, 1, 2, 3, 4};
+ai[?{window.title = B"Duck Soup"; result 2;}] = 5;
+
+
+# A tuple initialized by a composite expression has fields referenced only
+# as deeply as the nesting of the composite expression itself.
+
+# First, we try a hierarchy of 4 tuple types, where the initializer has
+# 4 deep nesting.  All fields are read.
+type Deep4 = {
+  i: int
+};
+
+type Deep3 = {
+  i: int,
+  d: Deep4
+};
+
+type Deep2 = {
+  i: int,
+  d: Deep3
+};
+
+type Deep1 = {
+  i: int,
+  d: Deep2
+};
+
+d1: Deep1 = {1, {2, {3, {4}}}};
+
+
+# Second, we try a similar hierarchy where the initializer has only 2
+# deep nesting.  Only the fields of Shallow1 and Shallow2 are read.
+type Shallow4 = {
+  i: int
+};
+
+type Shallow3 = {
+  i: int,
+  s: Shallow4
+};
+
+type Shallow2 = {
+  i: int,
+  s: Shallow3
+};
+
+type Shallow1 = {
+  i: int,
+  s: Shallow2
+};
+
+s3: Shallow3;
+s1: Shallow1 = {1, {2, s3}};
+
+
+# Finally, we try a similar hierarchy where the initializer only sets
+# the top level fields, so only fields of Top1 are read.
+type Top4 = {
+  i: int
+};
+
+type Top3 = {
+  i: int,
+  t: Top4
+};
+
+type Top2 = {
+  i: int,
+  t: Top3
+};
+
+type Top1 = {
+  i: int,
+  t: Top2
+};
+
+t2: Top2;
+t1: Top1 = {1, t2};
+
+
+# A proto tuple which has one field explicitly read must reference all of the
+# internal nodes above that field.
+
+# First, we try a hierarchy of 4 tuple types, where we read a field of
+# the deepest tuple.
+type DeepOneField4 = proto {
+  i: int @ 1: int32
+};
+
+type DeepOneField3 = proto {
+  i: int @ 1: int32,
+  d: DeepOneField4 @ 2
+};
+
+type DeepOneField2 = proto {
+  i: int @ 1: int32,
+  d: DeepOneField3 @ 2
+};
+
+type DeepOneField1 = proto {
+  i: int @ 1: int32,
+  d: DeepOneField2 @ 2
+};
+
+dof1: DeepOneField1 = B"";
+dof1.d.d.d.i;
+
+
+# Second, we try a similar hierarchy where we read a field of Shallow2.
+type ShallowOneField4 = proto {
+  i: int @ 1: int32
+};
+
+type ShallowOneField3 = proto {
+  i: int @ 1: int32,
+  s: ShallowOneField4 @ 2
+};
+
+type ShallowOneField2 = proto {
+  i: int @ 1: int32,
+  s: ShallowOneField3 @ 2
+};
+
+type ShallowOneField1 = proto {
+  i: int @ 1: int32,
+  s: ShallowOneField2 @ 2
+};
+
+sof1: ShallowOneField1 = B"";
+sof1.s.i;
+
+
+# Finally, we try a similar hierarchy where we read only one top
+# level field.
+type TopOneField4 = proto {
+  i: int @ 1: int32
+};
+
+type TopOneField3 = proto {
+  i: int @ 1: int32,
+  t: TopOneField4 @ 2
+};
+
+type TopOneField2 = proto {
+  i: int @ 1: int32,
+  t: TopOneField3 @ 2
+};
+
+type TopOneField1 = proto {
+  i: int @ 1: int32,
+  t: TopOneField2 @ 2
+};
+
+tof1: TopOneField1 = B"";
+tof1.i;
+
+
+# Regression test for a bug.  The bug transformed a.b.c = 1, where b was
+# write-only and c was read into a.c = 1, which is nonsensical code.
+type DoNotElim = proto {
+  is_read: int @ 1: int32
+};
+
+type HasWriteOnlyField = proto {
+  do_not_elim: DoNotElim @ 1
+};
+
+# Really read the field.
+dummy: DoNotElim = B"";
+dummy.is_read = 1;
+dummy.is_read;
+
+# Verify that assignment through write-only field is not corrupted.
+has_write_only_field: HasWriteOnlyField = B"";
+has_write_only_field.do_not_elim.is_read = 2;
+
+
+# Regression test for a bug with anonymous tuples.
+MakeTuple: function(): {b: bool, ai: array of int} {
+  return {true, {0, 0, 0}};
+};
+
+# With the bug, this anonymous tuple type had all fields removed ...
+t: {b: bool, ai: array of int} = MakeTuple();
+
+# ... and this array reference would behave flakily, reading a random
+# value instead of the correct base pointer t.ai.
+assert(t.ai[0] == 0);
+
+
+# Regression test for bug 2250043.  Analyzing a composite expression of type T
+# before an emit of type T prevented nested fields from being marked read.
+# The result was a check failure at runtime.
+
+# This bug seems to require a proto tuple and a regular tuple that both
+# contain the same proto tuple as a field.
+type Pageview = parsedmessage { url: bytes @ 1: string,
+                                user_agent: bytes @ 2: string,
+                                ad_group_creative_id: int @ 3: int32 };
+type PageviewContainer = parsedmessage { pageview: Pageview @ 1};
+type PageviewAndCount = {pageview: Pageview, count: int};
+
+# Analyzing this function sets top-level fields of PageviewAndCount read.
+static ProcessPageview: function(pageview: Pageview,
+                                 emitter: function(pv: PageviewAndCount)) {
+  pageview_and_count: PageviewAndCount = {pageview, 33};
+  emitter(pageview_and_count);
+};
+
+# Analyzing this function SHOULD set all nested fields of PageviewAndCount read.
+static pageview_events: table collection of pageview: PageviewAndCount;
+PageviewEmit: function(pageview: PageviewAndCount) {
+  emit pageview_events <- pageview;
+};
+
+
+# Initialize the proto tuple via conversion from bytes, then copy the
+# field to the non-proto tuple.
+container: PageviewContainer = input;
+ProcessPageview(container.pageview, PageviewEmit);
+
+# Tuple comparison sets all fields read.
+type TCInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2,
+};
+
+type TCOuter = proto {
+  t: TCInner @ 1
+};
+
+{
+  ti1: TCInner = B"";
+  ti1.a = 1234;
+  ti1.b = 56.78;
+  to1: TCOuter = B"";
+  to1.t = ti1;
+
+  ti2: TCInner = B"";
+  ti2.a = 9876;
+  ti2.b = 54.32;
+  to2: TCOuter = B"";
+  to2.t = ti2;
+
+  to1 == to2;
+}
+
+
+# Array comparison sets all fields read.
+type ACInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2,
+};
+
+type ACOuter = proto {
+  a: ACInner @ 1
+};
+
+{
+  ai1: ACInner = B"";
+  ai1.a = 1234;
+  ai1.b = 56.78;
+  ao1: ACOuter = B"";
+  ao1.a = ai1;
+  array1: array of ACOuter = new(array of ACOuter, 3, ao1);
+
+  ai2: ACInner = B"";
+  ai2.a = 9876;
+  ai2.b = 54.32;
+  ao2: ACOuter = B"";
+  ao2.a = ai2;
+  array2: array of ACOuter = new(array of ACOuter, 3, ao2);
+
+  array1 != array2;
+}
+
+
+# Map comparison sets all fields read.
+type MCInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2
+};
+
+type MCOuter = proto {
+  m: MCInner @ 1
+};
+
+{
+  mi1: MCInner = B"";
+  mi1.a = 1234;
+  mi1.b = 56.78;
+  mo1: MCOuter = B"";
+  mo1.m = mi1;
+  map1: map [int] of MCOuter = {1:mo1};
+
+  mi2: MCInner = B"";
+  mi2.a = 9876;
+  mi2.b = 54.32;
+  mo2: MCOuter = B"";
+  mo2.m = mi2;
+  map2: map [int] of MCOuter = {2:mo2};
+
+  map1 == map2;
+}
+
+
+# Tuple to string conversion causes all fields to be read.
+type TStrInner = proto {
+  p: bytes @ 1: string,
+  q: float @ 2
+};
+
+type TStrOuter = proto {
+  t: TStrInner @ 1
+};
+
+{
+  inner: TStrInner = B"";
+  inner.p = X"abcdef";
+  inner.q = 0.12345;
+  outer: TStrOuter = B"";
+  outer.t = inner;
+  string(outer);
+}
+
+
+# Array to string conversion causes all fields to be read.
+type AStrInner = proto {
+  p: bytes @ 1: string,
+  q: float @ 2
+};
+
+type AStrOuter = proto {
+  a: AStrInner @ 1
+};
+
+{
+  inner: AStrInner = B"";
+  inner.p = X"abcdef";
+  inner.q = 0.12345;
+  outer: AStrOuter = B"";
+  outer.a = inner;
+  array_of_tuples: array of AStrOuter = new(array of AStrOuter, 3, outer);
+  string(array_of_tuples);
+}
+
+
+# Map to string conversion causes all fields to be read.
+type MStrInner = proto {
+  p: bytes @ 1: string,
+  q: float @ 2
+};
+
+type MStrOuter = proto {
+  m: MStrInner @ 1
+};
+
+{
+  inner: MStrInner = B"";
+  inner.p = X"abcdef";
+  inner.q = 0.12345;
+  outer: MStrOuter = B"";
+  outer.m = inner;
+  map_of_tuples: map [MStrOuter] of int = {outer:1};
+  string(map_of_tuples);
+}
+
+
+# Fingerprint of a tuple causes all fields to be read.
+type TFPInner = proto {
+  x: uint @ 1: int64,
+  y: float @ 2
+};
+
+type TFPOuter = proto {
+  t: TFPInner @ 1
+};
+
+{
+  inner: TFPInner = B"";
+  inner.x = 13579U;
+  inner.y = 24.68;
+  outer: TFPOuter = B"";
+  outer.t = inner;
+  fingerprintof(outer);
+}
+
+
+# Fingerprint of an array causes all fields to be read.
+type AFPInner = proto {
+  x: uint @ 1: int64,
+  y: float @ 2
+};
+
+type AFPOuter = proto {
+  a: AFPInner @ 1
+};
+
+{
+  inner: AFPInner = B"";
+  inner.x = 13579U;
+  inner.y = 24.68;
+  outer: AFPOuter = B"";
+  outer.a = inner;
+  array_of_tuples: array of AFPOuter = new(array of AFPOuter, 3, outer);
+  fingerprintof(array_of_tuples);
+}
+
+
+# Fingerprint of a map causes all fields to be read.
+type MFPInner = proto {
+  x: uint @ 1: int64,
+  y: float @ 2
+};
+
+type MFPOuter = proto {
+  m: MFPInner @ 1
+};
+
+{
+  inner: MFPInner = B"";
+  inner.x = 13579U;
+  inner.y = 24.68;
+  outer: MFPOuter = B"";
+  outer.m = inner;
+  map_of_tuples: map [int] of MFPOuter = {1:outer};
+  fingerprintof(map_of_tuples);
+}
+
+
+# Use of a tuple as a map index causes all fields to be read.
+type TMapInner = proto {
+  r: int @ 1: int32,
+  s: bytes @ 2: string
+};
+
+type TMapOuter = proto {
+  t: TMapInner @ 1
+};
+
+{
+  inner: TMapInner = B"";
+  inner.r = 12345;
+  inner.s = X"6789";
+  outer: TMapOuter = B"";
+  outer.t = inner;
+  map_from_tuple: map [TMapOuter] of int = {:};
+  map_from_tuple[outer] = 1;
+}
+
+
+# Use of an array as a map index causes all fields to be read.
+type AMapInner = proto {
+  r: int @ 1: int32,
+  s: bytes @ 2: string
+};
+
+type AMapOuter = proto {
+  t: AMapInner @ 1
+};
+
+{
+  inner: AMapInner = B"";
+  inner.r = 12345;
+  inner.s = X"6789";
+  outer: AMapOuter = B"";
+  outer.t = inner;
+  array_key: array of AMapOuter = new(array of AMapOuter, 3, outer);
+  map_from_array: map [array of AMapOuter] of int = {:};
+  map_from_array[array_key] = 1;
+}
+
+
+# Use of a map as a map index causes all fields to be read.
+type MMapInner = proto {
+  r: int @ 1: int32,
+  s: bytes @ 2: string
+};
+
+type MMapOuter = proto {
+  t: MMapInner @ 1
+};
+
+{
+  inner: MMapInner = B"";
+  inner.r = 12345;
+  inner.s = X"6789";
+  outer: MMapOuter = B"";
+  outer.t = inner;
+  map_key: map [int] of MMapOuter = {1:outer};
+  map_from_map: map [map [int] of MMapOuter] of int = {:};
+  map_from_map[map_key] = 1;
+}
+
+
+# Use of a tuple as a table index causes all fields to be read.
+type TTableInner = proto {
+  t: int @ 1: int32,
+  u: float @ 2
+};
+
+type TTableOuter = proto {
+  t: TTableInner @ 1
+};
+
+{
+  inner: TTableInner = B"";
+  inner.t = 12345;
+  inner.u = 67.89;
+  outer: TTableOuter = B"";
+  outer.t = inner;
+  tuple_table: table collection [TTableOuter] of int;
+  emit tuple_table[outer] <- 1;
+}
+
+
+# Use of an array as a table index causes all fields to be read.
+type ATableInner = proto {
+  t: int @ 1: int32,
+  u: float @ 2
+};
+
+type ATableOuter = proto {
+  t: ATableInner @ 1
+};
+
+{
+  inner: ATableInner = B"";
+  inner.t = 12345;
+  inner.u = 67.89;
+  outer: ATableOuter = B"";
+  outer.t = inner;
+  array_key: array of ATableOuter = new(array of ATableOuter, 3, outer);
+  array_table: table collection [array of ATableOuter] of int;
+  emit array_table[array_key] <- 1;
+}
+
+
+# Use of a map as a table index causes all fields to be read.
+type MTableInner = proto {
+  t: int @ 1: int32,
+  u: float @ 2
+};
+
+type MTableOuter = proto {
+  t: MTableInner @ 1
+};
+
+{
+  inner: MTableInner = B"";
+  inner.t = 12345;
+  inner.u = 67.89;
+  outer: MTableOuter = B"";
+  outer.t = inner;
+  map_key: map [MTableOuter] of int = {outer:1};
+  map_table: table collection [map [MTableOuter] of int] of int;
+  emit map_table[map_key] <- 1;
+}
+
+
+# Conversion to tuple sets top level fields read.
+type TCompositeInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2,
+};
+
+type TCompositeOuter = proto {
+  t: TCompositeInner @ 1,
+  i: int @ 2: int32
+};
+
+{
+  inner: TCompositeInner = B"";
+  outer: TCompositeOuter = {inner, 0};
+}
+
+
+# Conversion to an array of tuples sets no fields read.
+type ACompositeInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2,
+};
+
+type ACompositeOuter = proto {
+  t: ACompositeInner @ 1,
+  i: int @ 2: int32
+};
+
+{
+  outer: ACompositeOuter = B"";
+  aoo: array of ACompositeOuter = {outer, outer, outer};
+}
+
+
+# Conversion to a map of tuples sets all fields read because the
+# tuple is used as an index.
+type MCompositeInner = proto {
+  a: int @ 1: int32,
+  b: float @ 2,
+};
+
+type MCompositeOuter = proto {
+  t: MCompositeInner @ 1,
+  i: int @ 2: int32
+};
+
+{
+  outer: MCompositeOuter = B"";
+  moo: map [MCompositeOuter] of MCompositeOuter = {outer, outer};
+}
+
+
+# Tests of inproto bits.
+# An assignment like a.b.c.d = x should set the inproto bits for a.b, a.b.c
+# and a.b.c.d.  If we determine that d is a write-only field, it is
+# safe to eliminate the assignment and the setting of inproto(a.b.c.d)
+# because they are never read, but we must preserve the setting of
+# inproto(a.b) and inproto(a.b.c).
+
+# Normal live assignment
+type InProtoLive3 = proto {
+  d: int @ 1: int32
+};
+
+type InProtoLive2 = proto {
+  c: InProtoLive3 @ 1
+};
+
+type InProtoLive1 = proto {
+  b: InProtoLive2 @ 1
+};
+
+a: InProtoLive1 = B"";
+a.b.c.d = 0;
+assert(inproto(a.b.c.d));
+assert(inproto(a.b.c));
+assert(inproto(a.b));
+a.b.c.d;
+
+
+# Print message as a side effect and return the argument value.
+SideEffect: function(msg: string, x: int): int {
+  emit stdout <- format("Side effect: %s", msg);
+  return x;
+};
+
+# Live assignment to repeated fields.
+type InProtoArrayLive3 = proto {
+  h: int = 0 @ 1: int32
+};
+
+type InProtoArrayLive2 = proto {
+  g: array of InProtoArrayLive3 @ 1
+};
+
+type InProtoArrayLive1 = proto {
+  f: array of InProtoArrayLive2 @ 1
+};
+
+e: InProtoArrayLive1 = B"";
+
+tmpLive3: InProtoArrayLive3 = B"";
+tmpLive2: InProtoArrayLive2 = { new(array of InProtoArrayLive3, 1, tmpLive3 ) };
+e.f = new(array of InProtoArrayLive2, 1, tmpLive2 );
+assert(!inproto(e.f[0].g[0].h));
+assert(inproto(e.f[0].g));
+assert(inproto(e.f));
+e.f[0].g[0].h;
+
+clearproto(e.f[0].g);
+clearproto(e.f);
+
+# Side effects in array indices should happen
+e.f[SideEffect("Field f", 0)].g[SideEffect("Field g", 0)].h = 99;
+assert(inproto(e.f[0].g[0].h));
+assert(inproto(e.f[0].g));
+assert(inproto(e.f));
+
+
+# Assignment to a write-only field
+type InProtoDead3 = proto {
+  z: int @ 1: int32
+};
+
+type InProtoDead2 = proto {
+  y: InProtoDead3 @ 1
+};
+
+type InProtoDead1 = proto {
+  x: InProtoDead2 @ 1
+};
+
+w: InProtoDead1 = B"";
+w.x.y.z = 0;
+# We don't test inproto(w.x.y.z) because that would make the field live
+# and defeat the purpose.
+assert(inproto(w.x.y));
+assert(inproto(w.x));
+
+
+# Dead assignment to repeated fields.
+type InProtoArrayDead3 = proto {
+  v: int = 0 @ 1: int32
+};
+
+type InProtoArrayDead2 = proto {
+  u: array of InProtoArrayDead3 @ 1
+};
+
+type InProtoArrayDead1 = proto {
+  t: array of InProtoArrayDead2 @ 1
+};
+
+s: InProtoArrayDead1 = B"";
+
+tmpDead3: InProtoArrayDead3 = B"";
+tmpDead2: InProtoArrayDead2 = { new(array of InProtoArrayDead3, 1, tmpDead3 ) };
+s.t = new(array of InProtoArrayDead2, 1, tmpDead2 );
+assert(inproto(s.t[0].u));
+assert(inproto(s.t));
+
+clearproto(s.t[0].u);
+clearproto(s.t);
+
+# This assignment is dead, but side effects in array indices should happen.
+s.t[SideEffect("Field t", 0)].u[SideEffect("Field u", 0)].v = 101;
+assert(inproto(s.t[0].u));
+assert(inproto(s.t));
+
+# Bug 2274764 was that internal field names were not printed when they were
+# accessed, but none of their leaf fields were.  These tests cover the 10
+# cases of field reference, including not referenced, for both internal and
+# leaf fields.
+
+# Case 1: Neither the internal nor the leaf fields are referenced.
+type Inner1 = {
+  leaf: int  # not referenced
+};
+
+type Outer1 = {
+  inner: Inner1,                 # not referenced
+  inner_array: array of Inner1,  # not referenced
+  inner_map: map[int] of Inner1, # not referenced
+  inner_tuple: { i: Inner1 }     # not referenced
+};
+
+# See comment in fieldreferences.cc before FieldReferenceAnalysis for
+# this list of cases.
+
+# Case 2: a selector expression is used outside of an assignment to the
+# selected field.
+
+# Both leaf and internal fields are referenced.
+type InnerLeaf2A = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type InnerLeaf2B = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterLeaf2 = proto {
+  a: InnerLeaf2A @ 1,  # referenced
+  b: InnerLeaf2B @ 2,  # referenced
+  c: InnerLeaf2A @ 3,  # not referenced
+};
+
+inner2: InnerLeaf2A = B"";
+inner2.leaf;
+outer2: OuterLeaf2 = B"";
+outer2.a;
+outer2.b.leaf;
+
+# Only internal fields are referenced.
+type InnerNoLeaf2 = proto {
+  leaf: int @ 1: int32  # not referenced
+};
+
+type OuterNoLeaf2 = proto {
+  a: InnerNoLeaf2 @ 1, # referenced
+  b: InnerNoLeaf2 @ 2, # not referenced
+};
+
+inner_not2: InnerNoLeaf2 = B"";
+outer_not2: OuterNoLeaf2 = B"";
+outer_not2.a;
+
+# Case 3: array is converted to tuple type
+
+# Both leaf and internal fields are referenced.
+type InnerLeaf3 = proto {
+  leaf: int @ 1: int32 # referenced
+};
+
+type OuterLeaf3 = proto {
+  a: InnerLeaf3 @ 1, # referenced
+  b: InnerLeaf3 @ 2, # referenced
+};
+
+convert(InnerLeaf3, new(array of int, 1, 1));
+inner3: InnerLeaf3 = B"";
+convert(OuterLeaf3, new(array of InnerLeaf3, 2, inner3));
+
+# Only internal fields are referenced.
+type InnerNoLeaf3 = proto {
+  leaf: int @ 1: int32  # not referenced
+};
+
+type OuterNoLeaf3 = proto {
+  a: InnerNoLeaf3 @ 1, # referenced
+  b: InnerNoLeaf3 @ 2, # referenced
+};
+
+inner_not3: InnerNoLeaf3 = B"";
+convert(OuterNoLeaf3, new(array of InnerNoLeaf3, 2, inner_not3));
+
+# Case 4: a type is inferred for an anonymous tuple in variable initialization
+
+# Both leaf and internal fields are referenced.
+type InnerLeaf4 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterLeaf4 = proto {
+  a: InnerLeaf4 @ 1, # referenced
+  b: InnerLeaf4 @ 2, # referenced
+};
+
+inner4: InnerLeaf4 = { 1 };
+outer4: OuterLeaf4 = { inner4, inner4 };
+
+# Only internal fields are referenced.
+type InnerNoLeaf4 = proto {
+  leaf: int @ 1: int32 # not referenced
+};
+
+type OuterNoLeaf4 = proto {
+  a: InnerNoLeaf4 @ 1, # referenced
+  b: InnerNoLeaf4 @ 2, # referenced
+};
+
+inner_not4: InnerNoLeaf4 = B"";
+outer_not4: OuterNoLeaf4 = { inner_not4, inner_not4 };
+
+# Case 5: a composite is assigned to a tuple.
+
+# Both leaf and internal fields are referenced.
+type InnerLeaf5 = proto {
+  leaf: int @ 1: int32 # referenced
+};
+
+type OuterLeaf5 = proto {
+  a: InnerLeaf5 @ 1, # referenced
+  b: InnerLeaf5 @ 2, # referenced
+};
+
+inner5: InnerLeaf5;
+inner5 = { 1 };
+outer5: OuterLeaf5;
+outer5 = { inner5, inner5 };
+
+# Only internal fields are referenced.
+type InnerNoLeaf5 = proto {
+  leaf: int @ 1: int32  # not referenced
+};
+
+type OuterNoLeaf5 = proto {
+  a: InnerNoLeaf5 @ 1, # referenced
+  b: InnerNoLeaf5 @ 2, # referenced
+};
+
+inner_not5: InnerNoLeaf5 = B"";
+outer_not5: OuterNoLeaf5;
+outer_not5 = { inner_not5, inner_not5 };
+
+# In the remaining cases, all tuple fields will be referenced recursively.
+# So the test changes to using either the outer tuple type (all fields
+# referenced) or one field of the outer tuple type (that field and leaf
+# referenced).
+
+# Case 6: can't create a predefined tuple here.
+
+# Case 7: tuple is tested for equality.
+
+# All fields are referenced recursively.
+type InnerAll7 = proto {
+  leaf: int @ 1: int32
+};
+
+type OuterAll7 = proto {
+  a: InnerAll7 @ 1, # referenced
+  b: InnerAll7 @ 2, # referenced
+  c: InnerAll7 @ 3  # referenced
+};
+
+outer7a: OuterAll7 = B"";
+outer7b: OuterAll7 = B"";
+outer7a == outer7b;
+
+# Some fields of outer tuple and all fields of inner tuple are referenced.
+type InnerSome7 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterSome7 = proto {
+  a: InnerSome7 @ 1, # referenced
+  b: InnerSome7 @ 2, # referenced
+  c: InnerSome7 @ 3  # not referenced
+};
+
+outer_some7a: OuterSome7 = B"";
+outer_some7b: OuterSome7 = B"";
+outer_some7a.a == outer_some7b.b;
+
+# Case 8: tuple is an index, element or weight of an output type used in
+# an emit.
+
+# All fields are referenced recursively.
+type InnerAll8 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterAll8 = proto {
+  a: InnerAll8 @ 1, # referenced
+  b: InnerAll8 @ 2, # referenced
+};
+
+table_all8: table collection of OuterAll8;
+
+outer8: OuterAll8 = B"";
+emit table_all8 <- outer8;
+
+# Some fields of outer tuple and all fields of inner tuple are referenced.
+type InnerSome8 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterSome8 = proto {
+  a: InnerSome8 @ 1, # referenced
+  b: InnerSome8 @ 2, # not referenced
+};
+
+table_some8: table collection of InnerSome8;
+
+outer_some8: OuterSome8 = B"";
+emit table_some8 <- outer_some8.a;
+
+# Case 9: tuple is passed to an intrinsic of Kind INTRINSIC or FINGERPRINTOF
+
+# All fields are referenced recursively.
+type InnerAll9 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterAll9 = proto {
+  a: InnerAll9 @ 1, # referenced
+  b: InnerAll9 @ 2, # referenced
+};
+
+outer9: OuterAll9 = B"";
+fingerprintof(outer9);
+
+# Some fields of outer tuple and all fields of inner tuple are referenced.
+type InnerSome9 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterSome9 = proto {
+  a: InnerSome9 @ 1, # not referenced
+  b: InnerSome9 @ 2, # referenced
+};
+
+outer_some9: OuterSome9 = B"";
+fingerprintof(outer_some9.b);
+
+# Case 10: tuple is the source type of a conversion.
+
+# All fields are referenced recursively.
+type InnerAll10 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterAll10 = proto {
+  a: InnerAll10 @ 1, # referenced
+  b: InnerAll10 @ 2, # referenced
+};
+
+outer10: OuterAll10 = B"";
+string(outer10);
+
+# Some fields of outer tuple and all fields of inner tuple are referenced.
+type InnerSome10 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterSome10 = proto {
+  a: InnerSome10 @ 1, # not referenced
+  b: InnerSome10 @ 2, # referenced
+};
+
+outer_some10: OuterSome10 = B"";
+string(outer_some10.b);
+
+# Case 11: tuple is used as the key of a map
+
+# All fields are referenced recursively.
+type InnerAll_11 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterAll_11 = proto {
+  a: InnerAll_11 @ 1, # referenced
+  b: InnerAll_11 @ 2, # referenced
+};
+
+map_all: map [OuterAll_11] of int = {:};
+outer_all_11: OuterAll_11 = B"";
+map_all[outer_all_11] = 1;
+
+# Some fields of outer tuple and all fields of inner tuple are referenced.
+type InnerSome11 = proto {
+  leaf: int @ 1: int32  # referenced
+};
+
+type OuterSome11 = proto {
+  a: InnerSome11 @ 1, # not referenced
+  b: InnerSome11 @ 2, # referenced
+};
+
+map_some: map [InnerSome11] of int = {:};
+outer_some11: OuterSome11 = B"";
+map_some[outer_some11.b] = 1;
+
+
+# Add a few more tests of map types that should cause tuple field references.
+
+# variable declaration
+type Index1 = proto {
+  a: int @ 1: int64
+};
+index1: Index1 = B"";
+
+m1: map[Index1] of bool;
+
+
+# type declaration
+type Index2 = proto {
+  a: int @ 1: int64
+};
+index2: Index2 = B"";
+
+type Map2 = map[Index2] of bool;
+
+
+# nested in type declaration (virtually identical to TupleWithMap)
+type Index3 = proto {
+  a: int @ 1: int64
+};
+index3: Index3 = B"";
+
+type MapContainer = { m: map[Index3] of bool };
+
+
+# in a static variable in a type declaration
+type Index4 = proto {
+  a: int @ 1: int64
+};
+index4: Index4 = B"";
+
+type StaticVarContainer = { static m: map[Index4] of bool = {:} };
+
+
+# in conversions
+type Index5 = proto {
+  a: int @ 1: int64
+};
+index5: Index5 = B"";
+convert(map[Index5] of Index5, {index5, index5});
+
+
+# in new
+type Index6 = proto {
+  a: int @ 1: int64
+};
+index6: Index6 = B"";
+
+new(array of map[Index6] of bool, 1, {:});
+
+
+# in function declarations
+type Index7 = proto {
+  a: int @ 1: int64
+};
+index7: Index7 = B"";
+
+fm1: function(m: map[Index7] of bool) {};
+
+fm1({:});
+
+
+type Index8 = proto {
+  a: int @ 1: int64
+};
+index8: Index8 = B"";
+
+fm2: function(): map[Index8] of bool {
+  return {:};
+};
+map8: map[Index8] of bool = fm2();
+
+
+# Recursive types require care when setting the "tested_for_equality" bit.
+# Check that there are no infinite loops (see also base/goodrecursivetypes.szl).
+
+type RecursiveType1 = { m: map[RecursiveType1] of bool };
+
+# Ensure that fields are marked after the tuple type is finished (i.e. field
+# n is part of the type).
+type RecursiveType2 = { m: map[RecursiveType2] of bool, n: int };
+
+type RecursiveType3 = { m: map[array of RecursiveType3] of bool};
+
+type RecursiveType4 = { m: map[{ RecursiveType4 }] of bool};
+
+
+# Test specifically that recursive array and map types do not cause infinite
+# loops in SetAllFieldsRead.
+
+type RecursiveArray = array of RecursiveArray;
+recursive_array: RecursiveArray = {};
+fingerprintof(recursive_array);
+
+type RecursiveMap1 = map [RecursiveMap1] of bool;
+recursive_map1: RecursiveMap1 = {:};
+fingerprintof(recursive_map1);
+
+type RecursiveMap2 = map [bool] of RecursiveMap2;
+recursive_map2: RecursiveMap2 = {:};
+fingerprintof(recursive_map2);
+
+type RecursiveMap3 = map [RecursiveMap3] of RecursiveMap3;
+recursive_map3: RecursiveMap3 = {:};
+fingerprintof(recursive_map3);
+

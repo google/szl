@@ -1,0 +1,82 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Ill-formed intrinsic function calls that generate compile-time errors.
+
+s: string = "hello";
+b: bytes;
+a: array of int = {1, 2, 3, 4};
+
+l: int;
+
+l = len(4);
+l = len(2.7);
+l = len();
+l = len("hi", "ho");
+b = len("hi");
+l = len;
+
+str: string;
+
+l = load("hello", 4);
+str = load(4);
+a = lowercase(s);
+l = regex(int);
+str = regex;
+
+a = sawzall("hello", rest "[0-9]+");
+a = saw(7, "[0-9]+");
+a = sawn(7);
+a = sawzall();
+a = sawzall;
+
+# arg count checks
+l = now(7);
+l = DEBUG();
+l = dayofmonth();
+l = dayofweek();
+l = dayofyear();
+l = hourof();
+l = len();
+l = minuteof();
+l = monthof();
+l = secondsof();
+l = yearof();
+
+l = DEBUG("unknown");
+l = DEBUG("ref");
+l = DEBUG("ref", 7);
+l = DEBUG("ref", "hi", "ho");
+
+l = dayofmonth(1);
+
+# rest variable must not be static
+static r: string = "";
+sawzall("hello", rest r);
+
+# trailing commas
+strfind("foo", "foobar",);
+
+# test inproto error messages
+l = inproto();
+l = inproto(l);
+l = inproto(l, l);
+t: { x: int } = { 7 };
+l = inproto(t.x);

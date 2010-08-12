@@ -1,0 +1,110 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+si: string = "1 -1 234 077 +0x89ab";
+asi: array of string = sawzall(si, regex(int));
+ai: array of int = sawzall(si, regex(int));
+assert(len(asi) == 5 && len(ai) == 5);
+expecti: map[string] of int = { "1" : 1, "-1" : -1, "234" : 234,
+                                "077" : 63, "+0x89ab" : 35243 };
+for (i: int = 0; i < len(ai); i++)
+  assert(expecti[asi[i]] == ai[i]);
+
+sf: string = "1 1.2 .54 -1.2E3 +.3e+3";
+asf: array of string = sawzall(sf, regex(float));
+af: array of float = sawzall(sf, regex(float));
+assert(len(asf) == 5 && len(af) == 5);
+expectf: map[string] of float = { "1" : 1.0, "1.2" : 1.2, ".54" : 0.54,
+                                  "-1.2E3" : -1200.0, "+.3e+3" : 300.0 };
+for (i: int = 0; i < len(ai); i++)
+  assert(expectf[asf[i]] == af[i]);
+
+itab: array of { s: string, i: int, ok: bool } =  {
+  {"1", 1, true},
+  {"-1", -1, true},
+  {"+1", 1, true},
+  {"10", 10, true},
+  {"010", 010, true},
+  {"0x1ab", 0x1ab, true},
+  {"07", 7, true},
+
+  {"", 1, false},
+  {"-", 1, false},
+  {"+", 1, false},
+  {" 1 ", 1, false},
+  {" abc ", 1, false},
+  {" 1234456 ", 1, false},
+  {" -1234456 ", 1, false},
+};
+
+
+for (i: int = 0; i < len(itab); i++) {
+  v: array of int = saw(itab[i].s, "^" + regex(int) + "$");
+  assert((len(v) == 1) == itab[i].ok);
+  assert(!itab[i].ok || v[0] == itab[i].i);
+}
+
+# special case for bad octal
+{
+  a: array of string = sawzall("038", regex(int));
+  assert(len(a) == 2 && a[0] == "03" && a[1] == "8");
+}
+
+ftab: array of { s: string, f: float, ok: bool } = {
+  {"1", 1.0, true},
+  {"-1", -1.0, true},
+  {"+1", 1.0, true},
+  {"1.0", 1.0, true},
+  {"1.05", 1.05, true},
+  {"1.05e0", 1.05, true},
+  {"1.05e1", 10.5, true},
+  {".05", .05, true},
+  {"1e3", 1e3, true},
+  {"1.e3", 1.e3, true},
+  {"1.02e3", 1.02e3, true},
+  {"1.02e-3", 1.02e-3, true},
+  {"1.02E-3", 1.02E-3, true},
+  {"1.02E+3", 1.02E+3, true},
+  {".02E+3", .02E+3, true},
+
+  {"-", 1.0, false},
+  {"+", 1.0, false},
+  {" 1 ", 1.0, false},
+  {" abc ", 1.0, false},
+  {"e4", 1.0, false},
+  {" 1234.456 ", 1.0, false},
+  {" -1234.456 ", 1.0, false}
+};
+
+for (i: int = 0; i < len(ftab); i++) {
+  v: array of float = saw(ftab[i].s, "^" + regex(float)+"$");
+  assert((len(v) == 1) == ftab[i].ok);
+  assert(!ftab[i].ok || v[0] == ftab[i].f);
+}
+
+# Check bases
+assert(regex(int) == regex(int, 0));
+
+s: string ="0123456789abcdef";
+signs: array of string = { "", "-", "+" };
+for (i: int = 0; i < len(signs); i++) {
+  t: string = signs[i] + s;
+  # Base 0 is odd: it uses ANSI C conventions so the number looks octal.
+  assert(matchstrs(regex(int), t)[0] == signs[i] + s[0:8]);
+  assert(matchstrs(regex(int, 0), t)[0] == signs[i] + s[0:8]);
+  assert(matchstrs(regex(int, 8), t)[0] == signs[i] + s[0:8]);
+  assert(matchstrs(regex(int, 10), t)[0] == signs[i] + s[0:10]);
+  assert(matchstrs(regex(int, 16), t)[0] == signs[i] + s[0:16]);
+}

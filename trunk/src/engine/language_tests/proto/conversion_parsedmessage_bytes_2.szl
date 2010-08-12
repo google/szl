@@ -1,0 +1,67 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+# two similar tuples: one is a parsedmessage, the other is not
+type PM0 = parsedmessage {
+  x: int @ 1: int64,
+  y: float @ 2: float,
+};
+
+type T0 = {
+  x: int @ 1: int64,
+  y: float @ 2: float,
+};
+
+
+# try various permutations of above two types
+type PM1 = parsedmessage {
+  x: PM0 @ 1,
+  y: array of PM0 @ 2,
+};
+
+type PM2 = parsedmessage {
+  x: T0 @ 1,
+  y: array of PM0 @ 2,
+};
+
+type PM3 = parsedmessage {
+  x: PM0 @ 1,
+  y: array of T0 @ 2,
+};
+
+type PM4 = parsedmessage {
+  x: T0 @ 1,
+  y: array of T0 @ 2,
+};
+
+
+# test that proto conversion is different for each permutation
+p1: PM1 = { { 0, 0.5 }, 
+            { { 1, 1.5 }, { 2, 2.5 }, { 3, 3.5 } } };
+p2: PM2 = { { 0, 0.5 }, 
+            { { 1, 1.5 }, { 2, 2.5 }, { 3, 3.5 } } };
+p3: PM3 = { { 0, 0.5 }, 
+            { { 1, 1.5 }, { 2, 2.5 }, { 3, 3.5 } } };
+p4: PM4 = { { 0, 0.5 }, 
+            { { 1, 1.5 }, { 2, 2.5 }, { 3, 3.5 } } };
+
+assert(bytes(p1) != bytes(p2), "bytes(p1) != bytes(p2)");
+assert(bytes(p1) != bytes(p3), "bytes(p1) != bytes(p3)");
+assert(bytes(p1) != bytes(p4), "bytes(p1) != bytes(p4)");
+assert(bytes(p2) != bytes(p3), "bytes(p2) != bytes(p3)");
+assert(bytes(p2) != bytes(p4), "bytes(p2) != bytes(p4)");
+assert(bytes(p3) != bytes(p4), "bytes(p3) != bytes(p4)");

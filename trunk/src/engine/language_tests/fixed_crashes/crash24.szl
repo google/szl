@@ -1,0 +1,56 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# When an array conversion operation failed because one of the element
+# conversions failed, the abandoned result array was incompletely
+# initialized.  That was harmless unless the array was inspected by GC,
+# at which point the uninitialized slots could be mistaken for pointers
+# resulting a segfault or other error.
+#
+# This did not happen in simple cases in a compiler built in debug mode
+# because the debug memory allocator fills a newly allocated block
+# with 0xabababababababab which is interpreted as a small integer (smi)
+# and harmlessly ignored.  So we do a little allocation during static
+# initialization; when GC is run after static initialization the unused
+# (but no longer abab...) memory will be recovered and allocated for the
+# result of the array conversion.
+#
+# This will work correctly without --memory_limit, but will run a lot
+# faster with a reasonable limit such as 100MB.
+
+static f: function(): int {
+  # allocate just to initialize chunk memory; will have zero ref counts
+  # after end-of-statics GC.
+  for (i: int = 0; i < 5; i++)
+    new(array of string, 1000, "abc");
+  return 0;
+};
+
+static i: int = f();
+
+g: function() {
+  # Create a partially initialized array.
+  x: array of string = new(array of string, 1000, "0");
+  x[2] = "a";
+  y: array of int = convert(array of int, x, 10);
+
+  # Allocate enough to require GC when --memory_limit is sufficiently low.
+  # The code below allocates about 80MB, so a limit of 50MB should work.
+  # The resulting GC will cause the array elements to be examined.
+  for (i: int = 0; i < 10; i++)
+    new(array of float, 1<<20, 0.0);  # 8 MB per call
+};
+
+g();

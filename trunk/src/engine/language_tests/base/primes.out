@@ -1,0 +1,118 @@
+type predicate = function(): bool;
+type action = function();
+if_true: function(cond: predicate, then: action) {
+	if (cond())
+		then();
+}
+;
+while_true: function(cond: predicate, body: action) {
+	if_true(cond, function() {
+	body();
+	while_true(cond, body);
+}
+);
+}
+;
+type T = int;
+eql: function(x: int, y: int): bool {
+	return x == y;
+}
+;
+lss: function(x: int, y: int): bool {
+	return x < y;
+}
+;
+not_: function(x: bool): bool {
+	return !x;
+}
+;
+and_: function(x: predicate, y: predicate): bool {
+	result: bool = false;
+	if_true(x, function() {
+	result = y();
+}
+);
+	return result;
+}
+;
+add1: function(x: int): int {
+	return x + 1;
+}
+;
+sub1: function(x: int): int {
+	return x - 1;
+}
+;
+add: function(x: int, y: int): int {
+	result: int = y;
+	if_true(function(): bool {
+	return lss(0, x);
+}
+, function() {
+	result = add1(add(sub1(x), y));
+}
+);
+	return result;
+}
+;
+mul: function(x: int, y: int): int {
+	result: int = 0;
+	if_true(function(): bool {
+	return lss(0, x);
+}
+, function() {
+	result = add(mul(sub1(x), y), y);
+}
+);
+	return result;
+}
+;
+mod: function(x: int, y: int): int {
+	return x % y;
+}
+;
+is_prime: function(x: int): bool {
+	result: bool = eql(x, 2);
+	if_true(function(): bool {
+	return not_(eql(mod(x, 2), 0));
+}
+, function() {
+	d: int = 3;
+	while_true(function(): bool {
+	return and_(function(): bool {
+	return not_(lss(x, mul(d, d)));
+}
+, function(): bool {
+	return not_(eql(mod(x, d), 0));
+}
+);
+}
+, function() {
+	d = add(d, 2);
+}
+);
+	result = lss(x, mul(d, d));
+}
+);
+	return result;
+}
+;
+i: int = 2;
+n: int = 200;
+expected_primes: array of int = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199};
+actual_primes: array of int = {};
+while_true(function(): bool {
+	return lss(i, n);
+}
+, function() {
+	if_true(function(): bool {
+	return is_prime(i);
+}
+, function() {
+	actual_primes = actual_primes + {i};
+}
+);
+	i = add1(i);
+}
+);
+assert(expected_primes == actual_primes);

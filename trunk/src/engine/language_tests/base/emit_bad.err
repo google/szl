@@ -1,0 +1,16 @@
+base/emit_bad.szl:27: output variable index no. 1, ["string"] of type string, should be int
+base/emit_bad.szl:28: not enough indices (output variable defines 1 dimension(s))
+base/emit_bad.szl:29: too many indices (output variable defines only 1 dimensions)
+base/emit_bad.szl:32: value for 'emit' is 1.0 (float); should be of type int
+base/emit_bad.szl:33: value for 'emit' is 1 (int); should be of type string
+base/emit_bad.szl:34: value for 'emit' is "not bytes" (string); should be of type bytes
+base/emit_bad.szl:37: weight for 'emit' is 1 (int); should be of type float
+base/emit_bad.szl:38: weight of type float expected
+base/emit_bad.szl:39: weight not allowed (no weight specification in output type)
+base/emit_bad.szl:43: i is not an output variable
+base/emit_bad.szl:44: 'set' does not allow 'weight' specification
+base/emit_bad.szl:45: twillnotparse is not an output variable
+base/emit_bad.szl:48: donotexiwst undeclared
+base/emit_bad.szl:51: '<-' expected; found '1'
+base/emit_bad.szl:52: ';' expected; found 'emit'
+base/emit_bad.szl:53: identifier expected; found '<-'

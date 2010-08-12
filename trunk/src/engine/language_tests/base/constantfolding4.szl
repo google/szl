@@ -1,0 +1,49 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Constant folding of miscellaneous non-"Binary" operators.
+# Relies on getting a warning for divide by zero, so we can tell
+# that the folding must actually have occurred.
+# Also tests generation of warnings for folding operations that fail.
+# (This would be a reasonable place to put a test for RuntimeGuard,
+# but since the only use of RuntimeGuard is for the array to tuple conversion
+# and we do not currently have constant arrays nor array length propagation,
+# RuntimeGuard will never be constant folded.)
+
+if (nrand(5) == 17) {
+  1/(int("45678"[3:$],10) - 79);
+  1/(int("45678"[3:$],10) - 78);
+
+  1/("abcde"[3] - 'e');
+  1/("abcde"[3] - 'd');
+  1/("abcde"[5] - 'd');
+
+  1/int(new(string, 3, 'x') == "xxx");
+  1/int(new(string, 3, 'x') != "xxx");
+  1/int(new(string, -1, 'x') != "xxx");
+
+  1/int("abcde"[2:4] == "cd");
+  1/int("abcde"[2:4] != "cd");
+  1/int("abcde"[2:6] != "cd");
+
+  x: int = -2;
+  x++;
+  x++;
+  1/x;
+  y: int = 2;
+  y--;
+  y--;
+  1/y;
+}

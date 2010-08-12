@@ -1,0 +1,106 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+mib: map[int] of bool = new(map[int] of bool);
+mii: map[int] of int = new(map[int] of int);
+mfi: map[float] of int = new(map[float] of int);
+mif: map[int] of float = new(map[int] of float);
+msi: map[string] of int = new(map[string] of int);
+mis: map[int] of string = new(map[int] of string);
+mss: map[string] of string = new(map[string] of string);
+msa: map[string] of array of string = new(map[string] of array of string);
+type T = {s: string, f: float};
+mit: map[int] of T = {:};  # test this notation
+mti: map[T] of int = {:};
+
+count: int = 1000;
+
+for(i: int = 0; i < count; i++){
+  s: string = i;
+  f: float = i;
+  t: T = { s, f };
+  mib[i] = (i != 0);
+  mii[i] = 10 * i;
+  mfi[float(i)] = 10 * i;
+  mif[i] = 10.0 * f;
+  mis[i] = s;
+  msi[string(i)] = i;
+  mss[string(i)] = string(10 * i);
+  msa[string(i)] = { string(10 * i), string(10 * i) };
+  mit[i] = t;
+  mti[t] = i;
+}
+
+kmib: array of int = keys(mib);
+kmii: array of int = keys(mii);
+kmfi: array of float = keys(mfi);
+kmif: array of int = keys(mif);
+kmsi: array of string = keys(msi);
+kmis: array of int = keys(mis);
+kmss: array of string = keys(mss);
+kmsa: array of string = keys(msa);
+kmit: array of int = keys(mit);
+kmti: array of T = keys(mti);
+
+assert(len(kmib) == count);
+assert(len(kmii) == count);
+assert(len(kmfi) == count);
+assert(len(kmif) == count);
+assert(len(kmsi) == count);
+assert(len(kmis) == count);
+assert(len(kmss) == count);
+assert(len(kmsa) == count);
+assert(len(kmit) == count);
+assert(len(kmti) == count);
+
+# arrays are good. now make sure each key is valid
+# (TODO: no test for completeness, just presence)
+for(i: int = 0; i < count; i++){
+  s: string = i;
+  f: float = i;
+  t: T = { s, f };
+  assert(def(mib[kmib[i]]));
+  assert(def(mii[kmii[i]]));
+  assert(def(mfi[kmfi[i]]));
+  assert(def(mif[kmif[i]]));
+  assert(def(mis[kmis[i]]));
+  assert(def(msi[kmsi[i]]));
+  assert(def(mss[kmss[i]]));
+  assert(def(msa[kmsa[i]]));
+  assert(def(mit[kmit[i]]));
+  assert(def(mti[kmti[i]]));
+}
+
+Mii: map[int] of int = { 1: 1, 2: 2, 3: 3, 4: 4 };
+Mfi: map[float] of int = { 1.0: 1, 2.0: 2, 3.0: 3, 4.0: 4 };
+Mif: map[int] of float = { 1: 1.0, 2: 2.0, 3: 3.0, 4: 4.0 };
+Msi: map[string] of int = { "1": 1, "2": 2, "3": 3, "4": 4 };
+Mis: map[int] of string = { 1: "1", 2: "2", 3: "3", 4: "4" };
+Mss: map[string] of string = { "1": "1", "2": "2", "3": "3", "4": "4" };
+Msa: map[string] of array of string = { "1": { "1", "1" }, "2": { "2","2" },
+                                        "3": { "3", "3" }, "4": { "4","4" } };
+Mti: map[{string,float}] of int = { { "1", 1.0 }: 1, { "2", 2.0 }: 2,
+                                    { "3", 3.0 }: 3, { "4", 4.0 }: 4 };
+
+# some prints, checked by eyeball, for final sanity check.
+assert(string(keys(Mii)) == `{ 1, 2, 3, 4 }`);
+assert(string(keys(Mfi)) == `{ 1.0, 2.0, 3.0, 4.0 }`);
+assert(string(keys(Mif)) == `{ 1, 2, 3, 4 }`);
+assert(string(keys(Msi)) == `{ "1", "2", "3", "4" }`);
+assert(string(keys(Mis)) == `{ 1, 2, 3, 4 }`);
+assert(string(keys(Mss)) == `{ "1", "2", "3", "4" }`);
+assert(string(keys(Msa)) == `{ "1", "2", "3", "4" }`);
+assert(string(keys(Mti)) ==
+       `{ { "1", 1.0 }, { "2", 2.0 }, { "3", 3.0 }, { "4", 4.0 } }`);

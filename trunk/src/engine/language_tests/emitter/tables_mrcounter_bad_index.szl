@@ -1,0 +1,37 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Mrcounter tables with invalid indices that fail with --table_output:
+#   "failed to create emitter for table OMRiX: mrcounter cannot be indexed".
+#
+# Note: this program will die after the first bad emitter, but all causing
+#       the same error are listed here for documentation purposes.
+
+OMRis: table mrcounter[s: string] of e: int;
+OMRii: table mrcounter[i: int] of e: int;
+OMRif: table mrcounter[f: float] of e: int;
+OMRip: table mrcounter[p: fingerprint] of e: int;
+OMRit: table mrcounter[t: time] of e: int;
+OMRix: table mrcounter[x: bytes] of e: int;
+OMRib: table mrcounter[b: bool] of e: int;
+OMRiT: table mrcounter[T: { s: string, i: int, f: float }] of e: int;
+OMRiP: table mrcounter[P: proto { b: bytes, i: int, f: float }] of e: int;
+OMRiA: table mrcounter[A: array of int] of e: int;
+OMRiM: table mrcounter[M: map[string] of int] of e: int;
+

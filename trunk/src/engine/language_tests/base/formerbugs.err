@@ -1,0 +1,23 @@
+base/formerbugs.szl:18: cannot convert {} (type {}) to fingerprint
+base/formerbugs.szl:19: cannot convert {:} (type incomplete) to fingerprint
+base/formerbugs.szl:21: cannot convert {:} (type incomplete) to string
+base/formerbugs.szl:24: incompatible argument list for max(): candidates are:
+    max: function(a: float, b: float): float
+    max: function(a: int, b: int): int
+    max: function(a: time, b: time): time
+    max: function(a: string, b: string): string
+base/formerbugs.szl:25: incompatible argument list for min(): candidates are:
+    min: function(a: float, b: float): float
+    min: function(a: int, b: int): int
+    min: function(a: time, b: time): time
+    min: function(a: string, b: string): string
+base/formerbugs.szl:29: wrong number of arguments to keys()
+base/formerbugs.szl:33: keys() must be applied to a map; a is of type array of int
+base/formerbugs.szl:53: field type {x: int, s: string} for field f1 must be a proto type
+base/formerbugs.szl:58: field type T1 for field f1 must be a proto type
+base/formerbugs.szl:75: no parameters allowed for conversion convert(T, convert(bytes, ""))
+base/formerbugs.szl:76: no parameters allowed for conversion convert(bytes, p)
+base/formerbugs.szl:81: EventIdMessage undeclared
+base/formerbugs.szl:82: SlimImpressionMessage undeclared
+base/formerbugs.szl:90: 'rest' clause must be last entry in sawzall() call
+base/formerbugs.szl:91: 'rest' clause must be last entry in sawn() call

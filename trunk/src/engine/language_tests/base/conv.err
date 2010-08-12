@@ -1,0 +1,43 @@
+base/conv.szl:39: warning: true already of type bool; conversion suppressed
+base/conv.szl:58: warning: B"hello" already of type bytes; conversion suppressed
+base/conv.szl:98: warning: 0x0000000000000001P already of type fingerprint; conversion suppressed
+base/conv.szl:120: warning: 2.7 already of type float; conversion suppressed
+base/conv.szl:155: warning: 1234 already of type int; conversion suppressed
+base/conv.szl:165: warning: no base provided for conversion to integer; base will be input-dependent
+base/conv.szl:166: warning: no base provided for conversion to integer; base will be input-dependent
+base/conv.szl:210: warning: "adfadf" already of type string; conversion suppressed
+base/conv.szl:250: warning: 189302400000000T already of type time; conversion suppressed
+base/conv.szl:296: warning: 0U already of type uint; conversion suppressed
+base/conv.szl:70: warning: unknown encoding "bad encoding" for conversion of int to bytes
+base/conv.szl:79: warning: unknown encoding for string to bytes
+base/conv.szl:89: warning: unknown encoding "bad encoding" for conversion of uint to bytes
+base/conv.szl:106: warning: string "" contains no int
+base/conv.szl:107: warning: string "not a fingerprint" contains no int
+base/conv.szl:108: warning: illegal base
+base/conv.szl:127: warning: string "" contains no float
+base/conv.szl:128: warning: string "not a float" contains no float
+base/conv.szl:147: warning: unknown encoding "bad encoding" for conversion of bytes to int
+base/conv.szl:165: warning: string "" contains no int
+base/conv.szl:166: warning: string "true" contains no int
+base/conv.szl:167: warning: string "not an int" contains no int
+base/conv.szl:168: warning: string "4" contains no int
+base/conv.szl:169: warning: string "42." contains extra chars
+base/conv.szl:170: warning: string "0x0" contains extra chars
+base/conv.szl:171: warning: illegal base
+base/conv.szl:172: warning: illegal base
+base/conv.szl:193: warning: unknown encoding for conversion of bytes to string
+base/conv.szl:207: warning: illegal base
+base/conv.szl:208: warning: illegal base
+base/conv.szl:215: warning: date conversion failed: invalid time or time zone "bad timezone" was not recognized
+base/conv.szl:223: warning: illegal base
+base/conv.szl:224: warning: illegal base
+base/conv.szl:247: warning: date conversion failed ("" is not an accepted date string) or time zone "" was not recognized
+base/conv.szl:248: warning: date conversion failed ("not a time" is not an accepted date string) or time zone "" was not recognized
+base/conv.szl:268: warning: unknown encoding "bad encoding" for conversion of bytes to uint
+base/conv.szl:286: warning: string "" contains no uint
+base/conv.szl:287: warning: string "not a uint" contains no uint
+base/conv.szl:288: warning: string "4" contains no uint
+base/conv.szl:289: warning: string "42." contains extra chars
+base/conv.szl:290: warning: string "0x0" contains extra chars
+base/conv.szl:291: warning: illegal base
+base/conv.szl:292: warning: illegal base

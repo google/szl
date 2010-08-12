@@ -1,0 +1,571 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Well-formed function declarations
+
+#
+# Helper types
+#
+
+type T0 = { x: array of int, y: map [key: string] of value: string };
+
+type M0 = map [key: string] of value: T0;
+type M1 = map [key: string] of value: map [key: string]
+                            of map [key: string]
+                            of int;
+
+type Ab = array of bool;
+type Aby = array of bytes;
+type Af = array of float;
+type Afg = array of fingerprint;
+type At = array of time;
+type AM0 = array of map [key: string]
+                 of value: T0;
+type AM1 = array of map [key: string]
+                 of value: map [key: string]
+                 of map [key: string]
+                 of int;
+type AT0 = array of { x: array of int,
+                      y: map [key: string] of value: string };
+
+#
+# Function declarations with different parameter types
+#
+
+x1: function () {
+};
+
+# Without return types and a single parameter
+x2: function(x: bool) {
+};
+
+x3: function(x: bytes) {
+};
+
+x4: function(x: int) {
+};
+
+x5: function(x: float) {
+};
+
+x6: function(x: time) {
+};
+
+x7: function(x: fingerprint) {
+};
+
+x8: function(x: string) {
+};
+
+# Using type_name
+x9: function(x: T0) {
+};
+
+x10: function(x: M0) {
+};
+
+# Using complex tuple types
+x11: function(x: { x: array of int,
+                   y: map [key: string] of value: string }) {
+};
+
+# Complex map types
+x12: function(x: map [key: string] of value: T0) {
+};
+
+x13: function(x: map [key: string] of value: map [key: string]
+                                   of map [key: string]
+                                   of int) {
+};
+
+# Complex array types
+x15: function(x: array of bool) {
+};
+
+x16: function(x: array of bytes) {
+};
+
+x17: function(x: array of float) {
+};
+
+x18: function(x: array of fingerprint) {
+};
+
+x19: function(x: array of time) {
+};
+
+x20: function(x: array of map [key: string]
+                       of value: T0) {
+};
+
+x21: function(x: array of map [key: string]
+                       of value: map [key: string]
+                       of map [key: string]
+              of int) {
+};
+
+x22: function(x: array of { x: array of int,
+                            y: map [key: string] of value: string} ) {
+};
+
+# Without return types and multiple parameters
+x23: function(a: bool,
+              b: bytes,
+              c: int,
+              d: float,
+              e: time,
+              f: fingerprint,
+              g: string) {
+};
+
+x24: function(a000: bool,
+              a001: bytes,
+              a002: int,
+              a003: float,
+              a004: time,
+              a005: fingerprint,
+              a006: string,
+              a007: T0,
+              a008: M0,
+              a009: M1,
+              a010: Ab,
+              a011: Aby,
+              a012: Af,
+              a013: Afg,
+              a014: At,
+              a015: AM0,
+              a016: AM1,
+              a017: AT0,
+              a018: { x: array of int,
+                      y: map [key: string] of value: string },
+              a019: map [key: string] of value: T0,
+              a020: map [key: string] of value: map [key: string]
+                                      of map [key: string]
+                                      of int,
+              a021: array of bool,
+              a022: array of bytes,
+              a023: array of float,
+              a024: array of fingerprint,
+              a025: array of time,
+              a026: array of map [key: string] of value: T0,
+              a027: array of map [key: string]
+                          of value: map [key: string]
+                          of map [key: string] of int,
+              a028: array of { x: array of int,
+                               y: map [key: string] of value: string }
+              ) {
+};
+
+
+# Collection output types
+type OC0 = table collection of string;
+x25: function(x: OC0);
+x26: function(x: table collection of string);
+x27: function(x: table collection [query: string] of { cputime: float });
+
+# Sum output types
+type OSM0 = table sum of int;
+x28: function(x: OSM0);
+x29: function(x: table sum of int);
+x30: function(x: table sum [country: string] of { revenue: float });
+
+# Sample output types
+x31: function(x: table sample(100)[country: string]
+              of { query: string, revenue: float });
+
+# Function declarations using unique output types
+x32: function(x: table unique(1000) of { query: string });
+
+# Function declarations using top output types
+x33: function(x: table top(10) of { model: string, rank: float } weight int);
+
+#
+# Function declarations with different return types
+
+# Complex parameter types have already been tested above.
+# So just considering the case with single parameter type of string type
+# as the string type is to and from convertible from any type.
+
+# Basic return types
+f1: function(x: string) : bool {
+   return bool(x);
+};
+
+f2: function(x: string) : bytes {
+   return bytes(x);
+};
+
+f3: function(x: string) : int {
+   return int(x, 0);
+};
+
+f4: function(x: string) : float {
+   return float(x);
+};
+
+f5: function(x: string) : time {
+   return time(x);
+};
+
+f6: function(x: string) : fingerprint {
+   return fingerprint(x);
+};
+
+f7: function(x: string) : string {
+   return x;
+};
+
+# Complex return types
+f8: function(x: string) : T0 {
+   return { {10, 12, 256}, {"R" : "RED", "B" : "BLUE", "G" : "GREEN"} };
+};
+
+f9: function(x: string) : { x: array of int, 
+                            y: map [key: string] of value: string } {
+   return { {10, 12, 256}, {"R" : "RED", "B" : "BLUE", "G" : "GREEN"} };
+};
+
+f10: function(x: string) : M0 {
+   return {"WIN2K" : { {10, 12, 256}, {"R" : "RED", 
+                                       "B" : "BLUE", 
+                                       "G" : "GREEN"} 
+                     }
+          };
+};
+
+f11: function(x: string) : map [key: string] of value: T0 {
+   return {"WIN2K" : { {10, 12, 256}, {"R" : "RED", 
+                                       "B" : "BLUE", 
+                                       "G" : "GREEN"} 
+                     }
+          };
+};
+
+f12: function(x: string) : M1 {
+   return { "W" : 
+                 {"WIN98" : 
+                           ({ "APP1" : 1, 
+                             "APP2" : 2 
+                           }), 
+                  "WIN2K" : 
+                           ({ "APP1" : 10,
+                             "APP2" : 11
+                           })
+                 }
+          };
+};
+
+f13: function(x: string) : map [key: string] of value: map [key: string] 
+                                             of map [key: string] 
+                                             of int {
+   return { "W" : 
+                 {"WIN98" : 
+                           ({ "APP1" : 1, 
+                             "APP2" : 2 
+                           }), 
+                  "WIN2K" : 
+                           ({ "APP1" : 10,
+                             "APP2" : 11
+                           })
+                 }
+          };
+};
+
+f14: function(x: string) : Ab {
+   return { true, false };
+};
+
+f15: function(x: string) : array of bool {
+   return { true, false };
+};
+
+f16: function(x: string) : Aby {
+   return { bytes("10"+x), bytes("12"+x), bytes("256"+x) };
+};
+
+f17: function(x: string) : array of bytes {
+   return { bytes("10"+x), bytes("12"+x), bytes("256"+x) };
+};
+
+f18: function(x: string) : Af {
+   return { 10.23, 10.23 };
+};
+
+f19: function(x: string) : array of float {
+   return { 10.23, 10.23 };
+};
+
+f20: function(x: string) : Afg {
+   return { fingerprint(x+"10.23"), fingerprint(x+"10.23")};
+};
+
+f21: function(x: string) : array of fingerprint {
+   return { fingerprint(x+"10.23"), fingerprint(x+"10.23")};
+};
+
+f22: function(x: string) : At {
+   return { time(x), time(x) };
+};
+
+f23: function(x: string) : array of time {
+   return { time(x), time(x) };
+};
+
+f24: function(x: string) : AM0 {
+   return {{ "WIN2K" : { {10, 12, 256}, {"R" : "RED", 
+                                         "B" : "BLUE", 
+                                         "G" : "GREEN"
+                                        } 
+                       }
+           },
+           { "LINUX" : { {100, 120, 256}, {"R" : "RED", 
+                                           "B" : "BLUE", 
+                                           "G" : "GREEN"
+                                          } 
+                       }
+           }
+          };
+};
+
+f25: function(x: string) : array of map [key: string] 
+                                 of value: T0 {
+   return {{ "WIN2K" : { {10, 12, 256}, {"R" : "RED", 
+                                         "B" : "BLUE", 
+                                         "G" : "GREEN"
+                                        } 
+                       }
+           },
+           { "LINUX" : { {100, 120, 256}, {"R" : "RED", 
+                                           "B" : "BLUE", 
+                                           "G" : "GREEN"
+                                          } 
+                       }
+           }
+          };
+};
+
+f26: function(x: string) : AM1 {
+   return {{ "W" : 
+                 {"WIN98" : 
+                           ({ "APP1" : 1, 
+                             "APP2" : 2 
+                           }), 
+                  "WIN2K" : 
+                           ({ "APP1" : 10,
+                             "APP2" : 11
+                           })
+                 }
+          }
+         };
+};
+
+f27: function(x: string) : array of map [key: string] 
+                                 of value: map [key: string] 
+                                 of map [key: string] 
+                                 of int {
+   return {{ "W" : 
+                 {"WIN98" : 
+                           ({ "APP1" : 1, 
+                             "APP2" : 2 
+                           }), 
+                  "WIN2K" : 
+                           ({ "APP1" : 10,
+                             "APP2" : 11
+                           })
+                 }
+          }
+         };
+};
+
+f28: function(x: string) : AT0 {
+   return { { {10, 12, 256}, 
+              { "R" : "RED", "B" : "BLUE", "G" : "GREEN" } 
+            }
+          };
+};
+
+f29: function(x: string) : array of { x: array of int, 
+                                      y: map [key: string] of value: string } {
+   return { { {10, 12, 256}, 
+              { "R" : "RED", "B" : "BLUE", "G" : "GREEN" } 
+            }
+          };
+};
+
+
+#
+# 3 forms of declaration and initialization of function type variables
+#
+
+fun0: function(p: int): int {
+  i: int = 3 + 4;
+  j: float = 10.32;
+  return i + p + int(j);
+};
+
+
+fun1: function(p: int): int = function(p: int): int {
+  i: int = 3 + 4;
+  j: float = 10.32;
+  return i + p + int(j);
+};
+
+
+fun2 := function(p: int): int {
+  i: int = 3 + 4;
+  j: float = 10.32;
+  return i + p + int(j);
+};
+
+assert(fun0(5) == fun1(5) && fun1(5) == fun2(5));
+
+
+#
+# Testing nested variable access and nested function access.
+#
+
+# Access of nested variable access
+
+type tuple = { s: string, i: int, l: int };
+
+static l0i: int = 10;
+static l0f: float = 2.0;
+static l0t: tuple = { "l", 3, 0 };
+
+
+l1i: int = 11;
+l1f: float = 2.1;
+l1t: tuple = { "l", 3, 1 };
+
+
+ff1: function(name: string): int {
+  switch (name) {
+    case "l0i": return l0i % 10;
+    case "l0f": return int(l0f * 10.0) % 10;
+    case "l0t": return l0t.l;
+    case "l1i": return l1i % 10;
+    case "l1f": return int(l1f * 10.0) % 10;
+    case "l1t": return l1t.l;
+    default   : return -1;
+  }
+};
+
+
+assert(ff1("l0i") == 0, "l0i");
+assert(ff1("l0f") == 0, "l0f");
+assert(ff1("l0t") == 0, "l0t");
+assert(ff1("l1i") == 1, "l1i");
+assert(ff1("l1f") == 1, "l1f");
+assert(ff1("l1t") == 1, "l1t");
+
+
+x0: int;
+g1: function(x1: int): int {
+  return x0 + x1;
+};
+
+
+# Nested function declaration and access
+
+h1: function(x1: int): int {
+
+  h2: function(x2: int): int {
+
+    h3: function(x3: int): int {
+      return g1(x1) + x2 + x3;
+    };
+
+    return x1 + h3(x2);
+  };
+
+  g2: function(x2: int): int {
+    x0 = x2;
+    return x2 + 1;
+  };
+
+  return h2(g2(x1));
+};
+
+assert(h1(1) == 7, "h1");
+
+
+# Definedness of intermediate variables
+
+ff2: function() {
+  v1: int;               # v2 is undefined
+  v2: int = 0/nrand(1);  # v2 is initialized to undefined
+  v3: int = v2;          # v3 is initialized to undefined
+  # Prevent the optimizer from figuring out that the assignments are dead code
+  if (nrand(5)*nrand(5) == 17) {
+    v1 = 0;
+    v2 = 0;
+    v3 = 0;
+  }
+
+  ff3: function(i: int): bool {
+    switch (i) {
+      case 1: return def(v1);
+      case 2: return def(v2);
+      case 3: return def(v3);
+      default: ;
+    }
+  };
+
+  assert(!ff3(1));
+  assert(!ff3(2));
+  assert(!ff3(3));
+};
+
+ff2();
+
+
+ff4: function() {
+  v1: int = 1;
+  v2: float = 2.0;
+  v3: string = "hello";
+
+  ff5: function(i: int) {
+    switch (i) {
+      case 1: ___undefine(v1);
+      case 2: ___undefine(v2);
+      case 3: ___undefine(v3);
+      default: ;
+    }
+  };
+
+  ff6: function(i: int): bool {
+    switch (i) {
+      case 1: return def(v1);
+      case 2: return def(v2);
+      case 3: return def(v3);
+      default: ;
+    }
+  };
+
+  ff5(1);
+  ff5(2);
+  ff5(3);
+
+  assert(!ff6(1));
+  assert(!ff6(2));
+  assert(!ff6(3));
+};
+
+ff4();

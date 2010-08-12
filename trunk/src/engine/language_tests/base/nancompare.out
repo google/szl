@@ -1,0 +1,63 @@
+n1: float = NaN;
+n2: float = NaN;
+y: float = 2.0;
+isEq: function(a: float, b: float): bool {
+	return a == b;
+}
+;
+assert(!(n1 == y));
+assert(!(y == n2));
+assert(!(n1 == n2));
+assert(!isEq(n1, y));
+assert(!isEq(y, n2));
+assert(!isEq(n1, n2));
+isNeq: function(a: float, b: float): bool {
+	return a != b;
+}
+;
+assert(n1 != y);
+assert(y != n2);
+assert(n1 != n2);
+assert(isNeq(n1, y));
+assert(isNeq(y, n2));
+assert(isNeq(n1, n2));
+isLt: function(a: float, b: float): bool {
+	return a < b;
+}
+;
+assert(!(n1 < y));
+assert(!(y < n2));
+assert(!(n1 < n2));
+assert(!isLt(n1, y));
+assert(!isLt(y, n2));
+assert(!isLt(n1, n2));
+isLeq: function(a: float, b: float): bool {
+	return a <= b;
+}
+;
+assert(!(n1 <= y));
+assert(!(y <= n2));
+assert(!(n1 <= n2));
+assert(!isLeq(n1, y));
+assert(!isLeq(y, n2));
+assert(!isLeq(n1, n2));
+isGt: function(a: float, b: float): bool {
+	return a > b;
+}
+;
+assert(!(n1 > y));
+assert(!(y > n2));
+assert(!(n1 > n2));
+assert(!isGt(n1, y));
+assert(!isGt(y, n2));
+assert(!isGt(n1, n2));
+isGeq: function(a: float, b: float): bool {
+	return a >= b;
+}
+;
+assert(!(n1 >= y));
+assert(!(y >= n2));
+assert(!(n1 >= n2));
+assert(!isGeq(n1, y));
+assert(!isGeq(y, n2));
+assert(!isGeq(n1, n2));

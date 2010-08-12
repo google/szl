@@ -1,0 +1,178 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options 
+
+#desc: Testing of Arithmetic Operators.
+
+#arithmetic operators are:
+#	+ 
+#	-
+#	*
+#	/
+#	%
+#	&
+#	|
+#	^
+#	~
+#	<<
+#	>>
+
+#inst: Testing which operators work for int.
+i0: int;
+
+i0 = -10;
+assert(i0 == -10);
+
+i0 = +10;
+assert(i0 == 10);
+
+i0 = 10 + 12;
+assert(i0 == 22);
+
+i0 = 10 - 12;
+assert(i0 == -2);
+
+i0 = 10 * 12;
+assert(i0 == 120);
+
+i0 = 10 / 12;
+assert(i0 == 0);
+
+i0 = 100 / 12;
+assert(i0 == 8);
+
+i0 = 100 % 12;
+assert(i0 == 4);
+
+i0 = 12 % 100;
+assert(i0 == 12);
+
+i0 = 8 & 4;
+assert(i0 == 0);
+
+i0 = 8 | 4;
+assert(i0 == 12);
+
+i0 = 8 ^ 4;
+assert(i0 == 12);
+
+i0 = 8 << 2;
+assert(i0 == 32);
+
+i0 = 8 >> 2;
+assert(i0 == 2);
+
+i0 = 2 << 8;
+assert(i0 == 512);
+
+i0 = 8 << 2;
+assert(i0 == 32);
+
+i0 = ~ 4;
+assert(i0 == -5);
+
+
+#inst: Testing which operators work for float
+
+f0: float;
+
+f0 = -10.91;
+assert(f0 == -10.91);
+
+f0 = +10.91;
+assert(f0 == 10.91);
+
+f0 = 10.91 + 12.23;
+assert(f0 == 23.14);
+
+f0 = 10.25 - 12.75;
+assert(f0 == -2.5);
+
+f0 = 10.23 * 12.;
+assert(f0 == 122.76);
+
+f0 = 10.0 / 16.0;
+assert(f0 == 0.625);
+
+f0 = 100.8969 / 12.3;
+assert(f0 == 8.203);
+
+
+#inst: Testing which operators work for bool (No arithmetic ops work for bool)
+#inst: Testing which operators work for bytes. 
+
+by0: bytes = "1234567890";
+by1: bytes = "abcdefghijk";
+
+by2: bytes;
+
+by2 = by0 + by1;
+assert(by2 == B"1234567890abcdefghijk");
+
+
+#inst: Testing which operators work for time
+
+t0: time;
+t1: time;
+
+t0 = time("Thu Oct 16 14:25:41 PST 2003");
+assert(string(t0) == "Thu Oct 16 15:25:41 PDT 2003");
+assert(t0 == T"Thu Oct 16 14:25:41 PST 2003");
+
+t1 = time("Fri Oct 17 14:25:41 PST 2003");
+assert(string(t1) == "Fri Oct 17 15:25:41 PDT 2003");
+assert(t1 == T"Fri Oct 17 14:25:41 PST 2003");
+
+t2: time;
+t2 = t0 + t1;
+assert(int(t2) == 2132772682000000);  # invalid time value, so can't use string()
+assert(t2 == time(2132772682000000));
+
+i2: int = int(t0 - t1);
+assert(string(i2) == "-86400000000");
+assert(i2 == -86400000000);
+
+i2 = int(t1 - t0);
+assert(string(i2) == "86400000000");
+assert(i2 == 86400000000);
+
+#inst: Testing which operators work for fingerprint (no operator works for fingerprint)
+#inst: Testing which operators work for string
+
+s0: string;
+
+s0 = "abc" + "abc";
+assert(s0 == "abcabc");
+
+#inst: Testing Indexing Operation on string type. (Indexing a string variable gives int).
+#test whether we are getting int by applying modulus operator (possible for int only)
+
+s9: string = "localhost.localdomain";
+i9: int;
+
+i9 = s9[0] % 10 ;
+assert(i9 == 8);
+
+
+#inst: Testing Indexing Operation on bytes type.(Indexing a string variable gives int).
+#test whether we are getting int by applying modulus operator (possible for int only)
+
+by9: bytes = "localhost.localdomain";
+i10: int;
+
+i10 = by9[0] % 9 ;
+assert(i10 == 0);

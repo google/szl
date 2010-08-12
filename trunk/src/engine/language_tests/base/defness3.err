@@ -1,0 +1,93 @@
+base/defness2.szl:28: warning: unnecessary def(): argument has value (s) which is known to be defined
+base/defness2.szl:36: warning: unnecessary def(): argument has value (x) which is known to be undefined
+base/defness2.szl:37: warning: variable x will always have an undefined value at this point
+base/defness2.szl:61: warning: unnecessary def(): argument has value (1) which is known to be defined
+base/defness2.szl:63: warning: unnecessary def(): argument has value (x) which is known to be undefined
+base/defness2.szl:72: warning: unnecessary def(): argument has value (x) which is known to be defined
+base/defness2.szl:74: warning: unnecessary def(): argument has value (x) which is known to be undefined
+base/defness2.szl:77: warning: unnecessary def(): argument has value (x) which is known to be undefined
+base/defness2.szl:79: warning: unnecessary def(): argument has value (x) which is known to be defined
+base/defness2.szl:87: warning: unnecessary def(): argument has value (x) which is known to be defined
+base/defness2.szl:91: warning: unnecessary def(): argument has value (y) which is known to be undefined
+base/defness2.szl:97: warning: unnecessary def(): argument has value (x + y) which is known to be defined
+base/defness2.szl:98: warning: unnecessary def(): argument has value (x - y) which is known to be defined
+base/defness2.szl:99: warning: unnecessary def(): argument has value (x * y) which is known to be defined
+base/defness2.szl:102: warning: unnecessary def(): argument has value (x == y) which is known to be defined
+base/defness2.szl:103: warning: unnecessary def(): argument has value (x != y) which is known to be defined
+base/defness2.szl:104: warning: unnecessary def(): argument has value (x <= y) which is known to be defined
+base/defness2.szl:105: warning: unnecessary def(): argument has value (x >= y) which is known to be defined
+base/defness2.szl:106: warning: unnecessary def(): argument has value (x < y) which is known to be defined
+base/defness2.szl:107: warning: unnecessary def(): argument has value (x > y) which is known to be defined
+base/defness2.szl:108: warning: unnecessary def(): argument has value (x & y) which is known to be defined
+base/defness2.szl:109: warning: unnecessary def(): argument has value (x | y) which is known to be defined
+base/defness2.szl:110: warning: unnecessary def(): argument has value (x ^ y) which is known to be defined
+base/defness2.szl:111: warning: unnecessary def(): argument has value (~x) which is known to be defined
+base/defness2.szl:112: warning: unnecessary def(): argument has value (x << y) which is known to be defined
+base/defness2.szl:113: warning: unnecessary def(): argument has value (x >> y) which is known to be defined
+base/defness2.szl:114: warning: unnecessary def(): argument has value (a && b) which is known to be defined
+base/defness2.szl:115: warning: unnecessary def(): argument has value (a || b) which is known to be defined
+base/defness2.szl:117: warning: unnecessary def(): argument has value (x / 2) which is known to be defined
+base/defness2.szl:118: warning: unnecessary def(): argument has value (x % 2) which is known to be defined
+base/defness2.szl:119: warning: unnecessary def(): argument has value (x / 0) which is known to be undefined
+base/defness2.szl:120: warning: unnecessary def(): argument has value (x % 0) which is known to be undefined
+base/defness2.szl:137: warning: variable a will always have an undefined value at this point
+base/defness2.szl:145: warning: variable c will always have an undefined value at this point
+base/defness2.szl:153: warning: variable e will always have an undefined value at this point
+base/defness2.szl:161: warning: variable g will always have an undefined value at this point
+base/defness2.szl:175: warning: unnecessary def(): argument has value (rand()) which is known to be defined
+base/defness2.szl:177: warning: unnecessary def(): argument has value (tobase64(b, true)) which is known to be defined
+base/defness2.szl:179: warning: unnecessary def(): argument has value (splitcsvline(b)) which is known to be defined
+base/defness2.szl:183: warning: unnecessary def(): argument has value (fingerprintof(i)) which is known to be defined
+base/defness2.szl:184: warning: unnecessary def(): argument has value (format("%d", i)) which is known to be defined
+base/defness2.szl:185: warning: unnecessary def(): argument has value (len(s)) which is known to be defined
+base/defness2.szl:186: warning: unnecessary def(): argument has value (haskey(m, i)) which is known to be defined
+base/defness2.szl:187: warning: unnecessary def(): argument has value (inproto(t.x)) which is known to be defined
+base/defness2.szl:188: warning: unnecessary def(): argument has value (abs(i)) which is known to be defined
+base/defness2.szl:189: warning: unnecessary def(): argument has value (keys(m)) which is known to be defined
+base/defness2.szl:190: warning: unnecessary def(): argument has value (lookup(m, i, i)) which is known to be defined
+base/defness2.szl:191: warning: unnecessary def(): argument has value (max(i, i)) which is known to be defined
+base/defness2.szl:192: warning: unnecessary def(): argument has value (min(i, i)) which is known to be defined
+base/defness2.szl:212: warning: unnecessary def(): argument has value (now()) which is known to be defined
+base/defness2.szl:214: warning: unnecessary def(): argument has value (highbit(i)) which is known to be defined
+base/defness2.szl:217: warning: unnecessary def(): argument has value (lowercase(s)) which is known to be defined
+base/defness2.szl:218: warning: unnecessary def(): argument has value (uppercase(s)) which is known to be defined
+base/defness2.szl:220: warning: unnecessary def(): argument has value (strfind(s, s)) which is known to be defined
+base/defness2.szl:221: warning: unnecessary def(): argument has value (strrfind(s, s)) which is known to be defined
+base/defness2.szl:222: warning: unnecessary def(): argument has value (strreplace(s, s, s, true)) which is known to be defined
+base/defness2.szl:226: warning: unnecessary def(): argument has value (getresourcestats()) which is known to be defined
+base/defness2.szl:227: warning: unnecessary def(): argument has value (___addressof(i)) which is known to be defined
+base/defness2.szl:234: warning: unnecessary def(): argument has value (ln(f)) which is known to be defined
+base/defness2.szl:235: warning: unnecessary def(): argument has value (log10(f)) which is known to be defined
+base/defness2.szl:236: warning: unnecessary def(): argument has value (exp(f)) which is known to be defined
+base/defness2.szl:237: warning: unnecessary def(): argument has value (sqrt(f)) which is known to be defined
+base/defness2.szl:238: warning: unnecessary def(): argument has value (pow(f, f)) which is known to be defined
+base/defness2.szl:239: warning: unnecessary def(): argument has value (sin(f)) which is known to be defined
+base/defness2.szl:240: warning: unnecessary def(): argument has value (cos(f)) which is known to be defined
+base/defness2.szl:241: warning: unnecessary def(): argument has value (tan(f)) which is known to be defined
+base/defness2.szl:242: warning: unnecessary def(): argument has value (asin(f)) which is known to be defined
+base/defness2.szl:243: warning: unnecessary def(): argument has value (acos(f)) which is known to be defined
+base/defness2.szl:244: warning: unnecessary def(): argument has value (atan(f)) which is known to be defined
+base/defness2.szl:245: warning: unnecessary def(): argument has value (atan2(f, f)) which is known to be defined
+base/defness2.szl:246: warning: unnecessary def(): argument has value (sinh(f)) which is known to be defined
+base/defness2.szl:247: warning: unnecessary def(): argument has value (cosh(f)) which is known to be defined
+base/defness2.szl:248: warning: unnecessary def(): argument has value (tanh(f)) which is known to be defined
+base/defness2.szl:249: warning: unnecessary def(): argument has value (asinh(f)) which is known to be defined
+base/defness2.szl:250: warning: unnecessary def(): argument has value (acosh(f)) which is known to be defined
+base/defness2.szl:251: warning: unnecessary def(): argument has value (atanh(f)) which is known to be defined
+base/defness2.szl:252: warning: unnecessary def(): argument has value (fabs(f)) which is known to be defined
+base/defness2.szl:253: warning: unnecessary def(): argument has value (ceil(f)) which is known to be defined
+base/defness2.szl:254: warning: unnecessary def(): argument has value (floor(f)) which is known to be defined
+base/defness2.szl:255: warning: unnecessary def(): argument has value (round(f)) which is known to be defined
+base/defness2.szl:256: warning: unnecessary def(): argument has value (trunc(f)) which is known to be defined
+base/defness2.szl:257: warning: unnecessary def(): argument has value (isnan(f)) which is known to be defined
+base/defness2.szl:258: warning: unnecessary def(): argument has value (isinf(f)) which is known to be defined
+base/defness2.szl:259: warning: unnecessary def(): argument has value (isfinite(f)) which is known to be defined
+base/defness2.szl:260: warning: unnecessary def(): argument has value (isnormal(f)) which is known to be defined
+base/defness2.szl:263: warning: unnecessary def(): argument has value (sort(ai)) which is known to be defined
+base/defness2.szl:264: warning: unnecessary def(): argument has value (sortx(ai)) which is known to be defined
+base/defness2.szl:267: warning: unnecessary def(): argument has value (DEBUG("ref", i)) which is known to be defined
+base/defness2.szl:268: warning: unnecessary def(): argument has value (DEBUG("print", "%d", i)) which is known to be defined
+base/defness2.szl:270: warning: unnecessary def(): argument has value (i) which is known to be defined
+base/defness2.szl:270: warning: unnecessary def(): argument has value (def(i)) which is known to be defined
+base/defness2.szl:303: warning: unnecessary def(): argument has value (g1(0)) which is known to be defined
+base/defness2.szl:305: warning: unnecessary def(): argument has value (g3(0)) which is known to be defined

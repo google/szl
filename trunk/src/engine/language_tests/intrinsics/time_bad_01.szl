@@ -1,0 +1,266 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: bad intrinsic function calls that operate on time.
+
+#inst: not using usual function call syntax.
+dayofmonth;
+dayofweek;
+dayofyear;
+hourof;
+minuteof;
+monthof;
+yearof;
+trunctoday;
+trunctohour;
+trunctominute;
+trunctomonth;
+trunctosecond;
+trunctoyear;
+
+addday;
+addmonth;
+addweek;
+addyear;
+
+formattime;
+
+#inst: less number of arguments.
+dayofmonth();
+dayofweek();
+dayofyear();
+hourof();
+minuteof();
+monthof();
+yearof();
+trunctoday();
+trunctohour();
+trunctominute();
+trunctomonth();
+trunctosecond();
+trunctoyear();
+
+addday();
+addmonth();
+addweek();
+addyear();
+
+formattime();
+
+#inst: more number of arguments.
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+
+dayofmonth(t0, t0);
+dayofweek(t0, t0);
+dayofyear(t0, t0);
+hourof(t0, t0);
+minuteof(t0, t0);
+monthof(t0, t0);
+yearof(t0, t0);
+trunctoday(t0, t0);
+trunctohour(t0, t0);
+trunctominute(t0, t0);
+trunctomonth(t0, t0);
+trunctosecond(t0, t0);
+trunctoyear(t0, t0);
+
+addday(t0, 1, 1);
+addmonth(t0, 1, 1);
+addweek(t0, 1, 1);
+addyear(t0, 1, 1);
+
+formattime("", t0, "", t0);
+
+#inst: all type incompatible time function calls.
+b0: bool = true;
+i0: int = 10;
+f0: float = 10.2;
+by0: bytes = "abc";
+s0: string = "abc";
+fg0: fingerprint = fingerprint("abc");
+
+a0: array of int = { 1, 2, 3 };
+m0: map [key: string] of int = { "A" : 65, "B" : 66 };
+p0: { x: int, y: string } = { 65, "A"};
+
+dayofmonth(b0);
+dayofmonth(i0);
+dayofmonth(f0);
+dayofmonth(by0);
+dayofmonth(s0);
+dayofmonth(fg0);
+dayofmonth(a0);
+dayofmonth(m0);
+dayofmonth(p0);
+
+dayofweek(b0);
+dayofweek(i0);
+dayofweek(f0);
+dayofweek(by0);
+dayofweek(s0);
+dayofweek(fg0);
+dayofweek(a0);
+dayofweek(m0);
+dayofweek(p0);
+
+dayofyear(b0);
+dayofyear(i0);
+dayofyear(f0);
+dayofyear(by0);
+dayofyear(s0);
+dayofyear(fg0);
+dayofyear(a0);
+dayofyear(m0);
+dayofyear(p0);
+
+hourof(b0);
+hourof(i0);
+hourof(f0);
+hourof(by0);
+hourof(s0);
+hourof(fg0);
+hourof(a0);
+hourof(m0);
+hourof(p0);
+
+minuteof(b0);
+minuteof(i0);
+minuteof(f0);
+minuteof(by0);
+minuteof(s0);
+minuteof(fg0);
+minuteof(a0);
+minuteof(m0);
+minuteof(p0);
+
+monthof(b0);
+monthof(i0);
+monthof(f0);
+monthof(by0);
+monthof(s0);
+monthof(fg0);
+monthof(a0);
+monthof(m0);
+monthof(p0);
+
+yearof(b0);
+yearof(i0);
+yearof(f0);
+yearof(by0);
+yearof(s0);
+yearof(fg0);
+yearof(a0);
+yearof(m0);
+yearof(p0);
+
+trunctoday(b0);
+trunctoday(i0);
+trunctoday(f0);
+trunctoday(by0);
+trunctoday(s0);
+trunctoday(fg0);
+trunctoday(a0);
+trunctoday(m0);
+trunctoday(p0);
+
+trunctohour(b0);
+trunctohour(i0);
+trunctohour(f0);
+trunctohour(by0);
+trunctohour(s0);
+trunctohour(fg0);
+trunctohour(a0);
+trunctohour(m0);
+trunctohour(p0);
+
+trunctominute(b0);
+trunctominute(i0);
+trunctominute(f0);
+trunctominute(by0);
+trunctominute(s0);
+trunctominute(fg0);
+trunctominute(a0);
+trunctominute(m0);
+trunctominute(p0);
+
+trunctomonth(b0);
+trunctomonth(i0);
+trunctomonth(f0);
+trunctomonth(by0);
+trunctomonth(s0);
+trunctomonth(fg0);
+trunctomonth(a0);
+trunctomonth(m0);
+trunctomonth(p0);
+
+trunctosecond(b0);
+trunctosecond(i0);
+trunctosecond(f0);
+trunctosecond(by0);
+trunctosecond(s0);
+trunctosecond(fg0);
+trunctosecond(a0);
+trunctosecond(m0);
+trunctosecond(p0);
+
+trunctoyear(b0);
+trunctoyear(i0);
+trunctoyear(f0);
+trunctoyear(by0);
+trunctoyear(s0);
+trunctoyear(fg0);
+trunctoyear(a0);
+trunctoyear(m0);
+trunctoyear(p0);
+
+addday(t0, f0);
+addmonth(t0, f0);
+addweek(t0, f0);
+addyear(t0, f0);
+
+addday(s0, i0);
+addmonth(s0, i0);
+addweek(s0, i0);
+addyear(s0, i0);
+
+
+addday(s0);
+addmonth(s0);
+addweek(s0);
+addyear(s0);
+
+
+formattime(b0);
+formattime(i0);
+formattime(f0);
+formattime(by0);
+formattime(t0);
+formattime(fg0);
+formattime(a0);
+formattime(m0);
+formattime(p0);
+
+formattime("", b0);
+formattime("", i0);
+formattime("", f0);
+formattime("", by0);
+formattime("", t0);
+formattime("", fg0);
+formattime("", a0);
+formattime("", m0);
+formattime("", p0);

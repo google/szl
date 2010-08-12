@@ -1,0 +1,3 @@
+base/valuepropagation2.szl:56: warning: variable undef will always have an undefined value at this point
+base/valuepropagation2.szl:57: warning: variable undef will always have an undefined value at this point
+base/valuepropagation2.szl:72: warning: variable a will always have an undefined value at this point

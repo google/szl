@@ -1,0 +1,12 @@
+base/condops.szl:70: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:70: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:70: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:71: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:71: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:71: warning: 'or' operator is deprecated; use '||' instead
+base/condops.szl:74: warning: 'and' operator is deprecated; use '&&' instead
+base/condops.szl:74: warning: 'and' operator is deprecated; use '&&' instead
+base/condops.szl:74: warning: 'and' operator is deprecated; use '&&' instead
+base/condops.szl:75: warning: 'and' operator is deprecated; use '&&' instead
+base/condops.szl:75: warning: 'and' operator is deprecated; use '&&' instead
+base/condops.szl:75: warning: 'and' operator is deprecated; use '&&' instead

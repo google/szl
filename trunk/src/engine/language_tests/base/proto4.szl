@@ -1,0 +1,37 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Bad proto declarations that result in compilation errors
+
+# a bunch of plain legal tuples to be used below
+type T1 = { x: int, y: float };
+type T2 = { x: int, m: map [int] of int };
+
+# test legal cases - TODO(polina): move these into a "good" file e.g. proto3
+type P1 = { f1: proto T1 @ 1 };  # non-proto field
+type P2 = { f1: array of proto T1 @ 1 };  # non-proto field
+
+# test error cases
+type P3 = { f1: T1 @ 1 };  # non-proto field
+type P4 = { f1: array of T1 @ 1 };  # non-proto field
+type P5 = { f1: map [int] of int @ 1 };  # maps not supported
+type P6 = proto T2;  # maps not supported
+type P7 = { f1: function() @ 1 };  # functions not supported
+type P8 = {
+  x: int = 42 @ 1,
+  y: float = 3.1415 @ 2,
+  t: time @ 3,
+  s: bytes = { 0, 1, 2, x } @ 4  # cannot use x here
+};

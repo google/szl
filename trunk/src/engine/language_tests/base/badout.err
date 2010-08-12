@@ -1,0 +1,255 @@
+base/badout.szl:24: output variable out1 already declared in a different scope
+base/badout.szl:25: output variable out1 already declared in a different scope
+base/badout.szl:44: output variable t6 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:45: output variable t7 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:46: output variable t6t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:47: output variable t7t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:51: output variable t6 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:52: output variable t7 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:53: output variable t6t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:54: output variable t7t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:59: output variable t6 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:60: output variable t7 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:61: output variable t6t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:62: output variable t7t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:72: output type be used to declare a variable in a static context uses a nonstatic variable and so may not 
+base/badout.szl:73: output type be used to declare a variable in a static context uses a nonstatic variable and so may not 
+base/badout.szl:74: output variable t8 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:75: output variable t9 uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:76: output variable t8t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:77: output variable t9t uses a nonstatic variable and so may not be used in a static context
+base/badout.szl:82: non-static variable i may not be accessed in an initializer for a static variable
+base/badout.szl:83: non-static variable i may not be accessed in an initializer for a static variable
+base/badout.szl:86: non-static variable j may not be accessed in an initializer for a static variable
+base/badout.szl:87: non-static variable j may not be accessed in an initializer for a static variable
+base/badout.szl:91: non-static variable k may not be accessed in an initializer for a static variable
+base/badout.szl:92: non-static variable k may not be accessed in an initializer for a static variable
+base/badout.szl:103: incompatible argument list for function(t: table sum of e: int) {
+}
+
+base/badout.szl:104: incompatible argument list for function(t: table text of e: string) {
+}
+
+base/badout.szl:105: incompatible argument list for function(t: table mrcounter of e: int) {
+}
+
+base/badout.szl:107: incompatible argument list for function(t: table set(10) of e: int) {
+}
+
+base/badout.szl:108: incompatible argument list for function(t: table quantile(10) of e: int) {
+}
+
+base/badout.szl:109: incompatible argument list for function(t: table unique(10) of e: int) {
+}
+
+base/badout.szl:110: incompatible argument list for function(t: table recordio(10) of e: int) {
+}
+
+base/badout.szl:112: incompatible argument list for function(t: table maximum(10) of e: int weight w: int) {
+}
+
+base/badout.szl:113: incompatible argument list for function(t: table minimum(10) of e: int weight w: int) {
+}
+
+base/badout.szl:114: incompatible argument list for function(t: table distinctsample(10) of e: int weight w: int) {
+}
+
+base/badout.szl:115: incompatible argument list for function(t: table inversehistogram(10) of e: int weight w: int) {
+}
+
+base/badout.szl:116: incompatible argument list for function(t: table weightedsample(10) of e: int weight w: int) {
+}
+
+base/badout.szl:120: incompatible argument list for function(t: table set(100) of e: int) {
+}
+
+base/badout.szl:124: incompatible argument list for function(t: table sum[i: uint] of e: int) {
+}
+
+base/badout.szl:125: incompatible argument list for function(t: table sum[int] of e: int) {
+}
+
+base/badout.szl:126: incompatible argument list for function(t: table sum[x: int] of e: int) {
+}
+
+base/badout.szl:128: incompatible argument list for function(t: table sum[A: array of uint] of e: int) {
+}
+
+base/badout.szl:129: incompatible argument list for function(t: table sum[array of int] of e: int) {
+}
+
+base/badout.szl:130: incompatible argument list for function(t: table sum[x: array of int] of e: int) {
+}
+
+base/badout.szl:132: incompatible argument list for function(t: table sum[M: map [string] of uint] of e: int) {
+}
+
+base/badout.szl:133: incompatible argument list for function(t: table sum[map [string] of int] of e: int) {
+}
+
+base/badout.szl:134: incompatible argument list for function(t: table sum[x: map [string] of int] of e: int) {
+}
+
+base/badout.szl:136: incompatible argument list for function(t: table sum[T: proto {i: int, f: float}] of e: int) {
+}
+
+base/badout.szl:137: incompatible argument list for function(t: table sum[{i: int, f: float}] of e: int) {
+}
+
+base/badout.szl:138: incompatible argument list for function(t: table sum[x: {i: int, f: float}] of e: int) {
+}
+
+base/badout.szl:140: incompatible argument list for function(t: table sum[P: {i: int @ 2, f: float @ 3}] of e: int) {
+}
+
+base/badout.szl:142: incompatible argument list for function(t: table sum[P: parsedmessage {i: int @ 1, f: float @ 2}] of e: int) {
+}
+
+base/badout.szl:143: incompatible argument list for function(t: table sum[P: proto {i: int, f: float}] of e: int) {
+}
+
+base/badout.szl:144: incompatible argument list for function(t: table sum[{i: int @ 1, f: float @ 2}] of e: int) {
+}
+
+base/badout.szl:145: incompatible argument list for function(t: table sum[x: {i: int @ 1, f: float @ 2}] of e: int) {
+}
+
+base/badout.szl:147: incompatible argument list for function(t: table sum[array of string][float][int] of e: int) {
+}
+
+base/badout.szl:149: incompatible argument list for function(t: table sum[i: int][f: float][A: array of string] of e: int) {
+}
+
+base/badout.szl:153: incompatible argument list for function(t: table sample(10) of i: uint) {
+}
+
+base/badout.szl:154: incompatible argument list for function(t: table sample(10) of int) {
+}
+
+base/badout.szl:155: incompatible argument list for function(t: table sample(10) of x: int) {
+}
+
+base/badout.szl:157: incompatible argument list for function(t: table sample(10) of A: array of uint) {
+}
+
+base/badout.szl:158: incompatible argument list for function(t: table sample(10) of array of int) {
+}
+
+base/badout.szl:159: incompatible argument list for function(t: table sample(10) of x: array of int) {
+}
+
+base/badout.szl:161: incompatible argument list for function(t: table sample(10) of M: map [string] of uint) {
+}
+
+base/badout.szl:162: incompatible argument list for function(t: table sample(10) of map [string] of int) {
+}
+
+base/badout.szl:163: incompatible argument list for function(t: table sample(10) of x: map [string] of int) {
+}
+
+base/badout.szl:165: incompatible argument list for function(t: table sample(10) of T: proto {i: int, f: float}) {
+}
+
+base/badout.szl:166: incompatible argument list for function(t: table sample(10) of {i: int, f: float}) {
+}
+
+base/badout.szl:167: incompatible argument list for function(t: table sample(10) of x: {i: int, f: float}) {
+}
+
+base/badout.szl:169: incompatible argument list for function(t: table sample(10) of P: {i: int @ 2, f: float @ 3}) {
+}
+
+base/badout.szl:171: incompatible argument list for function(t: table sample(10) of P: parsedmessage {i: int @ 1, f: float @ 2}) {
+}
+
+base/badout.szl:172: incompatible argument list for function(t: table sample(10) of P: proto {i: int, f: float}) {
+}
+
+base/badout.szl:173: incompatible argument list for function(t: table sample(10) of {i: int @ 1, f: float @ 2}) {
+}
+
+base/badout.szl:174: incompatible argument list for function(t: table sample(10) of x: {i: int @ 1, f: float @ 2}) {
+}
+
+base/badout.szl:178: incompatible argument list for function(t: table top(3) of e: int weight i: uint) {
+}
+
+base/badout.szl:180: incompatible argument list for function(t: table top(3) of e: int weight A: array of i: uint) {
+}
+
+base/badout.szl:182: incompatible argument list for function(t: table top(3) of e: int weight M: map [int] of uint) {
+}
+
+base/badout.szl:185: incompatible argument list for function(t: table top(3) of e: int weight T: proto {i: int, f: float}) {
+}
+
+base/badout.szl:188: incompatible argument list for function(t: table top(3) of e: int weight P: {i: uint @ 2, f: float @ 3}) {
+}
+
+base/badout.szl:190: incompatible argument list for function(t: table top(3) of e: int weight P: parsedmessage {i: uint @ 1, f: float @ 2}) {
+}
+
+base/badout.szl:192: incompatible argument list for function(t: table top(3) of e: int weight P: proto {i: uint, f: float}) {
+}
+
+base/badout.szl:198: incompatible argument list for function(t: table collection[i: {j: int, f: float}] of e: bytes file("/tmp/i%f%d", i.f, i.j)) {
+}
+
+base/badout.szl:199: incompatible argument list for function(t: table collection[i: {j: int, f: float}] of e: bytes) {
+}
+
+base/badout.szl:203: incompatible argument list for function(t: table collection[i: {j: int, f: float}] of e: bytes proc("echo %f%d", i.f, i.j)) {
+}
+
+base/badout.szl:204: incompatible argument list for function(t: table collection[i: {j: int, f: float}] of e: bytes) {
+}
+
+base/badout.szl:209: incompatible argument list for function(t: table unique(7) of e: {i: int, f: float} format("%f%d", e.f, e.i)) {
+}
+
+base/badout.szl:210: incompatible argument list for function(t: table unique(7) of e: {i: int, f: float}) {
+}
+
+base/badout.szl:218: output type (table sum of int) not allowed in this context
+base/badout.szl:219: output type (table sum of int) not allowed in this context
+base/badout.szl:220: output type (table sum of int) not allowed in this context
+base/badout.szl:222: output type (table sum of int) not allowed in this context
+base/badout.szl:223: output type (table sum of int) not allowed in this context
+base/badout.szl:224: output type (table sum of int) not allowed in this context
+base/badout.szl:227: tSU (type table sum of int) not a suitable argument for fingerprintof()
+base/badout.szl:230: illegal initializer: tSU has output type; output variables may not be declared using :=
+base/badout.szl:233: output type (table sum of int) not allowed in this context
+base/badout.szl:239: tSU2 is static; cannot assign to it
+base/badout.szl:243: unimplemented assignment to local table reference
+base/badout.szl:244: unimplemented assignment to local table reference
+base/badout.szl:245: tSU2 is static; cannot assign to it
+base/badout.szl:249: output type (table sum of int) not allowed in this context
+base/badout.szl:250: output type (table sum of int) not allowed in this context
+base/badout.szl:254: cannot convert tSU (type table sum of int) to int
+base/badout.szl:255: cannot convert tSU (type table sum of int) to uint
+base/badout.szl:256: cannot convert tSU (type table sum of int) to float
+base/badout.szl:257: cannot convert tSU (type table sum of int) to string
+base/badout.szl:258: cannot convert tSU (type table sum of int) to time
+base/badout.szl:259: cannot convert tSU (type table sum of int) to bytes
+base/badout.szl:260: cannot convert tSU (type table sum of int) to bool
+base/badout.szl:261: cannot convert tSU (type table sum of int) to fingerprint
+base/badout.szl:262: cannot convert tSU (type table sum of int) to map [int] of int
+base/badout.szl:263: cannot convert tSU (type table sum of int) to array of int
+base/badout.szl:264: cannot convert tSU (type table sum of int) to {i: int, j: int}
+base/badout.szl:265: cannot convert tSU (type table sum of int) to proto {i: int, j: int}
+base/badout.szl:266: cannot convert tSU (type table sum of int) to function()
+base/badout.szl:268: output type (table sum of int) not allowed in this context
+base/badout.szl:269: output type (table sum of int) not allowed in this context
+base/badout.szl:270: output type (table sum of int) not allowed in this context
+base/badout.szl:271: output type (table sum of int) not allowed in this context
+base/badout.szl:272: output type (table sum of int) not allowed in this context
+base/badout.szl:273: output type (table sum of int) not allowed in this context
+base/badout.szl:274: output type (table sum of int) not allowed in this context
+base/badout.szl:275: output type (table sum of int) not allowed in this context
+base/badout.szl:276: output type (table sum of int) not allowed in this context
+base/badout.szl:278: output type (table sum of int) not allowed in this context
+base/badout.szl:280: output type (table sum of int) not allowed in this context
+base/badout.szl:282: output type (table sum of int) not allowed in this context
+base/badout.szl:284: output type (table sum of int) not allowed in this context
+base/badout.szl:287: output type (table sum of int) not allowed in this context
+base/badout.szl:290: output type (table sum of int) not allowed in this context

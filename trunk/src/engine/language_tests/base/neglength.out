@@ -1,0 +1,6 @@
+a: array of int = new(array of int, -5, 0);
+assert(!def(len(a)));
+b: string = new(string, nrand(1) - 5, 0);
+assert(!def(len(b)));
+c: bytes = new(bytes, nrand(1) - 5, 0);
+assert(!def(len(c)));

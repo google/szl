@@ -1,0 +1,67 @@
+Stack trace:
+  0. fun1: function(i: int)
+     i: int = 6294
+
+  1. fun1: function(i: int)
+     i: int = 6293
+
+  2. fun1: function(i: int)
+     i: int = 6292
+
+  3. fun1: function(i: int)
+     i: int = 6291
+
+  4. fun1: function(i: int)
+     i: int = 6290
+
+  5. fun1: function(i: int)
+     i: int = 6289
+
+  6. fun1: function(i: int)
+     i: int = 6288
+
+  7. fun1: function(i: int)
+     i: int = 6287
+
+  8. fun1: function(i: int)
+     i: int = 6286
+
+  9. fun1: function(i: int)
+     i: int = 6285
+
+...  (skipping frames 10 to 6283)
+
+6284. fun1: function(i: int)
+     i: int = 10
+
+6285. fun1: function(i: int)
+     i: int = 9
+
+6286. fun1: function(i: int)
+     i: int = 8
+
+6287. fun1: function(i: int)
+     i: int = 7
+
+6288. fun1: function(i: int)
+     i: int = 6
+
+6289. fun1: function(i: int)
+     i: int = 5
+
+6290. fun1: function(i: int)
+     i: int = 4
+
+6291. fun1: function(i: int)
+     i: int = 3
+
+6292. fun1: function(i: int)
+     i: int = 2
+
+6293. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     i: int = 1
+     fun1: function(i: int) = fun1
+
+szl: fatal: stack overflow: set --stack_size >= 251912

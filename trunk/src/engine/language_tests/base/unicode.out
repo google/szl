@@ -1,0 +1,12 @@
+a: array of int = {97, 98, 99, 100, 101, 102};
+s: string;
+s = convert(string, a, "unicode");
+assert(s == "abcdef");
+a = convert(array of int, s, "unicode");
+for (i: int = 0; i < len(a); i++)
+	a[i] = a[i] ^ 32;
+s = convert(string, a, "unicode");
+assert(s == "ABCDEF");
+a[2] = 26412;
+s = convert(string, a, "unicode");
+assert(s == "AB本DEF");

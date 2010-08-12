@@ -1,0 +1,301 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Test composites specifying tuples, maps, arrays, string and bytes.
+#
+
+# Helper types
+type String = string;
+type Bytes = bytes;
+type ArrayOfInt = array of int;
+type MapIntOfInt = map[int] of int;
+type TupleIntIntInt = { i: int, j: int, k: int };
+type TupleIntFloatBytes = { i: int, f: float, b: bytes };
+type ProtoIntIntInt = proto TupleIntIntInt;
+type ProtoIntFloatBytes = proto TupleIntFloatBytes;
+
+# Composites can specify a list of elements or key-value pairs.
+ai: array of int = { 1, 2, 3 };
+tifs: TupleIntFloatBytes = { 1, 2.0, B"3" };
+mii: map[int] of int = { 1: 11, 2: 22, 3: 33 };
+
+# Composites can be empty.
+ae: array of int = {};
+te: {} = {};
+me: map[int] of int = {:};
+
+# Composites can be nested.
+aai: array of array of int = { {}, { 3, 4 } };
+assert(len(aai[0]) == 0 && aai[1][0] == 3 && aai[1][1] == 4);
+
+mimii: map[int] of map[int] of int = { 0: {:}, 1: { 0: 3, 1: 4 } };
+assert(len(mimii[0]) == 0 && mimii[1][0] == 3 && mimii[1][1] == 4);
+
+tt: { i: int, t: { i: int, f: float } } = { 1, { 2, 3.0 } };
+assert(tt.i == 1 && tt.t.i == 2 && tt.t.f == 3.0);
+
+# The same composite can be equal to a string, bytes, array or tuple value.
+s1: string = { 65, 66, 67 };
+s2: String = { 'A', 'B', 'C' };
+assert(s1 == "ABC" && s2 == "ABC");
+
+b1: bytes = { 65, 66, 67 };
+b2: Bytes = { 'A', 'B', 'C' };
+assert(b1 == B"ABC" && b2 == B"ABC");
+
+a1: array of int = { 65, 66, 67 };
+a2: ArrayOfInt = { 'A', 'B', 'C' };
+assert(a1 == a2 && a1[0] == 65 && a1[1] == 66 && a1[2] == 67);
+
+t1: { i: int, j: int, k: int } = { 65, 66, 67 };
+t2: TupleIntIntInt = { 'A', 'B', 'C' };
+assert(t1 == t2 && t1.i == 65 && t1.j == 66 && t1.k == 67);
+
+p1: proto { i: int, j: int, k: int } = { 65, 66, 67 };
+p2: ProtoIntIntInt = { 'A', 'B', 'C' };
+assert(p1 == p2 && p1.i == 65 && p1.j == 66 && p1.k == 67);
+
+# Trailing commas are allowed.
+s: string = { 65, };
+assert(s == "A");
+a: array of int = { 65, 66, 67, };
+assert(a[1] == 66);
+m: map[string] of int = { "hello" : 0, "you" : 1, };
+assert(m["hello"] == 0);
+
+# Deeply nested composites to exercise initialization code.
+nested_array: array of array of array of array of array of array of
+              array of array of array of array of array of array of int =
+    {{{{{{{{{{{{12}}}}}}}}}}}};
+assert(nested_array[0][0][0][0][0][0][0][0][0][0][0][0] == 12);
+
+
+nested_tuple: { int, a: { int, b: { int, c: { int, d: { int, e: { int, f:
+              { int, g: { int, h: { int, i: { int, j: { int, k:
+              { l: int }}}}}}}}}}}} =
+    { 1, { 2, { 3, { 4, { 5, { 6, { 7, { 8, { 9, { 10, { 11, { 12 }}}}}}}}}}}};
+assert(nested_tuple.a.b.c.d.e.f.g.h.i.j.k.l == 12);
+
+
+nested_map: map[string] of map[string] of map[string] of
+            map[string] of map[string] of map[string] of
+            map[string] of map[string] of map[string] of
+            map[string] of map[string] of map[string] of int =
+    { "a" : { "b" : { "c" : { "d" : { "e" : { "f" :
+    { "g" : { "h" : { "i" : { "j" : { "k" : { "l" : 12 }}}}}}}}}}}};
+assert(nested_map["a"]["b"]["c"]["d"]["e"]["f"]["g"]["h"]["i"]["j"]["k"]["l"]
+       == 12);
+
+
+#
+# Composites start off with incomplete types and then their type is derived
+# from the context.
+#
+
+# By type
+
+# Type derived as string
+s3: string = {};
+s4: String = {};
+s5: string; s5 = {};
+s6: String; s6 = {};
+assert(s3 == "" && s4 == "" && s5 == "" && s6 == "");
+function(s: string) { assert(s == ""); } ({});
+function(s: String) { assert(s == ""); } ({});
+assert(format("-%s-", {}) == "--");
+
+# Type derived as bytes
+b3: bytes = {};
+b4: Bytes = {};
+b5: bytes; b5 = {};
+b6: Bytes; b6 = {};
+assert(b3 == B"" && b4 == B"" && b5 == B"" && b6 == B"");
+function(b: bytes) { assert(b == B""); } ({});
+function(b: Bytes) { assert(b == B""); } ({});
+
+# Type derived as array of int
+ai3: array of int = { 1, 2, 3 };
+ai4: ArrayOfInt   = { 1, 2, 3 };
+ai5: array of int; ai5 = { 1, 2, 3 };
+ai6: ArrayOfInt;   ai6 = { 1, 2, 3 };
+assert(ai3 == ai4 && ai4 == ai5 && ai5 == ai6 &&
+       len(ai3) == 3 && ai3[0] == 1 && ai3[1] == 2 && ai3[2] == 3);
+function(a: array of int) { assert(len(a) == 3); } ({ 1, 2, 3 });
+function(a: ArrayOfInt  ) { assert(len(a) == 3); } ({ 1, 2, 3 });
+
+# Type derived as map[int] of int
+mii3: map[int] of int = { 1: 1, 2: 2, 3: 3 };
+mii4: MapIntOfInt     = { 1: 1, 2: 2, 3: 3 };
+mii5: map[int] of int; mii5 = { 1: 1, 2: 2, 3: 3 };
+mii6: MapIntOfInt;     mii6 = { 1: 1, 2: 2, 3: 3 };
+assert(mii3 == mii4 && mii4 == mii5 && mii5 == mii6 &&
+       len(mii3) == 3 && mii3[1] == 1 && mii3[2] == 2 && mii3[3] == 3);
+function(m: map[int] of int ) { assert(len(m) == 3); } ({ 1: 1, 2: 2, 3: 3 });
+function(m: MapIntOfInt     ) { assert(len(m) == 3); } ({ 1: 1, 2: 2, 3: 3 });
+
+# Type derived as tuple { int, float, bytes }
+tm3: { i: int, f: float, b: bytes } = { 1, 2., B"3" };
+tm4: TupleIntFloatBytes             = { 1, 2., B"3" };
+tm5: { i: int, f: float, b: bytes }; tm5 = { 1, 2., B"3" };
+tm6: TupleIntFloatBytes;             tm6 = { 1, 2., B"3" };
+assert(tm3 == tm4 && tm4 == tm5 && tm5 == tm6 &&
+       tm3.i == 1 && tm3.f == 2. && tm3.b == B"3");
+function(t: { i: int, f: float, b: bytes }) {
+  assert(t.i == 1);   } ({ 1, 2., B"3" });
+function(t: TupleIntFloatBytes) {
+  assert(t.b == B"3"); } ({ 1, 2., B"3" });
+# With implicit array-to-tuple element conversion (init only)
+tm7: { i: int, f: float, b: bytes } = { "1", "2", "3" };
+tm8: TupleIntFloatBytes = { "1", "2", "3" };
+assert(tm7 == tm8 && tm7.i == 1 && tm7.f == 2. && tm7.b == B"3");
+
+# Type derived as proto tuple { int, float, string }
+pm3: proto { i: int, f: float, b: bytes } = { 1, 2., B"3" };
+pm4: ProtoIntFloatBytes                   = { 1, 2., B"3" };
+pm5: proto { i: int, f: float, b: bytes }; pm5 = { 1, 2., B"3" };
+pm6: ProtoIntFloatBytes;                   pm6 = { 1, 2., B"3" };
+assert(pm3 == pm4 && pm4 == pm5 && pm5 == pm6 &&
+       pm3.i == 1 && pm3.f == 2. && pm3.b == B"3");
+function(p: proto { i: int, f: float, b: bytes }) {
+  assert(p.i == 1);   } ({ 1, 2., B"3" });
+function(p: ProtoIntFloatBytes) {
+  assert(p.b == B"3"); } ({ 1, 2., B"3" });
+# With implicit array-to-tuple element conversion (init only)
+pm7: proto { i: int, f: float, b: bytes } = { "1", "2", "3" };
+pm8: ProtoIntFloatBytes = { "1", "2", "3" };
+assert(pm7 == pm8 && pm7.i == 1 && pm7.f == 2. && pm7.b == B"3");
+
+# Additional examples
+
+# Type derived as array of string
+assert({ "a", "b", "c", "d", {} }[0] == "a");
+assert({ "a", "b", "c", "d", {} }[1] == "b");
+assert({ "a", "b", "c", "d", {} }[2] == "c");
+assert({ "a", "b", "c", "d", {} }[3] == "d");
+
+# Type derived as map[string] of int
+f: function(key: string): string {
+  return string({ "a": 3, "b": 5, "c": 7, "d": 11, {}: 13 }[key]);
+};
+assert(f("a") == "3");
+assert(f("d") == "11");
+assert(f({}) == "13");
+
+# Inner type derived as string
+hello_you_array: array of string;
+hello_you_array = { { 'h', 'e', 'l', 'l', 'o' }, " you" };
+hello_you_string: string = "";
+for (i: int = 0; i < len(hello_you_array); i++)
+  hello_you_string = hello_you_string + hello_you_array[i];
+assert(hello_you_string == "hello you");
+
+# Type derived as tuple { int, float, string, array of int }
+expected :=  "{ 1, 1.0, \"cool\", { 97, 98, 99 } }";
+s7: string = { 1, 1., "cool", { 'a', 'b', 'c' } };
+assert(s7 == expected);
+assert(string({ 1, 1., "cool", { 'a', 'b', 'c' } }) == expected);
+
+# Type derived as tuple { int, float, string, map[int] of int }
+expected = "{ 1, 1.0, \"cool\", { 97: 0, 98: 5, 99: 9 } }";
+s8: string = { 1, 1., "cool", { 'a': 0, 'b': 5, 'c': 9 } };
+assert(s8 == expected);
+assert(string({ 1, 1., "cool", { 'a': 0, 'b': 5, 'c': 9 } }) == expected);
+
+#
+# Explicit conversions used to derive the type are omitted from the tree if
+# - composites are of an incomplete type and are therefore compatible right away
+#   (no conversion warnings are issued)
+# - composites are the result of an array-to-tuple conversion
+# Conversion should be reinserted when the source is printed, so expressions
+# like assert(some_bytes == convert(bytes, { 1, 2, 3 })) are still valid after
+# reprinting (currently broken).
+#
+
+# By type
+
+# String conversion
+string({});
+convert(string, {});
+String({});
+convert(String, {});
+
+# Bytes conversion
+bytes({});
+convert(bytes, {});
+Bytes({});
+convert(Bytes, {});
+
+# Array conversion
+convert(array of int, { 1, 2, 3 });
+ArrayOfInt({ 1, 2, 3 });
+convert(ArrayOfInt, { 1, 2, 3 });
+
+# Map conversion
+convert(map[int] of int, { 1: 1, 2: 2, 3: 3 });
+MapIntOfInt({ 1: 1, 2: 2, 3: 3 });
+convert(MapIntOfInt, { 1: 1, 2: 2, 3: 3 });
+
+# Tuple conversion
+convert({ int, float, bytes }, { 1, 2., B"3" });
+TupleIntFloatBytes({ 1, 2., B"3" });
+convert(TupleIntFloatBytes, { 1, 2., B"3" });
+
+# Array-to-tuple conversion with a composite source
+# (Note element conversion will be omitted if types are compatible)
+convert({ int, float, string }, { 1, 2, 3 });
+convert(proto { i: int, f: float, b: bytes }, { "1", "2", "3" });
+TupleIntFloatBytes({ "1", "2", "3" });
+ProtoIntFloatBytes({ "1", "2", "3" });
+convert(TupleIntFloatBytes, { "1", "2", "3" });
+convert(ProtoIntFloatBytes, { "1", "2", "3" });
+
+# Array-to-tuple conversion with a non-composite source
+# (Note element conversion will be omitted if types are compatible)
+convert({ int, float, string }, new(array of int, 3, 3));
+convert(proto { i: int, f: float, b: bytes }, new(array of string, 3, "1"));
+TupleIntFloatBytes(new(array of string, 3, "1"));
+ProtoIntFloatBytes(new(array of string, 3, "1"));
+convert(TupleIntFloatBytes, new(array of string, 3, "1"));
+convert(ProtoIntFloatBytes, new(array of string, 3, "1"));
+
+#
+# An explicit conversion is inserted around the source at printing when it is
+# a composite with a different type.
+#
+
+# Implicit conversion (init only)
+
+# Array-to-array
+ai7: array of int = { 1., 2., 3. };
+ai8: ArrayOfInt   = { 1., 2., 3. };
+
+# Array-to-map
+mii7: map[int] of int = { 1, 1, 2, 2, 3, 3 };
+mii8: MapIntOfInt = { 1, 1, 2, 2, 3, 3 };
+
+# Explicit conversion
+
+# Array-to-array
+convert(array of int, { 1.0, 2.0, 3.0 });
+ArrayOfInt({ 1.0, 2.0, 3.0 });
+convert(ArrayOfInt, { 1.0, 2.0, 3.0 });
+
+# Array-to-map
+convert(map[int] of int, { 1, 1, 2, 2, 3, 3 });
+MapIntOfInt({ 1, 1, 2, 2, 3, 3 });

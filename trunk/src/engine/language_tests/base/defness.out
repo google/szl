@@ -1,0 +1,86 @@
+a: array of int;
+x: int = a[0];
+assert(!def(x));
+{
+	v: bool = false;
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: bytes = {};
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: fingerprint = 0x0000000000000000P;
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: float = 0.0;
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: int = 0;
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: string = "";
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: time = 0T;
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: array of int = {};
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: map [bytes] of string = {{97}: "a"};
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: {t: time} = {1T};
+	assert(def(v));
+	___undefine(v);
+	assert(!def(v));
+}
+{
+	v: {t: time} = {1T};
+	assert(def(v));
+	undefine_v: function() 	{
+		___undefine(v);
+	}
+;
+	undefine_v();
+	assert(!def(v));
+}
+f: function(x: int): bool {
+	v: int = x;
+	assert(def(v));
+	undefine_v: function() 	{
+		___undefine(v);
+	}
+;
+	undefine_v();
+	return def(v);
+}
+;
+assert(!f(-1));
+static foo: bool = def(nrand(-1));

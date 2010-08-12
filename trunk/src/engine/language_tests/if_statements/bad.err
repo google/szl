@@ -1,0 +1,23 @@
+if_statements/bad.szl:24: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+if_statements/bad.szl:32: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+if_statements/bad.szl:36: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+if_statements/bad.szl:39: 'break' must be in a loop or a 'switch', but not in a 'when' statement
+if_statements/bad.szl:53: i1 undeclared
+if_statements/bad.szl:58: i1 undeclared
+if_statements/bad.szl:66: i2 undeclared
+if_statements/bad.szl:69: i2 undeclared
+if_statements/bad.szl:85: i3 undeclared
+if_statements/bad.szl:94: function $main does not expect a result
+if_statements/bad.szl:102: function $main does not expect a result
+if_statements/bad.szl:106: function $main does not expect a result
+if_statements/bad.szl:109: function $main does not expect a result
+if_statements/bad.szl:120: factor expected, found ')'
+if_statements/bad.szl:121: factor expected, found '}'
+if_statements/bad.szl:124: ';' expected; found 'if'
+if_statements/bad.szl:125: factor expected, found '}'
+if_statements/bad.szl:128: ';' expected; found 'if'
+if_statements/bad.szl:129: factor expected, found '}'
+if_statements/bad.szl:132: ';' expected; found 'f'
+if_statements/bad.szl:133: ';' expected; found 'DEBUG'
+if_statements/bad.szl:134: factor expected, found '}'
+if_statements/bad.szl:136: f undeclared

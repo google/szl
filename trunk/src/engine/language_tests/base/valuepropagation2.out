@@ -1,0 +1,55 @@
+s1: string;
+if (nrand(5) == 17)
+	s1 = "abc";
+t1: string;
+saw(s1, "a", rest t1);
+b1: bool = def(t1);
+a: int = ?{
+	b: int = 1 / (1 + nrand(1));
+	result b;
+}
+;
+def(a);
+static Foo: function(): string {
+	result: string = "";
+	groups: array of string = {};
+	result = groups[$];
+	return result;
+}
+;
+Foo();
+static Bar: {f: function()} = {function() {
+	undef: string;
+	s: string;
+	s = undef;
+	s = undef;
+}
+};
+Bar.f();
+g: function() {
+	a: int;
+	b: int = 1;
+	c: int = 1;
+	d: int = 1;
+	for (i: int = 0; i < 3; i++)
+	{
+		d = c;
+		c = b;
+		b = a;
+	}
+	def(d);
+}
+;
+g();
+emit _undef_cnt <- 1;
+emit _undef_details["base/valuepropagation2.szl:27: saw(s1, \"a\", rest t1) (probably because \"s1\" had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:45: result = groups[$]; (index out of bounds (index = 0, array length = 0))"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:48: Foo() (probably because a function result was undefined due to an error at base/valuepropagation2.szl:45: result = groups[$]; (index out of bounds (index = 0, array length = 0)))"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:56: s = undef; (probably because \"undef\" had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:57: s = undef; (probably because \"undef\" had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:72: b = a; (probably because \"a\" had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:71: c = b; (probably because \"b\" was copied from \"a\" declared at base/valuepropagation2.szl:65 which had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:72: b = a; (probably because \"a\" had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:70: d = c; (probably because \"c\" was copied from \"a\" declared at base/valuepropagation2.szl:65 which had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:71: c = b; (probably because \"b\" was copied from \"a\" declared at base/valuepropagation2.szl:65 which had not been defined)"] <- 1;
+emit _undef_details["base/valuepropagation2.szl:72: b = a; (probably because \"a\" had not been defined)"] <- 1;

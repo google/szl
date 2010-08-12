@@ -1,0 +1,7 @@
+base/proto4.szl:27: field type T1 for field f1 must be a proto type
+base/proto4.szl:28: field type array of T1 for field f1 must be a proto type
+base/proto4.szl:29: field type map [int] of int for field f1 must be a proto type
+base/proto4.szl:30: cannot convert T2 into a proto tuple
+base/proto4.szl:31: field type function() for field f1 must be a proto type
+base/proto4.szl:36: field x may only be used after a '.' operator
+base/proto4.szl:37: warning: default value {0, 1, 2, BadExpr(x)} for field s not yet supported (value is ignored)

@@ -1,0 +1,18 @@
+first_gc: bool = true;
+gc: function(s: string): string {
+	start_addr: int = ___addressof(s);
+	compactor: string = new(string, 100000, 119);
+	for (i: int = 0; i < 5000; i++)
+		compactor = "z" + compactor;
+	compactor = "";
+	end_addr: int = ___addressof(s);
+	assert((start_addr != end_addr) == first_gc);
+	first_gc = false;
+	return s;
+}
+;
+s: string = new(string, 100000, 119);
+s = "";
+t: table collection of x: string format("%s %s %s", gc(x), x, gc(x));
+emit t <- new(string, 3, 120 + nrand(1));
+emit t <- "xxx xxx xxx";

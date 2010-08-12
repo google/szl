@@ -1,0 +1,49 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Test a variety of unreachable functions that analysis should remove.
+
+# An unreachable local function.
+unreachable1: function() {
+  unreachable2: function() {};
+  unreachable2();
+};
+
+
+# An unreachable recursive function.
+unreachable3: function(n: int) {
+  if (n > 0) {
+    unreachable3(n - 1);
+  }
+};
+
+
+# An unreachable function returned from a function.
+fun_to_return: function() { emit stdout <- "returned function"; };
+return_fun: function(): function() {
+  return fun_to_return;
+};
+
+
+# A simple unreachable function.
+unreachable: function(): int {
+  return 0;
+};
+

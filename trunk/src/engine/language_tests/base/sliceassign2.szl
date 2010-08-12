@@ -1,0 +1,340 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Test slice assignment when the source and destination sizes differ,
+# including zero-length slices.  Since the implementation varies depending
+# on whether the target is the original value or a slice, and also on
+# whether it is unique, there are several variants.
+
+
+# Reference versions.
+
+string_slice: function(dst: string, beg: int, end: int, src: string): string {
+  result: string = "";
+  for (i: int = 0; i < beg; i++)
+    result = result + { dst[i] };
+  for (j: int = 0; j < len(src); j++)
+    result = result + { src[j] };
+  for (k: int = end; k < len(dst); k++)
+    result = result + { dst[k] };
+  return result;
+};
+
+array_slice: function(dst: array of string, beg: int, end: int,
+                      src: array of string): array of string {
+  result: array of string = { };
+  for (i: int = 0; i < beg; i++)
+    result = result + { dst[i] };
+  for (j: int = 0; j < len(src); j++)
+    result = result + { src[j] };
+  for (k: int = end; k < len(dst); k++)
+    result = result + { dst[k] };
+  return result;
+};
+
+bytes_slice: function(dst: bytes, beg: int, end: int, src: bytes): bytes {
+  result: bytes = { };
+  for (i: int = 0; i < beg; i++)
+    result = result + { dst[i] };
+  for (j: int = 0; j < len(src); j++)
+    result = result + { src[j] };
+  for (k: int = end; k < len(dst); k++)
+    result = result + { dst[k] };
+  return result;
+};
+
+
+# Run through combinations of:  lval_length_n[beg:end] = rval_length_m
+
+pos: array of int = { 0, 1, 2, 100, 198, 199, 200 };
+string_bracket: string = "*";
+bytes_bracket: bytes = { -1 };
+array_bracket: array of string = { "*" };
+
+for (n_index: int = 0; n_index < len(pos); n_index++) {
+  n: int = pos[n_index];
+  for (end_index: int = 0; end_index <= n_index ; end_index++) {
+    end: int = pos[end_index];
+    for (beg_index: int = 0; beg_index <= end_index; beg_index++) {
+      beg: int = pos[beg_index];
+      for (m_index: int = 0; m_index < len(pos); m_index++) {
+        m: int = pos[m_index];
+
+        # create the lval and rval as arrays
+        lval_init: array of int = new(array of int, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_init[i] = nrand(0x1000) + 1;
+        rval_init: array of int = new(array of int, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_init[i] = nrand(0x1000) + 1;
+
+        ##### Target is not a slice, single reference #####
+
+        # test strings
+        lval_s0: string = string(lval_init, "unicode");
+        rval_s0: string = string(rval_init, "unicode");
+        expected_s0: string = string_slice(lval_s0, beg, end, rval_s0);
+        assert(DEBUG("ref", lval_s0) == 1);
+        lval_s0[beg:end] = rval_s0;
+        assert(lval_s0 == expected_s0);
+
+        # test bytes
+        lval_b0: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b0[i] = lval_init[i];
+        rval_b0: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b0[i] = rval_init[i];
+        expected_b0: bytes = bytes_slice(lval_b0, beg, end, rval_b0);
+        assert(DEBUG("ref", lval_b0) == 1);
+        lval_b0[beg:end] = rval_b0;
+        assert(lval_b0 == expected_b0);
+
+        # test arrays
+        lval_a0: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a0[i] = string(lval_init[i]);
+        rval_a0: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a0[i] = string(rval_init[i]);
+        expected_a0: array of string = array_slice(lval_a0, beg, end, rval_a0);
+        assert(DEBUG("ref", lval_a0) == 1);
+        lval_a0[beg:end] = rval_a0;
+        assert(lval_a0 == expected_a0);
+
+        ##### Target is not a slice, multiple references #####
+
+        # test strings
+        lval_s1: string = string(lval_init, "unicode");
+        rval_s1: string = string(rval_init, "unicode");
+        expected_s1: string = string_slice(lval_s1, beg, end, rval_s1);
+        lval_s1copy: string = lval_s1;
+        assert(DEBUG("ref", lval_s1) == 2);
+        lval_s1[beg:end] = rval_s1;
+        assert(lval_s1 == expected_s1);
+
+        # test bytes
+        lval_b1: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b1[i] = lval_init[i];
+        rval_b1: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b1[i] = rval_init[i];
+        expected_b1: bytes = bytes_slice(lval_b1, beg, end, rval_b1);
+        lval_b1copy: bytes = lval_b1;
+        assert(DEBUG("ref", lval_b1) == 2);
+        lval_b1[beg:end] = rval_b1;
+        assert(lval_b1 == expected_b1);
+
+        # test arrays
+        lval_a1: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a1[i] = string(lval_init[i]);
+        rval_a1: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a1[i] = string(rval_init[i]);
+        expected_a1: array of string = array_slice(lval_a1, beg, end, rval_a1);
+        lval_a1copy: array of string = lval_a1;
+        assert(DEBUG("ref", lval_a1) == 2);
+        lval_a1[beg:end] = rval_a1;
+        assert(lval_a1 == expected_a1);
+
+        ##### Target is a slice, single ref to slice and original #####
+
+        # test strings
+        lval_s2: string = string(lval_init, "unicode");
+        rval_s2: string = string(rval_init, "unicode");
+        expected_s2: string = string_slice(lval_s2, beg, end, rval_s2);
+        lval_s2orig: string = string_bracket + lval_s2 + string_bracket;
+        lval_s2 = lval_s2orig[1:n+1];
+        assert(DEBUG("ref", lval_s2orig) == 2);
+        lval_s2orig = "";  # drop the last ref other than from the slice
+        assert(DEBUG("ref", lval_s2) == 1);
+        lval_s2[beg:end] = rval_s2;
+        assert(lval_s2 == expected_s2);
+
+        # test bytes
+        lval_b2: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b2[i] = lval_init[i];
+        rval_b2: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b2[i] = rval_init[i];
+        expected_b2: bytes = bytes_slice(lval_b2, beg, end, rval_b2);
+        lval_b2orig: bytes =  bytes_bracket + lval_b2 + bytes_bracket;
+        lval_b2 = lval_b2orig[1:n+1];
+        assert(DEBUG("ref", lval_b2orig) == 2);
+        lval_b2orig = { };  # drop the last ref other than from the slice
+        assert(DEBUG("ref", lval_b2) == 1);
+        lval_b2[beg:end] = rval_b2;
+        assert(lval_b2 == expected_b2);
+
+        # test arrays
+        lval_a2: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a2[i] = { lval_init[i] };
+        rval_a2: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a2[i] = { rval_init[i] };
+        expected_a2: array of string = array_slice(lval_a2, beg, end, rval_a2);
+        lval_a2orig: array of string =  array_bracket + lval_a2 + array_bracket;
+        lval_a2 = lval_a2orig[1:n+1];
+        assert(DEBUG("ref", lval_a2orig) == 2);
+        lval_a2orig = { };  # drop the last ref other than from the slice
+        assert(DEBUG("ref", lval_a2) == 1);
+        lval_a2[beg:end] = rval_a2;
+        assert(lval_a2 == expected_a2);
+
+        ##### Target is a slice, multiple refs to original but not slice #####
+
+        # test strings
+        lval_s3: string = string(lval_init, "unicode");
+        rval_s3: string = string(rval_init, "unicode");
+        expected_s3: string = string_slice(lval_s3, beg, end, rval_s3);
+        lval_s3orig: string = string_bracket + lval_s3 + string_bracket;
+        lval_s3 = lval_s3orig[1:n+1];
+        assert(DEBUG("ref", lval_s3orig) == 2);
+        assert(DEBUG("ref", lval_s3) == 1);
+        lval_s3[beg:end] = rval_s3;
+        assert(lval_s3 == expected_s3);
+
+        # test bytes
+        lval_b3: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b3[i] = lval_init[i];
+        rval_b3: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b3[i] = rval_init[i];
+        expected_b3: bytes = bytes_slice(lval_b3, beg, end, rval_b3);
+        lval_b3orig: bytes =  bytes_bracket + lval_b3 + bytes_bracket;
+        lval_b3 = lval_b3orig[1:n+1];
+        assert(DEBUG("ref", lval_b3orig) == 2);
+        assert(DEBUG("ref", lval_b3) == 1);
+        lval_b3[beg:end] = rval_b3;
+        assert(lval_b3 == expected_b3);
+
+        # test arrays
+        lval_a3: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a3[i] = { lval_init[i] };
+        rval_a3: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a3[i] = { rval_init[i] };
+        expected_a3: array of string = array_slice(lval_a3, beg, end, rval_a3);
+        lval_a3orig: array of string =  array_bracket + lval_a3 + array_bracket;
+        lval_a3 = lval_a3orig[1:n+1];
+        assert(DEBUG("ref", lval_a3orig) == 2);
+        assert(DEBUG("ref", lval_a3) == 1);
+        lval_a3[beg:end] = rval_a3;
+        assert(lval_a3 == expected_a3);
+
+        ##### Target is a slice, multiple refs to slice but not original  #####
+
+        # test strings
+        lval_s4: string = string(lval_init, "unicode");
+        rval_s4: string = string(rval_init, "unicode");
+        expected_s4: string = string_slice(lval_s4, beg, end, rval_s4);
+        lval_s4orig: string = string_bracket + lval_s4 + string_bracket;
+        lval_s4 = lval_s4orig[1:n+1];
+        assert(DEBUG("ref", lval_s4orig) == 2);
+        lval_s4orig = "";  # drop the last ref other than from the slice
+        lval_s4copy: string = lval_s4;
+        assert(DEBUG("ref", lval_s4) == 2);
+        lval_s4[beg:end] = rval_s4;
+        assert(lval_s4 == expected_s4);
+
+        # test bytes
+        lval_b4: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b4[i] = lval_init[i];
+        rval_b4: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b4[i] = rval_init[i];
+        expected_b4: bytes = bytes_slice(lval_b4, beg, end, rval_b4);
+        lval_b4orig: bytes =  bytes_bracket + lval_b4 + bytes_bracket;
+        lval_b4 = lval_b4orig[1:n+1];
+        assert(DEBUG("ref", lval_b4orig) == 2);
+        lval_b4orig = { };  # drop the last ref other than from the slice
+        lval_b4copy: bytes = lval_b4;
+        assert(DEBUG("ref", lval_b4) == 2);
+        lval_b4[beg:end] = rval_b4;
+        assert(lval_b4 == expected_b4);
+
+        # test arrays
+        lval_a4: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a4[i] = { lval_init[i] };
+        rval_a4: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a4[i] = { rval_init[i] };
+        expected_a4: array of string = array_slice(lval_a4, beg, end, rval_a4);
+        lval_a4orig: array of string =  array_bracket + lval_a4 + array_bracket;
+        lval_a4 = lval_a4orig[1:n+1];
+        assert(DEBUG("ref", lval_a4orig) == 2);
+        lval_a4orig = { };  # drop the last ref other than from the slice
+        lval_a4copy: array of string = lval_a4;
+        assert(DEBUG("ref", lval_a4) == 2);
+        lval_a4[beg:end] = rval_a4;
+        assert(lval_a4 == expected_a4);
+
+        ##### Target is a slice, multiple refs both slice and original  #####
+
+        # test strings
+        lval_s5: string = string(lval_init, "unicode");
+        rval_s5: string = string(rval_init, "unicode");
+        expected_s5: string = string_slice(lval_s5, beg, end, rval_s5);
+        lval_s5orig: string = string_bracket + lval_s5 + string_bracket;
+        lval_s5 = lval_s5orig[1:n+1];
+        assert(DEBUG("ref", lval_s5orig) == 2);
+        lval_s5copy: string = lval_s5;
+        assert(DEBUG("ref", lval_s5) == 2);
+        lval_s5[beg:end] = rval_s5;
+        assert(lval_s5 == expected_s5);
+
+        # test bytes
+        lval_b5: bytes = new(bytes, n, 0);
+        for (i: int = 0; i < n; i++)
+          lval_b5[i] = lval_init[i];
+        rval_b5: bytes = new(bytes, m, 0);
+        for (i: int = 0; i < m; i++)
+          rval_b5[i] = rval_init[i];
+        expected_b5: bytes = bytes_slice(lval_b5, beg, end, rval_b5);
+        lval_b5orig: bytes =  bytes_bracket + lval_b5 + bytes_bracket;
+        lval_b5 = lval_b5orig[1:n+1];
+        assert(DEBUG("ref", lval_b5orig) == 2);
+        lval_b5copy: bytes = lval_b5;
+        assert(DEBUG("ref", lval_b5) == 2);
+        lval_b5[beg:end] = rval_b5;
+        assert(lval_b5 == expected_b5);
+
+        # test arrays
+        lval_a5: array of string = new(array of string, n, " ");
+        for (i: int = 0; i < n; i++)
+          lval_a5[i] = { lval_init[i] };
+        rval_a5: array of string = new(array of string, m, " ");
+        for (i: int = 0; i < m; i++)
+          rval_a5[i] = { rval_init[i] };
+        expected_a5: array of string = array_slice(lval_a5, beg, end, rval_a5);
+        lval_a5orig: array of string =  array_bracket + lval_a5 + array_bracket;
+        lval_a5 = lval_a5orig[1:n+1];
+        assert(DEBUG("ref", lval_a5orig) == 2);
+        lval_a5copy: array of string = lval_a5;
+        assert(DEBUG("ref", lval_a5) == 2);
+        lval_a5[beg:end] = rval_a5;
+        assert(lval_a5 == expected_a5);
+      }
+    }
+  }
+}

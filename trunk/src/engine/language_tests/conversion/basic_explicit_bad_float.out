@@ -1,0 +1,2 @@
+emit _undef_cnt <- 1;
+emit _undef_details["conversion/basic_explicit_bad_float.szl:22: f0 = float(\"Hello World\" + empty); (string \"Hello World\" contains no float)"] <- 1;

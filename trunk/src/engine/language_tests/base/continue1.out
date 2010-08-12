@@ -1,0 +1,25 @@
+i: int;
+_0_through_9: array of int = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+i = 0;
+while (i < 10)
+{
+	assert(i == _0_through_9[i]);
+	i++;
+	continue;
+	assert(false);
+}
+i = 0;
+do
+{
+	assert(i == _0_through_9[i]);
+	i++;
+	continue;
+	assert(false);
+}
+while (i < 10);
+for (i: int = 0; i < 10; i++)
+{
+	assert(i == _0_through_9[i]);
+	continue;
+	assert(false);
+}

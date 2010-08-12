@@ -1,0 +1,14 @@
+base/valuepropagation.szl:56: warning: unnecessary def(): argument has value (s3) which is known to be undefined
+base/valuepropagation.szl:58: warning: unnecessary def(): argument has value (s3) which is known to be defined
+base/valuepropagation.szl:68: warning: unnecessary def(): argument has value (s5) which is known to be undefined
+base/valuepropagation.szl:76: warning: divide by zero
+base/valuepropagation.szl:100: warning: unnecessary def(): argument has value (n) which is known to be undefined
+base/valuepropagation.szl:102: warning: unnecessary def(): argument has value (1) which is known to be defined
+base/valuepropagation.szl:111: warning: unnecessary def(): argument has value (a) which is known to be defined
+base/valuepropagation.szl:164: warning: unnecessary def(): argument has value (x) which is known to be defined
+base/valuepropagation.szl:289: warning: unnecessary def(): argument has value (true) which is known to be defined
+base/valuepropagation.szl:290: warning: unnecessary def(): argument has value (false) which is known to be defined
+base/valuepropagation.szl:291: warning: divide by zero
+base/valuepropagation.szl:291: warning: unnecessary def(): argument has value (1 / 0) which is known to be undefined
+base/valuepropagation.szl:292: warning: divide by zero
+base/valuepropagation.szl:292: warning: unnecessary def(): argument has value (1 / 0) which is known to be undefined

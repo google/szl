@@ -1,0 +1,47 @@
+type Node = {left: array of Node, value: string, right: array of Node};
+tree: array of Node = {};
+AddToNode: function(n: array of Node, s: string): array of Node {
+	if (len(n) == 0)
+		return {{{}, s, {}}};
+	else
+		if (n[0].value == s)
+			return n;
+		else
+			if (s < n[0].value)
+				return {{AddToNode(n[0].left, s), n[0].value, n[0].right}};
+			else
+				return {{n[0].left, n[0].value, AddToNode(n[0].right, s)}};
+}
+;
+PrintNode: function(n: array of Node, indent: string) {
+	if (len(n) != 0)
+	{
+		PrintNode(n[0].left, indent + "  ");
+		emit stdout <- indent + n[0].value;
+		PrintNode(n[0].right, indent + "  ");
+	}
+}
+;
+words: array of string = {"the", "road", "was", "a", "ribbon", "of", "moonlight", "looping", "the", "purple", "moor", "and", "the", "highwayman", "came", "riding", "up", "to", "the", "old", "inn", "door"};
+for (i: int = 0; i < len(words); i++)
+	tree = AddToNode(tree, words[i]);
+PrintNode(tree, "  ");
+      a
+                and
+                    came
+                      door
+                  highwayman
+                    inn
+              looping
+            moonlight
+              moor
+          of
+              old
+            purple
+        ribbon
+          riding
+    road
+  the
+        to
+      up
+    was

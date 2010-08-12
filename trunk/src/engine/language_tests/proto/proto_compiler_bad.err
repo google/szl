@@ -1,0 +1,2 @@
+proto_compiler_bad.proto:21:27: Field number 1 has already been used in "BadMessage" by field "field1".
+proto/proto_compiler_bad.szl:20: Error compiling "proto_compiler_bad.proto"

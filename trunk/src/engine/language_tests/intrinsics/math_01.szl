@@ -1,0 +1,80 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: mathematical intrinsic function calls.
+
+retF: float;
+retI: int;
+
+#inst: exp
+emit stdout <- format("exp(0.0) = %f", exp(0.0));
+emit stdout <- format("exp(10.0) = %f", exp(10.0));
+emit stdout <- format("exp(-1.0) = %f", exp(-1.0));
+emit stdout <- "";
+
+#inst: sqrt
+emit stdout <- format("sqrt(0.0) = %f", sqrt(0.0));
+emit stdout <- format("sqrt(10.0) = %f", sqrt(10.0));
+emit stdout <- format("sqrt(-1) = %f", sqrt(-1.0));
+emit stdout <- "";
+
+#inst: ln
+emit stdout <- format("ln(exp(0.0)) = %f", ln(exp(0.0)));
+emit stdout <- format("ln(exp(10.0)) = %f", ln(exp(10.0)));
+emit stdout <- format("ln(exp(-1.0)) = %f", ln(exp(-1.0)));
+emit stdout <- format("ln(-1.0) = %f", ln(-1.0));
+emit stdout <- "";
+
+#inst: log10
+emit stdout <- format("log10(1.0) = %f", log10(1.0));
+emit stdout <- format("log10(10.0) = %f", log10(10.0));
+emit stdout <- format("log10(1000.0) = %f", log10(1000.0));
+emit stdout <- format("log10(-1.0) = %f", log10(-1.0));
+emit stdout <- "";
+
+#inst: pow
+emit stdout <- format("pow(1.0, 10.0) = %f", pow(1.0, 10.0));
+emit stdout <- format("pow(10.0, 0.0) = %f", pow(10.0, 0.0));
+emit stdout <- format("pow(10.0, -0.0) = %f", pow(10.0, -0.0));
+emit stdout <- format("pow(10.0, -2.0) = %f", pow(10.0, -2.0));
+emit stdout <- format("pow(0.0, 1000.0) = %f", pow(0.0, 1000.0));
+
+emit stdout <- format("pow(-1.0, 10.0) = %f", pow(-1.0, 10.0));
+emit stdout <- format("pow(-1.0, 11.0) = %f", pow(-1.0, 11.0));
+emit stdout <- format("pow(-1.0, 11.5) = %f", pow(-1.0, 11.5));
+emit stdout <- format("pow(0.0, -10.0) = %f", pow(0.0, -10.0));
+emit stdout <- "";
+
+
+#inst: nrand
+for (i: int = 0; i < 1000; i++)
+{
+    if (nrand(10) < 0 || nrand(10) >= 10)
+    {
+	emit stdout <- "nrand Failed !!!";
+    }
+}
+
+#inst: rand
+for (i: int = 0; i < 1000; i++)
+{
+    if (rand() < 0.0 || rand() >= 1.0)
+    {
+	emit stdout <- "nrand Failed !!!";
+    }
+}

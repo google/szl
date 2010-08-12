@@ -1,0 +1,51 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+#desc: different type conversions
+
+t0: {protocol: string, domain: string} = saw("http://www.google.com/search?q=Google", `\w+`, skip `://`, `[\w.]+`); 
+
+DEBUG("print", "protocol = %s, domain = %s\n\n", t0.protocol, t0.domain);
+
+ai: array of int = sawzall("http111://www222.333google.com/search?q=Google", regex(int)); 
+
+DEBUG("print", "ai length = %d\n", len(ai));
+for (i: int = 0; i < len(ai); i++)
+{
+    DEBUG("print", "ai[%d] = %d ", i, ai[i]);
+}
+
+DEBUG("print", "\n");
+
+af: array of float = sawzall("http111://www222.333google.com/search?q=Google", regex(float)); 
+
+DEBUG("print", "af length = %d\n", len(af));
+for (i: int = 0; i < len(af); i++)
+{
+    DEBUG("print", "ai[%d] = %f ", i, af[i]);
+}
+
+DEBUG("print", "\n");
+
+t1: {x: int, y: int} = saw("http111://www222.333google.com/search?q=Google", regex(int), regex(int));
+
+DEBUG("print", "t1.x = %d, t1.y = %d\n\n", t1.x, t1.y);
+
+t2: {x: float, y: float} = saw("http111://www222.333google.com/search?q=Google", regex(float), regex(float));
+
+DEBUG("print", "t2.x = %f, t2.y = %f\n\n", t2.x, t2.y);

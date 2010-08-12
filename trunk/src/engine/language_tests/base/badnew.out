@@ -1,0 +1,12 @@
+s: string;
+s = new(string, 5, nrand(1));
+t: string;
+t = new(string, 5, nrand(1) - 1);
+u: string;
+u = new(string, 5, 1114111);
+v: string;
+v = new(string, 5, nrand(1) + 1114112);
+emit _undef_cnt <- 1;
+emit _undef_details["base/badnew.szl:19: s = new(string, 5, nrand(1)); (illegal unicode character U+0 creating new string)"] <- 1;
+emit _undef_details["base/badnew.szl:22: t = new(string, 5, nrand(1)-1); (illegal unicode character U+ffffffff creating new string)"] <- 1;
+emit _undef_details["base/badnew.szl:28: v = new(string, 5, nrand(1)+0x110000); (illegal unicode character U+110000 creating new string)"] <- 1;

@@ -1,0 +1,56 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options
+
+#desc:
+i0:int = 10;
+f:function(i:int):array of int{
+				DEBUG("print","\nI am called here\n");
+                                DEBUG("print","%d\t%d\n",i,i+i);
+#				i0 = i0 + 1;
+                                return {1,2,3};
+};
+
+# to show that normal index wont be a probelm
+
+a:int;
+a = f(1)[1];
+
+# see if $ as an indes causes reevaluation of array expression
+a = f(1)[$-1];
+
+# another way of testing 
+
+ai:array of int = new(array of int,5,10);
+for(i:int=0;i<len(ai);i = i+1){
+    DEBUG("print","%d\t",ai[i]);
+}
+DEBUG("print","\n");
+ai[3] = 99;
+for(i:int=0;i<len(ai);i = i+1){
+    DEBUG("print","%d\t",ai[i]);
+}
+
+
+#now using $
+ai[$-1] = -10;
+for(i:int=0;i<len(ai);i = i+1){
+    DEBUG("print","%d\t",ai[i]);
+}
+DEBUG("print","\n");
+

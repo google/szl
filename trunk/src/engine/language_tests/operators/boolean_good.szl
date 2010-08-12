@@ -1,0 +1,128 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Tests boolean (conditional & unconditional) operators
+
+#desc: and adds tests of unconditional operators too.
+
+x: int = 3;
+y: int = 5;
+z: int = 7;
+
+u: float = -3.0;
+v: float = -5.0;
+w: float = -7.0;
+
+a: bool = x < y;  # true
+b: bool = y > z;  # false
+c: bool = u < v;  # false
+d: bool = v > w;  # true
+
+assert(a);
+assert(b == false);
+assert(c == false);
+assert(d);
+
+#inst: test conditionals
+assert((b || c || a || d) && x < y);
+
+assert((a || b) && c == false);
+assert(a && b || c == false);
+assert(a && (b || c) == false);
+assert(a || (b && c));
+
+assert(a && b && c && d || u > v);
+assert(a && (b || c && d) || u < v || true);
+
+
+f: function (c: int, x: bool, r: bool) {
+  assert(x == r, format("%d. %b == %b", c, x, r));
+};
+
+f(0, true || true, true);
+f(1, true || false, true);
+f(2, false || true, true);
+f(3, false || false, false);
+
+f(4, true && true, true);
+f(5, true && false, false);
+f(6, false && true, false);
+f(7, false && false, false);
+
+f(8, ! false, true);
+f(9, ! true, false);
+
+
+#inst: test unconditionals.
+f(10, true and true, true);
+f(11, true and false, false);
+f(12, false and true, false);
+f(13, false and false, false);
+
+f(14, true or true, true);
+f(15, true or false, true);
+f(16, false or true, true);
+f(17, false or false, false);
+
+f(18, not true, false);
+f(19, not false, true);
+
+#inst: test both operands are not evaluated in case of conditional but in case 
+#inst: of unconditional both are evaluated.
+
+testX: function(expect_called: bool) : bool
+{
+  assert(expect_called);
+  return true;
+};
+
+if (b && testX(false)) # b is false hence textX() will not be called.
+{
+  assert(false, format("b is %b, b && textX() failed \n", b));
+}
+else
+{
+  ; # b is %b, b && textX() failed
+}
+
+if (b and testX(true)) # b is false then also textX() will be called.
+{
+  assert(false, format("b is %b, b and textX() failed \n", b));
+}
+else
+{
+  ; # b is %b, b and textX() failed
+}
+
+if (a || testX(false)) # a is true hence textX() will not be called.
+{
+  ; # a is %b, a || textX() failed
+}
+else
+{
+  assert(false, format("a is %b, a || textX() failed \n", a));
+}
+
+if (a or testX(true)) # a is true then also textX() will be called.
+{
+  ; # a is %b, a or textX() failed
+}
+else
+{
+  assert(false, format("a is %b, a or textX() failed \n", a));
+}

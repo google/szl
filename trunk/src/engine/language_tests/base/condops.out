@@ -1,0 +1,37 @@
+x: int = 3;
+y: int = 5;
+z: int = 7;
+u: float = -3.0;
+v: float = -5.0;
+w: float = -7.0;
+a: bool = x < y;
+b: bool = y > z;
+c: bool = u < v;
+d: bool = v > w;
+assert(a);
+assert(b == false);
+assert(c == false);
+assert(d);
+assert((((b || c) || a) || d) && (x < y));
+assert((a || b) && (c == false));
+assert((a && b) || (c == false));
+assert(a && ((b || c) == false));
+assert(a || (b && c));
+assert((((a && b) && c) && d) || (u > v));
+assert(((a && (b || (c && d))) || (u < v)) || true);
+f: function(c: int, x: bool, r: bool) {
+	assert(x == r, format("%d. %b == %b", c, x, r));
+}
+;
+f(0, true || true, true);
+f(1, true || false, true);
+f(2, false || true, true);
+f(3, false || false, false);
+f(0, true && true, true);
+f(1, true && false, false);
+f(2, false && true, false);
+f(3, false && false, false);
+country: string;
+country = "fra";
+assert((((((((country == "usa") or (country == "deu")) or (country == "gbr")) or (country == "jpn")) or (country == "chn")) or (country == "can")) or (country == "fra")) == true);
+assert((((((((country == "usa") and (country == "deu")) and (country == "gbr")) and (country == "jpn")) and (country == "chn")) and (country == "can")) and (country == "fra")) == false);

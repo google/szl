@@ -1,0 +1,121 @@
+// Copyright 2010 Google Inc.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
+
+
+
+
+
+syntax = "proto2";
+
+import "proto1.proto";
+
+message Proto2Message {
+
+  required Proto1Message Proto1 = 1;
+  enum version { A = 1; }
+  required int32 b = 2;
+  required string c = 3;
+  optional int32 e = 4;
+  optional string f = 5;
+  repeated string g = 6;
+  optional int32 h = 7;
+  enum I {
+    Ii = 1;
+    I2 = 2;
+  };
+  optional int32 j = 8;
+  optional string k = 9;
+  optional bool l = 10;
+  repeated string m = 11;
+  enum N {
+    N1 = 0;
+    N2 = 1;
+  };
+  repeated int32 o = 12;
+
+  repeated group P = 13 {
+    required string q = 14;
+    required int32 r = 15;
+  };
+
+  optional string s = 16;
+  optional string t = 17;
+
+  enum U {
+    U1 = 0;
+    U2 = 1;
+  };
+  repeated group V = 18 {
+    required string v1 = 19;
+    required int32 v2 = 20;
+  };
+  repeated group W = 21 {
+    optional string w1 = 22;
+    optional int32 w2 = 23;
+    repeated int32 w3 = 24;
+    repeated string w4 = 25;
+  };
+  optional group X = 26 {
+    optional bool x1 = 27;
+    optional uint64 x2 = 28;
+    optional int32 x3 = 29;
+    optional int32 x4 = 30;
+    optional int32 x5 = 31;
+    repeated group Y = 32 {
+      optional string y1 = 33;
+
+      optional group Z = 34 {
+        required int32 z1 = 35;
+        required string z2 = 36;
+        optional string z3 = 37;
+        optional bool z4 = 38;
+        optional int32 z5 = 39;
+      };
+      optional group AA = 40 {
+        required float aa1 = 41;
+        required float aa2 = 42;
+      };
+      enum BB {
+        BB1 = 0;
+        BB2 = 1;
+        BB3 = 64;
+      };
+      repeated int32 y2 = 43;
+    };
+  };
+
+  optional string cc = 44;
+  optional string dd = 45;
+  optional int32 ee = 46;
+  optional fixed32 ff = 47;
+  optional int64 gg = 48;
+  repeated group HH = 49 {
+    required string hh1 = 50;
+    required string hh2 = 51;
+  };
+  optional group II = 52 {
+    optional string ii1 = 53;
+    optional int64 ii2 = 54;
+  };
+
+  optional string jj = 55;
+};
+
+message Proto2Message2 {
+  repeated group A = 1 {
+    required Proto2Message a1 = 2;
+    required int64 a2 = 3;
+  };
+};

@@ -1,0 +1,2 @@
+Stack trace:
+szl: fatal: stack overflow: set --stack_size >= 12028

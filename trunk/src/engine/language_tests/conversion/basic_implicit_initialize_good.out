@@ -1,0 +1,40 @@
+
+conversion to int
+10
+1
+100
+10
+102
+-102
+
+conversion to float
+10.000000
+10.320000
+10.320000
+-10.320000
+
+conversion to string
+10
+Hello
+true
+0x0000000000000064p
+10.32
+
+
+conversion to bool
+false
+true
+
+conversion to bytes
+hello world!
+hello world!
+
+conversion to fingerprint
+0x000000000000000ap
+1193046
+723685415333072913
+100
+
+conversion to time
+Wed Dec 31 16:00:00 PST 1969
+Wed Dec 31 16:00:00 PST 1975

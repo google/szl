@@ -1,0 +1,141 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# test the fingerprintof() intrinsic
+
+# For each type verify that equal values give equal fingerprints and that
+# non-equal values give non-equal fingerprints (not guaranteed, but highly
+# likely for a small sample).
+
+b1: bool = true;
+b2: bool = true;
+b3: bool = false;
+b4: bool = false;
+assert(fingerprintof(b1) == fingerprintof(b2));
+assert(fingerprintof(b3) == fingerprintof(b4));
+assert(fingerprintof(b1) != fingerprintof(b3));
+
+i1: int = 123;
+i2: int = 123;
+i3: int = 456;
+i4: int = 456;
+assert(fingerprintof(i1) == fingerprintof(i2));
+assert(fingerprintof(i3) == fingerprintof(i4));
+assert(fingerprintof(i1) != fingerprintof(i3));
+
+f1: float = 123.0;
+f2: float = 123.0;
+f3: float = 456.0;
+f4: float = 456.0;
+assert(fingerprintof(f1) == fingerprintof(f2));
+assert(fingerprintof(f3) == fingerprintof(f4));
+assert(fingerprintof(f1) != fingerprintof(f3));
+
+x1: bytes = bytes("abc");
+x2: bytes = bytes("abc");
+x3: bytes = bytes("def");
+x4: bytes = bytes("def");
+assert(fingerprintof(x1) == fingerprintof(x2));
+assert(fingerprintof(x3) == fingerprintof(x4));
+assert(fingerprintof(x1) != fingerprintof(x3));
+
+s1: string = "abc";
+s2: string = "abc";
+s3: string = "def";
+s4: string = "def";
+assert(fingerprintof(s1) == fingerprintof(s2));
+assert(fingerprintof(s3) == fingerprintof(s4));
+assert(fingerprintof(s1) != fingerprintof(s3));
+
+t1: time = T"Wed Aug 2 14:09:00 PST 2006";
+t2: time = T"Wed Aug 2 14:09:00 PST 2006";
+t3: time = T"Wed Aug 2 14:09:01 PST 2006";
+t4: time = T"Wed Aug 2 14:09:01 PST 2006";
+assert(fingerprintof(t1) == fingerprintof(t2));
+assert(fingerprintof(t3) == fingerprintof(t4));
+assert(fingerprintof(t1) != fingerprintof(t3));
+
+p1: fingerprint = 123456789012345678P;
+p2: fingerprint = 123456789012345678P;
+p3: fingerprint = 123456789012345679P;
+p4: fingerprint = 123456789012345679P;
+assert(fingerprintof(p1) == fingerprintof(p2));
+assert(fingerprintof(p3) == fingerprintof(p4));
+assert(fingerprintof(p1) != fingerprintof(p3));
+
+g1: { a: int, b: int } = { 3, 4 };
+g2: { a: int, b: int } = { 3, 4 };
+g3: { a: int, b: int } = { 4, 3 };
+g4: { a: int, b: int } = { 4, 3 };
+assert(fingerprintof(g1) == fingerprintof(g2));
+assert(fingerprintof(g3) == fingerprintof(g4));
+assert(fingerprintof(g1) != fingerprintof(g3));
+
+a1: array of int = { 3, 4 };
+a2: array of int = { 3, 4 };
+a3: array of int = { 4, 3 };
+a4: array of int = { 4, 3 };
+assert(fingerprintof(a1) == fingerprintof(a2));
+assert(fingerprintof(a3) == fingerprintof(a4));
+assert(fingerprintof(a1) != fingerprintof(a3));
+
+m1: map[int] of int = { 3:4, 4:3 };
+m2: map[int] of int = { 4:3, 3:4 };
+m3: map[int] of int = { 5:6, 7:8 };
+m4: map[int] of int = { 7:8, 5:6 };
+assert(fingerprintof(m1) == fingerprintof(m2));
+assert(fingerprintof(m3) == fingerprintof(m4));
+assert(fingerprintof(m1) != fingerprintof(m3));
+
+
+# note that identical functions have the same fingerprint
+
+h1: function(a: int): int { return a + 1; };
+h2: function(a: int): int = h1;
+h3: function(a: int): int { return a + 1; };
+h4: function(a: int): int = h3;
+assert(fingerprintof(h1) == fingerprintof(h2));
+assert(fingerprintof(h3) == fingerprintof(h4));
+assert(fingerprintof(h1) != fingerprintof(h3));
+
+
+# but closures formed in different (but both still active) stack frames
+# have different fingerprints
+# (note that due to static frame elision, the closures must actually
+#  access variables that will be located in different stack frames)
+
+type F = function(a: int): int;
+z: function(recurse: bool, outer_fpf: fingerprint, outer_fpg: fingerprint) {
+  b: int = 2;
+  f: F { return a + b + 1; };
+  f1: F = f;
+  f2: F = f;
+  fpf1: fingerprint = fingerprintof(f1);
+  fpf2: fingerprint = fingerprintof(f2);
+  assert(fpf1 == fpf2);
+  static g: F { return a + 1; };
+  g1: F = g;
+  g2: F = g;
+  fpg1: fingerprint = fingerprintof(g1);
+  fpg2: fingerprint = fingerprintof(g2);
+  assert(fpg1 == fpg2);
+  if (recurse) {
+    z(false, fpf1, fpg1);
+  } else {
+    assert(fpf1 != outer_fpf);
+    assert(fpg1 == outer_fpg);
+  }
+};
+z(true, fingerprint(0), fingerprint(0));

@@ -1,0 +1,8 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     i: int = <undefined>
+     j: int = <undefined>
+
+szl: fatal: undefined value at switch_statements/undefined_tag.szl:31: j (probably because "j" had not been defined)

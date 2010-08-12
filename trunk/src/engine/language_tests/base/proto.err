@@ -1,0 +1,4 @@
+base/proto.szl:24: warning: default value {} for field b not yet supported (value is ignored)
+base/proto.szl:34: warning: default value {} for field b not yet supported (value is ignored)
+base/proto.szl:44: warning: default value {} for field b not yet supported (value is ignored)
+base/proto.szl:54: warning: default value {} for field b not yet supported (value is ignored)

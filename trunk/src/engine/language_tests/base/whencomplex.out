@@ -1,0 +1,67 @@
+kCountries: array of string = {"elbow", "freedonia", "patootiestan"};
+country: string = "elbownia";
+rs: array of string = {};
+expecteds: array of string = {"elbow"};
+when (
+	i: some int;
+	country[0 : len(kCountries[i])] == kCountries[i]
+)
+{
+	rs = rs + {kCountries[i]};
+}
+assert(rs == expecteds);
+f: function(i: int): int {
+	return i;
+}
+;
+ai: array of int = {0, 1, 2, 4};
+ri: array of int = {};
+expectedi: array of int = {2};
+when (
+	i: each int;
+	ai[f(ai[i])] == 2
+)
+{
+	ri = ri + {i};
+}
+assert(ri == expectedi);
+type F = function(): bool;
+False: function(): bool {
+	return false;
+}
+;
+True: function(): bool {
+	return true;
+}
+;
+af: array of F = {False, False, True, True, False};
+ri = {};
+expectedi = {2, 3};
+when (
+	i: each int;
+	af[i]()
+)
+	ri = ri + {i};
+assert(ri == expectedi);
+ab: array of bool = {false, true, true, false};
+ri = {};
+expectedi = {1, 2};
+when (
+	i: each int;
+	new(array of bool, 2, ab[i])[0]
+)
+	ri = ri + {i};
+assert(ri == expectedi);
+IsPalindrome: function(word: string): bool {
+	when (
+		i: all int;
+		word[i] == word[($ - 1) - i]
+	)
+		return true;
+	return false;
+}
+;
+assert(IsPalindrome("abccba"));
+assert(IsPalindrome("abcba"));
+assert(IsPalindrome(""));
+assert(!IsPalindrome("abaascba"));

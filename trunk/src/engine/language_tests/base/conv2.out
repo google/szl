@@ -1,0 +1,18 @@
+type AB = array of bool;
+type AF = array of fingerprint;
+type AI = array of int;
+type AT = array of time;
+b0: AB = {true, false};
+f0: AF = {0x0000000000000001P, 0x0000000000000002P, 0x0000000000000003P, 0x0000000000000004P};
+i0: AI = {1, 2, 3, 4};
+t0: AT = {1T, 2T, 3T, 4T};
+f1: AF = convert(AF, i0);
+assert(f1 == f0, "f1 = " + convert(string, f1));
+i1: AI = convert(AI, b0);
+assert((i1[0] == 1) && (i1[1] == 0), "i1 = " + convert(string, i1));
+i2: AI = convert(AI, f0);
+assert(i2 == i0, "i2 = " + convert(string, i2));
+i3: AI = convert(AI, t0);
+assert(i3 == i0, "i3 = " + convert(string, i3));
+t1: AT = convert(AT, i0);
+assert(t1 == t0, "t1 = " + convert(string, t1));

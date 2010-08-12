@@ -1,0 +1,11 @@
+base/var_decl_bad.szl:17: illegal initializer: {} has incomplete type
+base/var_decl_bad.szl:18: illegal initializer: {1, 2, 3} has incomplete type
+base/var_decl_bad.szl:19: illegal initializer: {1: 2} has incomplete type
+base/var_decl_bad.szl:22: illegal initializer: x4 has incomplete type
+base/var_decl_bad.szl:23: type mismatch: 1 (type int) + x5 (type incomplete)
+base/var_decl_bad.szl:24: cannot convert x6 (type incomplete) to int
+base/var_decl_bad.szl:25: incompatible argument list for nrand(x7): candidates are:
+    nrand: function(n: int): int
+base/var_decl_bad.szl:29: T is not a type
+base/var_decl_bad.szl:30: T is not a type
+base/var_decl_bad.szl:31: T is not a type

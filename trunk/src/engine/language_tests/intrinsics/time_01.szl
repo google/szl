@@ -1,0 +1,123 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: intrinsic function calls that operate on time.
+
+# list of functions that operates on time.
+
+#    dayofmonth
+#    dayofweek
+#    dayofyear
+#    hourof
+#    minuteof
+#    monthof
+#    yearof
+
+#    now - will not be testing it.
+
+#    max
+#    min
+
+#    trunctoday
+#    trunctohour
+#    trunctominute
+#    trunctomonth
+#    trunctosecond
+#    trunctoyear
+
+#    addday
+#    addmonth
+#    addweek
+#    addyear
+
+#    formattime
+
+t0: time = "Mon Mar 01 23:50:50 PST 2004";
+
+# shouldn't it print time in PST format.
+assert(format("%t", t0) == "Mon Mar  1 23:50:50 PST 2004");
+
+#inst: dayofmonth
+assert(dayofmonth(t0) == 1);
+
+#inst: dayofweek
+assert(dayofweek(t0) == 1);
+
+#inst: dayofyear
+assert(dayofyear(t0) == 61);
+
+#inst: hourof
+assert(hourof(t0) == 23);
+
+#inst: minuteof
+assert(minuteof(t0) == 50);
+
+#inst: monthof
+assert(monthof(t0) == 3);
+
+#inst: yearof
+assert(yearof(t0) == 2004);
+
+#inst: trunctoday
+assert(trunctoday(t0) == T"Mon Mar  1 00:00:00 PST 2004");
+
+#inst: trunctohour
+assert(trunctohour(t0) == T"Mon Mar  1 23:00:00 PST 2004");
+
+#inst: trunctominute
+assert(trunctominute(t0) == T"Mon Mar  1 23:50:00 PST 2004");
+
+#inst: trunctosecond
+assert(trunctosecond(t0) == T"Mon Mar  1 23:50:50 PST 2004");
+
+#inst: trunctomonth
+assert(trunctomonth(t0) == T"Mon Mar  1 00:00:00 PST 2004");
+
+#inst: trunctoyear
+assert(trunctoyear(t0) == T"Thu Jan  1 00:00:00 PST 2004");
+
+#inst: addday
+assert(addday(t0, -1) == T"Sun Feb 29 23:50:50 PST 2004");
+assert(addday(t0, 0) == T"Mon Mar  1 23:50:50 PST 2004");
+assert(addday(t0, 365) == T"Tue Mar  1 23:50:50 PST 2005");
+
+#inst: addmonth
+assert(addmonth(t0, -1) == T"Sun Feb  1 23:50:50 PST 2004");
+assert(addmonth(t0, 0) == T"Mon Mar  1 23:50:50 PST 2004");
+assert(addmonth(t0, 10) == T"Sat Jan  1 23:50:50 PST 2005");
+
+#inst: addweek
+assert(addweek(t0, -1) == T"Mon Feb 23 23:50:50 PST 2004");
+assert(addweek(t0, 0) == T"Mon Mar  1 23:50:50 PST 2004");
+assert(addweek(t0, 44) == T"Mon Jan  3 23:50:50 PST 2005");
+
+#inst: addyear
+assert(addyear(t0, -1) == T"Sat Mar  1 23:50:50 PST 2003");
+assert(addyear(t0, 0) == T"Mon Mar  1 23:50:50 PST 2004");
+assert(addyear(t0, 4) == T"Sat Mar  1 23:50:50 PST 2008");
+
+#inst: formattime
+assert(formattime("sawzall", t0) == "sawzall");
+assert(formattime("%Y-%m-%d", t0) == "2004-03-01");
+assert(formattime("%y-%m-%d", t0) == "04-03-01");
+assert(formattime("%H:%M:%S", t0) == "23:50:50");
+assert(formattime("%a %b %d %H:%M:%S PST %Y", t0) == "Mon Mar 01 23:50:50 PST 2004");
+assert(formattime("%a %b %d %H:%M:%S GMT %Y", t0, "GMT") == "Tue Mar 02 07:50:50 GMT 2004");
+assert(formattime("%% %A %B", t0) == "% Monday March");
+assert(def(formattime("%Y", t0, "XYZ")) == false);
+assert(def(formattime("%c%c%c%c%c%c%c%c%c%c", t0)) == false);

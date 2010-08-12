@@ -1,0 +1,73 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc: a test file full of good (= legal) sawzall literals
+
+
+
+# a test file full of good (= legal) sawzall literals
+
+# ints
+i: int;
+i = 2;
+i = 0;
+i = 0000000010;
+i = 0b1010;
+i = 0xffff;
+i = 9223372036854775807;
+i = -9223372036854775808;
+i = 0 -5;
+i = 0 -9223372036854775807;
+
+# floats
+f: float;
+f = 1e5;
+f = 1.2;
+f = 1.23e0;
+f = 1.23e-11;
+f = 1.23e+12;
+f = 0.;
+f = 0000000000000.;
+f = 0000000000000.e-10;
+f = .0;
+f = .0e+9;
+#f = .e+9;
+#f = . ;
+#f =  ;
+f = 00000000000012345.;
+f = 00000000000034567e-2;
+f= 00008.;
+f = 00008e8;
+
+# chars
+c: int;
+c = 'a';
+c = '\a';
+c = '\n';
+c = '\0';
+c = '\07';
+c = '\x40';
+c = '\'';
+
+# strings
+s: string;
+s = "query.proto";
+s = "Hello World! Καλημέρα κόσμε! こんにちは 世界!";
+s = "\a\b\f\n\r\t\v\\\"";
+s = "hello \"\t\x0030\041world\n";
+s = "\1abcdefghijkl";
+s = "\0619";

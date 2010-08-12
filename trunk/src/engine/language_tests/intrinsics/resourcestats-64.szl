@@ -1,0 +1,63 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Test the intrinsic to measure CPU and memory usage. Because CPU usage is not
+# a stable measurement, we compare the deltas instead.
+
+static c: string = "abc\ndef\nghi\njkl\nmno\npqr\nstu\nvwx\nyz1\n234\n567\n890";
+static s: array of string = sawzall(c, ".+");
+
+work: function() {
+  wc: int = 0;
+  for (j: int = 0; j < 10000; j++) {
+    for (i: int = 0; i < len(s); i++) {
+      w: array of string = sawzall(s[i], "[^ ]+");
+      wc = wc + len(w);
+    }
+  }
+};
+
+# emit eror message if the measurement is out of the given range
+range: function(s: string, v: int, low: int, high: int) {
+  if ((v < low) || (v > high)) {
+    key_str: string;
+    if (v < low)
+      key_str = "low";
+    else
+      key_str = "high";
+    emit stdout <- format("%s too %s, actual: %d, expected range: [%d, %d]",
+                          s, key_str, v, low, high);
+  }
+};
+
+r0: resourcestats = getresourcestats();
+work();
+r1: resourcestats = getresourcestats();
+work();
+r2: resourcestats = getresourcestats();
+
+range("init available mem", r1.initializedavailablemem, 9000000, 11000000);
+range("init allocated mem", r1.initializedallocatedmem, 4500, 5500);
+range("available mem", r1.availablemem, 480000000, 510000000);
+range("allocated mem", r1.allocatedmem, 490000000, 510000000);
+
+user_time_1: int = int(r1.usertime) - int(r0.usertime);
+user_time_2: int = int(r2.usertime) - int(r1.usertime);
+cpu_var: int;
+if (user_time_1 > user_time_2)
+  cpu_var = (user_time_1 - user_time_2) * 100 / user_time_2;
+else
+  cpu_var = (user_time_2 - user_time_1) * 100 / user_time_1;
+range("user CPU time variance percentage", cpu_var, 0, 100);

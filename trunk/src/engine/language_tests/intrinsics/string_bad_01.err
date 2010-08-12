@@ -1,0 +1,46 @@
+intrinsics/string_bad_01.szl:22: intrinsic function 'lowercase' cannot be used as value
+intrinsics/string_bad_01.szl:23: intrinsic function 'uppercase' cannot be used as value
+intrinsics/string_bad_01.szl:26: incompatible argument list for lowercase(): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:27: incompatible argument list for uppercase(): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:30: incompatible argument list for lowercase("ABC", "DEF"): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:31: incompatible argument list for uppercase("abc", "def"): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:45: incompatible argument list for lowercase(b0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:46: incompatible argument list for lowercase(i0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:47: incompatible argument list for lowercase(f0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:48: incompatible argument list for lowercase(by0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:49: incompatible argument list for lowercase(t0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:50: incompatible argument list for lowercase(fg0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:51: incompatible argument list for lowercase(a0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:52: incompatible argument list for lowercase(m0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:53: incompatible argument list for lowercase(p0): candidates are:
+    lowercase: function(s: string): string
+intrinsics/string_bad_01.szl:55: incompatible argument list for uppercase(b0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:56: incompatible argument list for uppercase(i0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:57: incompatible argument list for uppercase(f0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:58: incompatible argument list for uppercase(by0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:59: incompatible argument list for uppercase(t0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:60: incompatible argument list for uppercase(fg0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:61: incompatible argument list for uppercase(a0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:62: incompatible argument list for uppercase(m0): candidates are:
+    uppercase: function(s: string): string
+intrinsics/string_bad_01.szl:63: incompatible argument list for uppercase(p0): candidates are:
+    uppercase: function(s: string): string

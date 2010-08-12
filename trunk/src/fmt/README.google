@@ -1,0 +1,16 @@
+URL:  http://swtch.com/plan9port/unix/
+Version: 
+License: Lucent Public License 1.02
+License File: LICENCE
+Description: Extensible library for formatted printing; handles UTF-8
+Local Modifications:
+
+This code was adapted from the Plan 9 port version:
+	- converted to C++
+	- wrapped to allow multiple formatters in the same address space
+	- updated to the new POSIX printf-spec
+
+The man files print.3 and fmtinstallflag.3 have not been updated to include
+the C++ API.  They are not installed as part of "make install", but they may
+be viewed with "man -l print.3" and "man -l fmtinstallflag.3".  They may be
+manually installed by copying them to directory /usr/local/man/man3.

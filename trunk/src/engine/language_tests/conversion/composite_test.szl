@@ -1,0 +1,49 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env  szl
+
+#desc:  Conversion from composite to basic type
+
+include "composite_to_basic_initialize_good.szl"
+
+# conversion to string
+
+s:string;
+s= string({1,2,3,4});				# array of int
+if(s != s0) DEBUG("print","\nError: s!= s0");
+if(s0 != s) DEBUG("print","\nError: s0!= s");
+
+s= string({1:2,2:3,3:4,4:5});			# map[int] of int
+if(s != s1) DEBUG("print","\nError: s!= s1");
+if(s1 != s) DEBUG("print","\nError: s1!= s");
+
+s= string({{1,"Hi"},{2,"World"}});		# tuple {int,string}
+if(s != s2) DEBUG("print","\nError: s!= s2");
+if(s2 != s) DEBUG("print","\nError: s2!= s");
+
+# Conversion to fingerprint gives errors; here we compute fingerprints
+fg:fingerprint;
+fg= fingerprintof({1,2,3,4});				# array of int
+if(fg != fg0) DEBUG("print","\nError: fg != fg0");
+if(fg0 != fg) DEBUG("print","\nError: fg0 != fg");
+
+fg= fingerprintof({1:2,2:3,3:4,4:5});			# map[int] of int
+if(fg != fg1) DEBUG("print","\nError: fg != fg1");
+if(fg1 != fg) DEBUG("print","\nError: fg1 != fg");
+
+fg= fingerprintof({{1,"Hi"},{2,"World"}});		# tuple {int,string}
+if(fg != fg2) DEBUG("print","\nError: fg != fg2");
+if(fg2 != fg) DEBUG("print","\nError: fg2 != fg");

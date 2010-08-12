@@ -1,0 +1,258 @@
+i: int = 0;
+f1: function(): int {
+	return i;
+}
+;
+i = 2;
+assert(f1() == 2);
+f2: function() {
+	j: int = 0;
+	f3: function(): int 	{
+		return j;
+	}
+;
+	j = 2;
+	assert(f3() == 2);
+}
+;
+f2();
+s3: string;
+b3: bool = def(s3);
+saw("a", rest s3);
+b3 = def(s3);
+s4: string;
+s5: string;
+for (i: int = 0; i < 3; i++)
+{
+	if (!def(s4))
+	{
+		s4 = "Hello";
+	}
+	if (def(s5))
+	{
+	}
+}
+g: function() {
+	x: int = 1 / 0;
+}
+;
+g();
+x: int = 1 + nrand(1);
+y: int = 1 / nrand(1);
+switch (1) {
+	case x, y:
+		{
+break;
+}
+	case nrand(1):
+		{
+def(y);
+}
+	default:
+		{
+break;
+}
+}
+n: int;
+tbl: table collection of i: int format("%b\n", def(n));
+emit tbl <- 1;
+n = 1;
+emit tbl <- 2;
+if ((nrand(9) * nrand(9)) == 17)
+	___undefine(n);
+emit tbl <- 3;
+a: int = ?{
+	b: int = 1 / (1 + nrand(1));
+	result b;
+}
+;
+def(a);
+{
+	f: function(a: int, b: int, c: int): string 	{
+		return format("a = %d   b = %d   c = %d", a, b, c);
+	}
+;
+	x: int = 10;
+	y: int = 1;
+	z: int = 20;
+	w: int = 2 + nrand(1);
+	s: string = f(x + y, ?{
+	x = z;
+	y = w;
+	result 0;
+}
+, x + y);
+	assert(s == "a = 22   b = 0   c = 11");
+}
+{
+	f: function(): int 	{
+		x: int = 3;
+		for (i: int = 0; i < 2; i++)
+		{
+			x = 4;
+			continue;
+			x = 3;
+		}
+		return x;
+	}
+;
+	assert(f() == 4);
+}
+{
+	g: function(b: bool): int 	{
+		return 1;
+	}
+;
+	f: function() 	{
+		x: int = 1;
+		j: int = 1;
+		for (i: int = 0; i < 2; i = i + g(def(j)))
+		{
+			if (i == 1)
+			{
+				___undefine(j);
+				break;
+			}
+		}
+	}
+;
+	f();
+}
+{
+	x: int = 1 / (nrand(1) + 1);
+	while (x == 0)
+		;
+	def(x);
+}
+{
+	x: int;
+	if (nrand(1) == 1)
+	{
+		while (x == 0)
+			x = 1;
+	}
+}
+{
+	x: int;
+	y: int;
+	do
+	{
+		z: int = x;
+		if (nrand(1) == 1)
+			w: int = y;
+		x = 1;
+		y = 1;
+	}
+	while (!def(x));
+}
+{
+	a: int;
+	b: int;
+	c: int;
+	g: function(w: int, x: bool, y: bool, z: bool): int 	{
+		return w + 1;
+	}
+;
+	for (i: int = 0; (i < 2) && ((def(a) || def(b)) || def(c)); i = g(i, def(a), def(b), def(c)))
+	{
+		if (i == 0)
+		{
+			a = 1;
+			continue;
+		}
+		else
+			if (i == 1)
+			{
+				b = 2;
+				continue;
+			}
+			else
+			{
+				c = 3;
+				break;
+			}
+	}
+	def(a);
+	def(b);
+	def(c);
+}
+{
+	a: int;
+	b: int;
+	c: int;
+	g: function(w: int, x: bool, y: bool, z: bool): int 	{
+		return w + 1;
+	}
+;
+	for (i: int = 0; (i < 2) && ((def(a) || def(b)) || def(c)); i = g(i, def(a), def(b), def(c)))
+	{
+		if (i == 0)
+		{
+			a = 1;
+			break;
+		}
+		else
+			if (i == 1)
+			{
+				b = 2;
+				break;
+			}
+			else
+			{
+				c = 3;
+				continue;
+			}
+	}
+	def(a);
+	def(b);
+	def(c);
+}
+{
+	d: array of int = {1, 0, 2, 3, 4, 0, 5};
+	so_far: int = 0;
+	out: string = "";
+	for (i: int = 0; i < len(d); i++)
+	{
+		so_far = so_far + d[i];
+		if (d[i] != 0)
+		{
+			continue;
+		}
+		out = (((out + "  ") + convert(string, i, 10)) + ":") + convert(string, so_far, 10);
+		so_far = 0;
+	}
+	assert(out == "  1:1  5:9");
+}
+{
+	x: array of int = {1};
+	a: int = -1;
+	b: int = -1;
+	for (i: int = 0; i < 2; i++)
+	{
+		while (true)
+		{
+			b = a;
+			a = 0;
+			break;
+		}
+	}
+	assert(b == 0);
+}
+{
+	for (i: int = 0; i < 2; j: int = 0)
+	{
+		assert(def(j) == (i != 0));
+		i++;
+	}
+}
+{
+	undef: bool;
+	y: bool = nrand(1) == 2;
+	def(true || undef);
+	def(false && undef);
+	def(1 / (1 - convert(int, true || y)));
+	def(1 / convert(int, false && y));
+}
+emit tbl <- "false\n";
+emit tbl <- "true\n";
+emit tbl <- "true\n";

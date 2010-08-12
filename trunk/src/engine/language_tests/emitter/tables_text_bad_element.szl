@@ -1,0 +1,35 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Text tables with invalid elements that fail with --table_output:
+#   "failed to create emitter for table OTEeX: text table elements
+#   must be of type string or bytes".
+#
+# Note: this program will die after the first bad emitter, but all causing
+#       the same error are listed here for documentation purposes.
+
+OTEei: table text of i: int;
+OTEef: table text of f: float;
+OTEep: table text of p: fingerprint;
+OTEet: table text of t: time;
+OTEeb: table text of b: bool;
+OTEeT: table text of T: { s: string, i: int, f: float };
+OTEeP: table text of P: proto { b: bytes, i: int, f: float };
+OTEeA: table text of A: array of int;
+OTEeM: table text of M: map[string] of int;

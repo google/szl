@@ -1,0 +1,43 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# This caused an assert fault in the ELF file generator, because the code range
+# for node v was overwritten during the second traversal (do_statics == false)
+# of the parse tree for k0. See bug 1601218.
+
+static k0 := ?{
+ emit stderr <- "";
+ static v := 0;
+ result v;
+};
+
+# This caused an assert fault in the ELF file generator. The rewrite of the when
+# statement generated shared break nodes for different break statements. The
+# second break statement is correctly recognized as dead code by the native code
+# generator and gets eliminated. However, because the code range of the dead
+# break statement was not empty but still pointing to the first shared break
+# statement, the corresponding line information survived and confused the ELF
+# file generator.
+
+IsPalindrome := function(word: string): bool {
+  when(i: all int; word[i] == word[$-1-i])
+    return true;
+  return false;
+};
+

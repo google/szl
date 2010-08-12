@@ -1,0 +1,33 @@
+OkRune: function(r: int): bool {
+	if (r <= 0)
+		return false;
+	if (r > 1114111)
+		return false;
+	if ((55296 <= r) && (r <= 57343))
+		return false;
+	return true;
+}
+;
+for (i: int = -10; i <= (1114111 + 1); i++)
+	assert(def(convert(string, {i})) == OkRune(i));
+type ProtoTupleType = parsedmessage {f1: int @ 1 : int64, f2: int = 55 @ 2 : fixed32};
+proto1: ProtoTupleType = {2, 3};
+proto2: ProtoTupleType = convert(ProtoTupleType, B"");
+arr_bT: array of bytes = convert(array of bytes, {proto1, proto2, proto1});
+assert(len(arr_bT) == 3);
+assert(arr_bT[0] == convert(bytes, proto1));
+assert(arr_bT[1] == B"");
+assert(arr_bT[2] == convert(bytes, proto1));
+arr_Tb: array of ProtoTupleType = convert(array of ProtoTupleType, {convert(bytes, proto1), B"", convert(bytes, proto1)});
+assert(len(arr_Tb) == 3);
+assert(arr_Tb[0] == proto1);
+assert(arr_Tb[1] == proto2);
+assert(arr_Tb[2] == proto1);
+type OtherTupleType = {f1: int, f2: int};
+othertuple1: OtherTupleType = {2, 3};
+othertuple2: OtherTupleType = {0, 55};
+arr_TT: array of OtherTupleType = convert(array of OtherTupleType, {proto1, proto2, proto1});
+assert(len(arr_TT) == 3);
+assert(arr_TT[0] == othertuple1);
+assert(arr_TT[1] == othertuple2);
+assert(arr_TT[2] == othertuple1);

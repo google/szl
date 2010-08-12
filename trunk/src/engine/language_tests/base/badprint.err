@@ -1,0 +1,11 @@
+base/badprint.szl:19: unknown DEBUG command "foo"
+base/badprint.szl:20: DEBUG "print" needs a literal format string
+base/badprint.szl:21: not enough arguments for format string
+base/badprint.szl:22: DEBUG "print" needs a literal format string
+base/badprint.szl:23: print expression 3 (type int) not compatible with format %s
+base/badprint.szl:24: too many arguments for format string
+base/badprint.szl:25: unrecognized format specifier %
+base/badprint.szl:26: unrecognized format specifier %A
+base/badprint.szl:27: format verb '*' not available in sawzall programs
+base/badprint.szl:28: format verb 'n' not available in sawzall programs
+base/badprint.szl:29: format modifier 'l' meaningless in sawzall

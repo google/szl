@@ -1,0 +1,304 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Test conversions to/from basic types:
+# 1 bool
+# 2 bytes
+# 3 fingerprint
+# 4 float
+# 5 int
+# 6 string
+# 7 time
+# 8 uint
+#
+# At this point, this test is not intended to test all boundary cases
+# exhaustively, but only to provide an overview of what types of conversions and
+# parameters are supported. See conversions/ directory for more tests.
+
+# ------------------------------------------------------------------------------
+# to bool
+# ------------------------------------------------------------------------------
+# from bool        - self-conversion is suppressed with a warning
+assert(bool(true) == true);
+# from bytes       - not supported
+# from fingerprint - not supported
+# from float       - not supported
+# from int         - not supported
+# from string      - matches ^[Tt]
+assert(bool("true") == true);
+assert(bool("false") == false);
+assert(bool("Todo") == true);
+assert(bool("") == false);
+assert(bool("not true") == false);
+# from time        - not supported
+# from uint        - not supported
+
+# ------------------------------------------------------------------------------
+# to bytes
+# ------------------------------------------------------------------------------
+# from bool        - not supported
+# from bytes       - self-conversion is suppressed with a warning
+assert(bytes(B"hello") == B"hello");
+# from fingerprint - unpack
+assert(bytes(0x8877665544332211p) == X"8877665544332211");
+# from float       - not supported
+# from int         - required param: encoding format
+assert(bytes(1, "varint") == X"01");
+assert(bytes(1, "zigzag") == X"02");
+assert(bytes(1, "fixed32-big") == X"00000001");
+assert(bytes(1, "fixed64-big") == X"0000000000000001");
+assert(bytes(1, "fixed32-little") == X"01000000");
+assert(bytes(1, "fixed64-little") == X"0100000000000000");
+assert(bytes(1, "szl") == X"0000000000000001");
+assert(!def(bytes(1, "bad encoding")));
+# from string      - optional param: string encoding (default: utf-8)
+assert(bytes("") == B"");
+assert(bytes("abcd") == B"abcd");
+assert(bytes("abcd", "hex") == X"ABCD");
+assert(bytes("\xfc\xfd\xfe") == X"C3BCC3BDC3BE");
+assert(bytes("\xfc\xfd\xfe", "latin-1") == X"FCFDFE");
+assert(bytes("日本語") == X"E697A5E69CACE8AA9E");
+assert(bytes("日本語", "utf-8") == X"E697A5E69CACE8AA9E");
+assert(!def(bytes("", "bad encoding")));
+# from time        - not supported
+# from uint        - required param: encoding format
+assert(bytes(1U, "varint") == X"01");
+assert(bytes(1U, "zigzag") == X"02");
+assert(bytes(1U, "fixed32-big") == X"00000001");
+assert(bytes(1U, "fixed64-big") == X"0000000000000001");
+assert(bytes(1U, "fixed32-little") == X"01000000");
+assert(bytes(1U, "fixed64-little") == X"0100000000000000");
+assert(bytes(1U, "szl") == X"0000000000000001");
+assert(!def(bytes(1U, "bad encoding")));
+
+# ------------------------------------------------------------------------------
+# to fingerprint
+# ------------------------------------------------------------------------------
+# from bool        - not supported
+# from bytes       - pack
+assert(fingerprint(B"\1\2\3\4\1\2\3\4") == 0x0102030401020304p);
+# from fingerprint - self-conversion is suppressed with a warning
+assert(fingerprint(0x1p) == 0x1p);
+# from float       - not supported
+# from int         - reinterpret
+assert(fingerprint(0377) == 0xffp);
+# from string      - optional param: base (default: 0 == auto-detect)
+assert(fingerprint("12345") == 0x3039p);
+assert(fingerprint("12345", 10) == 0x3039p);
+assert(fingerprint("12345", 16) == 0x12345p);
+assert(!(def(fingerprint(""))));                   # no int
+assert(!(def(fingerprint("not a fingerprint"))));  # no int
+assert(!(def(fingerprint("12345", 1))));           # illegal base
+# from time        - not supported
+# from uint        - reinterpret
+assert(fingerprint(255U) == 0xffp);
+
+# ------------------------------------------------------------------------------
+# to float
+# ------------------------------------------------------------------------------
+# from bool        - not supported
+# from bytes       - not supported
+# from fingerprint - not supported
+# from float       - self-conversion is suppressed with a warning
+assert(float(2.7) == 2.7);
+# from int         - as in C++
+assert(float(0377) == 255.0);
+assert(float(0) == 0.0);
+assert(float(-255) == -255.0);
+# from string      - as in C++
+assert(float("3.14e2") == 314.0);
+assert(!def(float("")));             # not a float
+assert(!def(float("not a float")));  # not a float
+# from time        - not supported
+# from uint        - as in C++
+assert(float(255U) == 255.0);
+
+# ------------------------------------------------------------------------------
+# to int
+# ------------------------------------------------------------------------------
+# from bool        - 0 and 1
+assert(int(true) == 1);
+assert(int(false) == 0);
+# from bytes       - required param: encoding format
+assert(int(X"01", "varint") == 1);
+assert(int(X"02", "zigzag") == 1);
+assert(int(X"00000001", "fixed32-big") == 1);
+assert(int(X"0000000000000001", "fixed64-big") == 1);
+assert(int(X"01000000", "fixed32-little") == 1);
+assert(int(X"0100000000000000", "fixed64-little") == 1);
+assert(int(X"0000000000000001", "szl") == 1);
+assert(!def(int(X"", "bad encoding")));
+# from fingerprint - reinterpret
+assert(int(0p) == 0);
+# from float       - as in C++
+assert(int(2.7e4) == 27000);
+assert(int(2.7) == 2);
+assert(int(-0.3) == 0);
+# from int         - self-conversion is suppressed with a warning
+assert(int(1234) == 1234);
+# from string      - optional param: base (default: 0 == auto-detect)
+assert(int("171", 0) == 171);
+assert(int("-171", 0) == -171);
+assert(int("0253", 0) == 171);
+assert(int("0xAB", 0) == 171);
+assert(int("377", 10) == 377);
+assert(int("377", 8) == 255);
+assert(int("377", 16) == 887);
+assert(int("1010101", 2) == 85);
+assert(!def(int("")));              # no int
+assert(!def(int("true")));          # no int
+assert(!def(int("not an int", 0))); # no int
+assert(!def(int("4", 2)));          # no int (relative to the base)
+assert(!def(int("42.", 0)));        # extra characters
+assert(!def(int("0x0", 10)));       # extra characters (relative to the base)
+assert(!def(int("0", 1)));          # illegal base
+assert(!def(int("0", 37)));         # illegal base
+# from time        - reinterpret
+assert(int(HOUR) == 3600000000);
+# from uint        - bitwise identity
+assert(int(0U) == 0);
+assert(int(1234U) == 1234);
+assert(int(18446744073709551615U) == -1);
+
+# ------------------------------------------------------------------------------
+# to string
+# ------------------------------------------------------------------------------
+# from bool        - "false" and "true"
+assert(string(true) == "true");
+assert(string(false) == "false");
+# from bytes       - optional param: string encoding (default: utf-8)
+assert(string(B"abcd") == "abcd");
+assert(string(X"ABCD", "hex") == "abcd");
+assert(string(X"C3BCC3BDC3BE") == "\xfc\xfd\xfe");
+assert(string(X"FCFDFE", "latin-1") == "\xfc\xfd\xfe");
+assert(string(X"E697A5E69CACE8AA9E") == "日本語");
+assert(string(X"E697A5E69CACE8AA9E", "utf-8") == "日本語");
+assert(!def(string(B"", "bad encoding")));
+# from fingerprint - as 0x%016xp
+assert(string(0p) == "0x0000000000000000p");
+# from float       - as in C++
+assert(string(2.7e4) == "27000.0");
+# from int         - optional param: base (default: 0 == auto-detect)
+assert(string(171) == "171");
+assert(string(0253) == "171");
+assert(string(0xAB) == "171");
+assert(string(-171) == "-171");
+assert(string(377, 10) == "377");
+assert(string(377, 8) == "571");
+assert(string(377, 16) == "179");
+assert(string(101, 2) == "1100101");
+assert(!def(string(1, 1)));   # illegal base
+assert(!def(string(1, 37)));  # illegal base
+# from string      - self-conversion is suppressed with a warning
+assert(string("adfadf") == "adfadf");
+# from time        - optional param: time zone (default: PDT)
+assert(string(HOUR) == "Wed Dec 31 17:00:00 PST 1969");
+assert(string(HOUR, "EST") == "Wed Dec 31 20:00:00 EST 1969");
+assert(string(HOUR, "America/New_York") == "Wed Dec 31 20:00:00 EST 1969");
+assert(!def(string(HOUR, "bad timezone")));
+# from uint
+assert(string(171U) == "171");
+assert(string(0253U) == "171");
+assert(string(0xABU) == "171");
+assert(string(377U, 10) == "377");
+assert(string(377U, 8) == "571");
+assert(string(377U, 16) == "179");
+assert(!def(string(1U, 1)));   # illegal base
+assert(!def(string(1U, 37)));  # illegal base
+
+# ------------------------------------------------------------------------------
+# to time
+# ------------------------------------------------------------------------------
+# from bool        - not supported
+# from bytes       - not supported
+# from fingerprint - not supported
+# from float       - not supported
+# from int         - reinterpret
+assert(time(0) == T"Wed Dec 31 16:00:00 PST 1969");
+assert(time(24 * 60 * 60 * 1000000) == T"Thu Jan  1 16:00:00 PST 1970");
+assert(time(1270151981123456) == T"Thu Apr 1 12:59:41.123456 PDT 2010");
+# from string      - optional param: time zone (default: PDT)
+assert(time("Wed Dec 31 17:00:00 PST 1969") == HOUR);
+assert(time("Wed Dec 31 20:00:00 EST 1969", "PST") == HOUR);
+assert(time("Wed Dec 31 20:00:00 EST 1969", "America/Los_Angeles") == HOUR);
+assert(time("Wed Dec 31 17:00:00 PST 1969", "bad tz is ignored") == HOUR);
+assert(time("Wed Dec 31 17:00:00 PST 1969") == HOUR);
+assert(time("Wed Dec 31 17:00 PST 1969") == HOUR);
+assert(time("Wed Dec 31 17 PST 1969") == HOUR);
+assert(time("Dec 31 17:00 PST 1969") == HOUR);
+assert(time("Dec 31 17:00 1969") == HOUR);
+assert(!def(time("")));
+assert(!def(time("not a time")));
+# from time        - self-conversion is suppressed with a warning
+assert(time(T"Wed Dec 31 16:00 PST 1975") == T"Wed Dec 31 16:00 PST 1975");
+# from uint        - reinterpret
+assert(time(1270151981123456U) == T"Thu Apr 1 12:59:41.123456 PDT 2010");
+
+# ------------------------------------------------------------------------------
+# to uint
+# ------------------------------------------------------------------------------
+# from bool        - 0 and 1
+assert(uint(true) == 1U);
+assert(uint(false) == 0U);
+# from bytes       - required param: encoding format
+assert(uint(X"01", "varint") == 1U);
+assert(uint(X"02", "zigzag") == 1U);
+assert(uint(X"00000001", "fixed32-big") == 1U);
+assert(uint(X"0000000000000001", "fixed64-big") == 1U);
+assert(uint(X"01000000", "fixed32-little") == 1U);
+assert(uint(X"0100000000000000", "fixed64-little") == 1U);
+assert(uint(X"0000000000000001", "szl") == 1U);
+assert(!def(uint(X"", "bad encoding")));
+# from fingerprint - reinterpret
+assert(uint(0p) == 0U);
+# from float       - as in C++
+assert(uint(2.7e4) == 27000U);
+# from int         - bitwise identity
+assert(uint(0) == 0U);
+assert(uint(1234) == 1234U);
+assert(uint(-1) == 18446744073709551615U);
+# from string      - optional param: base (default: 0 == auto-detect)
+assert(uint("171", 0) == 171U);
+assert(uint("-171", 0) == 18446744073709551445U);
+assert(uint("0253", 0) == 171U);
+assert(uint("0xAB", 0) == 171U);
+assert(uint("377", 10) == 377U);
+assert(uint("377", 8) == 255U);
+assert(uint("377", 16) == 887U);
+assert(uint("101011", 2) == 43U);
+assert(!def(uint("", 0)));           # no uint
+assert(!def(uint("not a uint", 0))); # no uint
+assert(!def(uint("4", 2)));          # no uint (relative to the base)
+assert(!def(uint("42.", 0)));        # extra characters
+assert(!def(uint("0x0", 10)));       # extra characters (relative to the base)
+assert(!def(uint("0", 1)));          # illegal base
+assert(!def(uint("0", 37)));         # illegal base
+# from time        - reinterpret
+assert(uint(HOUR) == 3600000000U);
+# from uint        - self-conversion is suppressed with a warning
+assert(uint(0U) == 0U);
+
+# ------------------------------------------------------------------------------
+
+# check byte order for fingerprint to bytes conversion
+p: fingerprint = 0x8877665544332211p;
+b: bytes = { 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11 };
+assert(fingerprint(b) == p);
+assert(bytes(p) == b);

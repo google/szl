@@ -1,0 +1,62 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Types of expressions which are allowed for Expression in
+#desc: "for (Expression; BoolExpression; Expression) ..."
+
+#inst: Boolean Expression
+ok := false;
+for (true; true; false) {
+  ok = true;
+  break;
+}
+assert(ok, "for (true; true; false), Boolean exp is allowed");
+
+#inst: Integer Expression
+i: int = 12;
+ok = false;
+for (i + 10; true; i / 10) {
+  ok = true;
+  break;
+}
+assert(ok, "for (i+10; true; i/10), Integer exp is allowed");
+
+#inst: Float Expression
+f: float = 10.23;
+ok = false;
+for (f + 10.77; true; f / 10.0) {
+  ok = true;
+  break;
+}
+assert(ok, "for (f+10.77; true; f/10.0), Float exp is allowed");
+
+#inst: function call returning nothing.
+
+f_called := 0;
+fn: function() {
+  f_called++;
+};
+
+ok = false;
+for (fn(); true; fn()) {
+  ok = true;
+  break;
+}
+assert(ok && f_called == 1,
+       "for (fn(); true; fn()), Function call returning nothing is allowed");
+

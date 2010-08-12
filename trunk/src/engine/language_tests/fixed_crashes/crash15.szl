@@ -1,0 +1,27 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# This covers a bug in native mode, that was uncovered by cl 7610768.
+# The compiler assumes that evaluating a binary operation will not cause a trap
+# if evaluating the left and right operands cannot generate a trap (division and
+# modulo operations excepted). The code generator is therefore not setting up a
+# trap handler when evaluating the assignment to variable b below. However, the
+# result of the binary operation is flagged as needing an undef check, which
+# results in an assert fault in debug mode when generating the check (no trap
+# handler to catch the trap).
+# Fixed by cl 7733456.
+
+static a := string(now());  # make sure a's value is not known at compile time
+static b := a + "b";

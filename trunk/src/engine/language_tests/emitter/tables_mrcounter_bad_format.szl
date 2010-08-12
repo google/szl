@@ -1,0 +1,36 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Mrcounter tables with invalid format elements that fail with --table_output:
+#   "failed to create emitter for table OMRfmX: mrcounter only accepts ints".
+#
+# Note: this program will die after the first bad emitter, but all causing
+#       the same error are listed here for documentation purposes.
+
+OMRfmi: table mrcounter of i: int format("%d", i);  # format makes i a string!
+OMRfms: table mrcounter of s: string format("%s", s);
+OMRfmf: table mrcounter of f: float format("%f", f);
+OMRfmp: table mrcounter of p: fingerprint format("%p", p);
+OMRfmt: table mrcounter of t: time format("%t", t);
+OMRfmx: table mrcounter of x: bytes format("%T", x);
+OMRfmb: table mrcounter of b: bool format("%b", b);
+OMRfmT: table mrcounter of T: { s: string, i: int, f: float } format("%T", T);
+OMRfmP: table mrcounter of P: proto { b: bytes, i: int, f: float } format("%T", P);
+OMRfmA: table mrcounter of A: array of int format("%T", A);
+OMRfmM: table mrcounter of M: map[string] of int format("%T", M);

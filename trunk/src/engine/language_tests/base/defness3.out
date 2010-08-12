@@ -1,0 +1,305 @@
+f1: function(s: string) {
+	if (def(s))
+		;
+}
+;
+f2: function() {
+	x: int;
+	if (def(x))
+		;
+	y: int = x;
+	if (nrand(5) == 17)
+		x = 1;
+	z: int = x;
+	if (def(z))
+		;
+}
+;
+f3: function() {
+	x: int;
+	if (nrand(5) == 17)
+		x = 1;
+	if (def(x))
+		;
+	y: int;
+	y = x;
+	if (def(x))
+		;
+	if (def(y))
+		;
+}
+;
+f4: function() {
+	x: int = 1;
+	if (def(x))
+		;
+	___undefine(x);
+	if (def(x))
+		;
+}
+;
+f5: function() {
+	x: int;
+	if (nrand(5) == 17)
+		x = 1;
+	if (def(x))
+	{
+		if (def(x))
+			;
+	}
+	else
+	{
+		if (def(x))
+			;
+	}
+	if (!def(x))
+	{
+		if (def(x))
+			;
+	}
+	else
+	{
+		if (def(x))
+			;
+	}
+}
+;
+f6: function() {
+	x: int = 1 / nrand(2);
+	if ((nrand(2) == 0) && ((x == 0) || def(x)))
+		;
+	x++;
+	y: int;
+	g: function(): bool 	{
+		y = 0;
+		return true;
+	}
+;
+	if (def(y) && (x == 0))
+		;
+	if (def(y) && g())
+		;
+}
+;
+f7: function(x: int, y: int, a: bool, b: bool) {
+	if (def(x + y))
+		;
+	if (def(x - y))
+		;
+	if (def(x * y))
+		;
+	if (def(x / y))
+		;
+	if (def(x % y))
+		;
+	if (def(x == y))
+		;
+	if (def(x != y))
+		;
+	if (def(x <= y))
+		;
+	if (def(x >= y))
+		;
+	if (def(x < y))
+		;
+	if (def(x > y))
+		;
+	if (def(x & y))
+		;
+	if (def(x | y))
+		;
+	if (def(x ^ y))
+		;
+	if (def(~x))
+		;
+	if (def(x << y))
+		;
+	if (def(x >> y))
+		;
+	if (def(a && b))
+		;
+	if (def(a || b))
+		;
+	if (def(x / 2))
+		;
+	if (def(x % 2))
+		;
+	if (def(x / 0))
+		;
+	if (def(x % 0))
+		;
+}
+;
+f8: function() {
+	x: int = 1 / nrand(2);
+	if (def(x))
+		;
+	y: int;
+	y = x;
+	z: int = x;
+	w: int;
+	w = y;
+	if (def(z))
+		;
+	if (def(w))
+		;
+	a: array of int;
+	a[1] = 0;
+	b: array of int;
+	if (nrand(2) == 0)
+		b = {};
+	b[1] = 0;
+	def(b);
+	c: string;
+	c[1] = 97;
+	d: string;
+	if (nrand(2) == 0)
+		d = "abc";
+	d[1] = 0;
+	def(d);
+	e: map [int] of int;
+	e[1] = 0;
+	f: map [int] of int;
+	if (nrand(2) == 0)
+		f = {1: 1};
+	f[1] = 0;
+	def(f);
+	g: {x: int};
+	g.x = 0;
+	h: {x: int};
+	if (nrand(2) == 0)
+		h = {0};
+	h.x = 0;
+	def(h);
+}
+;
+f9: function(i: int, b: bytes, s: string, ai: array of int, m: map [int] of int, t: {x: int @ 1}, tm: time, f: float) {
+	def(rand());
+	def(nrand(i));
+	def(tobase64(b, true));
+	def(frombase64(b, true));
+	def(splitcsvline(b));
+	def(splitcsv(b, ai));
+	def(fingerprintof(i));
+	def(format("%d", i));
+	def(len(s));
+	def(haskey(m, i));
+	def(inproto(t.x));
+	def(abs(i));
+	def(keys(m));
+	def(lookup(m, i, i));
+	def(max(i, i));
+	def(min(i, i));
+	def(addday(tm, i));
+	def(addmonth(tm, i));
+	def(addweek(tm, i));
+	def(addyear(tm, i));
+	def(dayofmonth(tm));
+	def(dayofweek(tm));
+	def(dayofyear(tm));
+	def(hourof(tm));
+	def(minuteof(tm));
+	def(monthof(tm));
+	def(secondof(tm));
+	def(yearof(tm));
+	def(trunctoday(tm));
+	def(trunctohour(tm));
+	def(trunctominute(tm));
+	def(trunctomonth(tm));
+	def(trunctosecond(tm));
+	def(trunctoyear(tm));
+	def(now());
+	def(highbit(i));
+	def(load(s));
+	def(getenv(s));
+	def(lowercase(s));
+	def(uppercase(s));
+	def(match(s, s));
+	def(strfind(s, s));
+	def(strrfind(s, s));
+	def(strreplace(s, s, s, true));
+	def(matchposns(s, s));
+	def(matchstrs(s, s));
+	def(getresourcestats());
+	def(___addressof(i));
+	def(saw(s, s));
+	def(sawn(i, s, s));
+	def(sawzall(s, s));
+	def(ln(f));
+	def(log10(f));
+	def(exp(f));
+	def(sqrt(f));
+	def(pow(f, f));
+	def(sin(f));
+	def(cos(f));
+	def(tan(f));
+	def(asin(f));
+	def(acos(f));
+	def(atan(f));
+	def(atan2(f, f));
+	def(sinh(f));
+	def(cosh(f));
+	def(tanh(f));
+	def(asinh(f));
+	def(acosh(f));
+	def(atanh(f));
+	def(fabs(f));
+	def(ceil(f));
+	def(floor(f));
+	def(round(f));
+	def(trunc(f));
+	def(isnan(f));
+	def(isinf(f));
+	def(isfinite(f));
+	def(isnormal(f));
+	def(sort(ai));
+	def(sortx(ai));
+	def(DEBUG("ref", i));
+	def(DEBUG("print", "%d", i));
+	def(def(i));
+	def(convert(int, f));
+	def(new(string, i, 120));
+}
+;
+f11: function() {
+	g1: function(x: int): int 	{
+		return x + 1;
+	}
+;
+	g2: function(x: int): int 	{
+		return 1 / x;
+	}
+;
+	g3: function(x: int): int 	{
+		if (nrand(2) == 0)
+			return x * 3;
+		else
+			return x / 3;
+	}
+;
+	g4: function(x: int): int 	{
+		if (nrand(2) == 0)
+			return 1 / x;
+		else
+			return x / 1;
+	}
+;
+	g5: function(x: int): int 	{
+		if (x == 0)
+			return x / 1;
+		else
+			return 1 / x;
+	}
+;
+	def(g1(0));
+	def(g2(0));
+	def(g3(0));
+	def(g4(0));
+	def(g5(0));
+	g6: function(x: int): int 	{
+		def(g6(0));
+		return 0;
+	}
+;
+}
+;

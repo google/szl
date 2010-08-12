@@ -1,0 +1,4 @@
+type_declarations/variables_bad.szl:31: '$' must appear in index expression
+type_declarations/variables_bad.szl:33: ')' expected; found ','
+type_declarations/variables_bad.szl:36: sad_ undeclared
+type_declarations/variables_bad.szl:39: ';' expected; found EOF

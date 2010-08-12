@@ -1,0 +1,44 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc:  conversions amoungs composite types
+
+as0:array of string = {"10","12","13"};
+
+# array to array   impicit
+ai0:array of int=as0;
+af0:array of float=as0;
+
+# array to array explicit
+ai0 = convert(array of int,as0,0);
+
+# array to tuple implicit
+t0:{int,int,int} = as0;
+t1:{int,string} = {0,""};
+t2:{bool,bytes} = {true,{'a'}};
+
+# array to tuple explicit
+t0 = convert({int,int,int},(as0));
+t0 = convert({int,int,int},(af0));
+t0 = convert({int,int,int},(ai0));
+t1 = convert({int,string},as0);
+t1 = convert({int,string},ai0);
+t1 = convert({int,string},af0);
+t2 = convert({bool,bytes},ai0);
+t2 = convert({bool,bytes},as0);
+t2 = convert({bool,bytes},af0);
+

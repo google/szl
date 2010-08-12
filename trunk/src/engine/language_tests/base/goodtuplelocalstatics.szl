@@ -1,0 +1,52 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Test static variable declarations within tuples.
+
+# Note: one major issue here is the presence of expressions within type
+# declarations, which otherwise only happens with the very restricted
+# set of default values allowed for proto fields.
+
+static sum: function(a: int, b: int): int { return a + b; };
+
+type T = {
+  y: int,
+  static c: int = 123,
+  static d: int = sum(3, 4),
+  static e: int = c + 2
+};
+t: T;
+
+assert(T.c == 123);
+assert(T.d == 7);
+assert(T.e == 125);
+assert(t.c == 123);
+assert(t.d == 7);
+assert(t.e == 125);
+
+
+# Not a design goal, but a function defined in a static field of a tuple
+# starts to look like a static method.
+
+type Point = {
+  x: int,
+  y: int,
+  static tostring: function(p: Point): string {
+    return format("(%d,%d)", p.x, p.y);
+  }
+};
+x: Point = { 5, 6 };
+assert(Point.tostring(x) == "(5,6)");
+assert(x.tostring(x) == "(5,6)");

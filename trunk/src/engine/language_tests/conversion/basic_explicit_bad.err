@@ -1,0 +1,14 @@
+conversion/basic_explicit_bad.szl:26: cannot convert true (type bool) to float
+conversion/basic_explicit_bad.szl:27: cannot convert convert(fingerprint, 100) (type fingerprint) to float
+conversion/basic_explicit_bad.szl:28: cannot convert now() (type time) to float
+conversion/basic_explicit_bad.szl:33: cannot convert 10 (type int) to bool
+conversion/basic_explicit_bad.szl:34: cannot convert convert(fingerprint, 100) (type fingerprint) to bool
+conversion/basic_explicit_bad.szl:35: cannot convert 10.32 (type float) to bool
+conversion/basic_explicit_bad.szl:36: cannot convert now() (type time) to bool
+conversion/basic_explicit_bad.szl:41: cannot convert 10 (type int) to bytes
+conversion/basic_explicit_bad.szl:42: cannot convert true (type bool) to bytes
+conversion/basic_explicit_bad.szl:43: cannot convert 10.32 (type float) to bytes
+conversion/basic_explicit_bad.szl:44: cannot convert now() (type time) to bytes
+conversion/basic_explicit_bad.szl:49: cannot convert true (type bool) to time
+conversion/basic_explicit_bad.szl:50: cannot convert convert(fingerprint, 100) (type fingerprint) to time
+conversion/basic_explicit_bad.szl:51: cannot convert 10.32 (type float) to time

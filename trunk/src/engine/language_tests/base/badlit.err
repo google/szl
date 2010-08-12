@@ -1,0 +1,56 @@
+base/badlit.szl:20: digit in base 2 expected; found ';'
+base/badlit.szl:21: digit in base 2 expected; found '2'
+base/badlit.szl:22: digit in base 2 expected; found 'b'
+base/badlit.szl:23: digit in base 2 expected; found 'x'
+base/badlit.szl:24: digit in base 2 expected; found '.'
+base/badlit.szl:26: digit in base 16 expected; found ';'
+base/badlit.szl:27: digit in base 16 expected; found 'g'
+base/badlit.szl:28: digit in base 16 expected; found 'x'
+base/badlit.szl:29: digit in base 2 expected; found 'b'
+base/badlit.szl:30: digit in base 16 expected; found '.'
+base/badlit.szl:32: ';' expected; found 'x4'
+base/badlit.szl:34: ';' expected; found 'a9'
+base/badlit.szl:35: illegal digit 8 in octal literal
+base/badlit.szl:36: digit in base 10 expected; found ';'
+base/badlit.szl:37: e undeclared
+base/badlit.szl:38: E undeclared
+base/badlit.szl:39: digit in base 10 expected; found ';'
+base/badlit.szl:41: e0 undeclared
+base/badlit.szl:42: digit in base 10 expected; found ';'
+base/badlit.szl:43: digit in base 10 expected; found ';'
+base/badlit.szl:44: ';' expected; found 'g'
+base/badlit.szl:45: overflow in integer literal 9223372036854775808
+base/badlit.szl:46: overflow making '-9223372036854775808' positive for subtraction
+base/badlit.szl:48: overflow in integer literal 12341845817458412784518518271823718237128
+base/badlit.szl:49: overflow in integer literal 0b1000000000000000000000000000000000000000000000000000000000000000
+base/badlit.szl:50: overflow in integer literal 0x8000000000000000
+base/badlit.szl:55: overflow in floating-point literal 1e50000000
+base/badlit.szl:56: underflow in floating-point literal 1e-50000000
+base/badlit.szl:57: type mismatch in assignment: f (type float) = 0 (type int)
+base/badlit.szl:59: factor expected, found '.'
+base/badlit.szl:60: illegal digit 9 in octal literal
+base/badlit.szl:65: empty character constant
+base/badlit.szl:66: expected single quote, found '3'
+base/badlit.szl:67: ';' expected; found 'c'
+base/badlit.szl:68: expected single quote, found '\t'
+base/badlit.szl:70: expected single quote, found 'x'
+base/badlit.szl:71: ';' expected; found 'c'
+base/badlit.szl:72: expected single quote, found '9'
+base/badlit.szl:77: digit in base 16 expected; found '"'
+base/badlit.szl:78: string literal "hello\x0" contains a \0 character
+base/badlit.szl:80: unicode value too large (>0x10ffff) in character escape
+base/badlit.szl:81: unterminated string
+base/badlit.szl:82: ';' expected; found 's'
+base/badlit.szl:83: unterminated string
+base/badlit.szl:84: unterminated string
+base/badlit.szl:85: found 3 digits in 4-digit base 16 character escape
+base/badlit.szl:86: unicode value too large (>0x10ffff) in character escape
+base/badlit.szl:87: unicode value 0xdb02 is a surrogate code point
+base/badlit.szl:92: overflow in fingerprint literal 12341845817458412784518518271823718237128p
+base/badlit.szl:96: overflow in time literal 12341845817458412784518518271823718237128t
+base/badlit.szl:100: digit in base 16 expected; found '"'
+base/badlit.szl:101: character 'ሴ' (\u1234) is out of range for bytes literal
+base/badlit.szl:102: character '􁈴' (\u101234) is out of range for bytes literal
+base/badlit.szl:103: hexadecimal bytes literal needs an even number of digits
+base/badlit.szl:105: unterminated string
+base/badlit.szl:107: unterminated string

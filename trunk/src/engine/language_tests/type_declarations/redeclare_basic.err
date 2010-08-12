@@ -1,0 +1,4 @@
+type_declarations/redeclare_basic.szl:24: warning: declaration of "int" hides the Sawzall predefined identifier "int"
+type_declarations/redeclare_basic.szl:26: warning: declaration of "string" hides the Sawzall predefined identifier "string"
+type_declarations/redeclare_basic.szl:28: cannot convert {11, 1, 111} (type array of int) to int
+type_declarations/redeclare_basic.szl:30: incompatible initial value {0, 1} in new()

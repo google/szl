@@ -1,0 +1,68 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Verify correct handling of Unicode (good and bad) building strings from arrays
+OkRune: function(r: int): bool {
+  if (r <= 0)
+    return false;
+  if (r > 0x10FFFF)
+    return false;
+  if (0xD800 <= r && r <= 0xDFFF)
+    return false;
+  return true;
+};
+
+for (i := -10; i <= 0x10FFFF + 1; i++)
+  assert(def(string({i})) == OkRune(i));
+
+
+# Test conversion from array of proto tuple to array of bytes
+
+type ProtoTupleType = parsedmessage {
+  f1: int @ 1: int64,
+  f2: int = 55 @ 2: fixed32,
+};
+proto1: ProtoTupleType = {2, 3};
+proto2: ProtoTupleType = B"";
+
+arr_bT: array of bytes = convert(array of bytes, {proto1, proto2, proto1});
+assert(len(arr_bT) == 3);
+assert(arr_bT[0] == bytes(proto1));
+assert(arr_bT[1] == B"");
+assert(arr_bT[2] == bytes(proto1));
+
+# Test conversion from array of bytes to array of proto tuple
+
+arr_Tb: array of ProtoTupleType = convert(array of ProtoTupleType,
+                                          {bytes(proto1), B"", bytes(proto1)});
+assert(len(arr_Tb) == 3);
+assert(arr_Tb[0] == proto1);
+assert(arr_Tb[1] == proto2);
+assert(arr_Tb[2] == proto1);
+
+# Test conversion from array of tuple to array of a different tuple
+
+type OtherTupleType = {
+  f1: int,
+  f2: int,
+};
+othertuple1: OtherTupleType = {2, 3};
+othertuple2: OtherTupleType = {0, 55};
+arr_TT: array of OtherTupleType = convert(array of OtherTupleType,
+                                          {proto1, proto2, proto1});
+assert(len(arr_TT) == 3);
+assert(arr_TT[0] == othertuple1);
+assert(arr_TT[1] == othertuple2);
+assert(arr_TT[2] == othertuple1);

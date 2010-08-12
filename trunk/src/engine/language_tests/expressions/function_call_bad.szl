@@ -1,0 +1,46 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Ill-formed function calls that cause compile-time errors.
+
+
+f0: function(i: int): int { return 0; };
+
+f1: function(i1: int, s1: string): string { return ""; };
+
+# Incorrect number of arguments
+
+f0();
+f0(1, 10);
+
+f1(15);
+f1(,"Value of first argument is ");
+
+# Invalid types of arguments
+
+f0("Hi");             # string argument
+f0("10");             # string argument with numbers
+f0(function() {});    # function arugment
+
+f1(15,15);            # 2nd argument invalid
+f1("10","Value is");  # 1st argument invalid
+
+
+

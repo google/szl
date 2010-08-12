@@ -1,0 +1,147 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+a: uint = ~0;
+b: uint = 2;
+z: uint = 0;
+c: uint;
+
+# check literals
+al := ~0u;
+assert(al == a);
+bl := 2U;
+assert(bl == b);
+zl := 0u;
+assert(zl == z);
+
+# Verify basic values using string printing - avoids some sign issues
+assert(string(a) == "18446744073709551615");
+assert(string(a) == format("%u", a));
+assert(format("%x", a)  == "ffffffffffffffff");
+
+# Verify assignment
+c = a;
+assert(format("%x", c)  == "ffffffffffffffff");
+
+# Verify arithmetic operators
+c = a + b;
+assert(format("%x", c)  == "1");  # overflow
+
+c = a - b;
+assert(format("%x", c)  == "fffffffffffffffd");
+
+c = a * b;
+assert(format("%x", c)  == "fffffffffffffffe");
+
+c = a / b;
+assert(format("%x", c)  == "7fffffffffffffff");
+
+c = a % b;
+assert(format("%x", c)  == "1");
+
+# Verify bitwise logical operators
+c = a >> b;
+assert(format("%x", c)  == "3fffffffffffffff");
+
+c = a << b;
+assert(format("%x", c)  == "fffffffffffffffc");
+
+c = (a << b) | b;
+assert(format("%x", c)  == "fffffffffffffffe");
+
+c = (a >> b) ^ b;
+assert(format("%x", c)  == "3ffffffffffffffd");
+
+c = (a >> b) & b;
+assert(format("%x", c)  == "2");
+
+c = ~a;
+assert(format("%x", c)  == "0");
+
+c = ~b;
+assert(format("%x", c)  == "fffffffffffffffd");
+
+# Verify relational operators
+c = a;
+assert(c == a);
+assert(c > z);
+assert(c >= z);
+assert(c >= c);
+assert(z < c);
+assert(c/b < c);
+assert(c/b <= c);
+assert(c/b <= c/b);
+assert(c != z);
+
+# Verify conversions to uint
+assert(uint(2) == b);
+assert(uint(2.0) == b);
+assert(uint(2p) == b);
+assert(uint(2t) == b);
+assert(uint("2") == b);
+
+# Verify conversions from uint
+assert(int(b) == 2);
+assert(float(b) == 2.0);
+assert(fingerprint(b) == 2p);
+assert(time(b) == 2t);
+assert(string(b) == "2");
+
+# Verify  array conversion
+su: array of uint = { "0", "1", "2", "3", "4" };
+for (i := 0; i < len(su); i++)
+  assert(su[i] == uint(i));
+
+## Verify the compatibility hacks combining ints and uints.
+## r: deleted December, 2008
+#hackuint: uint;
+#hackint: int;
+## assignment to uint
+#hackuint = 1234;
+#assert(hackuint == 1234u);
+## assignment to int
+#hackint = 1234u;
+#assert(hackint == 1234);
+## comparisions (need to test both directions)
+#assert(1234 == hackuint);
+#assert(hackuint == 1234);
+## arithmetic combinations
+#assert(hackuint + 1234 == 2u * hackuint);
+#
+## function args
+#fint := function(a: int) { assert(a == 0); };
+#fuint := function(a: uint) { assert(a == 0u); };
+#fint(hackuint - 1234u);
+#fuint(hackint - 1234);
+#
+## tables
+#tuu: table collection[uint] of a: uint file("/dev/stdout") format ("%d\n", a);
+#tii: table collection[int] of a: int file("/dev/stdout") format ("%d\n", a);
+## ... indexes
+#emit tuu[hackint] <- hackuint;
+#emit tii[hackuint] <- hackint;
+## ... values
+#emit tuu[hackuint] <- hackint;
+#emit tii[hackint] <- hackuint;
+#
+## returning from a function
+#fnint: function(): int { return 0U; };
+#fnuint: function(): uint { return 0; };
+#
+## tuple in emit
+#out: table collection of x: { i: int, u: uint } file("/dev/stdout") format ("%d.%d\n", x.i, x.u);
+#emit out <- { hackuint, hackuint };
+#emit out <- { hackint, hackint };

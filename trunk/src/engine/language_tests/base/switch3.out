@@ -1,0 +1,28 @@
+x: int = 1;
+switch (x) {
+	case 0:
+		{
+;
+}
+	case 1:
+		{
+switch (x) {
+	case 0:
+		{
+;
+}
+	case 1:
+		{
+return;
+}
+	default:
+		{
+;
+}
+}
+}
+	default:
+		{
+;
+}
+}

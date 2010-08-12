@@ -1,0 +1,28 @@
+nlines: table sum of int;
+nwords: table sum of int;
+nchars: table sum of int;
+nbytes: table sum of int;
+s: string = new(string, 200, 120);
+for (i: int = 0; i < 20; i++)
+	s = s + s;
+emit nlines <- 1;
+emit nwords <- len(sawzall(convert(string, input), "[^ \t]+"));
+emit nchars <- len(convert(string, input));
+emit nbytes <- len(input);
+r: resourcestats = getresourcestats();
+if (r.allocatedmem < (300 << 20))
+	emit stderr <- format("Too little memory allocated: %d", r.allocatedmem);
+if (r.allocatedmem > (420 << 20))
+	emit stderr <- format("Too much memory allocated: %d", r.allocatedmem);
+emit nlines <- 1;
+emit nwords <- 1;
+emit nchars <- 3;
+emit nbytes <- 3;
+emit nlines <- 1;
+emit nwords <- 2;
+emit nchars <- 9;
+emit nbytes <- 9;
+emit nlines <- 1;
+emit nwords <- 3;
+emit nchars <- 13;
+emit nbytes <- 13;

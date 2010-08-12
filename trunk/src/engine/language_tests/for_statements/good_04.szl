@@ -1,0 +1,55 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: for statement.
+
+#inst: break statement takes the control out of nearest enclosing 
+#inst: for-statement.
+#inst: statement after break (inside for) is not executed.
+
+from_0_to_3: array of int = { 0, 1, 2, 3 };
+
+a: int = 0;
+b: int = 0;
+c: int = 0;
+for (; a < 4; a++) {
+  assert(a < 4 && a == from_0_to_3[a],
+         format("(inside for) a = %d, (a < 4) == %b\n", a, a < 4));
+
+  for (; b < 4; b++) {
+    assert(b < 4 && b == from_0_to_3[b],
+           format("(inside for) b = %d, (b < 4) == %b\n", b, b < 4));
+
+    if_entered := 0;
+    for (; c < 4; c++) {
+      assert(c < 4 && c == from_0_to_3[c],
+             format("(inside for) c = %d, (c < 4) == %b\n", c, c < 4));
+
+      if (c >= 3) {
+        if_entered++;
+        break;
+        assert(false,
+               format("(stmt after break) c = %d, (c < 4) == %b\n", c, c < 4));
+      }
+    }
+    assert(if_entered == 1);
+  }
+}
+
+assert(a == 4 && b == 4 && c == 3,
+       format("(outside for) a = %d, b = %d, c = %d\n", a, b, c));

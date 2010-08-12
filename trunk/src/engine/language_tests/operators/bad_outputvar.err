@@ -1,0 +1,5 @@
+operators/bad_outputvar.szl:33: negation cannot be applied to oc1
+operators/bad_outputvar.szl:34: binary operator '<' cannot be applied to oc1 (type table collection of int)
+operators/bad_outputvar.szl:35: binary operator '+' cannot be applied to oc1 (type table collection of int)
+operators/bad_outputvar.szl:36: boolean 'not' applied to non-bool oc1
+operators/bad_outputvar.szl:45: binary operator '+' cannot be applied to os1 (type table sum of int)

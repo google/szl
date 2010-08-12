@@ -1,0 +1,44 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+goodstrings: array of string = {
+  "譚永鋒",
+  "\u8B5A\u6C38\u92D2",
+  "\U00105532\U00066070\U00101322",
+  "\U0010ffff\U00020000\U0001ffff",
+};
+
+goodchars: array of int = {
+  '譚',
+  '永',
+  '鋒',
+  '\U0010ffff',
+  '\U00020000',
+  '\U0001ffff',
+};
+
+badstrings: array of string = {
+  "\U00110000",
+  "\U00120000",
+  "\U001fffff",
+  "\U00200000",
+};
+
+badchars: array of int = {
+  '\U00110000',
+  '\U00120000',
+  '\U001fffff',
+  '\U00200000',
+};

@@ -1,0 +1,2 @@
+base/shortcircuit.szl:37: warning: 'and' operator is deprecated; use '&&' instead
+base/shortcircuit.szl:45: warning: 'or' operator is deprecated; use '||' instead

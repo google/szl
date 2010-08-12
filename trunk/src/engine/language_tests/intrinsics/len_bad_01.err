@@ -1,0 +1,9 @@
+intrinsics/len_bad_01.szl:22: intrinsic function 'len' cannot be used as value
+intrinsics/len_bad_01.szl:25: wrong number of arguments to len()
+intrinsics/len_bad_01.szl:28: wrong number of arguments to len()
+intrinsics/len_bad_01.szl:39: b0 (type bool) not a suitable argument for len()
+intrinsics/len_bad_01.szl:40: i0 (type int) not a suitable argument for len()
+intrinsics/len_bad_01.szl:41: f0 (type float) not a suitable argument for len()
+intrinsics/len_bad_01.szl:42: t0 (type time) not a suitable argument for len()
+intrinsics/len_bad_01.szl:43: fg0 (type fingerprint) not a suitable argument for len()
+intrinsics/len_bad_01.szl:44: p0 (type {x: int, y: string}) not a suitable argument for len()

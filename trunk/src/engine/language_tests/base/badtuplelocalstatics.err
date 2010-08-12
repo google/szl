@@ -1,0 +1,15 @@
+base/badtuplelocalstatics.szl:22: static member may not be declared in an unnamed tuple type
+base/badtuplelocalstatics.szl:30: static member may not be declared in an unnamed tuple type
+base/badtuplelocalstatics.szl:38: static variable a must be initialized
+base/badtuplelocalstatics.szl:39: static variable b must be initialized
+base/badtuplelocalstatics.szl:41: static variable c must be initialized
+base/badtuplelocalstatics.szl:52: field x may only be used after a '.' operator
+base/badtuplelocalstatics.szl:59: redeclaration of x (previous declaration at base/badtuplelocalstatics.szl:58)
+base/badtuplelocalstatics.szl:61: redeclaration of y (previous declaration at base/badtuplelocalstatics.szl:60)
+base/badtuplelocalstatics.szl:63: redeclaration of z (previous declaration at base/badtuplelocalstatics.szl:62)
+base/badtuplelocalstatics.szl:71: field x may only be used after a '.' operator
+base/badtuplelocalstatics.szl:78: no x field in tuple type Point
+base/badtuplelocalstatics.szl:88: an object of tuple type V cannot be used in a way that requires its complete type before the tuple has been completed
+base/badtuplelocalstatics.szl:92: redeclaration of V (previous declaration at base/badtuplelocalstatics.szl:86)
+base/badtuplelocalstatics.szl:107: type mismatch: w (type W) == x (type X)
+base/badtuplelocalstatics.szl:108: type mismatch: aw (type array of W) == ax (type array of X)

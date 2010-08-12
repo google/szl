@@ -1,0 +1,148 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+# Well-formed while statements
+
+from_0_to_9: array of int = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+# While loop executes while condition is true.
+x: int = 0;
+while (x < 10) {
+  assert(x < 10 && x == from_0_to_9[x],
+         format("(inside while) x = %d, (x < 10) == %b\n", x, x < 10));
+  x++;
+}
+
+assert(x == 10, format("(outside while) x = %d, (x < 10) == %b\n", x, x < 10));
+
+
+a: int = 0;
+b: int = 0;
+c: int = 0;
+while (a < 10) {
+  assert(a < 10 && a == from_0_to_9[a],
+         format("(inside while) a = %d, (a < 10) == %b\n", a, a < 10));
+  a++;
+
+  while (b < 10) {
+    assert(b < 10 && b == from_0_to_9[b],
+           format("(inside while) b = %d, (b < 10) == %b\n", b, b < 10));
+    b++;
+
+    while (c < 10) {
+      assert(c < 10 && c == from_0_to_9[c],
+             format("(inside while) c = %d, (c < 10) == %b\n", c, c < 10));
+      c++;
+    }
+  }
+}
+
+assert(a == 10 && b == 10 && c == 10,
+       format("(outside while) a = %d, b = %d, c = %d\n", a, b, c));
+
+
+# While loop is not entered if condition is false.
+while (false) {
+  assert(false, "Failed");
+}
+
+
+# Break statement takes the control out of nearest enclosing while-statement.
+# Statement after break (inside while) is not executed.
+y: int = 0;
+
+assert(y == 0, format("(outside while) y = %d, (y < 10) == %b\n", y, y < 10));
+
+while (y < 10) {
+  assert(y < 10 && y == from_0_to_9[y],
+         format("(inside while, before break) y = %d, (y < 10) == %b\n",
+                y, y < 10));
+  break;
+  assert(false,
+         format("Failed, (inside while, after break) y = %d, (y < 10) == %b\n", 
+                y, y < 10));
+}
+
+assert(y == 0, format("(outside while) y = %d, (y < 10) == %b\n", y, y < 10));
+
+a = 0;
+b = 0;
+c = 0;
+while (a < 10) {
+  assert(a < 10 && a == from_0_to_9[a],
+         format("(inside while) a = %d, (a < 10) == %b\n", a, a < 10));
+  a++;
+
+  while (b < 10) {
+    assert(b < 10 && b == from_0_to_9[b],
+           format("(inside while) b = %d, (b < 10) == %b\n", b, b < 10));
+    b++;
+
+    if_entered := 0;
+    while (c < 10) {
+      assert(c < 10 && c == from_0_to_9[c],
+             format("(inside while) c = %d, (c < 10) == %b\n", c, c < 10));
+      c++;
+
+      if (c >= 5) {
+        if_entered++;
+        break;
+        assert(false,
+               format("(stmt after break) c = %d, (c < 10) == %b\n", c, c < 10));
+      }
+    }
+    assert((c >= 5 && if_entered == 1) || if_entered == 0);
+  }
+}
+assert(a == 10 && b == 10 && c == 10,
+       format("(outside while) a = %d, b = %d, c = %d\n", a, b, c));
+
+#
+# Scope in while-statement
+#
+
+# Redeclaration inside while statement,
+# access variable in inner while statement.
+xx: int = 0;
+aa: int = 0;
+bb: int = 0;
+
+assert(xx == 0);
+
+while (aa < 1) {  # Executing loop only once - just to check scope
+  aa++;
+
+  xx: int = 1;
+  assert(xx == 1);
+
+  while (bb < 1) {
+    assert(xx == 1);
+    bb++;
+  }
+}
+
+assert(xx == 0);
+
+# Body, even without {}, opens a new scope.
+i: int = 0;
+while (false)
+  i: int = 8;
+
+do
+  i: int = 9;
+while (false);

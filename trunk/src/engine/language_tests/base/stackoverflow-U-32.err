@@ -1,0 +1,47 @@
+Stack trace:
+  0. f: function()
+
+  1. f: function()
+
+  2. f: function()
+
+  3. f: function()
+
+  4. f: function()
+
+  5. f: function()
+
+  6. f: function()
+
+  7. f: function()
+
+  8. f: function()
+
+  9. f: function()
+
+...  (skipping frames 10 to 15729)
+
+15730. f: function()
+
+15731. f: function()
+
+15732. f: function()
+
+15733. f: function()
+
+15734. f: function()
+
+15735. f: function()
+
+15736. f: function()
+
+15737. f: function()
+
+15738. f: function()
+
+15739. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     f: function() = f
+
+szl: fatal: stack overflow: set --stack_size >= 251908

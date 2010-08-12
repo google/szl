@@ -1,0 +1,67 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc:  value of a string literal is an array of int !
+
+s0:string = {'a','b','c'};
+s1:string;
+s1 = {'p','q','r'};
+
+#inst: Trying indexing on strings
+
+DEBUG("print","%d\n",s0[1]);
+DEBUG("print","%d\n",s1[1]);
+
+#inst:  Indexing on literal values
+
+DEBUG("print","Second letter of \"Urjit\" is\t %d\n",{'U','r','j','i','t'}[1]);
+DEBUG("print","Second letter of \"Urjit\" is\t %d\n","Urjit"[1]);
+
+
+#inst: Equvalance
+
+s2:string = "abc";
+s3:string;
+s3 = "pqr";
+
+if(string({'a','b'}) == "ab")
+   DEBUG("print","literals match !!! \n\n");
+
+by:bytes = {'a','b','c'};
+if({'a','b','c'} == by)
+   DEBUG("print","literals match !!! \n\n");
+if(by == {'a','b','c'})
+   DEBUG("print","literals match !!! \n\n");
+
+
+if(s0 == s2)
+    DEBUG("print","s0 == s2 \t %d = %d\n",s0[1],s2[1]);
+
+if(s1 == s3)
+    DEBUG("print","s1 == s3 \t %d = %d\n",s1[1],s3[1]);
+
+#inst: valid operations for string ... on arrays
+
+DEBUG("print","%s\n","Urjit"+"Gokhale");
+#DEBUG("print","%s\n",{'U','r','j','i','t'}+{'G','o','k','h','a','l','e'});
+
+#inst value of a string is an array of integers
+
+s4:string = {91,12,13,14};
+DEBUG("print","%s\n",{'U','r','j','i','t'});
+s5:string;
+s5 = {91,92,93,94};

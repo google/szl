@@ -1,0 +1,52 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# This code used to die
+#
+
+type MiniGWSLogEntryProto = parsedmessage {
+  # required fields
+  type EventIdMessage = {
+    time_usec: int @ 1: int64,
+    server_ip: int @ 2: fixed32,
+    process_id: int @ 3: fixed32
+  },  
+  eventid: EventIdMessage @ 1,
+  version: int @ 2,
+  sourcemachine: bytes @ 3: string,
+  request: bytes @ 4: string,
+  remotehost: bytes @ 6: string,
+  # optional uint field to test
+  navclientdocid: uint @ 191: uint64
+};
+
+# using 'xml2protowrapper' with
+# <Messages>
+#   <GWSLogEntryProto>
+#     <EventId>
+#       <time_usec>1</time_usec>
+#       <server_ip>1</server_ip>
+#       <process_id>2</process_id>
+#     </EventId>
+#     <Version>1</Version>
+#     <SourceMachine>quasar</SourceMachine>
+#     <Request>GET / HTTP/1.1</Request>
+#     <RemoteHost>12.6.54.12</RemoteHost>
+#     <NavClientDocId>123</NavClientDocId>
+#   </GWSLogEntryProto>
+# </Messages>
+entry: MiniGWSLogEntryProto = X"0A0C080115010000001D0200000010011A06717561736172220E474554202F20485454502F312E31320A31322E362E35342E3132F80B7B";
+entry.navclientdocid = 123U;
+assert(entry.navclientdocid == 123U);

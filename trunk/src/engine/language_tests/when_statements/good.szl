@@ -1,0 +1,121 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+# Well-formed when statements
+
+# When body, even without {}, opens a new scope
+i: int = 0;
+a: array of int = {};
+when (i: each int; def(a[i]))
+  i: int = 0;
+
+#
+# Some and each must bind to specific values, while all is not bound.
+#
+
+queryString: string = "";
+
+when (somex: some int;
+      queryString[somex] != 'f') {
+  assert(false,
+         format("For some somex = %d, query = %s, queryString[somex] != 'f'\n",
+                somex, queryString));
+}
+
+when (eachx: each int;
+      queryString[eachx] != 'f') {
+  assert(false,
+         format("For each eachx = %d, query = %s, queryString[eachx] != 'f'\n",
+                eachx, queryString));
+}
+
+entered := 0;
+when (allx: all int;
+      queryString[allx] != 'f') {
+  entered++;
+}
+assert(entered == 1,
+       format("For query = %s, queryString[allx] != 'f'\n", queryString));
+
+#
+# Two all quantifiers
+#
+# In this case, since same quantifier is bound to different spaces.
+# Both spaces should have same dimension and same unique set of values.
+#
+
+query1: string = "aaaaaa";
+query2: string = "aaaaaa";
+
+success: bool = false;
+when (allx: all int;
+      query1[allx] == query2[allx]
+      ) {
+  success = true;
+}
+assert(success,
+       format("For query1=%s and query2=%s ==> query1[allx] == query2[allx]\n",
+              query1, query2));
+
+
+#
+# Use of when statements and quantifiers to form boolean expression
+# from array of strings..
+#
+
+queryWords1: array of string = {"test", "case", "creation", "for",
+                                "the", "Sawzall", "Language", "and",
+                                "Interpreter"};
+
+queryWords2: array of string = {"the", "test", "case", "within", "a",
+                                "category", "will", "include", "tests", "of",
+                                "the", "following", "types"};
+
+queryWords3: array of string = {"test", "test", "test"};
+
+
+entered = 0;
+when (eachx: each int;
+      queryWords2[eachx] == "the"
+      ) {
+  assert(eachx == 0 || eachx == 10,
+         format("For eachx = %d, queryWords3[eachx] == \"the\"\n", eachx));
+  entered++;
+}
+assert(entered == 2);
+
+
+entered = 0;
+when (somex: some int;
+      queryWords1[somex] == "test"
+      ) {
+  assert(somex == 0,
+         format("For somex = %d, queryWords3[somex] == \"test\"\n", somex));
+  entered++;
+}
+assert(entered == 1);
+
+
+entered = 0;
+when (allx: all int;
+      queryWords3[allx] == queryWords3[0]
+      ) {
+  entered++;
+}
+assert(entered == 1, format("queryWords3[allx] == queryWords3[0]\n"));

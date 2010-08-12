@@ -1,0 +1,71 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: len - intrinsic function call.
+#desc: printing the return value of len function using "%d" format specifier
+#desc: verifies that len does return integer value.
+
+#inst: calculating length of string.
+s1: string = "emacs@localhost";
+assert(len(s1) == 15);
+
+#inst: calculating length of bytes.
+by1: bytes = "emacs@localhost";
+assert(len(by1) == 15);
+
+#inst: calculating length of array.
+a1: array of int = {1, 2, 3, 4, 5};
+assert(len(a1) == 5);
+
+a2: array of array of int = { {1,2},
+                              {3,4},
+                              {5,6}
+                            };
+assert(len(a2) == 3);
+
+#inst: calculating length of map.
+m0: map [key: string] of int = { "A" : 65, "B" : 66, "C" : 67 };
+assert(len(m0) == 3);
+
+{ m1: map [key: string] of map [key: string] of int = { "A" : { "A" : 65,
+                                                                "a" : 97
+                                                            },
+                                                      "B" : { "B" : 66,
+                                                              "b" : 98
+                                                            },
+                                                      "C" : { "C" : 67,
+                                                              "c" : 99
+                                                            }
+                                                    };
+assert(len(m1) == 3);
+assert(len(m1["A"]) == 2);
+}
+
+{ m1: map [key: string] of map [key: string] of int = { "A" : { "A" : 65,
+                                                                "A" : 97
+                                                            },
+                                                      "B" : { "B" : 66,
+                                                              "b" : 98
+                                                            },
+                                                      "B" : { "C" : 67,
+                                                              "c" : 99
+                                                            }
+                                                    };
+assert(len(m1) == 2);
+assert(len(m1["A"]) == 1);
+}

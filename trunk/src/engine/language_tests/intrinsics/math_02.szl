@@ -1,0 +1,126 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# math intrinisis: fp operations
+
+fpclassify: function(f: float): string {
+  if (isnan(f))
+    return "nan";
+  else if (isinf(f))
+    return "inf";
+  else if (f == 0.0)
+    return "zero";
+  else if (!isnormal(f))
+    return "subnormal";
+  else
+    return "finite";
+};
+
+if (fpclassify(0.0) != "zero")
+  emit stdout <- "0.0 should be zero";
+
+if (fpclassify(1.0) != "finite")
+  emit stdout <- "1.0 should be finite";
+
+Big: float = 1e300;
+INF: float = Big * Big;
+Nnf: float = -Big * Big;
+NAN: float = inf / inf;
+Small: float = 1e-15;
+PI2: float = PI/2.0;
+PI4: float = PI/4.0;
+
+if (fpclassify(nan) != "nan")
+  emit stdout <- "nan should be 'nan'";
+
+if (fpclassify(NAN) != "nan")
+  emit stdout <- "NAN should be 'nan'";
+
+if (fpclassify(inf) != "inf")
+  emit stdout <- "inf should be 'inf'";
+
+if (fpclassify(INF) != "inf")
+  emit stdout <- "INF should be 'inf'";
+
+if (fpclassify(Nnf) != "inf")
+  emit stdout <- "-inf should be 'inf'";
+
+if (fpclassify(-inf) != "inf")
+  emit stdout <- "-inf should be 'inf'";
+
+
+check1: function(s: string, fn: function (x: float): float,
+                 x: float, r: float) {
+  z: float = fn(x);
+  # emit stdout <- format("== %g %g %s", x, z, fpclassify(z));
+  if (fabs(z - r) > Small)
+    emit stdout <- format("%s(%g) should be %g not %g", s, x, r, z);
+};
+
+check2: function(s: string, fn: function (x: float, y: float): float,
+                 x: float, y: float, r: float) {
+  z: float = fn(x, y);
+  if (fabs(z - r) > Small)
+    emit stdout <- format("%s(%g,%g) should be %g not %g", s, x, y, r, z);
+};
+
+include "mathwrap.szl";
+check1("sin", szl_sin, 0.0, 0.0);
+check1("sin", szl_sin, PI, 0.0);
+check1("sin", szl_sin, PI2, 1.0);
+check1("sin", szl_sin, PI2*3.0, -1.0);
+
+check1("cos", szl_cos, 0.0, 1.0);
+check1("cos", szl_cos, PI, -1.0);
+check1("cos", szl_cos, PI2, 0.0);
+check1("cos", szl_cos, PI2*3.0, 0.0);
+
+check1("tan", szl_tan, 0.0, 0.0);
+check1("tan", szl_tan, PI4, 1.0);
+
+check1("asin", szl_asin, 0.0, 0.0);
+check1("asin", szl_asin, 1.0, PI2);
+check1("asin", szl_asin, 4.0, nan);  # sets errno
+
+check1("acos", szl_acos, 1.0, 0.0);
+check1("acos", szl_acos, -1.0, PI);
+
+check1("atan", szl_atan, 0.0, 0.0);
+
+check2("atan2", szl_atan2, 0.0, 0.0, 0.0);
+
+check1("cosh", szl_cosh, 0.0, 1.0);
+check1("sinh", szl_sinh, 0.0, 0.0);
+check1("tanh", szl_tanh, 0.0, 0.0);
+check1("acosh", szl_acosh, 1.0, 0.0);
+check1("asinh", szl_asinh, 0.0, 0.0);
+check1("atanh", szl_atanh, 0.0, 0.0);
+
+check1("fabs", szl_fabs, 0.0, 0.0);
+check1("fabs", szl_fabs, PI, PI);
+check1("fabs", szl_fabs, -PI, PI);
+
+check1("ceil", szl_ceil, 1.1, 2.0);
+check1("ceil", szl_ceil, -1.1, -1.0);
+
+check1("floor", szl_floor, 1.1, 1.0);
+check1("floor", szl_floor, -1.1, -2.0);
+
+check1("round", szl_round, 1.1, 1.0);
+check1("round", szl_round, -1.1, -1.0);
+
+check1("trunc", szl_trunc, 1.1, 1.0);
+check1("trunc", szl_trunc, -1.1, -1.0);
+

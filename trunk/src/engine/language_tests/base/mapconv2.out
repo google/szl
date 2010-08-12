@@ -1,0 +1,11 @@
+type T = {int, string};
+t1: T = {1, "one"};
+t2: T = {2, "two"};
+t3: T = {3, "three"};
+t4: T = {4, "four"};
+t: array of T = {t1, t2, t3, t4};
+mt: map [T] of T = convert(map [T] of T, t);
+assert(convert(string, mt) == "{ { 1, \"one\" }: { 2, \"two\" }, { 3, \"three\" }: { 4, \"four\" } }");
+aai: array of array of int = {{1, 1}, {2, 2}, {3, 3}, {4, 4}};
+ma: map [array of int] of array of int = convert(map [array of int] of array of int, aai);
+assert(convert(string, ma) == "{ { 1, 1 }: { 2, 2 }, { 3, 3 }: { 4, 4 } }");

@@ -1,0 +1,89 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# These tests cover cases where ExprAnalyzer::Analyze did not fully recurse
+# on the subexpressions.
+
+# The complex expression indexing "country" was not analyzed properly.
+
+kCountries: array of string = {
+	"elbow",
+	"freedonia",
+	"patootiestan",
+};
+
+country := "elbownia";
+
+rs: array of string = {};
+expecteds: array of string = {"elbow"};
+when (i: some int; country[0:len(kCountries[i])] == kCountries[i]) {
+ rs = rs + {kCountries[i]};
+}
+assert(rs == expecteds);
+
+
+# The call to f() in the indexing expression used to prevent discovering the
+# inner a[i].  Also, the '4' in the array generates an out of bounds index
+# that demonstrates the need to add a def() check when analyzing complex
+# expressions of this form.
+
+f: function(i: int): int { return i; };
+
+ai: array of int = { 0, 1, 2, 4 };
+ri: array of int = {};
+expectedi: array of int = { 2 };
+when (i: each int; ai[f(ai[i])] == 2) {
+  ri = ri + { i };
+}
+assert(ri == expectedi);
+
+
+# The function subexpression in a call was not analyzed.
+
+type F = function(): bool;
+
+False: function(): bool { return false; };
+True:  function(): bool { return true;  };
+
+af: array of F = { False, False, True, True, False };
+ri = {};
+expectedi = { 2, 3 };
+when (i: each int; af[i]())
+  ri = ri + { i };
+assert(ri == expectedi);
+
+
+# "new" expressions were not analyzed.
+
+ab: array of bool = { false, true, true, false };
+ri = {};
+expectedi = { 1, 2 };
+when (i: each int; (new (array of bool, 2, ab[i]))[0])
+  ri = ri + { i };
+assert(ri == expectedi);
+
+
+# check that we can have a complex index expression as long as the loop
+# is constrained by a simple one.  before, this just failed.
+IsPalindrome := function(word: string): bool {
+  when(i: all int; word[i] == word[$-1-i])
+    return true;
+  return false;
+};
+
+assert(IsPalindrome("abccba"));
+assert(IsPalindrome("abcba"));
+assert(IsPalindrome(""));
+assert(!IsPalindrome("abaascba"));

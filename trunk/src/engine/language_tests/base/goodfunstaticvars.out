@@ -1,0 +1,89 @@
+type ftype = function(x: int): int;
+type gtype = ftype;
+static f1: function(x: int): int {
+	return x + 1;
+}
+;
+assert(f1(0) == 1, "f1(0) == 1");
+static f2: function(x: int): int {
+	return x + 2;
+}
+;
+assert(f2(0) == 2, "f2(0) == 2");
+static f3: function(x: int): int {
+	return x + 3;
+}
+;
+assert(f3(0) == 3, "f3(0) == 3");
+static f4: function(x: int): int {
+	return x + 4;
+}
+;
+assert(f3(0) == 3, "f3(0) == 4");
+static b: int = 3;
+static f: function(x: int): int {
+	g: function(): int 	{
+		return x + b;
+	}
+;
+	h: function(k: function(): int, n: int): int 	{
+		if (n > 0)
+			return h(k, n - 1);
+		else
+			return k();
+	}
+;
+	return h(g, 100);
+}
+;
+assert(f(7) == 10);
+static cool: function(y: int): int {
+	return function(x: int): int {
+	return x + y;
+}
+(1);
+}
+;
+assert(cool(7) == 8, "cool(7) == 8");
+assert(convert(string, f2) == "function(x: int): int {\n\treturn x + 2;\n}\n");
+assert(convert(string, function() {
+}
+) == "function() {\n}\n");
+assert(convert(string, function(x: int, y: int): float {
+	return 0.0;
+}
+) == "function(x: int, y: int): float {\n\treturn 0.0;\n}\n");
+assert(convert(string, f) == "f");
+static f5: function(): int {
+	return 123;
+}
+;
+assert(f5() == 123);
+static f6: function(): int {
+	return 456;
+}
+;
+assert(f6() == 456);
+static a: array of function(): int = {f5, f6};
+assert(a[0]() == 123);
+assert(a[1]() == 456);
+static g1: function(): int = a[0];
+assert(g1() == 123);
+static g2: function(): int = a[1];
+assert(g2() == 456);
+static i: int = 789;
+j: int = 111;
+static h1: function(): int {
+	return i;
+}
+;
+assert(h1() == 789);
+h3: function(): int {
+	h4: function(): int 	{
+		return h1() + j;
+	}
+;
+	return h4();
+}
+;
+assert(h3() == 900);

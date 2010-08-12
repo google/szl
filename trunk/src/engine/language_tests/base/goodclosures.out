@@ -1,0 +1,198 @@
+x: int = 3;
+f1: function() {
+	x = 4;
+}
+;
+f2: function() = f1;
+f2();
+assert(x == 4);
+f3: function() {
+	y: int = 3;
+	g1: function() 	{
+		y = 4;
+	}
+;
+	g2: function() = g1;
+	g2();
+	assert(y == 4);
+}
+;
+x = 3;
+f4: function() {
+	g1: function() = f1;
+	g1();
+	assert(x == 4);
+}
+;
+x = 3;
+f5: function() {
+	g1: function() 	{
+		x = 5;
+	}
+;
+	f2 = g1;
+}
+;
+f6: function() {
+	g1: function() 	{
+		x = 6;
+	}
+;
+}
+;
+assert(convert(string, f2) == "f1");
+f5();
+y: int = nrand(5);
+y = ((((y + y) * (y + y)) + ((y + y) * (y + y))) * (((y + y) * (y + y)) + ((y + y) * (y + y)))) + ((((y + y) * (y + y)) + ((y + y) * (y + y))) * (((y + y) * (y + y)) + ((y + y) * (y + y))));
+assert(convert(string, f2) == "g1");
+f2();
+assert(x == 5);
+f7: function() {
+	x: int = 3;
+	g1: function(): function(): int 	{
+		h1: function(): int 		{
+			return x;
+		}
+;
+		return h1;
+	}
+;
+	assert(g1()() == 3);
+}
+;
+f7();
+f8: function() {
+	x: int = 4;
+	g1: function(): int 	{
+		return x;
+	}
+;
+	g2: function(h1: function(): int): function(): int 	{
+		y: int = x;
+		return h1;
+	}
+;
+	assert(g2(g1)() == 4);
+}
+;
+f8();
+f9: function() {
+	x: int = 5;
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function() 	{
+		h2: function() 		{
+			x = 6;
+		}
+;
+		g2(h2);
+	}
+;
+	g3();
+	g1();
+	assert(x == 6);
+}
+;
+f9();
+f10: function() {
+	x: int = 6;
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function(h1: function(i1: function())) 	{
+		h2: function(i1: function(j1: function())) 		{
+			i2: function() 			{
+				x = 7;
+			}
+;
+			i1(i2);
+		}
+;
+		h2(h1);
+	}
+;
+	g3(g2);
+	g1();
+	assert(x == 7);
+}
+;
+f10();
+f11: function() {
+	x: int = 7;
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function(): function(h1: function()) 	{
+		return g2;
+	}
+;
+	g4: function() 	{
+		h1: function() 		{
+			i1: function() 			{
+				x = 8;
+			}
+;
+			g3()(i1);
+		}
+;
+		h1();
+	}
+;
+	g4();
+	g1();
+	assert(x == 8);
+}
+;
+f11();
+f12: function() {
+	type F = function(): int;
+	m: map [int] of F = {:};
+	a: array of F = {function(): int {
+	return 0;
+}
+};
+	t: {x: F} = {function(): int {
+	return 0;
+}
+};
+	;
+	y: int = 123;
+	z: int = 456;
+	g: function() 	{
+		h: function(): int 		{
+			return y;
+		}
+;
+		m[0] = h;
+		a[0] = h;
+		t.x = h;
+		assert(m[0]() == 123);
+		assert(a[0]() == 123);
+		assert(t.x() == 123);
+	}
+;
+	i: function() 	{
+		j: function(): int 		{
+			return z;
+		}
+;
+		m = {0: j};
+		a = {j};
+		t = {j};
+		assert(m[0]() == 456);
+		assert(a[0]() == 456);
+		assert(t.x() == 456);
+	}
+;
+	g();
+	i();
+}
+;
+f12();

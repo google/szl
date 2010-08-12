@@ -1,0 +1,17 @@
+type_declarations/variables_redeclare.szl:32: warning: declaration of "int" hides the Sawzall predefined identifier "int"
+type_declarations/variables_redeclare.szl:33: int is not a type
+type_declarations/variables_redeclare.szl:36: warning: declaration of "string" hides the Sawzall predefined identifier "string"
+type_declarations/variables_redeclare.szl:36: int is not a type
+type_declarations/variables_redeclare.szl:37: string is not a type
+type_declarations/variables_redeclare.szl:40: warning: declaration of "float" hides the Sawzall predefined identifier "float"
+type_declarations/variables_redeclare.szl:40: int is not a type
+type_declarations/variables_redeclare.szl:41: float is not a type
+type_declarations/variables_redeclare.szl:44: warning: declaration of "bool" hides the Sawzall predefined identifier "bool"
+type_declarations/variables_redeclare.szl:44: int is not a type
+type_declarations/variables_redeclare.szl:45: bool is not a type
+type_declarations/variables_redeclare.szl:48: redeclaration of string (previous declaration at type_declarations/variables_redeclare.szl:36)
+type_declarations/variables_redeclare.szl:49: string is not a type
+type_declarations/variables_redeclare.szl:50: int is not a type
+type_declarations/variables_redeclare.szl:52: redeclaration of int (previous declaration at type_declarations/variables_redeclare.szl:32)
+type_declarations/variables_redeclare.szl:53: int is not a type
+type_declarations/variables_redeclare.szl:56: warning: declaration of "addweek" hides the Sawzall predefined identifier "addweek"

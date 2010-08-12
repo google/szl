@@ -1,0 +1,104 @@
+s: array of string = {};
+for (i: int = 0; i < 10; i++)
+{
+	if (DEBUG("ref", s) != 1)
+		emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", s));
+	if (def(s[0]))
+		;
+}
+m: map [int] of int = {:};
+for (i: int = 0; i < 10; i++)
+{
+	if (DEBUG("ref", m) != 1)
+		emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", m));
+	if (def(m[0]))
+		;
+}
+m[0] = 0;
+for (i: int = 0; i < 10; i++)
+{
+	if (DEBUG("ref", m) != 1)
+		emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", m));
+	if (def(m[0]))
+		;
+}
+type B = array of int;
+type A = array of B;
+n: int = 10;
+a: A = new(A, n, new(B, n, 0));
+a[n][0] = 3;
+assert(!def(a));
+type T = array of int;
+f: function(a: T, b: T): T {
+	return a;
+}
+;
+x: T;
+y: T = {1, 1};
+if (nrand(5) == 17)
+	x = y;
+if (def(f(x, y)))
+	;
+if (DEBUG("ref", y) != 1)
+	emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", y));
+if (def(f(f(x, y), y)))
+	;
+if (DEBUG("ref", y) != 1)
+	emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", y));
+type Z = array of int;
+zap: function(): Z {
+	undef: Z;
+	if ((nrand(5) * nrand(5)) == 17)
+		undef = {};
+	return undef;
+}
+;
+z: Z = {1, 1};
+alias: Z = z;
+if (DEBUG("ref", alias) != 2)
+	emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", alias));
+z = zap();
+if (DEBUG("ref", alias) != 1)
+	emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", alias));
+first: function(a: float, b: float): float {
+	return a;
+}
+;
+u: float;
+v: float = 0.1;
+if (nrand(5) == 17)
+	u = v;
+v = (2.0 * v) + convert(float, nrand(1));
+if (def(v + u))
+	;
+if (def(v + first(u, v)))
+	;
+if (def(first(v, v) + u))
+	;
+if (def(first(v, v) + first(u, v)))
+	;
+if (DEBUG("ref", v) != 1)
+	emit stdout <- "wrong ref = " + convert(string, DEBUG("ref", v));
+outer: function() {
+	x: int = 1;
+	middle: function() 	{
+		inner: function() 		{
+			y: int;
+			if ((nrand(5) * nrand(5)) == 17)
+				y = 0;
+			x = y + y;
+		}
+;
+		inner();
+	}
+;
+	middle();
+	if (def(x))
+		emit stdout <- "failed to undefine an outer scope variable";
+}
+;
+outer();
+emit _undef_cnt <- 1;
+emit _undef_details["base/defleak.szl:58: a[n][0] = 3; (index out of bounds (index = 10, array length = 10))"] <- 1;
+emit _undef_details["base/defleak.szl:103: z = zap(); (probably because a function result was copied from \"undef\" declared at base/defleak.szl:93 which had not been defined)"] <- 1;
+emit _undef_details["base/defleak.szl:146: x = y + y; (probably because \"y\" had not been defined)"] <- 1;

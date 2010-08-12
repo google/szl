@@ -1,0 +1,3 @@
+intrinsics/saw_bad_05.szl:24: argument "India" for 'rest' must be l-value
+intrinsics/saw_bad_05.szl:41: argument #7 of saw is i0 (type int); should be string
+intrinsics/saw_bad_05.szl:58: argument #7 of saw is arrParam (type array of string); should be string

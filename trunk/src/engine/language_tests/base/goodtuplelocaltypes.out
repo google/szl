@@ -1,0 +1,33 @@
+type T = {p: int, type A = int, type B = {q: int}, type C = {r: array of T}, type D = {x: int, y: array of T.D}, type T = float, a: int, b: T.B, c: T.C, d: T.D, t: float, type E = {type F = int}};
+t: T = {123, 456, {789}, {{{1230, 4560, {7890}, {{}}, {321, {}}, 1.23}}}, {111, {}}, 4.56};
+assert(t.p == 123);
+assert(t.a == 456);
+assert(t.b.q == 789);
+assert(t.c.r[0].b.q == 7890);
+assert(t.d.x == 111);
+assert(t.t == 4.56);
+a: int = 1;
+b: T.B = {2};
+f: int = 3;
+type OuterType = {type InnerType = {type BasicType = int, type ArrayType = array of int, type MapType = map [int] of int, type TupleType = {int}, type ProtoType = {}, type FunctionType = function(), type OutputType = table sum of int}, i: OuterType.InnerType, b: int, a: OuterType.InnerType.ArrayType, m: OuterType.InnerType.MapType, t: OuterType.InnerType.TupleType, p: OuterType.InnerType.ProtoType, f: OuterType.InnerType.FunctionType, static O: function(o: OuterType.InnerType.OutputType) {
+}
+};
+{
+	i: OuterType.InnerType;
+	b: int;
+	a: OuterType.InnerType.ArrayType;
+	m: OuterType.InnerType.MapType;
+	t: OuterType.InnerType.TupleType;
+	p: OuterType.InnerType.ProtoType;
+	f: OuterType.InnerType.FunctionType;
+}
+type ProtoOuterType = proto {type InnerType = {type BasicType = int, type ArrayType = array of int, type MapType = map [int] of int, type TupleType = {int}, type ProtoType = {}, type FunctionType = function(), type OutputType = table sum of int}, i: ProtoOuterType.InnerType, b: int, a: ProtoOuterType.InnerType.ArrayType, t: proto {int}, p: ProtoOuterType.InnerType.ProtoType};
+{
+	i: ProtoOuterType.InnerType;
+	b: int;
+	a: ProtoOuterType.InnerType.ArrayType;
+	m: ProtoOuterType.InnerType.MapType;
+	t: ProtoOuterType.InnerType.TupleType;
+	p: ProtoOuterType.InnerType.ProtoType;
+	f: ProtoOuterType.InnerType.FunctionType;
+}

@@ -1,0 +1,99 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# check the intrinsics that have optional time zone arguments.
+
+counter: int = 0;
+
+count: function(): string {
+  counter = counter + 1;
+  return "case " + string(counter);
+};
+
+
+assert(addday(time("Sat Apr 1 12:00:00 EST 2006"), 3, "EST") ==
+              time("Sat Apr 4 12:00:00 EDT 2006"), count());
+
+assert(addweek(time("Sat Apr 1 12:00:00 EST 2006"), 1, "EST") ==
+               time("Sat Apr 8 12:00:00 EDT 2006"), count());
+
+assert(addmonth(time("Sat Apr 1 12:00:00 EST 2006"), 1, "EST") ==
+                time("Mon May 1 12:00:00 EDT 2006"), count());
+
+assert(addyear(time("Sat Apr 1 12:00:00 EST 2006"), 1, "EST") ==
+               time("Sun Apr 1 12:00:00 EDT 2007"), count());
+
+assert(secondof(time("Mon May 1 01:12:34 EDT 2006"), "PDT") == 34, count());
+assert(secondof(time("Mon May 1 01:12:34 EDT 2006"), "GMT") == 34, count());
+
+assert(minuteof(time("Mon May 1 01:12:34 EDT 2006"), "PDT") == 12, count());
+assert(minuteof(time("Mon May 1 01:12:34 EDT 2006"), "GMT") == 12, count());
+
+assert(hourof(time("Mon May 1 01:12:34 EDT 2006"), "PDT") == 22, count());
+assert(hourof(time("Mon May 1 01:12:34 EDT 2006"), "GMT") == 5, count());
+
+assert(dayofweek(time("Mon May 1 01:00:00 EDT 2006"), "PDT") == 7, count());
+assert(dayofweek(time("Mon May 1 01:00:00 EDT 2006"), "GMT") == 1, count());
+
+assert(dayofmonth(time("Mon May 1 01:00:00 EDT 2006"), "PDT") == 30, count());
+assert(dayofmonth(time("Mon May 1 01:00:00 EDT 2006"), "GMT") == 1, count());
+
+assert(dayofyear(time("Mon May 1 01:00:00 EDT 2006"), "PDT") == 120, count());
+assert(dayofyear(time("Mon May 1 01:00:00 EDT 2006"), "GMT") == 121, count());
+
+assert(yearof(time("Sun Jan 1 01:00:00 EST 2006"), "PST") == 2005, count());
+assert(yearof(time("Sun Jan 1 01:00:00 EST 2006"), "GMT") == 2006, count());
+
+assert(trunctosecond(time("Mon May 1 01:12:34.56 EDT 2006"), "PDT") == 
+                     time("Mon May 1 01:12:34.00 EDT 2006"), count());
+assert(trunctosecond(time("Mon May 1 01:12:34.56 EDT 2006"), "GMT") == 
+                     time("Mon May 1 01:12:34.00 EDT 2006"), count());
+
+assert(trunctominute(time("Mon May 1 01:12:34 EDT 2006"), "PDT") == 
+                     time("Mon May 1 01:12:00 EDT 2006"), count());
+assert(trunctominute(time("Mon May 1 01:12:34 EDT 2006"), "GMT") == 
+                     time("Mon May 1 01:12:00 EDT 2006"), count());
+
+assert(trunctohour(time("Mon May 1 01:12:34 EDT 2006"), "PDT") == 
+                   time("Mon May 1 01:00:00 EDT 2006"), count());
+assert(trunctohour(time("Mon May 1 01:12:34 EDT 2006"), "GMT") == 
+                   time("Mon May 1 01:00:00 EDT 2006"), count());
+
+assert(trunctohour(time("Sun Apr 2 02:12:34 EDT 2006"), "PDT") == 
+                   time("Sun Apr 2 02:00:00 EDT 2006"), count());
+assert(trunctohour(time("Sun Apr 2 02:12:34 EDT 2006"), "EDT") == 
+                   time("Sun Apr 2 02:00:00 EDT 2006"), count());
+assert(trunctohour(time("Sun Apr 2 02:12:34 EDT 2006"), "EST") == 
+                   time("Sun Apr 2 02:00:00 EDT 2006"), count());
+assert(trunctohour(time("Sun Apr 2 02:12:34 EST 2006"), "EDT") == 
+                   time("Sun Apr 2 02:00:00 EST 2006"), count());
+assert(trunctohour(time("Sun Apr 2 02:12:34 EST 2006"), "PST") == 
+                   time("Sun Apr 2 02:00:00 EST 2006"), count());
+
+
+assert(trunctoday(time("Mon Apr 3 04:00:00 GMT 2006"), "PDT") == 
+                  time("Sun Apr 2 00:00:00 PST 2006"), count());
+assert(trunctoday(time("Mon Apr 3 04:00:00 GMT 2006"), "GMT") == 
+                  time("Mon Apr 3 00:00:00 GMT 2006"), count());
+
+assert(trunctomonth(time("Mon Apr 3 12:00:00 GMT 2006"), "PDT") == 
+                    time("Sat Apr 1 00:00:00 PST 2006"), count());
+assert(trunctomonth(time("Mon Apr 3 12:00:00 GMT 2006"), "GMT") == 
+                    time("Sat Apr 1 00:00:00 GMT 2006"), count());
+
+assert(trunctoyear(time("Sun Jan 1 01:00:00 EST 2006"), "PST") == 
+                   time("Sat Jan 1 00:00:00 PST 2005"), count());
+assert(trunctoyear(time("Sun Jan 1 01:00:00 EST 2006"), "GMT") == 
+                   time("Sat Jan 1 00:00:00 GMT 2006"), count());

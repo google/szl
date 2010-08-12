@@ -1,0 +1,76 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: splitcsv cases
+
+check: function(key: string, ok: array of string, arr: array of bytes) {
+  if (len(arr) != len(ok)) {
+    emit stdout <- format("%s: BAD: len(arr)=%d != len(ok)=%d", key, len(arr), len(ok));
+  }
+  for (i: int = 0; i < len(arr) && i < len(ok); i++) {
+    s: string = string(arr[i]);
+    if (s != ok[i])
+      emit stdout <- format("%s: BAD: arr[%d]={%s} != ok[%d]={%s}", key, i, s, i, ok[i]);
+  }
+};
+
+#inst: empty input
+{
+  arr: array of bytes;
+  ok: array of string = {};
+
+  arr = splitcsv(bytes(``), {});
+  check("#1.1", ok, arr);
+
+  arr = splitcsv(bytes(``), {1, 3});
+  check("#1.2", ok, arr);
+
+  arr = splitcsv(bytes(`a,b,c`), {});
+  check("#1.3", ok, arr);
+}
+
+#inst: normal input
+{
+  line: bytes = `o,e,,` + "\n" +
+                `"three",four"teen,"five""teen"` + "\n" +
+                `"six,teen", "seven"",""teen", 0`;
+  arr: array of bytes;
+  ok: array of string;
+  ok  = { "e", "", 
+          "four\"teen", "five\"teen", 
+          "seven\",\"teen", "0" };
+  arr = splitcsv(line, {2, 3});
+  check("#2.1", ok, arr);
+
+  ok  = { "", "e", "o",
+          "five\"teen", "four\"teen", "three",
+          "0", "seven\",\"teen", "six,teen" };
+  arr = splitcsv(line, {3,2,1});
+  check("#2.2", ok, arr);
+}
+
+#inst: abnormal case; too few fields
+{
+  line: bytes = "a\nb,b\nc,c,c\nd,d,d,d\n";
+  arr: array of bytes = splitcsv(line, {2, 3}); 
+  # this assumes we will supply "" for missing fields...
+  ok: array of string = { "", "", "b", "", "c", "c", "d", "d" };
+  check("#3.1", ok, arr);
+}
+
+

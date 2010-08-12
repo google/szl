@@ -1,0 +1,29 @@
+base/badrecursivetypes.szl:22: T01 contains a field of type T01 which contains an instance of T01 (recursive definition)
+base/badrecursivetypes.szl:23: T02 contains a field of type {T02} which contains an instance of T02 (recursive definition)
+base/badrecursivetypes.szl:24: T03 contains a field of type {{T03}} which contains an instance of T03 (recursive definition)
+base/badrecursivetypes.szl:26: T04 contains a field of type T04 which contains an instance of T04 (recursive definition)
+base/badrecursivetypes.szl:27: T05 contains a field of type {y: T05} which contains an instance of T05 (recursive definition)
+base/badrecursivetypes.szl:28: T06 contains a field of type {y: {z: T06}} which contains an instance of T06 (recursive definition)
+base/badrecursivetypes.szl:32: T07 contains a field of type T07 which contains an instance of T07 (recursive definition)
+base/badrecursivetypes.szl:33: T08 contains a field of type T08 which contains an instance of T08 (recursive definition)
+base/badrecursivetypes.szl:34: T09 contains a field of type T09 which contains an instance of T09 (recursive definition)
+base/badrecursivetypes.szl:35: T10 contains a field of type T10 which contains an instance of T10 (recursive definition)
+base/badrecursivetypes.szl:36: T11 contains a field of type T11 which contains an instance of T11 (recursive definition)
+base/badrecursivetypes.szl:46: no z field in tuple type T12
+base/badrecursivetypes.szl:47: warning: default value function(x: T12) {
+	y: int = BadExpr(x);
+}
+ for field f not yet supported (value is ignored)
+base/badrecursivetypes.szl:47: field type function(x: T12) for field f must be a proto type
+base/badrecursivetypes.szl:51: no a field in tuple type T12
+base/badrecursivetypes.szl:52: warning: default value function(x: T12) {
+	y: int = BadExpr(x);
+}
+ for field f not yet supported (value is ignored)
+base/badrecursivetypes.szl:52: field type function(x: T12) for field f must be a proto type
+base/badrecursivetypes.szl:58: T1B undeclared
+base/badrecursivetypes.szl:61: T2B undeclared
+base/badrecursivetypes.szl:66: T3B undeclared
+base/badrecursivetypes.szl:69: T4B undeclared
+base/badrecursivetypes.szl:72: T5B undeclared
+base/badrecursivetypes.szl:75: T6B undeclared

@@ -1,0 +1,109 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Test errors in static declarations within tuples.
+
+# Only valid in named tuples.
+
+x: {
+  y: int,
+  static z: int = 0,   # not allowed in an unnamed tuple type
+  w: int
+};
+
+
+type T = {
+  x: {
+    y: int,
+    static z: int = 0,   # ... even if the outermost type is named
+    w: int
+  }
+};
+
+# Must be initialized.
+
+type U = {
+  static a: int,
+  static b: function(x: int): int,
+  static c: { d: int }
+};
+
+# Non-static fields may not be accessed through a type name.
+
+type A = {
+  x: int,
+  static y: int = 0
+};
+a: A = { 1 };
+b: int = a.x;  # OK
+c: int = a.y;  # OK, static accessed through object
+d: int = A.x;  # error, non-static accessed through type name
+e: int = A.y;  # OK
+
+# Must not duplicate a field or type name.
+
+type B = {
+  x: int,
+  static x: int = 0,
+  y: int,
+  type y = int,
+  static z: int = 0,
+  type z = int
+};
+
+# Initializers cannot reference non-static fields
+
+type C =  {
+  x: int,
+  static y: int = x
+};
+
+# Functions in static fields are not really methods,
+# in particular they cannot access fields declared later in the tuple.
+
+type Point = {
+  static print: function(p: Point) {
+    emit stdout <- format("(%d,%d)", p.x, p.y);
+  },
+  x: int,
+  y: int
+};
+
+# Type must be complete when needed.
+
+type V = {
+  x: int,
+  static u: V = { 0 },  # error: V must be complete in order to write this
+  y: int
+};
+
+type V = {
+  x: int,
+  static f: function() {
+    v: V;
+    v = { 2, 3 };  # error: V must be complete in order to write this
+  },
+  y: int
+};
+
+type W = {
+  a: int
+};
+
+type X = {
+  a: int,
+  static f: function(w: W, x: X): bool { return w == x; },
+  static g: function(aw: array of W, ax: array of X): bool { return aw == ax; }
+};

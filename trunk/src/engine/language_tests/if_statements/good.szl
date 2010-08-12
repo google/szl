@@ -1,0 +1,171 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Control flows to right statement for if-else statements.
+success: bool = false;
+
+#inst: if-without-else --> if condition is true.
+if (true) ;
+
+#inst: if-without-else --> if condition is false.
+if (false)
+  assert(false, "Failed");
+
+#inst: if-with-else --> if-condition is true.
+if (true) ;
+else
+  assert(false, "Failed");
+
+#inst: if-with-else --> if-condition is false.
+if (false)
+  assert(false, "Failed");
+else ;
+
+#inst: Proof that else is associated with innermost if --> Dangling else
+if (true)
+  if (false)
+    ;
+  else
+    success = true;
+assert(success, "Success, Else is associated with inner-most if\n");
+
+
+#inst: Proof that else is not associated with outer if --> Dangling else
+if (false)
+  if (false)
+    ;
+  else
+    assert(false, "Failed, Else is associated with outer if\n");
+
+#inst: Nested if-else.
+
+x: int = 30;
+
+success = false;
+if (x <= 10) 
+  assert(false, format("x = %d, (x <= 10) == true\n", x));
+else if (x <= 20)
+  assert(false, format("x = %d, (x <= 20) == true\n", x));
+else if (x <= 30)
+  success = true;
+assert(success, format("x = %d, (x <= 30) == true\n", x));
+
+success = false;
+if (x <= 10) { 
+  assert(false, format("x = %d, (x <= 10) == true\n", x));
+}
+else {
+
+  if (x <= 20) {
+    assert(false, format("x = %d, (x <= 20) == true\n", x));
+  }
+  else {
+
+    if (x <= 30) {
+      success = true;
+    }
+  }
+}
+assert(success, format("x = %d, (x <= 30) == true\n", x));
+
+success = false;
+if (x < 10) 
+  assert(false, format("x = %d, (x < 10) == true\n", x));
+else if (x < 20)
+  assert(false, format("x = %d, (x < 20) == true\n", x));
+else if (x < 30)
+  assert(false, format("x = %d, (x < 30) == true\n", x));
+else
+  success = true;
+assert(success, format("x = %d, (x < 30) == false\n", x));
+
+success = false;
+if (x < 10) { 
+  assert(false, format("x = %d, (x < 10) == true\n", x));
+}
+else {
+
+  if (x < 20) {
+    assert(false, format("x = %d, (x < 20) == true\n", x));
+  }
+  else {
+
+    if (x < 30) {
+      assert(false, format("x = %d, (x < 30) == true\n", x));
+        }
+    else {
+      success = true;
+    }
+  }
+}
+assert(success, format("x = %d, (x < 30) == false\n", x));
+
+###############################################################################
+#!/bin/env szl
+#szl_options
+
+#desc: Scope in if-else statements.
+
+#inst: re-declaration inside if statement, access variable in inner statements.
+i: int = 0;
+
+if (true) {
+  i: int = 1;
+  assert(i == 1, format("i after re-declaration (inside if) = %d\n", i));
+
+  if (false) {
+    assert(false, format("i after re-declaration (if inside if) = %d\n", i));
+  }
+  else {
+    assert(i == 1, format("i after re-declaration (else inside if) = %d\n", i));
+  }
+}
+else {
+}
+
+assert(i == 0, format("i after re-declaration (outside if-else) = %d\n", i));
+
+
+#inst: re-declaration inside else statement, access variables in inner stmts.
+j: int = 3;
+
+if (false) {
+}
+else {
+  j: int = 5;
+  assert(j == 5, format("j after re-declaration (inside else) = %d\n", j));
+
+  if (false) {
+    assert(false, format("j after re-declaration (if inside else) = %d\n", j));
+  }
+  else {
+    assert(j == 5, format("j after re-declaration (else inside else) = %d\n", j));
+  }
+}
+
+assert(j == 3, format("j after re-declaration (outside if-else) = %d\n", j));
+
+
+# inst: re-declaration inside of a single statement body without {}.
+k: int = 0;
+if (true)
+  k: int = 5;
+else
+  k: int = 6;
+
+assert(k == 0, format("k after re-declaration (outside if-else) = %d\n", k));

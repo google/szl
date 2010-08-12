@@ -1,0 +1,174 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# More extensive closure assignment checks than those in base/badfunvars.szl
+# (derived from goodclosures.szl; good cases with no corresponding bad case
+# have been omitted so the numbering is not consecutive)
+
+# Assignment to an outer level.
+
+f2: function();
+
+f5: function() {
+  x:int = 3;
+  g1: function() { x = 5; };
+  f2 = g1;
+};
+
+# Return a function value directly from an inner level.
+
+f7: function() {
+  g1: function(): function(): int {
+    x: int = 3;
+    h1: function(): int { return x; };
+    return h1;
+  };
+  g1()();
+};
+
+# Return a function value passed to an inner level.
+
+f8: function(): function(): int {
+  x: int = 4;
+  g1: function(): int { return x; };
+  g2: function(h1: function(): int): function(): int {
+    return h1;
+  };
+  return g2(g1);
+};
+
+# Directly call an outer level function to store a function value.
+
+f9: function() {
+  g1: function();
+  g2: function(h1: function()) { g1 = h1; };
+  g3: function() {
+    x: int = 5;
+    h2: function() { x = 6; };
+    g2(h2);
+  };
+  g3();
+  g1();
+};
+
+
+# Pass an outer function to an inner function and call it to store
+# an inner level function in an outer scope.
+
+f10: function() {
+  g1: function();
+  g2: function(h1: function()) {
+    g1 = h1;
+  };
+  g3: function(h1: function(i1: function())) {
+    x: int = 6;
+    h2: function(i1: function(j1: function())) {
+      i2: function() {
+        x = 7;
+      };
+      i1(i2);  # calls g2 to store i1 in g1
+    };
+    h2(h1);
+  };
+  g3(g2);
+  g1();
+};
+
+# Return a function from an outer scope and call it to store
+# an inner level function in an outer scope.
+
+f11: function() {
+  g1: function();
+  g2: function(h1: function()) {
+    g1 = h1;
+  };
+  g3: function(): function(h1: function()) {
+    return g2;
+  };
+  g4: function() {
+    x: int = 7;
+    h1: function() {
+      i1: function() { x = 8; };
+      g3()(i1);  # calls g2 to store i1 in g1
+    };
+    h1();
+  };
+  g4();
+  g1();
+};
+
+# Assign a function to an outer level using a map, array and tuple.
+
+f12: function() {
+  type F = function(): int;
+  m: map[int] of F = {:};
+  a: array of F = { function(): int { return 0; } };
+  t: { x: F } = { function(): int { return 0; } };;
+  g: function() {
+    y: int = 123;
+    h: function(): int { return y; };
+    # Assign to individual parts.
+    m[0] = h;
+    a[0] = h;
+    t.x = h;
+  };
+  i: function() {
+    z: int = 456;
+    j: function(): int { return z; };
+    # Assign complete containers.
+    m = { 0:j };
+    a = { j };
+    t = { j };
+  };
+  g();
+  i();
+};
+f12();
+
+# A bug caused closure checking to skip any statements in intrinsic actual
+# arguments.  To verify the bug is fixed, repeat assignment to an outer
+# level, wrapped in an intrinsic and a statement expression.
+
+f13: function() {
+  x:int = 3;
+  g1: function() { x = 5; };
+  assert(?{ f2 = g1; result true; });
+};
+
+# Assign a function that uses a variable that does not exist in the scope
+# where the map, array or tuple was declared.
+
+f14: function() {
+  type F = function();
+  m: map[int] of F = {:};
+  a: array of F = { F {} };
+  t: { x: F } = { F {} };
+
+  f1 := function(x: F) {
+   m[0] = x;
+   a[0] = x;
+   t = { x };
+  };
+
+  f2 := function(y: F) {
+   f1(F { f1(y); });
+  };
+
+  f2(F { });
+  m[0]();
+  a[0]();
+  t.x(); # used to get executed before bug#2429338 was fixed causing segfault
+};
+f14();

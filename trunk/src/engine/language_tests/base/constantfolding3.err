@@ -1,0 +1,90 @@
+base/constantfolding3.szl:25: warning: divide by zero
+base/constantfolding3.szl:27: warning: divide by zero
+base/constantfolding3.szl:28: warning: Failed to decode base64 string 'Z29#Z2xl'
+base/constantfolding3.szl:30: warning: divide by zero
+base/constantfolding3.szl:32: warning: divide by zero
+base/constantfolding3.szl:34: warning: divide by zero
+base/constantfolding3.szl:36: warning: divide by zero
+base/constantfolding3.szl:38: warning: divide by zero
+base/constantfolding3.szl:40: warning: divide by zero
+base/constantfolding3.szl:42: warning: divide by zero
+base/constantfolding3.szl:44: warning: divide by zero
+base/constantfolding3.szl:46: warning: divide by zero
+base/constantfolding3.szl:49: warning: divide by zero
+base/constantfolding3.szl:58: warning: match: internal regexp engine error: -8
+ (pattern = ".X(.+)+X", string = "bbbbXcXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+base/constantfolding3.szl:71: warning: divide by zero
+base/constantfolding3.szl:72: warning: addday: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:74: warning: divide by zero
+base/constantfolding3.szl:75: warning: addmonth: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:77: warning: divide by zero
+base/constantfolding3.szl:78: warning: addweek: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:80: warning: divide by zero
+base/constantfolding3.szl:81: warning: addyear: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:84: warning: divide by zero
+base/constantfolding3.szl:85: warning: dayofmonth: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:87: warning: divide by zero
+base/constantfolding3.szl:88: warning: dayofweek: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:90: warning: divide by zero
+base/constantfolding3.szl:91: warning: dayofyear: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:93: warning: divide by zero
+base/constantfolding3.szl:94: warning: hourof: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:96: warning: divide by zero
+base/constantfolding3.szl:97: warning: minuteof: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:99: warning: divide by zero
+base/constantfolding3.szl:100: warning: monthof: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:102: warning: divide by zero
+base/constantfolding3.szl:103: warning: secondof: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:105: warning: divide by zero
+base/constantfolding3.szl:106: warning: yearof: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:109: warning: divide by zero
+base/constantfolding3.szl:110: warning: trunctoday: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:112: warning: divide by zero
+base/constantfolding3.szl:113: warning: trunctohour: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:115: warning: divide by zero
+base/constantfolding3.szl:116: warning: trunctominute: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:118: warning: divide by zero
+base/constantfolding3.szl:119: warning: trunctomonth: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:121: warning: divide by zero
+base/constantfolding3.szl:125: warning: divide by zero
+base/constantfolding3.szl:126: warning: trunctoyear: invalid time or time zone "Lower_Slobovia" was not recognized
+base/constantfolding3.szl:129: warning: divide by zero
+base/constantfolding3.szl:131: warning: divide by zero
+base/constantfolding3.szl:133: warning: divide by zero
+base/constantfolding3.szl:135: warning: divide by zero
+base/constantfolding3.szl:137: warning: divide by zero
+base/constantfolding3.szl:139: warning: divide by zero
+base/constantfolding3.szl:142: warning: divide by zero
+base/constantfolding3.szl:144: warning: divide by zero
+base/constantfolding3.szl:146: warning: divide by zero
+base/constantfolding3.szl:148: warning: divide by zero
+base/constantfolding3.szl:150: warning: divide by zero
+base/constantfolding3.szl:152: warning: divide by zero
+base/constantfolding3.szl:154: warning: divide by zero
+base/constantfolding3.szl:156: warning: divide by zero
+base/constantfolding3.szl:158: warning: divide by zero
+base/constantfolding3.szl:160: warning: divide by zero
+base/constantfolding3.szl:162: warning: divide by zero
+base/constantfolding3.szl:164: warning: divide by zero
+base/constantfolding3.szl:166: warning: divide by zero
+base/constantfolding3.szl:168: warning: divide by zero
+base/constantfolding3.szl:170: warning: divide by zero
+base/constantfolding3.szl:172: warning: divide by zero
+base/constantfolding3.szl:174: warning: divide by zero
+base/constantfolding3.szl:176: warning: divide by zero
+base/constantfolding3.szl:178: warning: divide by zero
+base/constantfolding3.szl:180: warning: divide by zero
+base/constantfolding3.szl:182: warning: divide by zero
+base/constantfolding3.szl:184: warning: divide by zero
+base/constantfolding3.szl:186: warning: divide by zero
+base/constantfolding3.szl:188: warning: divide by zero
+base/constantfolding3.szl:190: warning: divide by zero
+base/constantfolding3.szl:192: warning: divide by zero
+base/constantfolding3.szl:194: warning: divide by zero
+szl: error: could not compile regular expression "a[b": missing terminating ] for character class
+szl: error: could not compile regular expression "b[cdef": missing terminating ] for character class
+szl: error: could not compile regular expression "c[defg": missing terminating ] for character class
+szl: error: could not compile regular expression "d[e": missing terminating ] for character class
+szl: error: could not compile regular expression "e[fghi": missing terminating ] for character class
+szl: error: could not compile regular expression "f[g": missing terminating ] for character class
+szl: error: could not compile regular expression "g[hijk": missing terminating ] for character class

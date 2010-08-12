@@ -1,0 +1,2 @@
+proto/proto_tuple_bad_1.szl:34: tag value 0 must be > 0
+proto/proto_tuple_bad_1.szl:35: tag value -1 must be > 0

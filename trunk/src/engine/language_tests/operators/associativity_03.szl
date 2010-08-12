@@ -1,0 +1,120 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Associativity for operator categories.
+
+# 7 operator categories
+#    selector
+#    unary
+#    multiplicative
+#    additive
+#    comparison
+#    conjunction
+#    disjunction
+
+ASSERT: function (condition: bool, msg: string): bool {
+  if (not condition) {
+    emit stdout <- msg;
+  }
+  return condition;
+};
+
+T: bool = true;
+F: bool = false;
+
+
+#inst: Associativity for conjunction operators.
+
+# && operator as the first operator.
+ASSERT((T && T && T) == ((T && T) && T), "(T && T && T) == ((T && T) && T)");
+ASSERT((T && T && F) == ((T && T) && F), "(T && T && F) == ((T && T) && F)");
+ASSERT((T && F && T) == ((T && F) && T), "(T && F && T) == ((T && F) && T)");
+ASSERT((T && F && F) == ((T && F) && F), "(T && F && F) == ((T && F) && F)");
+ASSERT((F && T && T) == ((F && T) && T), "(F && T && T) == ((F && T) && T)");
+ASSERT((F && T && F) == ((F && T) && F), "(F && T && F) == ((F && T) && F)");
+ASSERT((F && F && T) == ((F && F) && T), "(F && F && T) == ((F && F) && T)");
+ASSERT((F && F && F) == ((F && F) && F), "(F && F && F) == ((F && F) && F)");
+
+ASSERT((T && T and T) == ((T && T) and T), "(T && T and T) == ((T && T) and T)");
+ASSERT((T && T and F) == ((T && T) and F), "(T && T and F) == ((T && T) and F)");
+ASSERT((T && F and T) == ((T && F) and T), "(T && F and T) == ((T && F) and T)");
+ASSERT((T && F and F) == ((T && F) and F), "(T && F and F) == ((T && F) and F)");
+ASSERT((F && T and T) == ((F && T) and T), "(F && T and T) == ((F && T) and T)");
+ASSERT((F && T and F) == ((F && T) and F), "(F && T and F) == ((F && T) and F)");
+ASSERT((F && F and T) == ((F && F) and T), "(F && F and T) == ((F && F) and T)");
+ASSERT((F && F and F) == ((F && F) and F), "(F && F and F) == ((F && F) and F)");
+
+# and operator as the first operator.
+ASSERT((T and T and T) == ((T and T) and T), "(T and T and T) == ((T and T) and T)");
+ASSERT((T and T and F) == ((T and T) and F), "(T and T and F) == ((T and T) and F)");
+ASSERT((T and F and T) == ((T and F) and T), "(T and F and T) == ((T and F) and T)");
+ASSERT((T and F and F) == ((T and F) and F), "(T and F and F) == ((T and F) and F)");
+ASSERT((F and T and T) == ((F and T) and T), "(F and T and T) == ((F and T) and T)");
+ASSERT((F and T and F) == ((F and T) and F), "(F and T and F) == ((F and T) and F)");
+ASSERT((F and F and T) == ((F and F) and T), "(F and F and T) == ((F and F) and T)");
+ASSERT((F and F and F) == ((F and F) and F), "(F and F and F) == ((F and F) and F)");
+
+ASSERT((T and T && T) == ((T and T) && T), "(T and T && T) == ((T and T) && T)");
+ASSERT((T and T && F) == ((T and T) && F), "(T and T && F) == ((T and T) && F)");
+ASSERT((T and F && T) == ((T and F) && T), "(T and F && T) == ((T and F) && T)");
+ASSERT((T and F && F) == ((T and F) && F), "(T and F && F) == ((T and F) && F)");
+ASSERT((F and T && T) == ((F and T) && T), "(F and T && T) == ((F and T) && T)");
+ASSERT((F and T && F) == ((F and T) && F), "(F and T && F) == ((F and T) && F)");
+ASSERT((F and F && T) == ((F and F) && T), "(F and F && T) == ((F and F) && T)");
+ASSERT((F and F && F) == ((F and F) && F), "(F and F && F) == ((F and F) && F)");
+
+
+#inst: Associativity of Disjunction operators.
+
+# || operator as the first operator.
+ASSERT((T || T || T) == ((T || T) || T), "(T || T || T) == ((T || T) || T)");
+ASSERT((T || T || F) == ((T || T) || F), "(T || T || F) == ((T || T) || F)");
+ASSERT((T || F || T) == ((T || F) || T), "(T || F || T) == ((T || F) || T)");
+ASSERT((T || F || F) == ((T || F) || F), "(T || F || F) == ((T || F) || F)");
+ASSERT((F || T || T) == ((F || T) || T), "(F || T || T) == ((F || T) || T)");
+ASSERT((F || T || F) == ((F || T) || F), "(F || T || F) == ((F || T) || F)");
+ASSERT((F || F || T) == ((F || F) || T), "(F || F || T) == ((F || F) || T)");
+ASSERT((F || F || F) == ((F || F) || F), "(F || F || F) == ((F || F) || F)");
+
+ASSERT((T || T or T) == ((T || T) or T), "(T || T or T) == ((T || T) or T)");
+ASSERT((T || T or F) == ((T || T) or F), "(T || T or F) == ((T || T) or F)");
+ASSERT((T || F or T) == ((T || F) or T), "(T || F or T) == ((T || F) or T)");
+ASSERT((T || F or F) == ((T || F) or F), "(T || F or F) == ((T || F) or F)");
+ASSERT((F || T or T) == ((F || T) or T), "(F || T or T) == ((F || T) or T)");
+ASSERT((F || T or F) == ((F || T) or F), "(F || T or F) == ((F || T) or F)");
+ASSERT((F || F or T) == ((F || F) or T), "(F || F or T) == ((F || F) or T)");
+ASSERT((F || F or F) == ((F || F) or F), "(F || F or F) == ((F || F) or F)");
+
+# or operator as the first operator.
+ASSERT((T or T or T) == ((T or T) or T), "(T or T or T) == ((T or T) or T)");
+ASSERT((T or T or F) == ((T or T) or F), "(T or T or F) == ((T or T) or F)");
+ASSERT((T or F or T) == ((T or F) or T), "(T or F or T) == ((T or F) or T)");
+ASSERT((T or F or F) == ((T or F) or F), "(T or F or F) == ((T or F) or F)");
+ASSERT((F or T or T) == ((F or T) or T), "(F or T or T) == ((F or T) or T)");
+ASSERT((F or T or F) == ((F or T) or F), "(F or T or F) == ((F or T) or F)");
+ASSERT((F or F or T) == ((F or F) or T), "(F or F or T) == ((F or F) or T)");
+ASSERT((F or F or F) == ((F or F) or F), "(F or F or F) == ((F or F) or F)");
+
+ASSERT((T or T || T) == ((T or T) || T), "(T or T || T) == ((T or T) || T)");
+ASSERT((T or T || F) == ((T or T) || F), "(T or T || F) == ((T or T) || F)");
+ASSERT((T or F || T) == ((T or F) || T), "(T or F || T) == ((T or F) || T)");
+ASSERT((T or F || F) == ((T or F) || F), "(T or F || F) == ((T or F) || F)");
+ASSERT((F or T || T) == ((F or T) || T), "(F or T || T) == ((F or T) || T)");
+ASSERT((F or T || F) == ((F or T) || F), "(F or T || F) == ((F or T) || F)");
+ASSERT((F or F || T) == ((F or F) || T), "(F or F || T) == ((F or F) || T)");
+ASSERT((F or F || F) == ((F or F) || F), "(F or F || F) == ((F or F) || F)");

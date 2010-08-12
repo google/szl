@@ -1,0 +1,305 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+#szl_options 
+
+#desc: Operator precedence tests
+
+#desc: and extend them for completeness 
+
+ASSERT: function (condition: bool, msg: string): bool {
+  if (not condition) {
+    emit stdout <- msg;
+  }
+  return condition;
+};
+
+T: bool = true;
+F: bool = false;
+
+arr_int: array of int = {10, 20};
+tup_int_float: {i1:int, f1:float} = {10,10.0};
+
+#inst: conjunction beats disjunction
+ASSERT((T or T and F) == T, "(T or T and F) != T");
+ASSERT((F and T or T) == T, "(F and T or T) != T");
+
+ASSERT((T or T && F) == T, "(T or T && F) != T");
+ASSERT((F && T or T) == T, "(F && T or T) != T");
+
+ASSERT((T || T and F) == T, "(T || T and F) != T");
+ASSERT((F and T || T) == T, "(F and T || T) != T");
+
+ASSERT((T || T && F) == T, "(T || T && F) != T");
+ASSERT((F && T || T) == T, "(F && T || T) != T");
+
+#inst: comparison beats conjunction
+ASSERT((F == F and F) == F, "(F == F and F) != F");
+ASSERT((F and F == F) == F, "(F and F == F) != F");
+
+ASSERT((T != F and F) == F, "(T != F and F) != F");
+ASSERT((F and F != T) == F, "(F and F != T) != F");
+
+ASSERT((1 <  2 && T) == T, "(1 <  2 && T) != T");
+ASSERT((T && 1 <  2) == T, "(T && 1 <  2) != T");
+
+ASSERT((2 <= 2 && T) == T, "(2 <= 2 && T) != T");
+ASSERT((T && 2 <= 2) == T, "(T && 2 <= 2) != T");
+ 
+ASSERT((3  > 2 and T) == T, "(3  > 2 and T) != T");
+ASSERT((T and 3 >  2) == T, "(T and 3 >  2) != T");
+
+ASSERT((2 >= 2 and T) == T, "(2 >= 2 and T) != T");
+ASSERT((T and 2 >= 2) == T, "(T and 2 >= 2) != T");
+
+#inst: comparison beats disjunction
+ASSERT((T == F or T) == T, "(T == F or T) != T");
+ASSERT((F or T == T) == T, "(F or T == T) != T");
+
+ASSERT((T != F or T) == T, "(T != F or T) != T");
+#ASSERT((F or F != F) == T, "(F or T != T) != T");
+
+#inst: addition beats comparison
+ASSERT((1 + 2 == 3) == T, "(1 + 2 == 3) != T");
+ASSERT((3 == 1 + 2) == T, "(3 == 1 + 2) != T");
+
+ASSERT((1 + 2 != 5) == T, "(1 + 2 != 5) != T");
+ASSERT((5 != 1 + 2) == T, "(5 != 1 + 2) != T");
+
+ASSERT((1 + 2 < 4) == T, "(1 + 2 < 4) != T");
+ASSERT((2 < 1 + 2) == T, "(2 < 1 + 2) != T");
+
+ASSERT((1 + 2 <= 3) == T, "(1 + 2 <= 3) != T");
+ASSERT((3 <= 1 + 2) == T, "(3 <= 1 + 2) != T");
+
+ASSERT((1 + 2 > 2) == T, "(1 + 2 > 2) != T");
+ASSERT((4 > 1 + 2) == T, "(4 > 1 + 2) != T");
+
+ASSERT((1 + 2 >= 3) == T, "(1 + 2 >= 3) != T");
+ASSERT((3 >= 1 + 2) == T, "(3 >= 1 + 2) != T");
+
+ASSERT((3 - 1 == 2) == T, "(3 - 1 == 2) != T");
+ASSERT((2 == 3 - 1) == T, "(2 == 3 - 1) != T");
+
+ASSERT((2 - 1 != 5) == T, "(2 - 1 != 5) != T");
+ASSERT((5 != 2 - 1) == T, "(5 != 2 - 1) != T");
+
+ASSERT((1 - 2 < 4) == T, "(1 - 2 < 4) != T");
+ASSERT((0 < 2 - 1) == T, "(0 < 2 - 1) != T");
+
+ASSERT((1 - 2 <= 3) == T, "(1 - 2 <= 3) != T");
+ASSERT((0 <= 2 - 2) == T, "(0 <= 2 - 2) != T");
+
+ASSERT((7 - 2 > 2) == T, "(7 - 2 > 2) != T");
+ASSERT((7 > 7 - 2) == T, "(7 > 7 - 2) != T");
+
+ASSERT((7 - 2 >= 2) == T, "(7 - 2 >= 2) != T");
+ASSERT((7 >= 7 - 2) == T, "(7 >= 7 - 2) != T");
+
+ASSERT((3 | 5 == 7) == T, "(3 | 5 == 7) != T");
+ASSERT((7 == 3 | 5) == T, "(7 == 3 | 5) != T");
+
+ASSERT((2 | 4 != 7) == T, "(2 | 4 != 7) != T");
+ASSERT((7 != 2 | 4) == T, "(7 != 2 | 4) != T");
+
+ASSERT((2 | 4 < 8) == T, "(2 | 4 < 8) != T");
+ASSERT((4 < 2 | 4) == T, "(4 < 2 | 4) != T");
+
+ASSERT((2 | 4 <= 6) == T, "(2 | 4 <= 6) != T");
+ASSERT((6 <= 2 | 4) == T, "(6 <= 2 | 4) != T");
+
+ASSERT((2 | 4 > 4) == T, "(2 | 4 > 4) != T");
+ASSERT((8 > 2 | 4) == T, "(8 > 2 | 4) != T");
+
+ASSERT((2 | 4 >= 6) == T, "(2 | 4 >= 6) != T");
+ASSERT((6 >= 2 | 4) == T, "(6 >= 2 | 4) != T");
+
+ASSERT((3 ^ 7 == 4) == T, "(3 ^ 7 == 4) != T");
+ASSERT((4 == 3 ^ 7) == T, "(4 == 3 ^ 7) != T");
+
+ASSERT((3 ^ 7 != 5) == T, "(3 ^ 7 != 5) != T");
+ASSERT((5 != 3 ^ 7) == T, "(5 != 3 ^ 7) != T");
+
+ASSERT((3 ^ 7 < 5) == T, "(3 ^ 7 < 5) != T");
+ASSERT((3 < 3 ^ 7) == T, "(3 < 3 ^ 7) != T");
+
+ASSERT((3 ^ 7 <= 4) == T, "(3 ^ 7 <= 4) != T");
+ASSERT((4 <= 3 ^ 7) == T, "(4 <= 3 ^ 7) != T");
+
+ASSERT((3 ^ 7 > 3) == T, "(3 ^ 7 > 3) != T");
+ASSERT((5 > 3 ^ 7) == T, "(5 > 3 ^ 7) != T");
+
+ASSERT((3 ^ 7 >= 4) == T, "(3 ^ 7 >= 4) != T");
+ASSERT((4 >= 3 ^ 7) == T, "(4 >= 3 ^ 7) != T");
+
+#inst: addition beats conjunction - Not Applicable
+#inst: addition beats disjunction - Not Applicable
+
+#inst: multiplication beats addition
+ASSERT((1 + 2 * 3) == 7, "(1 + 2 * 3) != 7");
+ASSERT((3 * 2 + 1) == 7, "(3 * 2 + 1) != 7");
+
+ASSERT((8 - 4 / 2) == 6, "(8 - 4 / 2) != 6");
+ASSERT((8 / 4 - 2) == 0, "(8 / 4 - 2) != 0");
+
+ASSERT((3 % 2 | 1) == 1, "(3 % 2 | 1) != 1"); 
+ASSERT((5 | 3 % 1) == 5, "(5 | 3 % 1) != 5");
+
+ASSERT((1 << 2 + 3) == 7, "(1 << 2 + 3) != 7");
+ASSERT((3 + 1 << 2) == 7, "(3 + 1 << 2) != 7");
+
+ASSERT((7 >> 1 ^ 2) == 1, "(7 >> 1 ^ 2) != 1");
+ASSERT((6 ^ 7 >> 1) == 5, "(6 ^ 7 >> 1) != 5");
+
+ASSERT((3 & 7 ^ 6) == 5, "(3 & 7 ^ 6) != 5");
+ASSERT((7 ^ 6 & 3) == 5, "(7 ^ 6 & 3) != 5");
+
+#inst: multiplication beats comparison
+ASSERT((1 * 2 == 2) == T, "(1 * 2 == 2) != T");
+ASSERT((2 == 1 * 2) == T, "(2 == 1 * 2) != T");
+
+ASSERT((1 * 2 != 1) == T, "(1 * 2 != 1) != T");
+ASSERT((1 != 1 * 2) == T, "(1 != 1 * 2) != T");
+
+ASSERT((1 * 2 < 4) == T, "(1 * 2 < 4) != T");
+ASSERT((1 < 1 * 2) == T, "(1 < 1 * 2) != T");
+
+ASSERT((1 * 2 <= 3) == T, "(1 * 2 <= 3) != T");
+ASSERT((2 <= 1 * 2) == T, "(2 <= 1 * 2) != T");
+
+ASSERT((1 * 2 > 1) == T, "(1 * 2 > 1) != T");
+ASSERT((4 > 1 * 2) == T, "(4 > 1 * 2) != T");
+
+ASSERT((1 * 2 >= 2) == T, "(1 * 2 >= 2) != T");
+ASSERT((3 >= 1 * 2) == T, "(3 >= 1 * 2) != T");
+
+ASSERT((3 / 2 == 1) == T, "(3 / 2 == 1) != T");
+ASSERT((1 == 3 / 2) == T, "(1 == 3 / 2) != T");
+
+ASSERT((3 / 2 != 2) == T, "(3 / 2 != 2) != T");
+ASSERT((2 != 3 / 2) == T, "(2 != 3 / 2) != T");
+
+ASSERT((1 / 2 < 4) == T, "(1 / 2 < 4) != T");
+ASSERT((0 < 2 / 1) == T, "(0 < 2 / 1) != T");
+
+ASSERT((1 / 2 <= 3) == T, "(1 / 2 <= 3) != T");
+ASSERT((0 <= 2 / 2) == T, "(0 <= 2 / 2) != T");
+
+ASSERT((7 / 2 > 2) == T, "(7 / 2 > 2) != T");
+ASSERT((7 > 7 / 2) == T, "(7 > 7 / 2) != T");
+
+ASSERT((7 / 2 >= 2) == T, "(7 / 2 >= 2) != T");
+ASSERT((7 >= 7 / 2) == T, "(7 >= 7 / 2) != T");
+
+ASSERT((2 % 4 == 2) == T, "(2 % 4 == 2) != T");
+ASSERT((2 == 2 % 4) == T, "(2 == 2 % 4) != T");
+
+ASSERT((2 % 4 != 7) == T, "(2 % 4 != 7) != T");
+ASSERT((7 != 2 % 4) == T, "(7 != 2 % 4) != T");
+
+ASSERT((2 % 4 < 8) == T, "(2 % 4 < 8) != T");
+ASSERT((0 < 2 % 4) == T, "(0 < 2 % 4) != T");
+
+ASSERT((2 % 4 <= 6) == T, "(2 % 4 <= 6) != T");
+ASSERT((2 <= 2 % 4) == T, "(2 <= 2 % 4) != T");
+
+ASSERT((2 % 4 > 0) == T, "(2 % 4 > 0) != T");
+ASSERT((4 > 2 % 4) == T, "(4 > 2 % 4) != T");
+
+ASSERT((2 % 4 >= 2) == T, "(2 % 4 >= 2) != T");
+ASSERT((2 >= 2 % 4) == T, "(2 >= 2 % 4) != T");
+
+ASSERT((4 << 2 == 16) == T, "(4 << 2 == 16) != T");
+ASSERT((16 == 4 << 2) == T, "(16 == 4 << 2) != T");
+
+ASSERT((4 << 2 != 4) == T, "(4 << 2 != 4) != T");
+ASSERT((4 != 4 << 2) == T, "(4 != 4 << 2) != T");
+
+ASSERT((2 << 2 < 16) == T, "(2 << 2 < 16) != T");
+ASSERT((4 < 2 << 2) == T, "(4 < 2 << 2) != T");
+
+ASSERT((2 << 2 <= 8) == T, "(2 << 2 <= 8) != T");
+ASSERT((8 <= 2 << 2) == T, "(8 <= 2 << 2) != T");
+
+ASSERT((2 << 2 > 4) == T, "(2 << 2 > 4) != T");
+ASSERT((16 > 2 << 2) == T, "(16 > 2 << 2) != T");
+
+ASSERT((2 << 2 >= 4) == T, "(2 << 2 >= 4) != T");
+ASSERT((8 >= 2 << 2) == T, "(8 >= 2 << 2) != T");
+
+ASSERT((8 >> 2 == 2) == T, "(8 >> 2 == 2) != T");
+ASSERT((2 == 8 >> 2) == T, "(2 == 8 >> 2) != T");
+
+ASSERT((8 >> 2!= 5) == T, "(8 >> 2 != 5) != T");
+ASSERT((5 != 8 >> 2) == T, "(5 != 8 >> 2) != T");
+
+ASSERT((8 >> 2 < 5) == T, "(8 >> 2 < 5) != T");
+ASSERT((1 < 8 >> 2) == T, "(1 < 8 >> 2) != T");
+
+ASSERT((8 >> 2 <= 2) == T, "(8 >> 2 <= 2) != T");
+ASSERT((2 <= 8 >> 2) == T, "(2 <= 8 >> 2) != T");
+
+ASSERT((8 >> 2 > 1) == T, "(8 >> 2 > 1) != T");
+ASSERT((3 > 8 >> 2) == T, "(3 > 8 >> 2) != T");
+
+ASSERT((8 >> 2 >= 2) == T, "(8 >> 2 >= 2) != T");
+ASSERT((2 >= 8 >> 2) == T, "(2 >= 8 >> 2) != T");
+
+ASSERT((3 & 7 == 3) == T, "(3 & 7 == 3) != T");
+ASSERT((3 == 3 & 7) == T, "(3 == 3 & 7) != T");
+
+ASSERT((3 & 7 != 4) == T, "(3 & 7 != 4) != T");
+ASSERT((4 != 3 & 7) == T, "(4 != 3 & 7) != T");
+
+ASSERT((3 & 7 < 5) == T, "(3 & 7 < 5) != T");
+ASSERT((2 < 3 & 7) == T, "(2 < 3 & 7) != T");
+
+ASSERT((3 & 7 <= 3) == T, "(3 & 7 <= 3) != T");
+ASSERT((3 <= 3 & 7) == T, "(3 <= 3 & 7) != T");
+
+ASSERT((3 & 7 > 2) == T, "(3 & 7 > 2) != T");
+ASSERT((4 > 3 & 7) == T, "(4 > 3 & 7) != T");
+
+ASSERT((3 & 7 >= 3) == T, "(3 & 7 >= 3) != T");
+ASSERT((3 >= 3 & 7) == T, "(3 >= 3 & 7) != T");
+
+
+#inst: multiplication beats conjunction - Not Applicable
+#inst: multiplication beats disjunction - Not Applicable
+
+#inst: unary beats multiplication
+ASSERT((4 * + 2) == 8, "(4 * + 2) != 8");
+ASSERT((6 / - 2) == -3, "(6 / - 2) != -3");
+ASSERT((- 1 >> 1) != 0, "(- 1 >> 1) == 0");
+ASSERT((~ 0 << 1) == -2, "(~ 0 << 1) != -2");
+
+#inst: unary beats addition
+ASSERT((- 4 + 2) == -2, "(- 4 + 2) != - 2");
+ASSERT((- 4 - 2) == -6, "(- 4 - 2) != - 6");
+ASSERT((- 4 | 2) == -2, "(- 4 | 2) != -2");
+ASSERT((- 4 ^ 2) == -2, "(- 4 ^ 2) != -2");
+ASSERT((~ 4 + 2) == -3, "(~ 4 + 2) != -3");
+
+#inst: unary beats comparison
+ASSERT(! T == F, "! T != F");
+ASSERT(! F != F, "! F == F");
+
+#inst: unary beats conjunction and disjunction
+ASSERT((! T or F) == F, "(! T or F) != F");
+ASSERT((! T || F) == F, "(! T || F) != F");
+ASSERT((! F and F) == F, "(! F and F) != F");
+ASSERT((! F && F) == F, "(! F && F) != F");

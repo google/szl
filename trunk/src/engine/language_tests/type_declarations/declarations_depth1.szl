@@ -1,0 +1,155 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options  
+
+#desc: Declaring types for basic and composite types
+
+# Basic types
+
+type I = int;
+type S = string;
+type F = float;
+type FG = fingerprint;
+type B = bool;
+type BY = bytes;
+type T = time;
+
+
+# Composite types
+
+type AI = array of int;
+type AS = array of string;
+type AF = array of float;
+type AFG = array of fingerprint;
+type AB = array of bool;
+type ABY = array of bytes;
+type AT = array of time;
+
+type MII = map[int] of int;
+type MIS = map[int] of string;
+type MIF = map[int] of float;
+type MIFG = map[int] of fingerprint;
+type MIB = map[int] of bool;
+type MIBY = map[int] of bytes;
+type MIT = map [int] of time;
+
+
+type MSI = map[string] of int;
+type MSS = map[string] of string;
+type MSF = map[string] of float;
+type MSFG = map[string] of fingerprint;
+type MSB = map[string] of bool;
+type MSBY = map[string] of bytes;
+type MST = map [string] of time;
+
+type MFI = map[float] of int;
+type MFS = map[float] of string;
+type MFF = map[float] of float;
+type MFFG = map[float] of fingerprint;
+type MFB = map[float] of bool;
+type MFBY = map[float] of bytes;
+type MFT = map [float] of time;
+
+type MFGI = map[fingerprint] of int;
+type MFGS = map[fingerprint] of string;
+type MFGF = map[fingerprint] of float;
+type MFGFG = map[fingerprint] of fingerprint;
+type MFGB = map[fingerprint] of bool;
+type MFGBY = map[fingerprint] of bytes;
+type MFGT = map [fingerprint] of time;
+
+type MBI = map[bool] of int;
+type MBS = map[bool] of string;
+type MBF = map[bool] of float;
+type MBFG = map[bool] of fingerprint;
+type MBB = map[bool] of bool;
+type MBBY = map[bool] of bytes;
+type MBT = map [bool] of time;
+
+type MBYI = map[bytes] of int;
+type MBYS = map[bytes] of string;
+type MBYF = map[bytes] of float;
+type MBYFG = map[bytes] of fingerprint;
+type MBYB = map[bytes] of bool;
+type MBYBY = map[bytes] of bytes;
+type MBYT = map [bytes] of time;
+
+type MTI = map[time] of int;
+type MTS = map[time] of string;
+type MTF = map[time] of float;
+type MTFG = map[time] of fingerprint;
+type MTB = map[time] of bool;
+type MTBY = map[time] of bytes;
+type MTT = map [time] of time;
+
+type TII = {i0:int,i:int};
+type TIS = {i0:int,s:string};
+type TIF = {i0:int,f:float};
+type TIFG = {i0:int,fg:fingerprint};
+type TIB = {i0:int,b:bool};
+type TIBY = {i0:int,by:bytes};
+type TIT = {i0:int,t:time};
+
+type TSI = {s0:string,i:int};
+type TSS = {s0:string,s:string};
+type TSF = {s0:string,f:float};
+type TSFG = {s0:string,fg:fingerprint};
+type TSB = {s0:string,b:bool};
+type TSBY = {s0:string,by:bytes};
+type TST = {s0:string,t:time};
+
+type TFI = {f0:float,i:int};
+type TFS = {f0:float,s:string};
+type TFF = {f0:float,f:float};
+type TFFG = {f0:float,fg:fingerprint};
+type TFB = {f0:float,b:bool};
+type TFBY = {f0:float,by:bytes};
+type TFT = {f0:float,t:time};
+
+type TFGI = {fg0:fingerprint,i:int};
+type TFGS = {fg0:fingerprint,s:string};
+type TFGF = {fg0:fingerprint,f:float};
+type TFGFG = {fg0:fingerprint,fg:fingerprint};
+type TFGB = {fg0:fingerprint,b:bool};
+type TFGBY = {fg0:fingerprint,by:bytes};
+type TFGT = {fg0:fingerprint,t:time};
+
+type TBI = {b0:bool,i:int};
+type TBS = {b0:bool,s:string};
+type TBF = {b0:bool,f:float};
+type TBFG = {b0:bool,fg:fingerprint};
+type TBB = {b0:bool,b:bool};
+type TBBY = {b0:bool,by:bytes};
+type TBT = {b0:bool,t:time};
+
+type TBYI = {by0:bytes,i:int};
+type TBYS = {by0:bytes,s:string};
+type TBYF = {by0:bytes,f:float};
+type TBYFG = {by0:bytes,fg:fingerprint};
+type TBYB = {by0:bytes,b:bool};
+type TBYBY = {by0:bytes,by:bytes};
+type TBYT = {by0:bytes,t:time};
+
+type TTI = {t0:time,i:int};
+type TTS = {t0:time,s:string};
+type TTF = {t0:time,f:float};
+type TTFG = {t0:time,fg:fingerprint};
+type TTB = {t0:time,b:bool};
+type TTBY = {t0:time,by:bytes};
+type TTT = {t0:time,t:time};
+

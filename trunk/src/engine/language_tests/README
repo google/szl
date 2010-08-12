@@ -1,0 +1,60 @@
+This directory contains the Szl regression test suite.
+
+--- Environment variables
+
+SZL - szl compiler; default is szl
+SZL_TMP - a temp directory; default is .
+PROTOCOL_COMPILER - protocol compiler; default is protoc
+PROTOCOL_COMPILER_PLUGIN - szl plugin; default is protoc-szl-plugin
+
+--- Structure
+
+The tests are grouped into several directories.
+
+The tests in the base/ directory test most parts of the language. They also test
+the ability to reprint the code from the generated tree using --print_source.
+
+The tests in all other directories provide additional more detailed tests for
+specific language constructs.
+
+Each test consists of three files:
+- .szl file with well-formed (aka good) or ill-formed (aka bad) code
+- .out file with gold stdout output for "good" tests
+- .err file with gold error output for "bad" tests and warnings for "good" tests
+
+---- Drivers
+
+Each .szl program is to be run using the build of szl being tested.
+
+The script ./update contains flags for individual .szl files.
+
+Usage patterns:
+  ./update dir/test.szl - runs test.szl and updates its test.out and test.err
+  ./update -R dir/test.szl - runs test.szl and writes stdout/stderr to $SZL_TMP
+
+The following modes are supported:
+  default  run nonative + optimizer on
+  -N       run native   + optimizer on
+  -U       run nonative + optimizer off
+  -NU      run native   + optimizer off
+  -C       run nonative + optimizer on  + test cloning
+  -NC      run native   + optimizer on  + test cloning
+  -UC      run nonative + optimizer off + test closing
+  -NUC     run native   + optimizer off + test cloning
+
+The script ./regress iterates over all .szl using "./update -R" to run the tests
+using the default and -N modes.
+
+Usage patterns:
+  ./regress - run all tests in all direstories using the default and -N
+              modes, exit if some test fails
+  ./regress -e - record test failures and continue instead of exiting
+  ./regress -e -f dir/test1.szl dir/test2.szl ... - run the given tests, record
+              failures and continues if some of them fail
+
+The script szl_regtest.sh invokes "./regress -e -f" to run all tests
+(the default) or all tests in one directory (if specified on the command line).
+
+Usage patterns:
+  ./szl_regtest.sh test_dir   # run tests in test_dir.
+  ./szl_regtest.sh            # run tests in all directories

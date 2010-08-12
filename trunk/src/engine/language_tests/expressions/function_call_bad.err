@@ -1,0 +1,9 @@
+expressions/function_call_bad.szl:30: incompatible argument list for f0
+expressions/function_call_bad.szl:31: incompatible argument list for f0
+expressions/function_call_bad.szl:33: incompatible argument list for f1
+expressions/function_call_bad.szl:34: factor expected, found ','
+expressions/function_call_bad.szl:38: incompatible argument list for f0
+expressions/function_call_bad.szl:39: incompatible argument list for f0
+expressions/function_call_bad.szl:40: incompatible argument list for f0
+expressions/function_call_bad.szl:42: incompatible argument list for f1
+expressions/function_call_bad.szl:43: incompatible argument list for f1

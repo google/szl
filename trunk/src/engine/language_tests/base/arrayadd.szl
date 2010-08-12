@@ -1,0 +1,51 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+assert(string(20 + 3) == "23");
+assert("2" + "3" == "23");
+assert(string(bytes("2") + bytes("3")) == "23");
+
+i1: array of int = { 2, 3, 4 };
+i2: array of int = { 5, 6, 7, 8 };
+assert(string(i1 + i2) == "{ 2, 3, 4, 5, 6, 7, 8 }");
+
+f1: array of float = { 2., 3., 4. };
+f2: array of float = { 5., 6., 7., 8. };
+assert(string(f1 + f2) == "{ 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0 }");
+
+t1: array of time = { T"Dec 31 16:00:00 PST 1969",
+                      T"Dec 31 16:00:00 PST 1970",
+                      T"Dec 31 16:00:00 PST 1971",};
+t2: array of time = { T" Dec 31 16:00:00 PST 1972",
+                      T"Dec 31 16:00:00 PST 1973",
+                      T"Dec 31 16:00:00 PST 1974", };
+assert(string(t1 + t2) ==
+       `{ "Wed Dec 31 16:00:00 PST 1969", "Thu Dec 31 16:00:00 PST 1970", "Fri Dec 31 16:00:00 PST 1971", "Sun Dec 31 16:00:00 PST 1972", "Mon Dec 31 16:00:00 PST 1973", "Tue Dec 31 16:00:00 PST 1974" }`);
+
+s1: array of string = { "1", "2", "3" };
+s2: array of string = { "4", "5", "6", "7" };
+assert(string(s1 + s2) == `{ "1", "2", "3", "4", "5", "6", "7" }`);
+
+type T = { int, float, string };
+u1: array of T = { { 1, 1.0, "1" } , { 2, 2.0, "2" } };
+u2: array of T = { { 3, 3.0, "3" } , { 4, 4.0, "4" }, { 5, 5.0, "5" } };
+assert(string(u1 + u2) ==
+       `{ { 1, 1.0, "1" }, { 2, 2.0, "2" }, { 3, 3.0, "3" }, { 4, 4.0, "4" }, { 5, 5.0, "5" } }`);
+
+m1: array of map[int] of string = { { 1: "1", 2: "2" },
+                                    { 3: "3", 4: "4", 5: "5" } };
+m2: array of map[int] of string = { { 6: "6", 7: "7" }, { 8: "8", 9: "9" } };
+assert(string(m1 + m2) ==
+       `{ { 1: "1", 2: "2" }, { 3: "3", 4: "4", 5: "5" }, { 6: "6", 7: "7" }, { 8: "8", 9: "9" } }`);

@@ -1,0 +1,188 @@
+f2: function();
+f5: function() {
+	x: int = 3;
+	g1: function() 	{
+		x = 5;
+	}
+;
+	f2 = g1;
+}
+;
+f7: function() {
+	g1: function(): function(): int 	{
+		x: int = 3;
+		h1: function(): int 		{
+			return x;
+		}
+;
+		return h1;
+	}
+;
+	g1()();
+}
+;
+f8: function(): function(): int {
+	x: int = 4;
+	g1: function(): int 	{
+		return x;
+	}
+;
+	g2: function(h1: function(): int): function(): int 	{
+		return h1;
+	}
+;
+	return g2(g1);
+}
+;
+f9: function() {
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function() 	{
+		x: int = 5;
+		h2: function() 		{
+			x = 6;
+		}
+;
+		g2(h2);
+	}
+;
+	g3();
+	g1();
+}
+;
+f10: function() {
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function(h1: function(i1: function())) 	{
+		x: int = 6;
+		h2: function(i1: function(j1: function())) 		{
+			i2: function() 			{
+				x = 7;
+			}
+;
+			i1(i2);
+		}
+;
+		h2(h1);
+	}
+;
+	g3(g2);
+	g1();
+}
+;
+f11: function() {
+	g1: function();
+	g2: function(h1: function()) 	{
+		g1 = h1;
+	}
+;
+	g3: function(): function(h1: function()) 	{
+		return g2;
+	}
+;
+	g4: function() 	{
+		x: int = 7;
+		h1: function() 		{
+			i1: function() 			{
+				x = 8;
+			}
+;
+			g3()(i1);
+		}
+;
+		h1();
+	}
+;
+	g4();
+	g1();
+}
+;
+f12: function() {
+	type F = function(): int;
+	m: map [int] of F = {:};
+	a: array of F = {function(): int {
+	return 0;
+}
+};
+	t: {x: F} = {function(): int {
+	return 0;
+}
+};
+	;
+	g: function() 	{
+		y: int = 123;
+		h: function(): int 		{
+			return y;
+		}
+;
+		m[0] = h;
+		a[0] = h;
+		t.x = h;
+	}
+;
+	i: function() 	{
+		z: int = 456;
+		j: function(): int 		{
+			return z;
+		}
+;
+		m = {0: j};
+		a = {j};
+		t = {j};
+	}
+;
+	g();
+	i();
+}
+;
+f12();
+f13: function() {
+	x: int = 3;
+	g1: function() 	{
+		x = 5;
+	}
+;
+	assert(?{
+	f2 = g1;
+	result true;
+}
+);
+}
+;
+f14: function() {
+	type F = function();
+	m: map [int] of F = {:};
+	a: array of F = {function() {
+}
+};
+	t: {x: F} = {function() {
+}
+};
+	f1: function(x: F) 	{
+		m[0] = x;
+		a[0] = x;
+		t = {x};
+	}
+;
+	f2: function(y: F) 	{
+		f1(function() {
+	f1(y);
+}
+);
+	}
+;
+	f2(function() {
+}
+);
+	m[0]();
+	a[0]();
+	t.x();
+}
+;
+f14();

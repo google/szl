@@ -1,0 +1,123 @@
+Stack trace:
+  0. g: function(n: int)
+     n: int = 1
+     m: float = 2.0
+     b: bool = true
+     x: int = 5
+     s: string = "\x5\x5\x5"
+
+  1. f: function(n: int): int
+     n: int = 1
+     m: float = 0.5
+     g: function(n: int) = g
+
+  2. g: function(n: int)
+     n: int = 2
+     m: float = 4.0
+     b: bool = true
+     x: int = 10
+     s: string = "\n\n\n"
+
+  3. f: function(n: int): int
+     n: int = 2
+     m: float = 1.0
+     g: function(n: int) = g
+
+  4. g: function(n: int)
+     n: int = 3
+     m: float = 6.0
+     b: bool = true
+     x: int = 15
+     s: string = "\xf\xf\xf"
+
+  5. f: function(n: int): int
+     n: int = 3
+     m: float = 1.5
+     g: function(n: int) = g
+
+  6. g: function(n: int)
+     n: int = 4
+     m: float = 8.0
+     b: bool = true
+     x: int = 20
+     s: string = "\x14\x14\x14"
+
+  7. f: function(n: int): int
+     n: int = 4
+     m: float = 2.0
+     g: function(n: int) = g
+
+  8. g: function(n: int)
+     n: int = 5
+     m: float = 10.0
+     b: bool = false
+     x: int = 25
+     s: string = "\x19\x19\x19"
+
+  9. f: function(n: int): int
+     n: int = 5
+     m: float = 2.5
+     g: function(n: int) = g
+
+...  (skipping frames 10 to 30)
+
+ 31. f: function(n: int): int
+     n: int = 16
+     m: float = 8.0
+     g: function(n: int) = g
+
+ 32. g: function(n: int)
+     n: int = 17
+     m: float = 34.0
+     b: bool = false
+     x: int = 85
+     s: string = "UUU"
+
+ 33. f: function(n: int): int
+     n: int = 17
+     m: float = 8.5
+     g: function(n: int) = g
+
+ 34. g: function(n: int)
+     n: int = 18
+     m: float = 36.0
+     b: bool = false
+     x: int = 90
+     s: string = "ZZZ"
+
+ 35. f: function(n: int): int
+     n: int = 18
+     m: float = 9.0
+     g: function(n: int) = g
+
+ 36. g: function(n: int)
+     n: int = 19
+     m: float = 38.0
+     b: bool = false
+     x: int = 95
+     s: string = "___"
+
+ 37. f: function(n: int): int
+     n: int = 19
+     m: float = 9.5
+     g: function(n: int) = g
+
+ 38. g: function(n: int)
+     n: int = 20
+     m: float = 40.0
+     b: bool = false
+     x: int = 100
+     s: string = "ddd"
+
+ 39. f: function(n: int): int
+     n: int = 20
+     m: float = 10.0
+     g: function(n: int) = g
+
+ 40. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     f: function(n: int): int = f
+     x: int = <undefined>
+
+szl: fatal: undefined value at base/stacktrace.szl:25: f(n - 1) (probably because a function result was undefined due to an error at base/stacktrace.szl:30: 1 / nrand(1) (divide by zero error: 1 / 0))

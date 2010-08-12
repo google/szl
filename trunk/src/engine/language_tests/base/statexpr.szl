@@ -1,0 +1,112 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+s: string;
+
+# verify that result is a fine variable name outside of ?{}.
+# this feature provides backwards compatibility.
+result: string = "hi";
+assert(result == "hi");
+{
+  result := 4;
+  assert(result == 4);
+}
+
+# tests simple execution
+s = ?{result "start" + " stop";};
+assert(s == "start stop");
+
+s = "";
+
+# tests that result terminates execution of ?{}
+for(i := 0; i < 8; i++)
+	s = s + ?{
+		if(i > 5)
+			result "hi,";
+		else if (i >2)
+			result "lo,";
+		 result "very lo,";
+		};
+assert(s == "very lo,very lo,very lo,lo,lo,lo,hi,hi,");
+
+a: array of int={ 1, 2, 3, 4, 5, 6+8 };
+
+s = ?{
+	when(i: some int; a[i] == 2)
+		result "found 2 at " + string(i);
+	result "not found";
+};
+assert(s == "found 2 at 1");
+
+s = "";
+s = string(
+	?{
+		aa: array of int = {};
+		when(i: each int; a[i]&1 == 0)
+			aa = aa + { a[i] };
+		result aa;
+	}
+);
+assert(s == "{ 2, 4, 14 }");
+
+# tests
+#	using ?{} in a when clause
+#	declarations within ?{}
+#	nested ?{}
+s = "";
+when(x: each int; ?{
+		static v: array of int = { 7, 6, 5, 4, 3, 2, 1 };
+		y := ?{ result v[x]; };
+		s = s + format("(%d)", y);
+		result a[x] == v[x];
+	}
+) {
+	s = s + string(a[x]);
+}
+assert(s == "(7)(6)(5)(4)4(3)(2)");
+
+# tests static context
+static k0 := 1;
+static k1 := ?{ result k0; };
+assert(k1 == 1);
+static k2 := ?{ result 2; };
+assert(k2 == 2);
+# unimplemented - see statexpr_bad.szl
+#static k3 := ?{ i: int = 3; result i; };  # can be propagated
+#assert(k3 == 3);
+static k4 := ?{ static i: int = 4; result i; };
+assert(k4 == 4);
+# unimplemented - see statexpr_bad.szl
+#static k5 := ?{ i := min(5, int(now())); result i; };  # cannot be propagated
+#assert(k5 == 5);
+static k6 := ?{ static i := min(6, int(now())); result i; };
+assert(k6 == 6);
+# unimplemented - see statexpr_bad.szl
+#static k7 := ?{ sum := 0; for (i: int = 0; i < 7; i++) sum++; result sum; };
+#assert(k7 == 7);
+
+# verify that code for static variables inside statement
+# expressions is generated only once (was bug #1601218) 
+static f := function(): int { emit stdout <- "should see this only once"; return 42; };
+static k8 := ?{ static i: int = f(); result i; };
+assert(k8 == 42);
+
+# verify that statement expressions may be used in argument lists
+# (was bug #1779118)
+g: function(x: int, y:int, z: int): int {
+  return x + y + z;
+};
+assert(g(1, ?{ result 2; }, 3) == 6);
+

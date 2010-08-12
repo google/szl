@@ -1,0 +1,6 @@
+type P.A = parsedmessage {x: int @ 1, type T = int, static y: int = 123};
+type P.B.C = parsedmessage {};
+a: P.A = {456};
+b: int = P.A.y + a.x;
+assert(b == 579);
+P: int = 0;

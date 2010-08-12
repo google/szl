@@ -1,0 +1,76 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+### Do not allow recursive definitions that would require infinite size objects
+
+# Directly nested fields containing the tuple are not allowed.
+
+# tuples
+
+type T01 = { T01 };
+type T02 = { { T02 } };
+type T03 = { { { T03 } } };
+
+type T04 = { x: T04 };
+type T05 = { x: { y: T05 } };
+type T06 = { x: { y: { z: T06 } } };
+
+# proto tuples
+
+type T07 = { t: T07 };
+type T08 = { t: T08 @ 1 };
+type T09 = parsedmessage { t: T09 @ 1 };
+type T10 = proto { t: T10 @ 1 };
+type T11 = proto { t: T11 };
+
+# Expressions within a type declaration are potentially a problem, since
+# the type name is made available before the type is completely defined.
+# Currently the only expressions allowed within a type declaration are
+# protocol tuple default values, and only simple expressions are allowed
+# there.  But make sure the compiler doesn't segfault or otherwise fail
+# when it encounters an expression that uses an incomplete type.
+
+type T12 = {
+  f: function(x: T12) = function(x: T12) { y: int = x.z; } @ 2
+};
+
+type T13 = {
+  a: int @ 1,
+  f: function(x: T12) = function(x: T12) { y: int = x.a; } @ 2
+};
+
+### Do not support mutually recursive types
+
+# tuples
+
+type T1A = { T1B };
+type T1B = { T1A };
+
+type T2A = { t: T2B };
+type T2B = { t: T2A };
+
+# proto tuples
+
+type T3A = { t: T3B @ 1 };
+type T3B = { t: T3A @ 1 };
+
+type T4A = parsedmessage { t: T4B @ 1 };
+type T4B = parsedmessage { t: T4A @ 1 };
+
+type T5A = proto { t: T5B @ 1 };
+type T5B = proto { t: T5A @ 1 };
+
+type T6A = proto { t: T6B };
+type T6B = proto { t: T6A };

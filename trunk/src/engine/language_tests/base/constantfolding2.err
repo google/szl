@@ -1,0 +1,26 @@
+base/constantfolding2.szl:58: warning: no base provided for conversion to integer; base will be input-dependent
+base/constantfolding2.szl:59: warning: no base provided for conversion to integer; base will be input-dependent
+base/constantfolding2.szl:23: warning: divide by zero
+base/constantfolding2.szl:27: warning: divide by zero
+base/constantfolding2.szl:29: warning: divide by zero
+base/constantfolding2.szl:31: warning: divide by zero
+base/constantfolding2.szl:33: warning: divide by zero
+base/constantfolding2.szl:37: warning: divide by zero
+base/constantfolding2.szl:39: warning: divide by zero
+base/constantfolding2.szl:43: warning: divide by zero
+base/constantfolding2.szl:45: warning: divide by zero
+base/constantfolding2.szl:49: warning: divide by zero
+base/constantfolding2.szl:51: warning: divide by zero
+base/constantfolding2.szl:53: warning: divide by zero
+base/constantfolding2.szl:57: warning: divide by zero
+base/constantfolding2.szl:59: warning: divide by zero
+base/constantfolding2.szl:61: warning: divide by zero
+base/constantfolding2.szl:63: warning: divide by zero
+base/constantfolding2.szl:65: warning: divide by zero
+base/constantfolding2.szl:67: warning: divide by zero
+base/constantfolding2.szl:69: warning: divide by zero
+base/constantfolding2.szl:71: warning: divide by zero
+base/constantfolding2.szl:75: warning: divide by zero
+base/constantfolding2.szl:77: warning: divide by zero
+base/constantfolding2.szl:79: warning: divide by zero
+base/constantfolding2.szl:81: warning: divide by zero

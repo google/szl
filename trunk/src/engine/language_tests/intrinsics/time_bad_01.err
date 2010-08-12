@@ -1,0 +1,382 @@
+intrinsics/time_bad_01.szl:22: intrinsic function 'dayofmonth' cannot be used as value
+intrinsics/time_bad_01.szl:23: intrinsic function 'dayofweek' cannot be used as value
+intrinsics/time_bad_01.szl:24: intrinsic function 'dayofyear' cannot be used as value
+intrinsics/time_bad_01.szl:25: intrinsic function 'hourof' cannot be used as value
+intrinsics/time_bad_01.szl:26: intrinsic function 'minuteof' cannot be used as value
+intrinsics/time_bad_01.szl:27: intrinsic function 'monthof' cannot be used as value
+intrinsics/time_bad_01.szl:28: intrinsic function 'yearof' cannot be used as value
+intrinsics/time_bad_01.szl:29: intrinsic function 'trunctoday' cannot be used as value
+intrinsics/time_bad_01.szl:30: intrinsic function 'trunctohour' cannot be used as value
+intrinsics/time_bad_01.szl:31: intrinsic function 'trunctominute' cannot be used as value
+intrinsics/time_bad_01.szl:32: intrinsic function 'trunctomonth' cannot be used as value
+intrinsics/time_bad_01.szl:33: intrinsic function 'trunctosecond' cannot be used as value
+intrinsics/time_bad_01.szl:34: intrinsic function 'trunctoyear' cannot be used as value
+intrinsics/time_bad_01.szl:36: intrinsic function 'addday' cannot be used as value
+intrinsics/time_bad_01.szl:37: intrinsic function 'addmonth' cannot be used as value
+intrinsics/time_bad_01.szl:38: intrinsic function 'addweek' cannot be used as value
+intrinsics/time_bad_01.szl:39: intrinsic function 'addyear' cannot be used as value
+intrinsics/time_bad_01.szl:41: intrinsic function 'formattime' cannot be used as value
+intrinsics/time_bad_01.szl:44: incompatible argument list for dayofmonth(): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:45: incompatible argument list for dayofweek(): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:46: incompatible argument list for dayofyear(): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:47: incompatible argument list for hourof(): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:48: incompatible argument list for minuteof(): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:49: incompatible argument list for monthof(): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:50: incompatible argument list for yearof(): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:51: incompatible argument list for trunctoday(): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:52: incompatible argument list for trunctohour(): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:53: incompatible argument list for trunctominute(): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:54: incompatible argument list for trunctomonth(): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:55: incompatible argument list for trunctosecond(): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:56: incompatible argument list for trunctoyear(): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:58: incompatible argument list for addday(): candidates are:
+    addday: function(t: time): time
+intrinsics/time_bad_01.szl:59: incompatible argument list for addmonth(): candidates are:
+    addmonth: function(t: time): time
+intrinsics/time_bad_01.szl:60: incompatible argument list for addweek(): candidates are:
+    addweek: function(t: time): time
+intrinsics/time_bad_01.szl:61: incompatible argument list for addyear(): candidates are:
+    addyear: function(t: time): time
+intrinsics/time_bad_01.szl:63: incompatible argument list for formattime(): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:68: incompatible argument list for dayofmonth(t0, t0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:69: incompatible argument list for dayofweek(t0, t0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:70: incompatible argument list for dayofyear(t0, t0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:71: incompatible argument list for hourof(t0, t0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:72: incompatible argument list for minuteof(t0, t0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:73: incompatible argument list for monthof(t0, t0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:74: incompatible argument list for yearof(t0, t0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:75: incompatible argument list for trunctoday(t0, t0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:76: incompatible argument list for trunctohour(t0, t0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:77: incompatible argument list for trunctominute(t0, t0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:78: incompatible argument list for trunctomonth(t0, t0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:79: incompatible argument list for trunctosecond(t0, t0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:80: incompatible argument list for trunctoyear(t0, t0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:82: incompatible argument list for addday(t0, 1, 1): candidates are:
+    addday: function(t: time): time
+intrinsics/time_bad_01.szl:83: incompatible argument list for addmonth(t0, 1, 1): candidates are:
+    addmonth: function(t: time): time
+intrinsics/time_bad_01.szl:84: incompatible argument list for addweek(t0, 1, 1): candidates are:
+    addweek: function(t: time): time
+intrinsics/time_bad_01.szl:85: incompatible argument list for addyear(t0, 1, 1): candidates are:
+    addyear: function(t: time): time
+intrinsics/time_bad_01.szl:87: incompatible argument list for formattime("", t0, "", t0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:101: incompatible argument list for dayofmonth(b0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:102: incompatible argument list for dayofmonth(i0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:103: incompatible argument list for dayofmonth(f0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:104: incompatible argument list for dayofmonth(by0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:105: incompatible argument list for dayofmonth(s0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:106: incompatible argument list for dayofmonth(fg0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:107: incompatible argument list for dayofmonth(a0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:108: incompatible argument list for dayofmonth(m0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:109: incompatible argument list for dayofmonth(p0): candidates are:
+    dayofmonth: function(t: time): int
+intrinsics/time_bad_01.szl:111: incompatible argument list for dayofweek(b0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:112: incompatible argument list for dayofweek(i0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:113: incompatible argument list for dayofweek(f0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:114: incompatible argument list for dayofweek(by0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:115: incompatible argument list for dayofweek(s0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:116: incompatible argument list for dayofweek(fg0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:117: incompatible argument list for dayofweek(a0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:118: incompatible argument list for dayofweek(m0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:119: incompatible argument list for dayofweek(p0): candidates are:
+    dayofweek: function(t: time): int
+intrinsics/time_bad_01.szl:121: incompatible argument list for dayofyear(b0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:122: incompatible argument list for dayofyear(i0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:123: incompatible argument list for dayofyear(f0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:124: incompatible argument list for dayofyear(by0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:125: incompatible argument list for dayofyear(s0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:126: incompatible argument list for dayofyear(fg0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:127: incompatible argument list for dayofyear(a0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:128: incompatible argument list for dayofyear(m0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:129: incompatible argument list for dayofyear(p0): candidates are:
+    dayofyear: function(t: time): int
+intrinsics/time_bad_01.szl:131: incompatible argument list for hourof(b0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:132: incompatible argument list for hourof(i0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:133: incompatible argument list for hourof(f0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:134: incompatible argument list for hourof(by0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:135: incompatible argument list for hourof(s0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:136: incompatible argument list for hourof(fg0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:137: incompatible argument list for hourof(a0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:138: incompatible argument list for hourof(m0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:139: incompatible argument list for hourof(p0): candidates are:
+    hourof: function(t: time): int
+intrinsics/time_bad_01.szl:141: incompatible argument list for minuteof(b0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:142: incompatible argument list for minuteof(i0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:143: incompatible argument list for minuteof(f0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:144: incompatible argument list for minuteof(by0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:145: incompatible argument list for minuteof(s0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:146: incompatible argument list for minuteof(fg0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:147: incompatible argument list for minuteof(a0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:148: incompatible argument list for minuteof(m0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:149: incompatible argument list for minuteof(p0): candidates are:
+    minuteof: function(t: time): int
+intrinsics/time_bad_01.szl:151: incompatible argument list for monthof(b0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:152: incompatible argument list for monthof(i0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:153: incompatible argument list for monthof(f0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:154: incompatible argument list for monthof(by0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:155: incompatible argument list for monthof(s0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:156: incompatible argument list for monthof(fg0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:157: incompatible argument list for monthof(a0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:158: incompatible argument list for monthof(m0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:159: incompatible argument list for monthof(p0): candidates are:
+    monthof: function(t: time): int
+intrinsics/time_bad_01.szl:161: incompatible argument list for yearof(b0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:162: incompatible argument list for yearof(i0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:163: incompatible argument list for yearof(f0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:164: incompatible argument list for yearof(by0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:165: incompatible argument list for yearof(s0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:166: incompatible argument list for yearof(fg0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:167: incompatible argument list for yearof(a0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:168: incompatible argument list for yearof(m0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:169: incompatible argument list for yearof(p0): candidates are:
+    yearof: function(t: time): int
+intrinsics/time_bad_01.szl:171: incompatible argument list for trunctoday(b0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:172: incompatible argument list for trunctoday(i0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:173: incompatible argument list for trunctoday(f0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:174: incompatible argument list for trunctoday(by0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:175: incompatible argument list for trunctoday(s0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:176: incompatible argument list for trunctoday(fg0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:177: incompatible argument list for trunctoday(a0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:178: incompatible argument list for trunctoday(m0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:179: incompatible argument list for trunctoday(p0): candidates are:
+    trunctoday: function(t: time): time
+intrinsics/time_bad_01.szl:181: incompatible argument list for trunctohour(b0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:182: incompatible argument list for trunctohour(i0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:183: incompatible argument list for trunctohour(f0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:184: incompatible argument list for trunctohour(by0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:185: incompatible argument list for trunctohour(s0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:186: incompatible argument list for trunctohour(fg0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:187: incompatible argument list for trunctohour(a0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:188: incompatible argument list for trunctohour(m0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:189: incompatible argument list for trunctohour(p0): candidates are:
+    trunctohour: function(t: time): time
+intrinsics/time_bad_01.szl:191: incompatible argument list for trunctominute(b0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:192: incompatible argument list for trunctominute(i0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:193: incompatible argument list for trunctominute(f0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:194: incompatible argument list for trunctominute(by0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:195: incompatible argument list for trunctominute(s0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:196: incompatible argument list for trunctominute(fg0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:197: incompatible argument list for trunctominute(a0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:198: incompatible argument list for trunctominute(m0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:199: incompatible argument list for trunctominute(p0): candidates are:
+    trunctominute: function(t: time): time
+intrinsics/time_bad_01.szl:201: incompatible argument list for trunctomonth(b0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:202: incompatible argument list for trunctomonth(i0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:203: incompatible argument list for trunctomonth(f0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:204: incompatible argument list for trunctomonth(by0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:205: incompatible argument list for trunctomonth(s0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:206: incompatible argument list for trunctomonth(fg0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:207: incompatible argument list for trunctomonth(a0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:208: incompatible argument list for trunctomonth(m0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:209: incompatible argument list for trunctomonth(p0): candidates are:
+    trunctomonth: function(t: time): time
+intrinsics/time_bad_01.szl:211: incompatible argument list for trunctosecond(b0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:212: incompatible argument list for trunctosecond(i0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:213: incompatible argument list for trunctosecond(f0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:214: incompatible argument list for trunctosecond(by0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:215: incompatible argument list for trunctosecond(s0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:216: incompatible argument list for trunctosecond(fg0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:217: incompatible argument list for trunctosecond(a0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:218: incompatible argument list for trunctosecond(m0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:219: incompatible argument list for trunctosecond(p0): candidates are:
+    trunctosecond: function(t: time): time
+intrinsics/time_bad_01.szl:221: incompatible argument list for trunctoyear(b0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:222: incompatible argument list for trunctoyear(i0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:223: incompatible argument list for trunctoyear(f0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:224: incompatible argument list for trunctoyear(by0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:225: incompatible argument list for trunctoyear(s0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:226: incompatible argument list for trunctoyear(fg0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:227: incompatible argument list for trunctoyear(a0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:228: incompatible argument list for trunctoyear(m0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:229: incompatible argument list for trunctoyear(p0): candidates are:
+    trunctoyear: function(t: time): time
+intrinsics/time_bad_01.szl:231: incompatible argument list for addday(t0, f0): candidates are:
+    addday: function(t: time): time
+intrinsics/time_bad_01.szl:232: incompatible argument list for addmonth(t0, f0): candidates are:
+    addmonth: function(t: time): time
+intrinsics/time_bad_01.szl:233: incompatible argument list for addweek(t0, f0): candidates are:
+    addweek: function(t: time): time
+intrinsics/time_bad_01.szl:234: incompatible argument list for addyear(t0, f0): candidates are:
+    addyear: function(t: time): time
+intrinsics/time_bad_01.szl:236: incompatible argument list for addday(s0, i0): candidates are:
+    addday: function(t: time): time
+intrinsics/time_bad_01.szl:237: incompatible argument list for addmonth(s0, i0): candidates are:
+    addmonth: function(t: time): time
+intrinsics/time_bad_01.szl:238: incompatible argument list for addweek(s0, i0): candidates are:
+    addweek: function(t: time): time
+intrinsics/time_bad_01.szl:239: incompatible argument list for addyear(s0, i0): candidates are:
+    addyear: function(t: time): time
+intrinsics/time_bad_01.szl:242: incompatible argument list for addday(s0): candidates are:
+    addday: function(t: time): time
+intrinsics/time_bad_01.szl:243: incompatible argument list for addmonth(s0): candidates are:
+    addmonth: function(t: time): time
+intrinsics/time_bad_01.szl:244: incompatible argument list for addweek(s0): candidates are:
+    addweek: function(t: time): time
+intrinsics/time_bad_01.szl:245: incompatible argument list for addyear(s0): candidates are:
+    addyear: function(t: time): time
+intrinsics/time_bad_01.szl:248: incompatible argument list for formattime(b0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:249: incompatible argument list for formattime(i0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:250: incompatible argument list for formattime(f0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:251: incompatible argument list for formattime(by0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:252: incompatible argument list for formattime(t0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:253: incompatible argument list for formattime(fg0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:254: incompatible argument list for formattime(a0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:255: incompatible argument list for formattime(m0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:256: incompatible argument list for formattime(p0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:258: incompatible argument list for formattime("", b0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:259: incompatible argument list for formattime("", i0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:260: incompatible argument list for formattime("", f0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:261: incompatible argument list for formattime("", by0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:263: incompatible argument list for formattime("", fg0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:264: incompatible argument list for formattime("", a0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:265: incompatible argument list for formattime("", m0): candidates are:
+    formattime: function(format: string, t: time): string
+intrinsics/time_bad_01.szl:266: incompatible argument list for formattime("", p0): candidates are:
+    formattime: function(format: string, t: time): string

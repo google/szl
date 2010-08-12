@@ -1,0 +1,53 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#szl_options
+
+#desc:  Illegal explicit type conversions  
+
+
+# conversion to float
+
+f0:float;
+f0= float(true);                  #bool
+f0= float(fingerprint(100));      #fingerprint
+f0= float(now());                 #time
+
+# conversion to bool
+
+b0:bool;
+b0 = bool(10);                    #int
+b0= bool(fingerprint(100));      #fingerprint
+b0= bool(10.32);                 #float
+b0= bool(now());                 #time
+
+#conversion to bytes
+
+by0:bytes;
+by0= bytes(10);                    #int
+by0= bytes(true);                  #bool
+by0= bytes(10.32);                 #float
+by0= bytes(now());                 #time
+
+# conversion to time
+
+t0:time;
+t0= time(true);                  #bool
+t0= time(fingerprint(100));      #fingerprint
+t0= time(10.32);                 #float
+
+

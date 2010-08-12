@@ -1,0 +1,129 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# functions defined in static declarations
+
+# first part from goodfunvars.szl, but static
+
+#
+# prerequisites
+#
+type ftype = function (x: int): int;
+type gtype = ftype;
+
+#
+# various legal ways to define functions
+#
+static f1: function(x: int): int {
+  return x + 1;
+};
+assert(f1(0) == 1, "f1(0) == 1");
+
+static f2: function(x: int): int = function(x: int): int {
+  return x + 2;
+};
+assert(f2(0) == 2, "f2(0) == 2");
+
+static f3: ftype {
+  return x + 3;
+};
+assert(f3(0) == 3, "f3(0) == 3");
+
+static f4: ftype = ftype {
+  return x + 4;
+};
+assert(f3(0) == 3, "f3(0) == 4");
+
+
+# (test cases from goodfunvars.szl omitted, can't assign to statics)
+
+
+#
+# a more complicated nested example
+#
+static b: int = 3;
+static f: ftype {
+  g: function(): int {
+    return x + b;
+  };
+  h: function(k: function(): int, n: int): int {
+    if (n > 0)
+      return h(k, n-1);
+    else
+      return k();
+  };
+  return h(g, 100);
+};
+assert(f(7) == 10);
+
+
+#
+# using a closure
+#
+static cool: function(y: int): int {
+  return function(x: int): int { return x + y; } (1);
+};
+assert(cool(7) == 8, "cool(7) == 8");
+
+
+#
+# converting to strings
+#
+
+assert(string(f2) == "function(x: int): int {\n\treturn x + 2;\n}\n");
+assert(string(function() {}) == "function() {\n}\n");
+assert(string(function(x: int, y: int): float { return 0.0; }) ==
+       "function(x: int, y: int): float {\n\treturn 0.0;\n}\n");
+assert(string(f) == "f");
+
+
+# (test case from goodfunvars.szl omitted, can't assign to statics)
+
+
+# More tests.
+# Verify that static variables can hold function values and that
+# function values defined in static initializers have the right context.
+
+
+# as the direct value of a static variable
+static f5: function (): int { return 123; };
+assert(f5() == 123);
+static f6: function (): int = function (): int { return 456; };
+assert(f6() == 456);
+
+# as a value in an array
+static a: array of function (): int = { f5, f6 };
+assert(a[0]() == 123);
+assert(a[1]() == 456);
+
+# copied from an array element
+static g1: function (): int = a[0];
+assert(g1() == 123);
+static g2: function (): int = a[1];
+assert(g2() == 456);
+
+# accessing both static and non-static globals
+static i: int = 789;
+j: int = 111;
+
+static h1: function (): int { return i; };
+assert(h1() == 789);
+
+# accessing globals from a nested scope
+h3: function (): int {
+  h4: function (): int { return h1() + j; };
+  return h4();
+};
+assert(h3() == 900);

@@ -1,0 +1,4 @@
+type_declarations/array_baddecl.szl:27: cannot convert {213.123, convert(fingerprint, "Hello")} (type {float, fingerprint}) to array of string
+type_declarations/array_baddecl.szl:28: redeclaration of As (previous declaration at type_declarations/array_baddecl.szl:27)
+type_declarations/array_baddecl.szl:29: cannot convert {now(), now(), "hello", 12.35} (type {time, time, string, float}) to array of int
+type_declarations/array_baddecl.szl:30: redeclaration of As (previous declaration at type_declarations/array_baddecl.szl:27)

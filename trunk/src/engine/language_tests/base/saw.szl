@@ -1,0 +1,51 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+type S = array of string;
+line: string;
+fields: S;
+t: string;
+u: string;
+v: string;
+
+line = "hey this is a f3u3n3ny str1ng";
+fields = saw(line, "^[a-z3]+", " |[0-9]*", rest t, "^[a-z3]+",
+             " |[0-9]*", rest u, rest v);
+assert(fields == S({ "hey", " ", "this", " " }));
+assert(t == "this is a f3u3n3ny str1ng");
+assert(u == "is a f3u3n3ny str1ng");
+assert(v == "is a f3u3n3ny str1ng");
+
+fields = sawzall(line, "^[a-z3]+", " |[0-9]*");
+assert(fields == S({ "hey" , " ", "this", " ", "is", " ", "a", " ",
+                     "f3u3n3ny"," ", "str", "1", "ng", "" }));
+
+line = "bcdaaaaa";
+fields = sawzall(line, "b*", "c*", "d*");
+assert(fields == S({ "b", "c", "d" }));
+
+line = "aaaXbbbXcccXX";
+fields = sawzall(line, "[^X]*", skip "X");
+assert(fields == S({ "aaa", "bbb", "ccc", "", "" }));
+
+# this should do the same as before
+line = "aaaXbbbXcccXX";
+fields = sawzall(line, "[^X]*");
+assert(fields == S({ "aaa", "bbb", "ccc", "", "" }));
+
+# this is an example using embedded subpatterns
+line = `"http://here is a comma: , and another ,", 123`;
+fields = sawzall(line, submatch `"?([^"]*)"?,`, `[0-9]+`);
+assert(fields == S({ "http://here is a comma: , and another ,", "123" }));

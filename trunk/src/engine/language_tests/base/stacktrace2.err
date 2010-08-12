@@ -1,0 +1,12 @@
+Stack trace:
+  0. $main: function(input: bytes, input_key: bytes)
+     input: bytes = B""
+     input_key: bytes = B""
+     t: T = { 1, 2, 3 }
+     b: bytes = X"080110021803"
+     u: U = { 1, 2, 3 }
+     s: string = "{ 1, 2, 3 }"
+     v: V = { 1, <unused>, 3 }
+     a: int = <undefined>
+
+szl: fatal: undefined value at base/stacktrace2.szl:35: a = 1 / nrand(1); (divide by zero error: 1 / 0)

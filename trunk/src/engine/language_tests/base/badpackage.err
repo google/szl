@@ -1,0 +1,7 @@
+base/badpackage.szl:20: P.a undeclared
+base/badpackage.szl:21: package qualifier appears on a non-parsedmessage, non-proto type
+base/badpackage.szl:22: P.b undeclared
+base/badpackage.szl:23: package qualifier appears on a non-parsedmessage, non-proto type
+base/badpackage.szl:26: P.C.D undeclared
+base/badpackage.szl:29: '=' expected; found '.'
+base/badpackage.szl:39: no v member in tuple type T

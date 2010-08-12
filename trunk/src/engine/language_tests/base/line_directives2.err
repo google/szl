@@ -1,0 +1,2 @@
+non_existent/original_file.szl:101: undeclared undeclared
+non_existent/original_file.szl:201: redeclaration of i (previous declaration at non_existent/original_file.szl:101)

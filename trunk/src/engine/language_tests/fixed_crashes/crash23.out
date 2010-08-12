@@ -1,0 +1,5 @@
+emit _undef_cnt <- 1;
+emit _undef_details["fixed_crashes/crash23.szl:57: emit tbl <- 2; (divide by zero error: 10 / 0)"] <- 1;
+emit tbl <- "(10)";
+counts: old = 2  new = 2
+

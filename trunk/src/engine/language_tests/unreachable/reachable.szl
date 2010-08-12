@@ -1,0 +1,92 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+
+
+# Test a variety of reachable functions that analysis should preserve
+
+# A reachable local function.
+reachable1: function() {
+  reachable2: function() {};
+  reachable2();
+};
+
+reachable1();
+
+
+# A reachable recursive function.
+reachable3: function(n: int) {
+  if (n > 0) {
+    reachable3(n - 1);
+  }
+};
+
+reachable3(4);
+
+
+# A function reachable through an array.
+fun_array: array of function() =
+  { function() { emit stdout <- "fun_in_array"; } };
+
+fun_array[0]();
+
+
+# A function reachable through a map.
+fun_map: map [name: string] of fun: function() =
+  { "reachable" : function() { emit stdout <- "reachable fun_in_map"; } };
+
+fun_map["reachable"]();
+
+
+# A unreachable, but used, function in a map.
+used_fun_map: map [name: string] of fun: function() =
+  { "used" : function() { emit stdout <- "used fun_in_map"; } };
+
+
+# A function reachable through function arguments.
+call_arg_fun: function(fun_arg: function()) {
+  fun_arg();
+};
+
+call_arg_fun(function() { emit stdout <- "reachable function argument"; });
+
+
+# An unreachable, but used, function taken as a function argument.
+ignore_arg_fun: function(fun_arg: function()) {
+};
+
+ignore_arg_fun(function() { emit stdout <- "used function argument"; });
+
+
+# A function reachable through return value.
+fun_to_return: function() { emit stdout <- "returned function"; };
+return_fun: function(): function() {
+  return fun_to_return;
+};
+
+return_fun()();
+
+
+# A reachable function literal.
+function() { emit stdout <- "a reachable function literal"; }();
+
+
+# An unreachable, but used, function literal.
+function() { emit stdout <- "a used function literal"; };
+
+

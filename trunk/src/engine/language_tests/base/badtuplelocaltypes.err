@@ -1,0 +1,3 @@
+base/badtuplelocaltypes.szl:20: type name may not be declared in an unnamed tuple type
+base/badtuplelocaltypes.szl:28: type name may not be declared in an unnamed tuple type
+base/badtuplelocaltypes.szl:37: V (int) is not a tuple type

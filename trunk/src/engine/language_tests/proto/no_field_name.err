@@ -1,0 +1,2 @@
+proto/no_field_name.szl:21: tag @ 1 not allowed for anonymous field
+proto/no_field_name.szl:23: tag @ 2 not allowed for anonymous field

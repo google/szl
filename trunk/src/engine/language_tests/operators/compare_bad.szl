@@ -1,0 +1,111 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: Testing comparison operators
+
+#Comparison operators are:
+#	==
+#	!=
+#	<
+#	<=
+#	>
+#	>=
+
+b1: bool = true;
+b2: bool = false;
+by1: bytes = bytes("abc");
+by2: bytes = bytes("abcdef");
+i1: int = 5;
+i2: int = 10;
+p1: fingerprint = fingerprint(0);
+p2: fingerprint = fingerprint(100);
+f1: float = 5.0;
+f2: float = 10.0;
+s1: string = "abc";
+s2: string = "abcdef";
+t1: time = HOUR;
+t2: time = time(24*int(HOUR));
+
+x:int;
+
+#inst: Testing comparison operators for booleans
+b1 < b2;
+b1 <= b2;
+b1 > b2;
+b1 >= b2;
+
+#inst: Testing comparison operators for fingerprints
+p1 < p2;
+p1 <= p2;
+p1 > p2;
+p1 >= p2;
+
+
+#inst: Testing comparison operators for incompatible types.
+# Since == works for all types, we can be sure if it does not work for equal
+# then won't work for other operators too...
+
+b1 == by1;
+b1 == i1;
+b1 == p1;
+b1 == f1;
+b1 == s1;
+b1 == t1;
+
+by1 == i1;
+by1 == p1;
+by1 == f1;
+by1 == s1;
+by1 == t1;
+
+i1 == p1;
+i1 == f1;
+i1 == s1;
+i1 == t1;
+
+p1 == f1;
+p1 == s1;
+p1 == t1;
+
+f1 == s1;
+f1 == t1;
+
+s1 == t1;
+
+
+
+#inst: Testing compare operator for composite types.
+
+Ai0: array of int = {1, 2};
+Ai1: array of int = {3, 4};
+
+Mi0: map [string] of int = { "A": 1, "B": 2}; 
+Mi1: map [string] of int = { "C": 3, "D": 4};
+
+P0: {string, int} = {"A", 1};
+P1: {string, int} = {"B", 2};
+
+Ai0 == Ai1;
+Mi0 == Mi1;
+P0 == P1;
+
+Ai0 == Mi0;
+Ai0 == P0;
+
+Mi0 == P0;
+ 

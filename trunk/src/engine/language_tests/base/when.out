@@ -1,0 +1,103 @@
+type A = array of int;
+matches: A;
+entered: bool;
+str1: string = "abcdeabcde";
+str2: string = "hello world!";
+str3: string = "aaaaaaaa";
+when (
+	i: some int;
+	str1[i] == str2[i]
+)
+	assert(false);
+matches = {};
+when (
+	i: each int;
+	str1[i] == 99
+)
+{
+	a: int;
+	matches = matches + {i};
+}
+assert(matches == convert(A, {2, 7}));
+matches = {};
+when (
+	i: some int;
+	(str1[i] == 99) or (str2[i] == 111)
+)
+{
+	a: int;
+	matches = matches + {i};
+}
+assert(matches == convert(A, {2}));
+entered = false;
+when (
+	i: all int;
+	str3[i] == str3[0]
+)
+{
+	a: int;
+	entered = true;
+}
+assert(entered);
+matches = {};
+f: function(s: string) {
+	when (
+		i: each int;
+		s[i] == 98
+	)
+	{
+		matches = matches + {i};
+	}
+}
+;
+f("abcdeb");
+assert(matches == convert(A, {1, 5}));
+times: map [string] of int = {"a": 1, "b": 5, "c": 7};
+urls: array of string = {"a", "b", "c", "d", "e"};
+matches = {};
+when (
+	i: some int;
+	times[urls[i]] >= 3
+)
+{
+	matches = matches + {times[urls[i]]};
+}
+assert(matches == convert(A, {5}));
+matches = {};
+when (
+	i: each int;
+	times[urls[i]] >= 3
+)
+{
+	matches = matches + {times[urls[i]]};
+}
+assert(matches == convert(A, {5, 7}));
+entered = false;
+when (
+	i: all int;
+	times[urls[0 : 3][i]] != 0
+)
+{
+	entered = true;
+}
+assert(entered);
+entered = false;
+when (
+	i: all int;
+	times[urls[i]] != 0
+)
+{
+	entered = true;
+}
+assert(!entered);
+x: array of {i: int, s: string} = {{0, "zero"}, {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"}};
+found: bool = false;
+when (
+	i: each int;
+	convert(string, x[i].i) == "4"
+)
+{
+	found = true;
+	assert(i == 4);
+}
+assert(found);

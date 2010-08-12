@@ -1,0 +1,119 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+# Test nested type declarations - i.e. type declarations within tuple types.
+
+type T = {
+  p: int,
+  type A = int,
+  type B = { q: A },
+  type C = { r: array of T },
+  type D = { x: int, y: array of D },
+  type T = float,
+  a: A,
+  b: B,
+  c: C,
+  d: D,
+  t: T,
+  type E = { type F = int }
+};
+
+t: T = {
+  123,          # p
+  456,          # a
+  { 789 },      # b
+  { { { 1230, 4560, { 7890 }, { { } }, { 321, { } }, 1.23 } } },  # c
+  { 111, { } }, # d
+  4.56          # t
+};
+
+assert(t.p == 123);
+assert(t.a == 456);
+assert(t.b.q == 789);
+assert(t.c.r[0].b.q == 7890);
+assert(t.d.x == 111);
+assert(t.t == 4.56);
+
+a: T.A = 1;
+b: T.B = { 2 };
+f: T.E.F = 3;
+
+#
+# Test that all nested types are stored and printed correctly when referenced
+# inside and outside of the enclosing tuple type.
+#
+
+type OuterType = {
+  type InnerType = {
+    type BasicType = int,
+    type ArrayType = array of int,
+    type MapType = map[int] of int,
+    type TupleType = { int },
+    type ProtoType = {},
+    type FunctionType = function(),
+    type OutputType = table sum of int
+  },
+  i: InnerType,
+  b: InnerType.BasicType,
+  a: InnerType.ArrayType,
+  m: InnerType.MapType,
+  t: InnerType.TupleType,
+  p: InnerType.ProtoType,
+  f: InnerType.FunctionType,
+  static O: function(o: InnerType.OutputType) {},
+};
+
+{
+  i: OuterType.InnerType;
+  b: OuterType.InnerType.BasicType;
+  a: OuterType.InnerType.ArrayType;
+  m: OuterType.InnerType.MapType;
+  t: OuterType.InnerType.TupleType;
+  p: OuterType.InnerType.ProtoType;
+  f: OuterType.InnerType.FunctionType;
+  #o: OuterType.InnerType.OutputType;  # bug?
+}
+
+type ProtoOuterType = proto {
+  type InnerType = {
+    type BasicType = int,
+    type ArrayType = array of int,
+    type MapType = map[int] of int,
+    type TupleType = { int },
+    type ProtoType = {},
+    type FunctionType = function(),
+    type OutputType = table sum of int
+  },
+  i: InnerType,
+  b: InnerType.BasicType,
+  a: InnerType.ArrayType,
+  t: InnerType.TupleType,
+  p: InnerType.ProtoType
+  # proto tuple fields cannot be of map, function or output types
+};
+
+{
+  i: ProtoOuterType.InnerType;
+  b: ProtoOuterType.InnerType.BasicType;
+  a: ProtoOuterType.InnerType.ArrayType;
+  m: ProtoOuterType.InnerType.MapType;
+  t: ProtoOuterType.InnerType.TupleType;
+  p: ProtoOuterType.InnerType.ProtoType;
+  f: ProtoOuterType.InnerType.FunctionType;
+  #oo: ProtoOuterType.InnerType.OutputType;  # bug?
+}

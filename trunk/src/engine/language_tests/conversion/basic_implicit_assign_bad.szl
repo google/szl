@@ -1,0 +1,85 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc:  Implicit Illegal / unsupported type conversion during as assignment operation
+
+# Conversion to int
+
+i0:int;
+i0= "hello world!";        #string
+i0= true;                  #bool
+i0= fingerprint(100);      #fingerprint
+i0= 10.32;                 #float
+i0= now();                 #time
+
+# Conversion to float
+f0: float;
+
+f0 = 10;                    #int
+f0= "hello world!";        #string
+f0= true;                  #bool
+f0= fingerprint(100);      #fingerprint
+f0= now();                 #time
+
+# Conversion to string
+
+s0: string;
+
+s0 = 10;                    #int
+s0= true;                  #bool
+s0= fingerprint(100);      #fingerprint
+s0= 10.32;                 #float
+s0= now();                 #time
+
+# Conversion to bool
+
+b0: bool;
+b0 = 10;                    #int
+b0= "hello world!";        #string
+b0= fingerprint(100);      #fingerprint
+b0= 10.32;                 #float
+b0= now();                 #time
+
+# Conversion to bytes
+
+by0: bytes;
+by0 = 10;                    #int
+by0= "hello world!";        #string
+by0= true;                  #bool
+by0= fingerprint(100);      #fingerprint
+by0= 10.32;                 #float
+by0= now();                 #time
+
+# Conversion to fingerprint
+
+fg0: fingerprint;
+fg0 = 10;                    #int
+fg0= "hello world!";        #string
+fg0= true;                  #bool
+fg0= 10.32;                 #float
+fg0= now();                 #time
+
+# Conversion to time
+
+t0: time;
+t0 = 10;                    #int
+t0= "Wed Dec 31 16:00:00 PST 1975";     #string
+t0= true;                  #bool
+t0= fingerprint(100);      #fingerprint
+t0= 10.32;                 #float
+t0= "hello world!";        #string
+

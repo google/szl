@@ -1,0 +1,4 @@
+fixed_crashes/crash16.szl:24: unimplemented file() or proc() with 'top' output variables
+fixed_crashes/crash16.szl:25: ttop_file is not an output variable
+fixed_crashes/crash16.szl:27: unimplemented file() or proc() with 'top' output variables
+fixed_crashes/crash16.szl:28: ttop_proc is not an output variable

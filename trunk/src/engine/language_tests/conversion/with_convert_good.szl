@@ -1,0 +1,265 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc: Conversions using 'convert' fuction
+
+include "../type_declarations/equality_var_decl.szl"
+s0 = "101";
+
+i1 = convert(I,i0);
+
+i1 = convert(I,s0,16);
+i1 = convert(I,s0,10);
+i1 = convert(I,s0,0);
+i1 = convert(I,s0,2);
+
+i1 = convert(I,f0);
+
+i1 = convert(I,fg0);
+
+i1 = convert(I,b0);
+
+#i1 = convert(I,t0);
+# Conversion to S
+                                                                                                 
+s1 = convert(S,i0);
+s1 = convert(S,f0);
+s1 = convert(S,fg0);
+s1 = convert(S,b0);
+s1 = convert(S,by0);
+#s1 = convert(S,t0);
+s1 = convert(S,ai0);
+s1 = convert(S,as0);
+s1 = convert(S,af0);
+s1 = convert(S,afg0);
+s1 = convert(S,ab0);
+s1 = convert(S,aby0);
+#s1 = convert(S,at0);
+s1 = convert(S,mii0);
+s1 = convert(S,mis0);
+s1 = convert(S,mif0);
+s1 = convert(S,mifg0);
+s1 = convert(S,mib0);
+s1 = convert(S,miby0);
+#s1 = convert(S,mit0);
+s1 = convert(S,msi0);
+s1 = convert(S,mss0);
+s1 = convert(S,msf0);
+s1 = convert(S,msfg0);
+s1 = convert(S,msb0);
+s1 = convert(S,msby0);
+#s1 = convert(S,mst0);
+s1 = convert(S,mfi0);
+s1 = convert(S,mfs0);
+s1 = convert(S,mff0);
+s1 = convert(S,mffg0);
+s1 = convert(S,mfb0);
+s1 = convert(S,mfby0);
+#s1 = convert(S,mft0);
+s1 = convert(S,mfgi0);
+s1 = convert(S,mfgs0);
+s1 = convert(S,mfgf0);
+s1 = convert(S,mfgfg0);
+s1 = convert(S,mfgb0);
+s1 = convert(S,mfgby0);
+#s1 = convert(S,mfgt0);
+s1 = convert(S,mbi0);
+s1 = convert(S,mbs0);
+s1 = convert(S,mbf0);
+s1 = convert(S,mbfg0);
+s1 = convert(S,mbb0);
+s1 = convert(S,mbby0);
+#s1 = convert(S,mbt0);
+s1 = convert(S,mbyi0);
+s1 = convert(S,mbys0);
+s1 = convert(S,mbyf0);
+s1 = convert(S,mbyfg0);
+s1 = convert(S,mbyb0);
+s1 = convert(S,mbyby0);
+#s1 = convert(S,mbyt0);
+#s1 = convert(S,mti0);
+#s1 = convert(S,mts0);
+#s1 = convert(S,mtf0);
+#s1 = convert(S,mtfg0);
+#s1 = convert(S,mtb0);
+#s1 = convert(S,mtby0);
+#s1 = convert(S,mtt0);
+s1 = convert(S,tii0);
+s1 = convert(S,tis0);
+s1 = convert(S,tif0);
+s1 = convert(S,tifg0);
+s1 = convert(S,tib0);
+s1 = convert(S,tiby0);
+#s1 = convert(S,tit0);
+s1 = convert(S,tsi0);
+s1 = convert(S,tss0);
+s1 = convert(S,tsf0);
+s1 = convert(S,tsfg0);
+s1 = convert(S,tsb0);
+s1 = convert(S,tsby0);
+#s1 = convert(S,tst0);
+s1 = convert(S,tfi0);
+s1 = convert(S,tfs0);
+s1 = convert(S,tff0);
+s1 = convert(S,tffg0);
+s1 = convert(S,tfb0);
+s1 = convert(S,tfby0);
+#s1 = convert(S,tft0);
+s1 = convert(S,tfgi0);
+s1 = convert(S,tfgs0);
+s1 = convert(S,tfgf0);
+s1 = convert(S,tfgfg0);
+s1 = convert(S,tfgb0);
+s1 = convert(S,tfgby0);
+#s1 = convert(S,tfgt0);
+s1 = convert(S,tbi0);
+s1 = convert(S,tbs0);
+s1 = convert(S,tbf0);
+s1 = convert(S,tbfg0);
+s1 = convert(S,tbb0);
+s1 = convert(S,tbby0);
+#s1 = convert(S,tbt0);
+s1 = convert(S,tbyi0);
+s1 = convert(S,tbys0);
+s1 = convert(S,tbyf0);
+s1 = convert(S,tbyfg0);
+s1 = convert(S,tbyb0);
+s1 = convert(S,tbyby0);
+#s1 = convert(S,tbyt0);
+#s1 = convert(S,tti0);
+#s1 = convert(S,tts0);
+#s1 = convert(S,ttf0);
+#s1 = convert(S,ttfg0);
+#s1 = convert(S,ttb0);
+#s1 = convert(S,ttby0);
+#s1 = convert(S,ttt0);
+
+
+# Conversion to FG
+                                                                                                 
+fg1 = convert(FG,i0);
+fg1 = convert(FG,s0);
+#fg1 = convert(FG,f0);
+#fg1 = convert(FG,b0);
+fg1 = convert(FG,by0+by0);
+#fg1 = convert(FG,t0);
+#fg1 = convert(FG,ai0);
+#fg1 = convert(FG,as0);
+#fg1 = convert(FG,af0);
+#fg1 = convert(FG,afg0);
+#fg1 = convert(FG,ab0);
+#fg1 = convert(FG,aby0);
+#fg1 = convert(FG,at0);
+#fg1 = convert(FG,mii0);
+#fg1 = convert(FG,mif0);
+#fg1 = convert(FG,mifg0);
+#fg1 = convert(FG,mib0);
+#fg1 = convert(FG,mit0);
+#fg1 = convert(FG,msi0);
+#fg1 = convert(FG,msf0);
+#fg1 = convert(FG,msfg0);
+#fg1 = convert(FG,msb0);
+#fg1 = convert(FG,mst0);
+#fg1 = convert(FG,mfi0);
+#fg1 = convert(FG,mfs0);
+#fg1 = convert(FG,mff0);
+#fg1 = convert(FG,mffg0);
+#fg1 = convert(FG,mfb0);
+#fg1 = convert(FG,mfby0);
+#fg1 = convert(FG,mft0);
+#fg1 = convert(FG,mfgi0);
+#fg1 = convert(FG,mfgf0);
+#fg1 = convert(FG,mfgfg0);
+#fg1 = convert(FG,mfgb0);
+#fg1 = convert(FG,mfgt0);
+#fg1 = convert(FG,mbi0);
+#fg1 = convert(FG,mbf0);
+#fg1 = convert(FG,mbfg0);
+#fg1 = convert(FG,mbb0);
+#fg1 = convert(FG,mbt0);
+#fg1 = convert(FG,mbyi0);
+#fg1 = convert(FG,mbyf0);
+#fg1 = convert(FG,mbyfg0);
+#fg1 = convert(FG,mbyb0);
+#fg1 = convert(FG,mbyt0);
+#fg1 = convert(FG,mti0);
+#fg1 = convert(FG,mtf0);
+#fg1 = convert(FG,mtfg0);
+#fg1 = convert(FG,mtb0);
+#fg1 = convert(FG,mtt0);
+#fg1 = convert(FG,tii0);
+#fg1 = convert(FG,tis0);
+#fg1 = convert(FG,tif0);
+#fg1 = convert(FG,tifg0);
+#fg1 = convert(FG,tib0);
+#fg1 = convert(FG,tiby0);
+#fg1 = convert(FG,tit0);
+#fg1 = convert(FG,tsi0);
+#fg1 = convert(FG,tss0);
+#fg1 = convert(FG,tsf0);
+#fg1 = convert(FG,tsfg0);
+#fg1 = convert(FG,tsb0);
+#fg1 = convert(FG,tsby0);
+#fg1 = convert(FG,tst0);
+#fg1 = convert(FG,tfi0);
+#fg1 = convert(FG,tfs0);
+#fg1 = convert(FG,tff0);
+#fg1 = convert(FG,tffg0);
+#fg1 = convert(FG,tfb0);
+#fg1 = convert(FG,tfby0);
+#fg1 = convert(FG,tft0);
+#fg1 = convert(FG,tfgi0);
+#fg1 = convert(FG,tfgs0);
+#fg1 = convert(FG,tfgf0);
+#fg1 = convert(FG,tfgfg0);
+#fg1 = convert(FG,tfgb0);
+#fg1 = convert(FG,tfgby0);
+#fg1 = convert(FG,tfgt0);
+#fg1 = convert(FG,tbi0);
+#fg1 = convert(FG,tbs0);
+#fg1 = convert(FG,tbf0);
+#fg1 = convert(FG,tbfg0);
+#fg1 = convert(FG,tbb0);
+#fg1 = convert(FG,tbby0);
+#fg1 = convert(FG,tbt0);
+#fg1 = convert(FG,tbyi0);
+#fg1 = convert(FG,tbys0);
+#fg1 = convert(FG,tbyf0);
+#fg1 = convert(FG,tbyfg0);
+#fg1 = convert(FG,tbyb0);
+#fg1 = convert(FG,tbyby0);
+#fg1 = convert(FG,tbyt0);
+#fg1 = convert(FG,tti0);
+#fg1 = convert(FG,tts0);
+#fg1 = convert(FG,ttf0);
+#fg1 = convert(FG,ttfg0);
+#fg1 = convert(FG,ttb0);
+#fg1 = convert(FG,ttby0);
+#fg1 = convert(FG,ttt0);
+
+#fg1 = convert(FG,msby0);
+#fg1 = convert(FG,mss0);
+#fg1 = convert(FG,miby0);
+#fg1 = convert(FG,mis0);
+#fg1 = convert(FG,mfgs0);
+#fg1 = convert(FG,mfgby0);
+#fg1 = convert(FG,mbs0);
+#fg1 = convert(FG,mbby0);
+#fg1 = convert(FG,mbys0);
+#fg1 = convert(FG,mbyby0);
+#fg1 = convert(FG,mts0);
+#fg1 = convert(FG,mtby0);

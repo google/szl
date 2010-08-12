@@ -1,0 +1,224 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options 
+
+#desc: Testing of Arithmetic Operators.
+
+#inst: Testing which operators do not work for int.
+
+i0: int;
+
+i0 = 10 ~ 12; # it's unary operator
+
+#inst: Testing which operators do not work for float. Note the difference b/w error messages 
+#inst: for first and second instance for same operators.
+
+f0: float;
+
+f0 = 100.3 % 12;
+f0 = 100 % 12.3;
+f0 = 8.0 & 4;
+f0 = 8 & 4.0;
+f0 = 8.3 | 4;
+f0 = 8 | 4.0;
+f0 = 8.5 ^ 4;
+f0 = 8 ^ 4.3;
+f0 = 8.0 << 2;
+f0 = 8 << 2.0;
+f0 = 8.0 >> 2;
+f0 = 8 >> 2.0;
+f0 = 2.0 << 8;
+f0 = 2 << 8.3;
+f0 = 8.0 << 2;
+f0 = 8 << 2.4;
+f0 = ~ 4.0;
+
+#inst: Testing which operators do not work for bool
+
+b0: bool;
+
+b0 = +true;
+b0 = -false;
+b0 = true + 12;
+b0 = 10 + true;
+b0 = true + true;
+b0 = false - 12;
+b0 = 10 - false;
+b0 = true - false;
+b0 = true * 12;
+b0 = 10 * false;
+b0 = false * true;
+b0 = true / 12;
+b0 = 10 / false;
+b0 = true / false;
+b0 = true % 12;
+b0 = 100 % false;
+b0 = true % false;
+b0 = true & 4;
+b0 = 8 & false;
+b0 = true & false;
+b0 = true | 4;
+b0 = 8 | false;
+b0 = true | false;
+b0 = true ^ 4;
+b0 = 8 ^ false;
+b0 = true ^ false;
+b0 = true << 2;
+b0 = 8 << false;
+b0 = true << false;
+b0 = true >> 2;
+b0 = 8 >> false;
+b0 = true >> false;
+b0 = ~ true;
+b0 = ~ false;
+
+#inst: Testing which operators do not work for bytes
+
+by0: bytes = "1234567890";
+by1: bytes = "abcdefghijk";
+
+by2: bytes;
+
+by2 = +by1;
+by2 = -by1;
+by2 = by0 - by1;
+by2 = by0 * by1;
+by2 = by0 / by1;
+by2 = by0 % by1;
+by2 = by0 & by1;
+by2 = by0 | by1;
+by2 = by0 ^ by1;
+by2 = by0 ~ by1;
+by2 = ~ by0;
+by2 = by0 << by1;
+by2 = by0 << 2;
+by2 = by0 >> by1;
+by2 = by0 >> 2;
+
+#inst: Testing which operators do not work for time
+
+t0: time;
+t1: time;
+
+t0 = time("Thu Oct 16 14:25:41 PST 2003");
+DEBUG("print", "%s\n", string(t0));
+t1 = time("Fri Oct 17 14:25:41 PST 2003");
+DEBUG("print", "%s\n", string(t1));
+
+t2: time;
+
+t2 = +t0;
+t2 = -t0;
+t2 = t0 * t1;
+t2 = t0 / t1;
+t2 = t0 % t1;
+t2 = t0 & t1;
+t2 = t0 | t1;
+t2 = t0 ^ t1;
+t2 = t0 << t1;
+t2 = t0 << 2;
+t2 = t0 >> t1;
+t2 = t0 >> 2;
+t2 = t0 ~ t1;
+t2 = ~ t1;
+
+#inst: Testing which operators do not work for fingerprint
+
+fg0: fingerprint = fingerprint("abcdefg");
+fg1: fingerprint = fingerprint("1234567");
+
+fg2: fingerprint;
+
+fg2 = +fg1;
+fg2 = -fg1;
+
+
+
+#inst: Testing which operators do not work for string
+
+s0: string;
+
+s0 = +"abc";
+s1 = -"abc";
+s0 = "abc" - "def";
+s0 = "abc" * "def";
+s0 = "abc" / "def";
+s0 = "abc" % "def";
+s0 = "abc" & "def";
+s0 = "abc" | "def";
+s0 = "abc" ^ "def";
+s0 = "abc" ~ "def";
+s0 = ~ "abc";
+s0 = "abc" << "def";
+s0 = "abc" << 2;
+s0 = "abc" >> "def";
+s0 = "abc" >> 2;
+
+
+
+#inst: operators with type-incompatible operands (if one operator is 
+#inst: incompatible for different types of operands then it should be 
+#inst: for other operators too - that's why not tested for others).
+
+i1: int;
+i1 = 10 + 2.3;
+i1 = 2.3 + 10;
+i1 = 2 + true;
+i1 = 2 + false;
+i1 = 2 + "abc";
+i1 = "abc" + 2;
+
+f1: float;
+f1 = 2.3 + 10;
+f1 = 10 + 2.3;
+f1 = 2.3 + true;
+f1 = 2.3 + false;
+f1 = 2.3 + "abc";
+f1 = "abc" + 2.3;
+
+s1: string;
+s1 = "abc" + true;
+s1 = "abc" + false;
+
+t3: time;
+t3 = t1 + 2;
+t3 = t1 - 2;
+t3 = t1 * 2;
+t3 = t1 / 2;
+t3 = t1 % 2;
+t3 = t1 & 2;
+t3 = t1 | 2;
+t3 = t1 ^ 2;
+
+
+#inst: Testing arithmetic ops for composite types.
+# Right now testing for + operator only to be sure whether it works or not.
+
+
+
+
+Mi0: map [string] of int = { "A": 1, "B": 2}; 
+Mi1: map [string] of int = { "C": 3, "D": 4};
+Mi2: map [string] of int;
+
+P0: {string, int} = {"A", 1};
+P1: {string, int} = {"B", 2};
+P2: {string, int};
+
+
+Mi2 = Mi0 + Mi1;
+P2 = P0 + P1;

@@ -1,0 +1,66 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Explicitly select base 10
+ival_010_10: int = int("010", 10);
+assert(ival_010_10==10, "Base 10 should force decimal conversion");
+
+# Explicitly select the use of an implied base (that is, as determined
+# by the string being converted, leading 0 for octal, 0x for hexadecimal).
+ival_010_0: int = int("010", 0);
+assert(ival_010_0==8, "Base 0 should allow autodetection of the base");
+
+# The next line should generate a WARNING.
+ival_010: int = int("010");
+assert(ival_010==8, "Unspecified base should allow base-guessing");
+
+
+strarray           : array of string = { "1", "2", "3", "010" };
+intarray_ints_dec  : array of int    = {  1,   2,   3,    10  };
+intarray_ints_auto : array of int    = {  1,   2,   3,     8  };
+
+# The next line should generate a WARNING.
+intarray: array of int = convert(array of int, strarray);
+
+intarray_conv_10: array of int = convert(array of int, strarray, 10);
+assert(intarray_conv_10==intarray_ints_dec, "arrays not identical (10)");
+
+
+intarray_conv_0: array of int = convert(array of int, strarray, 0);
+assert(intarray_conv_0==intarray_ints_auto, "arrays not identical (0)");
+
+
+# The next line should generate a WARNING.
+intarray_conv_implicit: array of int = convert(array of int, strarray);
+assert(intarray_conv_implicit==intarray_ints_auto,
+       "arrays not identical (implicit)");
+
+a: array of string = { "010", "010" };
+
+# This conversion does NOT generate a warning because the language provides
+# no way to specify a base for the string to integer conversions of the keys
+# or the values.
+map_val_actual_result_auto: map[string] of int
+	= convert(map[string] of int, a);
+
+# This conversion does NOT generate a warning because the language provides
+# no way to specify a base for the string to integer conversions of the keys
+# or the values.
+map_key_actual_result_auto: map[int] of string
+	= convert(map[int] of string, a);
+
+map_keyval_actual_result_auto: map[int] of int
+	= convert(map[int] of int, a);
+

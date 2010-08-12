@@ -1,0 +1,62 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: splitcsvline cases
+
+
+check: function(key: string, ok: array of string, arr: array of bytes) {
+  if (len(arr) != len(ok)) {
+    emit stdout <- format("%s: BAD: len(arr)=%d != len(ok)=%d", key, len(arr), len(ok));
+  }
+  for (i: int = 0; i < len(arr) && i < len(ok); i++) {
+    s: string = string(arr[i]);
+    if (s != ok[i])
+      emit stdout <- format("%s: BAD: arr[%d]={%s} != ok[%d]={%s}", key, i, s, i, ok[i]);
+  }
+};
+
+#inst: empty input
+{
+  arr: array of bytes;
+  arr = splitcsvline(bytes(``));
+
+  if (len(arr) != 0)
+    emit stdout <- format("len = %d\n", len(arr));
+}
+
+#inst: normal input
+{
+  line: bytes = `o,e,,"three",four"teen,"five""teen","six,teen", "seven"",""teen"`;
+  arr: array of bytes;
+  arr = splitcsvline(line);
+  ok: array of string;
+  ok = { `o`, `e`, ``, `three`, `four"teen`, `five"teen`, `six,teen`, `seven","teen` };
+  check("#2.1", ok, arr);
+}
+
+#inst: embedded newline
+{
+  line: bytes = "o,e,,\"new\nline\",fooey\n\n";
+  arr: array of bytes;
+  arr = splitcsvline(line);
+  ok: array of string;
+  ok = { `o`, `e`, ``, "new\nline", `fooey` };
+  check("#3.1", ok, arr); 
+}
+
+

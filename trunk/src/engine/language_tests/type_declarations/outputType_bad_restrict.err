@@ -1,0 +1,2 @@
+type_declarations/outputType_bad_restrict.szl:23: cannot use 'proc' modifier in this context
+type_declarations/outputType_bad_restrict.szl:24: cannot use 'file' modifier in this context

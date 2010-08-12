@@ -1,0 +1,64 @@
+static NUnicode: int = 65536;
+static NIter: int = 1000;
+static NProbe: int = 100;
+static Size: int = 10;
+next: int = 1;
+randx: function(): int {
+	next = ((next * 1103515245) + 12345) & (~(1 << 63));
+	return (next >> 32) & ((1 << 31) - 1);
+}
+;
+rand62: function(): int {
+	return (randx() << 31) + randx();
+}
+;
+nrandx: function(n: int): int {
+	return rand62() % n;
+}
+;
+Test: function(c: int) {
+	for (i: int = 0; i < NProbe; i++)
+	{
+		a: string = new(string, nrandx(Size) + 1, c);
+		s: string = a;
+		index: int = nrandx(len(s));
+		char: int;
+		do
+		{
+			char = nrandx(NUnicode - 1) + 1;
+		}
+		while ((55296 <= char) && (char <= 57343));
+		s[index] = char;
+		c1: int = s[index];
+		assert(c1 == char);
+		if (index > 0)
+		{
+			c2: int = s[index - 1];
+			assert(c2 == c);
+		}
+		if (index < (len(s) - 1))
+		{
+			c3: int = s[index + 1];
+			assert(c3 == c);
+		}
+		t: string = (new(string, index, c) + new(string, 1, char)) + new(string, (len(s) - index) - 1, c);
+		assert(s == t);
+		u: string = format("%s%c%s", a[0 : index], char, a[index + 1 : $]);
+		assert(s == u);
+		v: string = format("%s%c%s", s[0 : index], char, s[index + 1 : $]);
+		assert(s == v);
+	}
+}
+;
+static OneByteChar: int = 97;
+static TwoByteChar: int = 945;
+static ThreeByteChar: int = 26085;
+assert(len(convert(bytes, new(string, 1, OneByteChar))) == 1);
+assert(len(convert(bytes, new(string, 1, TwoByteChar))) == 2);
+assert(len(convert(bytes, new(string, 1, ThreeByteChar))) == 3);
+for (i: int = 0; i < NIter; i++)
+{
+	Test(OneByteChar);
+	Test(TwoByteChar);
+	Test(ThreeByteChar);
+}

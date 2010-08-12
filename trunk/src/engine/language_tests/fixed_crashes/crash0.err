@@ -1,0 +1,2 @@
+fixed_crashes/crash0.szl:16: identifier expected; found 'array'
+fixed_crashes/crash0.szl:17: int_array undeclared

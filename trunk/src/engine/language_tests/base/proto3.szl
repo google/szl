@@ -1,0 +1,118 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# a bunch of plain tuples
+type T0 = {};
+type T1 = { x: int };
+type T2 = { x: int, y: float };
+type T3 = { a: array of int };
+type T4 = { a: array of T3 };
+type T5 = { t1: T1, t2: T2 };
+
+# a bunch of proto tuples
+type P0 = proto {};
+type P1 = proto { x: int };
+type P2 = proto { x: int, y: float };
+type P3 = proto { a: array of int };
+type P4 = proto { a: array of T3 };
+type P5 = proto { t1: T1, t2: proto T2 };
+
+# another way to declare the same proto tuples
+type pP0 = proto T0;
+type pP1 = proto T1;
+type pP2 = proto T2;
+type pP3 = proto T3;
+type pP4 = proto T4;
+type pP5 = proto T5;
+
+# some data
+x0: T0 = {};
+x1: T1 = { 42 };
+x2: T2 = { 97, 3.14 };
+x3: T3 = { new (array of int, 10, 991) };
+x4: T4 = { new (array of T3, 10, x3) };
+x5: T5 = { { 7 }, { 12, 2.71828 } };
+
+# proto is idempotent
+type ppP4 = proto pP4;
+type pppP4 = proto proto proto P4;
+a: ppP4 = x4;  # must be assignment compatible
+b: pppP4 = a;  # must be assignment compatible
+
+# test various assignments
+y0: P0 = x0;
+y1: P1 = x1;
+y2: P2 = x2;
+y3: P3 = x3;
+y4: P4 = x4;
+y5: P5 = x5;
+
+x0 = y0;
+x1 = y1;
+x2 = y2;
+x3 = y3;
+x4 = y4;
+x5 = y5;
+
+# create proto buffers
+b0: bytes = convert(proto T0, x0);
+b1: bytes = convert(proto T1, x1);
+b2: bytes = convert(proto T2, x2);
+b3: bytes = convert(proto T3, x3);
+b4: bytes = convert(proto T4, x4);
+b5: bytes = convert(proto T5, x5);
+
+# create some more proto buffers
+c0: bytes = y0;
+c1: bytes = y1;
+c2: bytes = y2;
+c3: bytes = y3;
+c4: bytes = y4;
+c5: bytes = y5;
+
+# proto buffers must match
+assert(b0 == c0);
+assert(b1 == c1);
+assert(b2 == c2);
+assert(b3 == c3);
+assert(b4 == c4);
+assert(b5 == c5);
+
+#inproto() functionality
+y5 = P5(bytes(convert(proto { t1: T1 }, { { 7 } })));
+assert(  inproto(y5.t1));
+assert(! inproto(y5.t2));
+
+# inproto information doesn't get lost
+x5 = y5;
+y5 = x5;
+assert(  inproto(y5.t1));
+assert(! inproto(y5.t2));
+
+# inproto information can be updated through non-proto values
+x5 = y5;
+x5.t2 = { 12, 2.71828 };
+y5 = x5;
+assert(inproto(y5.t1));
+assert(inproto(y5.t2));
+
+# enclosed proto declarations
+type V = { type C = proto { int }, c: C };
+v: V = { { 1 } };
+assert(format("%T", v.c) == "V.C");
+
+f: function(): V.C { v: V = { { 1 } }; return v.c; };
+assert(format("%T", f) == "function(): V.C");
+

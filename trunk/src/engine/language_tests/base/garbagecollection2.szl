@@ -1,0 +1,272 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#
+# test that memory compaction is working
+#
+# Requires "--memory_limit=400"
+
+
+# Function to check that an object was allocated between two others.
+
+between: function(name: string, addr: int, start: string, end: string) {
+  if (addr < ___addressof(start) || addr > ___addressof(end))
+    emit stderr <- format("allocation error for %s; 0x%X not in [0x%X,0x%X]",
+                          name, addr, ___addressof(start), ___addressof(end));
+};
+
+
+# Function to check that two objects were allocated a specified distance apart.
+
+apart: function(name: string, start: string, end: string, low: int, high: int) {
+  distance: int = ___addressof(end) - ___addressof(start);
+  if (distance < low || distance > high)
+    emit stderr <- format("allocation error for %s; 0x%X - 0x%X not in [%d,%d]",
+                     name, ___addressof(end), ___addressof(start), low, high);
+};
+
+
+type array_type = array of string;
+type tuple_type = { a: string };
+type map_type = map[string] of string;
+
+zero: int = nrand(1);     # Try to avoid constant folding, propagation.
+empty: string = new(string, zero, 1);  # ditto
+
+
+# Allocate some memory to be freed so that compaction will move objects.
+# Should use up about 1MB.
+
+start_filler: string = format("%d", 1+nrand(1));
+filler: string = format("-%s-", new(string, 100000+nrand(1), 'x'));
+filler_ref : string = filler;  # second reference to prevent optimization
+for (i: int = 0; i < 9; i++) {
+  filler = "z" + filler;
+  filler_ref = filler;
+}
+filler = "";
+filler_ref = "";
+end_filler: string = format("%d", 2+nrand(1));
+apart("filler", start_filler, end_filler, 1000000, 1200000);
+
+
+# Allocate one object of each basic type and compound type, containing data
+# that will be moved and/or object references that will be adjusted because
+# the object moved.
+
+start_obj: string = format("%d", 3) + empty;
+
+# Start with a string to check object pointer updates in compaction.
+check_string: string = format("-%s-", "test") + empty;
+
+bool_value_1: bool = false;
+bool_value_2: bool = true;
+
+int_value_1: int = 123;                        # smi
+int_value_2: int = zero + 0x76543210;          # depends on 32/64 bit machine
+int_value_3: int = zero + 0x7654321001234567;  # Val*
+
+float_value: float = float(zero) + 1.23;
+
+bytes_value: bytes = { zero + 1, 2, 3 };
+
+string_value: string = empty + "abc";
+
+time_value: time = time(zero) + T"Aug 19 11:11:11 PST 2004";
+
+finger_value: fingerprint = fingerprintof("Google" + empty);
+
+tuple_value: { a: string } = { check_string };
+
+array_value: array of string = { check_string };
+
+key_value: string = empty + "map-key";
+map_value: map[string] of string = { key_value: check_string };
+
+end_obj: string = format("%d", 4+nrand(1));
+
+
+# Verify that the check string and the objects are where we expected.
+
+between("check_string", ___addressof(check_string), start_obj, end_obj);
+
+# In the current model there are only two, statically allocated bool values.
+#between("bool_value_1", ___addressof(bool_value_1), start_obj, end_obj);
+#between("bool_value_2", ___addressof(bool_value_2), start_obj, end_obj);
+
+# Small integers are not separate objects.
+#between("int_value_1", ___addressof(int_value_1), start_obj, end_obj);
+#between("int_value_2", ___addressof(int_value_2), start_obj, end_obj);
+
+between("int_value_3", ___addressof(int_value_3), start_obj, end_obj);
+between("float_value", ___addressof(float_value), start_obj, end_obj);
+between("bytes_value", ___addressof(bytes_value), start_obj, end_obj);
+between("string_value", ___addressof(string_value), start_obj, end_obj);
+between("time_value", ___addressof(time_value), start_obj, end_obj);
+between("finger_value", ___addressof(finger_value), start_obj, end_obj);
+between("tuple_value", ___addressof(tuple_value), start_obj, end_obj);
+between("array_value", ___addressof(array_value), start_obj, end_obj);
+between("key_value", ___addressof(key_value), start_obj, end_obj);
+between("map_value", ___addressof(map_value), start_obj, end_obj);
+
+
+# Allocate strings that will overwrite the above objects during compaction.
+# Note that unlike "filler", these objects must stay referenced.
+# Should use up about 2MB.
+
+start_stomper: string = format("%d", 5) + empty;
+stomper: array of string = new(array of string, 20, "");
+stomper[0] = format("-%s-", new(string, 100000, 'y'));
+for (i: int = 1; i < 20; i++)
+  stomper[i] = "z" + stomper[i-1];
+end_stomper: string = format("%d", 6) + empty;
+apart("stomper", start_stomper, end_stomper, 2000000, 2200000);
+
+
+# Remember where the objects were so we can verify they got stomped.
+
+start_obj_addr: int = ___addressof(start_obj);
+end_obj_addr: int = ___addressof(end_obj);
+
+
+# Fill up memory to force a compaction. 
+# Should use up about 500MB.
+
+compactor: string = new(string, 100000, 'w');
+for (i: int = 0; i < 5000; i++)
+  compactor = "z" + compactor;
+
+
+# Verify that the stomper covers the previous location of the objects.
+
+apart("stomper", start_stomper, end_stomper, 2000000, 2200000);
+between("stomp low", start_obj_addr, start_stomper, end_stomper);
+between("stomp high", end_obj_addr, start_stomper, end_stomper);
+
+
+# Verify the value of the stomper (so we know it did stomp the old values).
+
+temp: string = format("-%s-", new(string, 100000, 'y'));
+for (i: int = 0; i < 20; i++) {
+  if (stomper[i][i:i+100002] != temp)
+    emit stderr <- "stomper value is wrong";
+}
+
+
+# Verify that the check string and the objects were moved.
+
+if (___addressof(start_obj) == start_obj_addr ||
+    ___addressof(end_obj) == end_obj_addr)
+  emit stderr <- "the check string and objects did not move.";
+
+
+# Verify that the check string and the objects are still in a group.
+
+between("check_string", ___addressof(check_string), start_obj, end_obj);
+
+# In the current model there are only two, statically allocated bool values.
+#between("bool_value_1", ___addressof(bool_value_1), start_obj, end_obj);
+#between("bool_value_2", ___addressof(bool_value_2), start_obj, end_obj);
+
+# Small integers are not separate objects.
+#between("int_value_1", ___addressof(int_value_1), start_obj, end_obj);
+#between("int_value_2", ___addressof(int_value_2), start_obj, end_obj);
+
+between("int_value_3", ___addressof(int_value_3), start_obj, end_obj);
+between("float_value", ___addressof(float_value), start_obj, end_obj);
+between("bytes_value", ___addressof(bytes_value), start_obj, end_obj);
+between("string_value", ___addressof(string_value), start_obj, end_obj);
+between("time_value", ___addressof(time_value), start_obj, end_obj);
+between("finger_value", ___addressof(finger_value), start_obj, end_obj);
+between("tuple_value", ___addressof(tuple_value), start_obj, end_obj);
+between("array_value", ___addressof(array_value), start_obj, end_obj);
+between("key_value", ___addressof(key_value), start_obj, end_obj);
+between("map_value", ___addressof(map_value), start_obj, end_obj);
+
+
+# Verify the values of the objects.
+
+if (check_string != "-test-")
+  emit stderr <- "check_string has wrong value";
+
+if (bool_value_1 != false)
+  emit stderr <- "bool_value_1 has wrong value";
+
+if (bool_value_2 != true)
+  emit stderr <- "bool_value_2 has wrong value";
+
+if (int_value_1 != 123)
+  emit stderr <- "int_value_1 has wrong value";
+
+if (int_value_2 != 0x76543210)
+  emit stderr <- "int_value_2 has wrong value";
+
+if (int_value_3 != 0x7654321001234567)
+  emit stderr <- "int_value_3 has wrong value";
+
+if (float_value != 1.23)
+  emit stderr <- "float_value has wrong value";
+
+if (bytes_value != bytes({ 1,2,3 }))
+  emit stderr <- "bytes_value has wrong value";
+
+if (string_value != "abc")
+  emit stderr <- "string_value has wrong value";
+
+if (time_value != T"Aug 19 11:11:11 PST 2004")
+  emit stderr <- "time_value has wrong value";
+
+if (finger_value != fingerprintof("Google"))
+  emit stderr <- "finger_value has wrong value";
+
+if (tuple_value != tuple_type({ check_string }))
+  emit stderr <- "tuple_value has wrong value";
+
+if (tuple_value.a != check_string)
+  emit stderr <- "tuple_value.a has wrong value";
+
+if (array_value != array_type({ check_string }))
+  emit stderr <- "array_value has wrong value";
+
+if (array_value[0] != check_string)
+  emit stderr <- "array_value[0] has wrong value";
+
+if (key_value != "map-key")
+  emit stderr <- "key_value has wrong value";
+
+if (map_value != map_type({ key_value: check_string }))
+  emit stderr <- "map_value has wrong value";
+
+if (map_value[key_value] != check_string)
+  emit stderr <- "map_value[key_value] has wrong value";
+
+if (keys(map_value)[0] != key_value)
+  emit stderr <- "keys(map_value)[0] has wrong value";
+
+
+# Verify that the check object references were adjusted.
+
+if (___addressof(array_value[0]) != ___addressof(check_string))
+  emit stderr <- "array_value[0] was not adjusted";
+
+if (___addressof(tuple_value.a) != ___addressof(check_string))
+  emit stderr <- "tuple_value.a was not adjusted";
+
+if (___addressof(map_value[key_value]) != ___addressof(check_string))
+  emit stderr <- "map_value[key_value] was not adjusted";
+
+if (___addressof(keys(map_value)[0]) != ___addressof(key_value))
+  emit stderr <- "keys(map_value)[0] was not adjusted";
+

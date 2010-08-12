@@ -1,0 +1,8 @@
+base/badunicode.szl:33: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:34: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:35: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:36: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:40: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:41: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:42: unicode value too large (>0x10ffff) in character escape
+base/badunicode.szl:43: unicode value too large (>0x10ffff) in character escape

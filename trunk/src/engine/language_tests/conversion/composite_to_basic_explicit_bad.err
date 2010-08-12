@@ -1,0 +1,14 @@
+conversion/composite_to_basic_explicit_bad.szl:23: cannot convert {1, 2, 3, 4} (type array of int) to int
+conversion/composite_to_basic_explicit_bad.szl:24: cannot convert {1: 2, 2: 3, 3: 4, 4: 5} (type map [int] of int) to int
+conversion/composite_to_basic_explicit_bad.szl:25: cannot convert {{1, "Hi"}, {2, "World"}} (type array of {int, string}) to int
+conversion/composite_to_basic_explicit_bad.szl:29: cannot convert {1, 2, 3, 4} (type array of int) to float
+conversion/composite_to_basic_explicit_bad.szl:30: cannot convert {1: 2, 2: 3, 3: 4, 4: 5} (type map [int] of int) to float
+conversion/composite_to_basic_explicit_bad.szl:31: cannot convert {{1, "Hi"}, {2, "World"}} (type array of {int, string}) to float
+conversion/composite_to_basic_explicit_bad.szl:35: cannot convert {1, 2, 3, 4} (type array of int) to bool
+conversion/composite_to_basic_explicit_bad.szl:36: cannot convert {1: 2, 2: 3, 3: 4, 4: 5} (type map [int] of int) to bool
+conversion/composite_to_basic_explicit_bad.szl:37: cannot convert {{1, "Hi"}, {2, "World"}} (type array of {int, string}) to bool
+conversion/composite_to_basic_explicit_bad.szl:42: cannot convert {1: 2, 2: 3, 3: 4, 4: 5} (type map [int] of int) to bytes
+conversion/composite_to_basic_explicit_bad.szl:43: cannot convert {{1, "Hi"}, {2, "World"}} (type array of {int, string}) to bytes
+conversion/composite_to_basic_explicit_bad.szl:47: cannot convert {1, 2, 3, 4} (type array of int) to time
+conversion/composite_to_basic_explicit_bad.szl:48: cannot convert {1: 2, 2: 3, 3: 4, 4: 5} (type map [int] of int) to time
+conversion/composite_to_basic_explicit_bad.szl:49: cannot convert {{1, "Hi"}, {2, "World"}} (type array of {int, string}) to time

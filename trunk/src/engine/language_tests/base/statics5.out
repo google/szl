@@ -1,0 +1,12 @@
+static f: function(): int {
+	i: int;
+	if ((nrand(5) * nrand(5)) == 17)
+		i = 1;
+	if (i == 0)
+		;
+	return 0;
+}
+;
+static data: int = f();
+emit _undef_cnt <- 1;
+emit _undef_details["base/statics5.szl:26: i == 0 (probably because \"i\" had not been defined)"] <- 1;

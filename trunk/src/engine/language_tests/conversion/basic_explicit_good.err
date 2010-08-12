@@ -1,0 +1,4 @@
+conversion/basic_explicit_good.szl:23: warning: 10 already of type int; conversion suppressed
+conversion/basic_explicit_good.szl:144: warning: 10.2 already of type float; conversion suppressed
+conversion/basic_explicit_good.szl:153: warning: "Hello World" already of type string; conversion suppressed
+conversion/basic_explicit_good.szl:173: warning: true already of type bool; conversion suppressed

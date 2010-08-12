@@ -1,0 +1,310 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+
+#desc: Testing explicit type conversion during initialisation
+
+# Conversion to int
+
+i0:int;
+i0=int(10);                     #int
+DEBUG("print","\n%d\n",i0);
+
+i0= int(true);                  #bool
+DEBUG("print","%d\n",i0);
+
+i0= int(fingerprint(100));      #fingerprint
+DEBUG("print","%d\n",i0);
+
+i0= int(10.32);                 #float
+DEBUG("print","%d\n",i0);
+
+i0= int(X"0000000F", "fixed32-big");  # bytes
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"FFFFFFF0", "fixed32-big");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"0F000000", "fixed32-little");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"F0FFFFFF", "fixed32-little");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"000000000000000F", "fixed64-big");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"FFFFFFFFFFFFFFF0", "fixed64-big");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"0F00000000000000", "fixed64-little");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"F0FFFFFFFFFFFFFF", "fixed64-little");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"000000000000000F", "szl");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"FFFFFFFFFFFFFFF0", "szl");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"8001", "varint");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"F0FFFFFFFFFFFFFFFF01", "varint");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"8001", "zigzag");
+DEBUG("print", "%d\n", i0);
+
+i0= int(X"8101", "zigzag");
+DEBUG("print", "%d\n", i0);
+
+#i0= int(now());                 #time
+#DEBUG("print","%d\n",i0);
+
+# Conversion to uint
+u0:uint;
+u0=uint(10);                     #int
+DEBUG("print","\n%u\n",u0);
+
+u0= uint(true);                  #bool
+DEBUG("print","%u\n",u0);
+
+u0= uint(fingerprint(100));      #fingerprint
+DEBUG("print","%u\n",u0);
+
+u0= uint(10.32);                 #float
+DEBUG("print","%u\n",u0);
+
+u0= uint(X"0000000F", "fixed32-big");  # bytes
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"FFFFFFF0", "fixed32-big");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"0F000000", "fixed32-little");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"F0FFFFFF", "fixed32-little");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"000000000000000F", "fixed64-big");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"FFFFFFFFFFFFFFF0", "fixed64-big");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"000000000000000F", "szl");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"FFFFFFFFFFFFFFF0", "szl");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"0F00000000000000", "fixed64-little");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"F0FFFFFFFFFFFFFF", "fixed64-little");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"8001", "varint");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"F0FFFFFFFFFFFFFFFF01", "varint");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"8001", "zigzag");
+DEBUG("print", "%u\n", u0);
+
+u0= uint(X"8101", "zigzag");
+DEBUG("print", "%u\n", u0);
+
+
+
+# Conversion to float
+
+f0: float;
+f0 = float(10);  	          #int
+DEBUG("print","\n%f\n",f0);
+
+f0 = float(10.2);
+DEBUG("print","%f\n",f0);
+
+# Conversion to string
+
+s0: string;
+s0 = string(10);           	#int
+DEBUG("print","\n%s\n",s0);
+
+s0 = string("Hello World");	#string
+DEBUG("print","%s\n",s0);
+
+s0= string(true);               #bool
+DEBUG("print","%s\n",s0);
+
+s0= string(fingerprint(100));   #fingerprint
+DEBUG("print","%s\n",s0);
+
+s0= string(10.32);              #float
+DEBUG("print","%s\n",s0);
+
+#s0= string(now());              #time
+#DEBUG("print","%s\n",s0);
+
+# Conversion to bool
+b0: bool;
+b0= bool("hello world!");        #string
+DEBUG("print","\n%b\n",b0);
+
+b0= bool(true);			 #bool
+DEBUG("print","%b\n",b0);
+
+# Conversion to bytes
+
+by0: bytes;
+by0= bytes("hello world!");        #string
+DEBUG("print","\n%s\n",string(by0));
+
+by0= bytes({1,2,3,4});
+DEBUG("print","%s\n",string(by0));
+
+by0= bytes(15, "fixed32-big");  #int
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "fixed32-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15, "fixed32-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "fixed32-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15, "fixed64-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "fixed64-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15, "szl");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "szl");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15, "fixed64-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "fixed64-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(128, "varint");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-16, "varint");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(64, "zigzag");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(-65, "zigzag");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+
+by0= bytes(15U, "fixed32-big");  #uint
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(4294967280U, "fixed32-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15U, "fixed32-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(4294967280U, "fixed32-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15U, "fixed64-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(18446744073709551600U, "fixed64-big");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15U, "szl");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(18446744073709551600U, "szl");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(15U, "fixed64-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(18446744073709551600U, "fixed64-little");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(128U, "varint");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(18446744073709551600U, "varint");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(64U, "zigzag");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+by0= bytes(18446744073709551551U, "zigzag");
+DEBUG("print","%s\n",string(by0, "hex"));
+
+
+
+# Conversion to fingerprint
+
+fg0: fingerprint;
+fg0= fingerprint(10);                    #int
+DEBUG("print","\n%s\n",string(fg0));
+
+fg0= fingerprint("0x12345");        #string
+DEBUG("print","\n%s\n",string(fg0));
+
+#fg0= fingerprint(true);                  #bool
+#DEBUG("print","%s\n",string(fg0));
+
+fg0= fingerprint(bytes({10,11,12,13,14,15,16,17}));      #bytes
+DEBUG("print","%s\n",string(fg0));
+
+#fg0= fingerprint(fingerprint(100));      #fingerprint
+#DEBUG("print","%s\n",string(fg0));
+
+#fg0= fingerprint(10.32);                 #float
+#DEBUG("print","%s\n",string(fg0));
+
+#fg0= fingerprint(now());                 #time
+#DEBUG("print","%s\n",string(fg0));
+
+
+# Conversion to time
+
+t0: time;
+t0 = time(10);                    #int
+DEBUG("print","\n%t\n",t0);
+
+t0= time("Wed Dec 31 16:00:00 PST 1975");     #string
+DEBUG("print","n%t\n",t0);
+
+t0= time("Wed Dec 31 16:00:00 GMT 1975");     #string
+DEBUG("print","%t\n",t0);
+
+#t0= time(now());
+#DEBUG("print","\n%t\n",t0);

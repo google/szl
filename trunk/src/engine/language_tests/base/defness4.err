@@ -1,0 +1,3 @@
+base/defness4.szl:29: warning: variable y will always have an undefined value at this point
+base/defness4.szl:42: warning: variable w will always have an undefined value at this point
+base/defness4.szl:50: warning: variable v will always have an undefined value at this point

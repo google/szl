@@ -1,0 +1,27 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: bad intrinsic function calls that operate on time.
+
+#inst: less number of arguments.
+t0: time = "Thu Nov 13 12:38:40 PST 2003";
+
+assert(addday(t0) == T"Fri Nov 14 12:38:40 PST 2003");
+assert(addmonth(t0) == T"Sat Dec 13 12:38:40 PST 2003");
+assert(addweek(t0) == T"Thu Nov 20 12:38:40 PST 2003");
+assert(addyear(t0) == T"Sat Nov 13 12:38:40 PST 2004");

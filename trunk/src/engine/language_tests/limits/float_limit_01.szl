@@ -1,0 +1,73 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+#!/bin/env szl
+#szl_options
+
+#desc: limits of floating point number as specified by IEEE-754 for double.
+
+f0: float;
+
+#inst: normalized max negative.
+f0 = -1.7976931348623157E+308;
+emit stdout <- format("Normalized Max negative value = %e, %f", f0, f0);
+
+#inst: normalized min negative.
+f0 = -2.2250738585072014E-308;
+emit stdout <- format("Normalized Min negative value = %e, %f", f0, f0);
+
+#inst: de-normalized negative.
+f0 = -2.2250738585072010E-308;
+emit stdout <- format("De-normalized negative value = %e, %f", f0, f0);
+
+f0 = -4.9406564584124654E-324;
+emit stdout <- format("De-normalized negative value = %e, %f", f0, f0);
+
+f0 = -2.4703282292062328E-324;
+emit stdout <- format("De-normalized negative value = %e, %f", f0, f0);
+
+#inst: near negative underflow.
+f0 = -2.4703282292062328E-324;
+emit stdout <- format("Near negative underflow = %e, %f", f0, f0);
+
+#inst: negative zero (-0).
+f0 = -0.0;
+emit stdout <- format("Negative Zero = %e, %f", f0, f0);
+
+#inst: positive zero (+0).
+f0 = 0.0;
+emit stdout <- format("Positive Zero = %e, %f", f0, f0);
+
+#inst: near positive underflow.
+f0 = 2.4703282292062328E-324;
+emit stdout <- format("Near positive Underflow = %e, %f", f0, f0);
+
+#inst: positive de-normalized.
+f0 = 2.4703282292062328E-324;
+emit stdout <- format("De-normalized positive value = %e, %f", f0, f0);
+
+f0 = 4.9406564584124654E-324;
+emit stdout <- format("De-normalized positive value = %e, %f", f0, f0);
+
+f0 = 2.2250738585072010E-308;
+emit stdout <- format("De-normalized positive value = %e, %f", f0, f0);
+
+#inst: normalized max positive.
+f0 = 1.7976931348623157E+308;
+emit stdout <- format("Normalized Max positive value = %e, %f", f0, f0);
+
+#inst: normalized min positive.
+f0 = 2.2250738585072014E-308;
+emit stdout <- format("Normalized Min positive value = %e, %f", f0, f0);

@@ -1,0 +1,108 @@
+s: string;
+result: string = "hi";
+assert(result == "hi");
+{
+	result: int = 4;
+	assert(result == 4);
+}
+s = ?{
+	result "start" + " stop";
+}
+;
+assert(s == "start stop");
+s = "";
+for (i: int = 0; i < 8; i++)
+	s = s + ?{
+	if (i > 5)
+		result "hi,";
+	else
+		if (i > 2)
+			result "lo,";
+	result "very lo,";
+}
+;
+assert(s == "very lo,very lo,very lo,lo,lo,lo,hi,hi,");
+a: array of int = {1, 2, 3, 4, 5, 6 + 8};
+s = ?{
+	when (
+		i: some int;
+		a[i] == 2
+	)
+		result "found 2 at " + convert(string, i);
+	result "not found";
+}
+;
+assert(s == "found 2 at 1");
+s = "";
+s = convert(string, ?{
+	aa: array of int = {};
+	when (
+		i: each int;
+		(a[i] & 1) == 0
+	)
+		aa = aa + {a[i]};
+	result aa;
+}
+);
+assert(s == "{ 2, 4, 14 }");
+s = "";
+when (
+	x: each int;
+	?{
+	static v: array of int = {7, 6, 5, 4, 3, 2, 1};
+	y: int = ?{
+	result v[x];
+}
+;
+	s = s + format("(%d)", y);
+	result a[x] == v[x];
+}
+
+)
+{
+	s = s + convert(string, a[x]);
+}
+assert(s == "(7)(6)(5)(4)4(3)(2)");
+static k0: int = 1;
+static k1: int = ?{
+	result k0;
+}
+;
+assert(k1 == 1);
+static k2: int = ?{
+	result 2;
+}
+;
+assert(k2 == 2);
+static k4: int = ?{
+	static i: int = 4;
+	result i;
+}
+;
+assert(k4 == 4);
+static k6: int = ?{
+	static i: int = min(6, convert(int, now()));
+	result i;
+}
+;
+assert(k6 == 6);
+static f: function(): int {
+	emit stdout <- "should see this only once";
+	return 42;
+}
+;
+static k8: int = ?{
+	static i: int = f();
+	result i;
+}
+;
+assert(k8 == 42);
+g: function(x: int, y: int, z: int): int {
+	return (x + y) + z;
+}
+;
+assert(g(1, ?{
+	result 2;
+}
+, 3) == 6);
+should see this only once

@@ -1,0 +1,10 @@
+base/statics4.szl:21: non-static variable a may not be accessed in an initializer for a static variable
+base/statics4.szl:22: non-static variable b may not be accessed in an initializer for a static variable
+base/statics4.szl:23: non-static variable a may not be accessed in an initializer for a static variable
+base/statics4.szl:24: non-static variable b may not be accessed in an initializer for a static variable
+base/statics4.szl:26: non-static variable a may not be accessed in an initializer for a static variable
+base/statics4.szl:27: non-static variable b may not be accessed in an initializer for a static variable
+base/statics4.szl:28: non-static variable a may not be accessed in an initializer for a static variable
+base/statics4.szl:29: non-static variable b may not be accessed in an initializer for a static variable
+base/statics4.szl:30: non-static variable a may not be accessed in an initializer for a static variable
+base/statics4.szl:31: non-static variable b may not be accessed in an initializer for a static variable

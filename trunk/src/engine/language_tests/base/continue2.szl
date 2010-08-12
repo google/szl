@@ -1,0 +1,65 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# tests for incorrect uses of the continue statement
+
+# shared variables;
+i: int = 0;
+a: array of int = new(array of int, 10, 7);
+
+# continue must be in a loop
+continue;
+
+# continue must be in a loop
+if (i < 0)
+  continue;
+
+# continue must be in a loop
+switch (i) {
+  case 0:
+    break;
+  case 1:
+    continue;
+  default:
+    ;
+}
+
+# continue must not be in a when statement
+when (j: some int; 0 == a[j])
+  continue;
+
+# continue must not be in a when statement
+i = 0;
+while (i < 10) {
+  when (j: some int; i == a[j])
+    continue;
+  i++;
+}
+
+# continue must not be in a when statement
+for (i: int = 0; i < 10; i++) {
+  when (j: some int; i == a[j])
+    continue;
+}
+
+# continue must not be in a when statement
+i = 0;
+do {
+  when (j: some int; i == a[j])
+    continue;
+  i++;
+} while (i < 10);
+
+# more tests to come here

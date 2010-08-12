@@ -1,0 +1,67 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+
+
+
+#desc: format intrinsic function call.
+
+assert(format("sawzall") == "sawzall");
+assert(format("%s", "sawzall") == "sawzall");
+assert(format("%b", true) == "true");
+assert(format("%b", false) == "false");
+assert(format("%c", 65) == "A");
+
+assert(format("%d", 512) == "512");
+assert(format("%o", 512) == "1000");
+assert(format("%x", 512) == "200");
+assert(format("%i", 512) == "512");
+
+assert(format("%e", 512.0) == "5.120000e+02");
+assert(format("%f", 512.0) == "512.000000");
+assert(format("%g", 512.0) == "512");
+assert(format("%E", 512.0) == "5.120000E+02");
+assert(format("%G", 512.0) == "512");
+
+assert(format("%e", 512.1234567) == "5.121235e+02");
+assert(format("%f", 512.1234567) == "512.123457");
+assert(format("%g", 512.1234567) == "512.123");
+assert(format("%E", 512.1234567) == "5.121235E+02");
+assert(format("%G", 512.1234567) == "512.123");
+
+#desc: constant folding in format.
+
+assert(format("format " + "sawzall") == "format sawzall");
+assert(format("%s" + " %s", "format", "sawzall") == "format sawzall");
+assert(format(string(123)) == "123");
+assert(format(string(bytes("123"))) == "123");
+assert(format(lowercase("ABC")) == "abc");
+assert(format(uppercase("ABC")) == "ABC");
+assert(format(strreplace("google", "og", "gg", true)) == "goggle");
+assert(format(new(string, 5, 'i')) == "iiiii");
+assert(format("abcde"[2:4]) == "cd");
+
+static var0 := "%d";
+assert(format(var0, 5) == "5");
+static var1 := "5" + "6";
+assert(format(var1) == "56");
+static var2 := string(56);
+assert(format(var2) == "56");
+static var3 := lowercase("ABC");
+assert(format(var3) == "abc");
+static var4 := new(string, 5, 'i');
+assert(format(var4) == "iiiii");
+static var5 := "abcde"[2:4];
+assert(format(var5) == "cd");

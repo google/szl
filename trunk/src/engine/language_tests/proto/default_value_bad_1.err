@@ -1,0 +1,4 @@
+proto/default_value_bad_1.szl:21: ',' expected; found '='
+proto/default_value_bad_1.szl:22: ',' expected; found '='
+proto/default_value_bad_1.szl:23: ',' expected; found 'fg0'
+proto/default_value_bad_1.szl:24: only some fields contain protocol buffer tags; tags must be consistently defined

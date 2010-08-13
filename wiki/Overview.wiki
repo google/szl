@@ -1,0 +1,49 @@
+#summary Overview of Szl
+#labels Featured
+
+= Components =
+
+Szl consists of a compiler and runtime to support the Sawzall language.  It contains:
+
+  * A tool *szl* that compile and run Sawzall programs.
+  * A protocol compiler plugin for the Sawzall language.
+  * A library that provides compilation and execution services, including the serialization of types and aggregated data.
+  * A library that implements the aggregation (table) functionality.
+  * A library for the optional intrinsic functions.
+  * Tests and examples
+
+
+== The *szl* program ==
+
+This standalone tool compiles and executes Sawzall programs.  Input can be text or binary records.  Aggregation data can be generated as formatted text, but not in the serialized form used internally for aggregation.  All builtin table types are supported.
+
+== The Protocol Compiler Plugin ==
+
+When the *protoc* protocol compiler (http://code.google.com/p/protobuf/) is supplied the Sawzall language plugin *protoc_gen_szl* it generates Sawzall code as its output.  Conversion to and from binary protocol buffer format is supported directly in the language.
+
+== Compilation and Execution Library ==
+
+When szl is used as part of another program, e.g. in a program that uses it for map-reduce, the *libszl* library can be used to compile and execute Sawzall programs.  This library also supports serializing aggregation data types and type information used to describe these types.  This provides a mechanism for writing segmented aggregation data and then reading and combining this data, as in map-reduce.
+
+== Aggregation Library ==
+
+The *libszlemitters* library contains support for the builtin data aggregation (table) types.  A program using *libszl* can omit this library if the builtin table types are not needed.  It is also possible to write custom emitters, together with or separate from the builtin emitters, without modifying *libszl*.
+
+== Intrinsic Function Library ==
+
+Some of the builtin intrinsic functions are provided in a separate library, which may be omitted in a program using *libszl* if these intrinsics are not needed.
+
+== Tests and Examples ==
+
+The source code includes tests of Sawzall language, aggregation (table) types and other functionality.
+
+Several tests are written as example programs, including an example of the use of *libszl* in a (simulated) map-reduce context.
+
+= Documentation (TBD) =
+
+  * Sawzall Language
+  * Style Guide
+  * Intrinsic Functions
+  * Aggregation (table) Types
+  * Undefined values and def() checks
+  * Performance tips

@@ -46,7 +46,7 @@ Several tests are written as example programs, including an example of the use o
 
 = Documentation (TBD) =
 
-  * [Sawzall_Language]
+  * [Sawzall_Language Sawzall Language specification]
   * Style Guide
   * Intrinsic Functions
   * Aggregation (table) Types

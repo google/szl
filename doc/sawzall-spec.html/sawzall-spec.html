@@ -1,0 +1,1974 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 TRANSITIONAL//EN">
+<html>
+<head>
+<title>The Sawzall Language Specification</title>
+    <link rel="stylesheet" href="guidestyle.css">
+    <style>
+      div.nav-2-columns {margin-top:20px}
+      div.nav-2-columns td {width:50%}
+      div.nav-2-columns table {width:100%}
+    </style>
+</head>
+<body>
+
+
+<h1>
+        <a name="title">The Sawzall Language Specification</a>
+</h1>
+<p>
+<center>
+        <img src="sawzall.gif">
+</center>
+<p>
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="objective">Objective</a>
+</h2>
+This document is a semi-formal specification of the Sawzall language.
+It contains a formal definition of the language syntax with concise
+explanations of type and semantic rules. It accompanies the
+<a href="sawmill-language.html">
+Sawmill Language</a> document, which is a more informal but broader
+description of the language and the supporting environment.
+
+
+<!----------------------------------------------------------------------------->
+
+<!-- The "nav" div contains the top-level TOC. JS fills it in. -->
+<div id="nav" class="nav-2-columns"></div>
+
+
+
+<h2>
+  <a name="organization">Organization and conventions</a>
+</h2>
+To make it easier to learn the language, Sawzall's syntax
+was designed to match C syntax closely where sensible; this is the case
+in particular for statements and expressions. Also, identifiers, literals
+(character, integer, floating point, string and other constants) largely follow
+C notation. It is the hope that many of the finer points can be ignored
+in the beginning since most programmers will be able to extrapolate from
+previous experience. Thus, to facilitate a quick start, in the following the
+language is presented in a top-down fashion rather than the more
+conventional bottom-up approach used for language specifications.
+<p>
+To describe the language syntax in detail, Extended Backus-Naur Form
+(EBNF) is used: Alternatives are separated by vertical bars |. Parentheses
+( and ) are used for grouping. Expressions enclosed in square brackets [ and ]
+are optional. Curly braces { and } denote repetition (0 or more times) of the
+enclosed expression. Names of EBNF productions referring to terminal symbols
+start with a lower-case letter; all other production names start with a capital
+letter. Literal characters and strings are enclosed in single quotes ' and '.
+A precise definition of EBNF can be found in the <a href="#appendix">
+Appendix</a>.
+<p>
+Occasionally, the language syntax is presented in a slightly
+simplified form to facilitate reading. For instance, this is the case for the
+definition of string literals where a complete formal definition would
+become very cumbersome to understand, without adding value to the
+reader. Annotations in <font size=-1>small font</font> may be used
+to explain some of the fine points in those cases.
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="model">Programming model</a>
+</h2>
+Sawzall was designed for parallel log processing. To make parallelization
+possible, some restrictions have been built into the language by design.
+Instead of specifying how to process an entire set of log entries, a
+Sawzall program specifies how to process an individual log entry
+<em>independent</em> of any other log entry. Thus several log
+entries may be processed in parallel by different executions of the
+same Sawzall program, possibly on different machines.
+<p>
+Since processing
+is independent, data about all the processed log entries is aggregated
+<em>externally</em> to a Sawzall program proper. To that end, Sawzall
+supports the declaration of <a href="#output_types">output types</a>
+and corresponding output variables. Output variables are the
+connection to specific aggregators (such as accumulators, collectors,
+filters, etc.) of data. A special construct, the <a href="#emit">emit</a>
+statement, is used to send data to such an aggregator. The aggregator
+receives the data emitted to it, and aggregates it in a manner specific
+to its type. For example, a <em>sum</em> aggregator, referred to via
+an output variable of <em>sum</em> output type, will add up all the
+values it receives. A <em>collection</em> aggregator will simply collect
+all the data, etc. The Sawzall language doesn't specify a particular
+implementation for aggregators, but within the context of the Sawmill
+project, aggregators are implemented via the <code>saw</code> application,
+which stores aggregated data in GFS files. Other programs are then
+used to retrieve the final results. Thus, a Sawzall program can be
+considered a filter for individual log entries: each entry is processed
+independently from all the others, and any potential results are
+aggregated via output variables.
+<p>
+Processing of a large set of log entries may take a considerable
+amount of time even if they are processed in parallel. Furthermore,
+it is not unlikely to occasionally encouter corrupted log entries. It is
+important to be able to handle these cases gracefully, without abortion
+of the process. To that end, Sawzall supports the notion of <em>defined</em>
+and <em>undefined</em> values. Expressions and statements may
+be silently aborted if undefined values are encountered. It is the hope
+that most programs will be able to continue execution even in the presence
+of occasional errors caused by corrupted input data.
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="structure">Overall program structure</a>
+</h2>
+A Sawzall program is simply a sequence of
+<a href="#declarations">declarations</a>
+and <a href="#statements">statements</a>.
+<pre><font color=orangered>
+Program = { Declaration | Statement }.
+</font></pre>
+
+<h4>Example</h4>
+<pre>
+# Program to find the three most commonly used word in a list.
+
+# Input is text lines containing a word and a count, separated with a comma.
+
+  topwords: table top(3) of word: string weight count: int;
+  fields: array of bytes = splitcsvline(input);
+  w: string = string(fields[0]);
+  c: int = int(string(fields[1]), 10);
+  if (c != 0) {
+    emit topwords <- w weight c;
+  }
+</pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="declarations">Declarations and scope rules</a>
+</h2>
+A declaration introduces a name (syntactically an
+<a href="#identifiers">identifier</a>) and
+associates it with a language entity. In Sawzall there are
+<a href="#type_declarations">type</a> and (static and non-static)
+<a href="#variable_declarations">variable</a> declarations.
+<pre><font color=orangered>
+Declaration = TypeDecl | StaticVarDecl | VarDecl.
+</font></pre>
+
+Once a name has been introduced with a declaration, it can be used within
+the <em>scope</em> of the declaration to <em>refer</em> to the associated entity.
+The scope of a declaration extends from the point of
+the declaration of the name to the end of the immediate surrounding
+<a href="#block">block</a>. Blocks - and therefore scopes - may be
+nested. A name declared in a nested scope <em>shadows</em> equal
+names declared in outer scopes; thus a name always refers to its innermost
+declaration. A Sawzall program implicitly defines a block enclosing all
+declarations and statements of the program.
+
+
+<h3><a name="type_declarations">Type declarations</a></h3>
+A type declaration associates a <em>type name</em> with a
+<a href="#types">type specification</a>. Within the scope of the
+declaration, the type name can then be used interchangeably with the
+type specification.
+<pre><font color=orangered>
+TypeDecl = 'type' type_name '=' Type ';'.
+type_name = identifier.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+type my_bool = bool;
+type Coordinates = { x: float, y: float };
+type CityMap = map [city_name: string] of Coordinates;
+</pre>
+
+
+<h3><a name="variable_declarations">Variable declarations</a></h3>
+A variable declaration introduces a variable. The declaration associates
+the variable with a <em>variable name</em> and a <em>variable type</em>.
+A variable holds a (possibly <a href="#undefined_values">undefined</a>)
+value of the associated variable type.
+<p>
+The variable type may be specified explicitly, followed by an optional
+<em>initialization expression</em>. Alternatively, the explicit type
+specification may be elided in favor of the initialization expression,
+in which case the type of the variable is the type of the initialization
+expression. Thus, either the variable type or the initialization expression
+(but not both) may be missing.
+A variable may
+be declared <em>static</em> by prefixing the declaration with the
+keyword <code>static</code>.
+<pre><font color=orangered>
+StaticVarDecl = 'static' VarDecl.
+VarDecl = var_name ':' [Type] ['=' Expression | Block] ';'.
+var_name = identifier.
+</font></pre>
+The initialization expression for <em>static</em> variables <em>may</em>
+be evaluated only once per program run (implementation specific).
+In particular, if the value of an initialization expression for a static variable
+changes during program execution, the program is <em>erroneous</em>.
+Variables of an <a href="#output_types">output type</a> are always static,
+and the <code>static</code> keyword may be omitted in that case.
+<p>
+Initialization expressions for static variables must not <a href="#declarations">refer</a>
+to non-static variables; if variable names appear in the expression, the
+associated variables must be static. In particular, if a (non-intrinsic) function
+is called in an initialization expression, that function must be stored in a
+static variable.
+
+<p>
+A variable declaration with an initialization expression of the form:
+<pre>
+variable_name: variable_type = expression;
+</pre>
+is a shortcut for the variable declaration followed by an
+<a href="#assignment">assignment</a>, possibly with a
+<a href="#conversions">conversion</a> <code>(variable_type)</code>.
+The conversion is omitted if <code>expression</code>
+already is of type <code>variable_type</code>:
+<pre>
+variable_name: variable_type;
+variable_name = variable_type(expression);
+</pre>
+If the  type of <code>expression</code> is exactly <code>variable_type</code>
+the declaration may be further shortened to:
+<pre>
+variable_name := expression;
+</pre>
+Notice that even though there is no explicit type specified here, it nonetheless
+declares a new variable (the <code>:</code> indicates the variable declaration).
+Obviously, in this case no conversion is implied.
+<p>
+If the initialization expression is a <a href="#functions">function</a>, the variable type must be
+a <a href="#function_types">function type</a>.
+Therefore, a function declaration looks like this:
+<pre>
+function_name: function_type = function_type {
+  # function body
+};
+</pre>
+Since there is no type conversion possible for functions, the function types in the
+declaration must be identical and this syntax can always be
+shortened to:
+<pre>
+function_name := function_type {
+  # function body
+};
+</pre>
+<font size=-1>A slightly different notation was previously supported as a special
+case for functions:
+<pre>
+function_name: function_type {
+  # function body
+};
+</pre>
+but that form has been obsoleted by the appearance of the <tt>:=</tt> style.
+</font>
+<p>
+The evaluation of the initialization expression may result in an
+<em>undefined value</em>. In that case, the undefined
+value may be silently assigned to the variable (implementation-specific,
+see also <a href="#undefined_values">Undefined values</a> below).
+
+<h4>Examples</h4>
+<pre>
+n := 10;
+counter: int = 0;
+static pi := 3.14159265;
+hypot := sqrt(x*x + y*y);
+static word := load(&quot;/home/szluser/current/word&quot;);
+a: array of float = { 2.4, PI, float("1.234") };
+unique_language_values: table unique (10) of {language: string, value: string};
+average := function(list: array of float): float;
+min := function(x: int, y: int): int { if (x < y) return x; return y; };
+static country_codes: array of string = LoadCountries("countries.txt");
+</pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="undefined_values">Undefined values</a>
+</h2>
+The value of an expression may be either <em>defined</em> or
+<em>undefined</em>. If the value is defined, it is one of the set of
+values specified by its <a href="#types">type</a>. If the value is undefined,
+it does not have a value.
+<p>
+If an undefined value is used within an expression, the value of the
+expression becomes undefined. In particular, if an undefined value is
+used as an argument for a function call, the function is not called
+and the function result is undefined.
+<p>
+If an undefined value is assigned to
+a variable, the variable becomes undefined. In particular, if an undefined
+value is stored as array element, tuple field, or map entry, the entire
+array, tuple, or map
+becomes undefined. Thus, <em>variables are either entirely defined or
+entirely undefined</em>. Initially, all variables are undefined until a
+defined value is assigned to them. Function parameters are defined
+upon invocation of the function because it can only be called if
+all arguments are defined.
+<p>
+The intrinsic function <code>def(x: T): bool</code> can be used to test
+an arbitrary expression <code>x</code> of any type <code>T</code> for defined'ness.
+<code>def(x)</code> returns <code>true</code> if the value of <code>x</code> is defined;
+it returns <code>false</code> otherwise. Thus, <code>def()</code> acts like a guard
+against the propagation of undefined values.
+
+<h4>Current implementation</h4>
+Except for initialization expressions, return expressions,
+and expressions guarded with <code>def()</code>,
+by default the current implementation aborts with a run-time error if an
+undefined value is encountered. When the <code>--ignore_undefs</code>
+flag is specified with either the <code>szl</code> or <code>saw</code> application,
+all undefined values are propagated silently, without
+runtime errors.
+<p>
+Undefined initialization expressions don't cause a run-time
+trap so that it is possible to write code such as
+<pre>
+x: T = expr;  # potentially undefined
+if (def(x))
+  # x is defined; it can be used w/o runtime trap
+else
+  # x is undefined; using it will cause a runtime trap
+  # (unless used again in one of the exception cases described here)
+</pre>
+without the need to re-evaluate <code>expr</code> if its value is defined.
+<p>
+Undefined return expressions don't cause a run-time trap so that it is
+possible to return an undefined value from a user-defined function; usually
+to indicate that the function failed. For instance, one might write a function
+<code>f</code> that returns a result of type <code>T</code>, and also use
+the result mechanism to indicate if the function was successful or not:
+<pre>
+f := function(...): T {
+  ...
+  # return an undefined value to indicate failure of f
+  u: T;
+  return u;
+};
+
+result: T = f(...);
+if (def(result))
+  # function succeeded; result is defined
+else
+  # function failed; result is undefined
+}
+</pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="types">Types</a>
+</h2>
+A type specifies a (possibly infinite) <em>set of values</em> and an
+<em>interface</em>. Sawzall is a statically typed language, that is, the
+types of all variables and expressions are known at compile-time. The
+interface of a type determines which operations are legal on values of
+that type. The interface is implicitly defined for all the basic types. For
+composite types, the interface is explicitly defined via their structure.
+
+<h3><a name="value_semantics">Value semantics</a></h3>
+All Sawzall types have <em>value semantics</em>; a variable always stores an
+entire copy of a value and not a reference to it. This is of particular
+importance for <a href="#composite_types">composite types</a>
+such as arrays, maps, and tuples: If a value
+<code>x</code> held in a variable <code>v1</code> is assigned to a second
+variable <code>v2</code>, changing <code>v2</code> after the assignment -
+for instance by modifying components of <code>v2</code> - won't affect the
+value of <code>v1</code>.
+
+<h4>Implementation note</h4>
+The current implementation uses a copy-on-write scheme to implement
+value semantics efficiently; a copy is made only when modifying a shared
+value.
+
+
+<h3>Type specifications</h3>
+A type specification may be preceded by the <code>proto</code> keyword.
+In that case, the type specification must be a tuple type (either a type
+name referring to a tuple type, or a tuple type specification). The resulting
+tuple type is an <em>automatic</em> proto tuple type generated from the original
+tuple type (see <a href="#auto_protos">Automatic proto tuple types</a>
+for details).
+<pre><font color=orangered>
+Type =
+  type_name | ArrayType | MapType | TupleType |
+  OutputType | FunctionType | 'proto' Type.
+type_name = identifier.
+</font></pre>
+
+<h3><a name="basic_types">Basic types</a></h3>
+<em>Basic types</em> are intrinsically known to the system and have
+predeclared names. There are 7 basic types in Sawzall:
+<pre>
+bool        # the boolean values true and false
+bytes       # arrays of unsigned bytes
+int         # 64-bit signed integer values
+float       # 64-bit IEEE floating point values
+time        # unsigned integral representations of time, with microsecond resolution
+fingerprint # unsigned hash values computed by an implementation-defined hash function
+string      # arrays of unicode characters
+uint        # 64-bit unsigned integer valuse
+</pre>
+
+
+<h3><a name="composite_types">Composite types</a></h3>
+Composite types are composed of 0 or more components. Array, tuple,
+and map types are composite types. Each component
+may have an optional <em>component name</em> (documentation only),
+and each component has a <em>component type</em>.
+<pre><font color=orangered>
+Component = [component_name ':'] ComponentType.
+component_name = identifier.
+ComponentType = Type.
+</font></pre>
+
+<h3>Array types</h3>
+An array is a composite type consisting of an (unspecified) number of
+components, called <em>elements</em>, which are all of the same type.
+An array type specifies the type of the elements, the <em>element type</em>.
+It may also specify an <em>element name</em>, which serves documentary
+purposes only. The number of elements of an array is called its <em>length</em>.
+The length of an array is determined at execution time. The elements of an
+array are designated by indices, which are integer values between 0 and
+the length minus 1.
+
+<pre><font color=orangered>
+ArrayType = 'array' 'of' Element.
+Element = Component.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+array of int
+array of names: string
+array of array of point: Point
+</pre>
+
+<h3><a name="tuple_types">Tuple types</a></h3>
+A tuple is a composite type consisting of a fixed number of
+<em>members</em> of possibly different types.
+Members may be <a href="#composite_types">components</a>,
+which are called (simple or proto) <em>fields</em>.
+A tuple type specifies a type for each field, and possibly a name.
+If there is no name, the field is called <em>anonymous</em>.
+No two named fields within a tuple can have the same name.
+Members may also be <a href="#type_declarations">type declarations</a>
+or <a href="#variable_declarations">static variable declarations</a>.
+A tuple type acts as a scope for these declarations.
+<p>
+The type of a tuple field, static declaration or type declaration may refer
+to the name of an enclosing type; that is, type declarations may be
+recursive.  When used in a field or type declaration, the inner type reference
+must occur within an array type or map type enclosed by the outer type
+declaration.
+(That is, there must be a way to omit the value of the field.  Otherwise
+it would be impossible to represent an object of that type.)
+<p>
+Although types may be recursive, objects can neither contain
+nor refer to enclosing objects or themselves (directly or indirectly).
+This is because Sawzall is value-based and has no pointers or references.
+<p>
+Types cannot be mutually recursive.
+Since Sawzall does not have forward references it is not possible to have two
+types (e.g. tuples) each of which makes use of the other.
+<p>
+Named fields only may also have an integer value
+called (field) <em>tag</em> associated with it. Tags are used to associate
+the field with a field in the protocol buffer representation of the tuple
+(see also
+<a href="http://code.google.com/p/protobuf/">Protocol Buffers</a>). No two fields within a tuple
+can have the same tag, and all tags must be >&nbsp;0. Tuples with tagged fields
+are called <em>proto tuples</em>; tuples without tagged fields are called
+<em>simple tuples</em>. All fields of proto tuples must have tags.
+<p>
+Tagged fields of proto tuples may also
+specify a <em>constant</em> default value. The default value is used to
+initialize a field during proto conversion if the corresponding field value is
+missing in the proto buffer being converted. The special intrinsic
+<code>inproto(field: T): bool</code> can be used to test whether a proto
+tuple field was present in the protocol buffer converted into the proto
+tuple (see also
+<a href="sawzall-intrinsics.html">
+A Manual for the Sawzall Intrinsics</a>).
+<p>
+Tagged fields of proto tuples may also specify
+a corresponding underlying protocol buffer field type. This is the field
+type the tuple field is converted into when the tuple is converted from
+a Sawzall tuple back into the protocol buffer representation. If no
+protocol buffer field type is specified, a default field type is assumed
+(see table below).
+<p>
+<font size=-1>For historical reasons, a proto tuple type may start with
+the keyword <code>parsedmessage</code> to indicate that the tuple is
+a proto tuple. The keyword is treated as a comment.
+</font>
+
+<pre><font color=orangered>
+TupleType = SimpleTupleType | ProtoTupleType.
+
+SimpleTupleType = '{' [SimpleMemberList] '}'.
+SimpleMemberList = SimpleMember {',' SimpleMember} [','].
+SimpleMember = TypeDecl | StaticVarDecl | SimpleFieldDecl.
+SimpleFieldDecl = Component.
+
+ProtoTupleType = ['parsedmessage'] '{' [ProtoMemberList] '}'.
+ProtoMemberList = ProtoMember {',' ProtoMember} [','].
+ProtoMember = TypeDecl | StaticVarDecl | ProtoFieldDecl.
+ProtoFieldDecl = Component ['=' ProtoFieldDefault] '@' proto_field_tag [':' proto_field_type].
+ProtoFieldDefault = Expression.
+proto_field_tag = integer.
+proto_field_type = identifier.
+</font></pre>
+
+The type declarations for proto tuples are usually automatically generated
+by the protocol-compiler from a <code>.proto</code> file. The following table
+shows the relationship between the Sawzall and protocol buffer field types:
+<p>
+<table border="1" width="80%">
+  <tbody>
+  <tr>
+    <td><b>Protocol buffer type</b></td>
+    <td><b>Sawzall type</b></td>
+    <td><b>Comments</b></td>
+  </tr>
+  <tr>
+    <td><code>bool</code></td>
+    <td><code>bool</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  <tr>
+    <td><code>boolean</code></td>
+    <td><code>bool</code></td>
+  </tr>
+  <tr>
+    <td><code>string</code></td>
+    <td><code>bytes</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  <tr>
+    <td><code>fixed32</code></td>
+    <td><code>int</code></td>
+    <td><code>may overflow</code></td>
+  </tr>
+    <td><code>fixed64</code></td>
+    <td><code>fingerprint</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  </tr>
+    <td><code>fixed64</code></td>
+    <td><code>int</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  </tr>
+    <td><code>fixed64</code></td>
+    <td><code>time</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  <tr>
+    <td><code>int32</code></td>
+    <td><code>int</code></td>
+    <td><code>may overflow</code></td>
+  </tr>
+  <tr>
+    <td><code>int64</code></td>
+    <td><code>int</code></td>
+  </tr>
+  <tr>
+    <td><code>uint64</code></td>
+    <td><code>uint</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  <tr>
+    <td><code>float</code></td>
+    <td><code>float</code></td>
+    <td><code>may overflow</code></td>
+  </tr>
+  <tr>
+    <td><code>double</code></td>
+    <td><code>float</code></td>
+    <td><code>default conversion</code></td>
+  </tr>
+  </tbody>
+</table>
+<p>
+For each protocol buffer field type there is a corresponding Sawzall
+field type; for each Sawzall field type there may be more than one
+protocol buffer field type. Some Sawzall fields may lose information
+(overflow may occur) if they are converted into a protocol buffer
+field of a narrower type (note that all basic Sawzall types - except
+<code>bytes</code> and <code>string</code> - are 64 bits wide).
+The default conversions are used if no
+protocol buffer field type is specified explicitly.
+
+<h4><a name="auto_protos">Automatic proto tuple types</a></h4>
+A proto tuple type can be obtained automatically by preceding a
+simple tuple type with the keyword <code>proto</code>. The resulting
+proto tuple type consists of the original tuple type converted into
+a <code>parsedmessage</code> proto tuple type augmented with field
+tags. The tags are assigned in increasing order, starting with tag value
+1 for the first field, tag value 2 for the second field, and so forth. The
+same conversion is applied to any nested tuples in the tuple type (field
+tags start with tag value 1 again; see also the examples below).
+A <code>proto</code> keyword applied to a proto tuple type
+does not change its type (i.e., <code>proto</code> is idempotent).
+
+<h4>Implementation restriction</h4>
+The current implementation may only support a restricted set of constant
+expressions for field default values of proto tuples.
+
+<h4>Examples</h4>
+<pre>
+{}
+
+{ x: float, y: float, int }
+
+# the Vector tuple type
+{ x: float, y: float,
+  static Magnitude := function(p: Vector): float {
+    return sqrt(p.x*p.x + p.y*p.y);
+  }
+}
+
+{ ip: int = 0xffffff00 @ 1,
+  value: bytes = bytes("britney") @ 2, # proto strings are Sawzall bytes
+  timestamp: time @ 5,
+  type Server = {
+    id: int,
+    location: string
+  },
+  static location1 := "ROB",
+  static location2 := "GRI",
+  static location3 := "BGI",
+}
+
+parsedmessage {
+  g: array of TimeProtocol_G @ 1, # 11
+  debug: array of bytes @ 4: bytes # 34
+}
+
+proto T  # T must be a tuple type
+
+proto {
+  x: int,
+  y: float
+}
+
+proto proto proto {  # proto is idempotent
+  x: int,
+  t: {
+    s: bytes,
+    t: bytes
+  }
+}
+
+parsedmessage {  # this type is equivalent to the previous one
+  x: int @ 1,
+  t: parsedmessage {
+    s: bytes @ 1,
+    t: bytes @ 2
+  } @ 2
+}
+</pre>
+
+<h3>Map types</h3>
+A map is a composite type consisting of an (unspecified) number of
+components, called <em>key-value pairs</em>, which are all of the same
+type. A map type specifies the <em>key</em> and <em>value types</em>.
+It may also specify <em>key</em> and <em> value names</em>, which
+serve documentary purposes only. The number of key-value pairs of a map
+is called its <em>length</em>. The length of a map is determined at execution
+time. The values of a map are designated by their keys, which are values of
+key type.
+
+<pre><font color=orangered>
+MapType = 'map' '[' Key ']' 'of' Value.
+Key = Component.
+Value = Component.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+map [int] of bool
+map [symbol: string] of int
+map [point: {x: float, y: float}] of name: string
+</pre>
+
+
+<h3><a name = "output_types">Output types</a></h3>
+Output types specify language-external containers which aggregrate data in
+a type-specific fashion. Sawzall is extensible with respect to output types.
+The following output types are supported:
+<ol>
+<li>collection: a simple collection or concatenation of the data
+<li>maximum: a precise sample of the N highest-weighted data items.
+<li>minimum: a precise sample of the N lowest-weighted data items.
+<li>sample: a statistical sampling of N items.
+<li>set: a set (unique elements) containing at most N items per index.
+<li>sum: an arithmetic sum of the data.
+<li>top: statistical estimators for the`most frequent N' data items.
+<li>unique: statistical estimators for the total number of unique data items.
+<li>weightedsample: a statistical sampling of N items, biased towards items with higher weights.</li>
+<li>recordio: output to a simple record-based binary file.
+</ol>
+Each kind of output type specifies a particular aggregation method. Output
+types are used to declare output variables which represent the connection
+to the language external aggregators. <a href="#emit"><code>emit</code></a>
+statements are used to send data to an aggregator.
+<p>
+Output types may be parametrized and indexed. Parameters are used to
+set up the aggregation variable. Indices are used to create "arrays" of
+aggregators. Unlike with arrays, indices of various types (not just <code>int</code>)
+may be specified. Some output types require the specification of a weight
+type. When emitting to a variable of output type, the weight is used to
+scale the emitted value for aggregation.
+
+<pre><font color=orangered>
+OutputType =
+  'table' table_type [Parameter] {Index} 'of' Element [Weight]
+  [FileSpec | ProcSpec ] [FormatSpec].
+table_type = identifier.
+Parameter = '(' Expression ')'.
+Index = '[' Component ']'.
+Element = Component.
+Weight = 'weight' Component.
+FileSpec = 'file' '(' ArgumentList ')'.
+ProcSpec = 'proc' '(' ArgumentList ')'.
+FormatSpec = 'format' '(' ArgumentList ')'.
+ArgumentList = ExprList.
+ExprList = Expression {',' Expression }.
+</font></pre>
+
+If a <code>file</code> or <code>proc</code> specifier is present, data is not emitted
+to an external aggregator, but to a file or process respectively, with the file
+or process name computed via the specifier as described below. Unless
+a <code>format</code> specifier is present as well, the element type must be
+<code>bytes</code>.
+<code>file</code> or <code>proc</code> specifiers are only allowed
+for <code>collection</code> output types.
+<p>
+If a <code>format</code> specifier is present, any value emitted is
+formatted into a string as expressed via the specifier.
+The emitted values are always of type <code>string</code>, independently
+of the element type specified in the output type; except if there is
+a <code>file</code> or <code>proc</code> specifier present as well, in which
+case the string is converted into (UTF-8 encoded) bytes before
+emission.
+<p>
+The <code>file</code>, <code>proc</code>, and <code>format</code> specifier format
+expressions similar to <code>printf</code> in C: The first argument must be
+a string possibly containing format characters. The remaining arguments
+must correspond in number and type to the format characters in the
+format string. Within the arguments of <code>file</code> or <code>proc</code>
+specifiers, output type index values may be referred to via the
+corresponding component name of a particular index. Within the arguments
+of <code>format</code> specifiers, the element value may be referred to via
+its component name.
+
+<h4>Examples</h4>
+<pre>
+# Type of intrinsic output variable stdout
+table collection of x: string file("/dev/stdout") format("%s\n", x)
+
+# Type used to collect all the values into a single stream
+table collection of string;
+
+# Type used to count the number of times each value is seen
+table sum[value: string] of count: int;
+
+# Type used to record the top 10 values for each category
+table top(10)[category: string] of value: string weight count: int;
+
+# Type used to record the ten most expensive operations
+table maximum(10)[category: string] of operatikon: string weight cost: float;
+
+# Type used to count how many unique values there are, using an (internal)
+# sampled table of 10000 values to estimate the distribution
+table unique(10000) of value: string;
+</pre>
+
+
+<h3><a name="function_types">Function types</a></h3>
+A <em>function</em> type specifies the set of functions with a particular
+<em>signature</em>. The signature of a function is the (ordered) list of
+parameter types and the result type, if any.
+
+<pre><font color=orangered>
+FunctionType = 'function' '(' [ParameterList] ')' [ResultSpec].
+ParameterList = Parameter {',' Parameter}.
+Parameter = identifier ':' Type.
+ResultSpec = ':' Type.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+function()
+function(n: int): int
+function(name: string, hint: Coordinates): Coordinates
+</pre>
+
+<h3><a name ="type_equality">Equality of types</h3>
+Structured types are equal if they have the same <em>structure</em>.
+Array types have the same structure if the element types are equal.
+Map types have the same structure if both the key and value types are equal.
+Tuple types have the same structure if they have the same number of fields
+and all fields match. Fields match if they both have a name and they are equal,
+or both don't have a name; and if they have equal types. Function types
+are equal if they specify the same number of parameters and corresponding
+(by position) parameter types are equal, and if their return types are equal
+(or missing everywhere).
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="statements">Statements</a>
+</h2>
+Sawzall supports most C statements and they match C syntax closely, except
+for the switch statement which is more structured in Sawzall and has a slightly
+extended syntax. Additionally, Sawzall defines an emit statement for emission
+of data into output variables; and a when statement for the (possibly parallel)
+repeated execution of statements.
+
+<pre><font color=orangered>
+Statement =
+  Assignment | Block | BreakStatement | ContinueStatement | DoStatement |
+  EmitStatement | ExprStatement | ForStatement | IfStatement | ResultStatement |
+  ReturnStatement | SwitchStatement | WhenStatement | WhileStatement.
+</font></pre>
+
+
+<h3><a name="assignment">Assignments</a></h3>
+An <em>assignment</em> statement serves to replace the current value of a variable
+or a component of the variable
+on the left-hand side by a new value specified by the expression on the right-hand side.
+The type of the variable and the expression must be equal.
+No evaluation order is specified. In particular, a program is erroneous
+if the value of the right-hand side expression depends on the evaluation of
+the left-hand side variable and vice versa. For example, the assignment
+<code>a[f()] = g();</code> is erroneous if calling <code>f()</code> before
+<code>g()</code> changes the result of <code>g()</code>, and vice versa.
+<pre><font color=orangered>
+Assignment = Factor '=' Expression ';'
+</font></pre>
+If either the left-hand side or the right-hand side of the assignment is
+undefined, the variable designated by the left-hand side becomes entirely undefined.
+For example, in the assignment <code>a[i] = x;</code> the array <code>a</code> becomes
+undefined if either the index <code>i</code> or the value <code>x</code> is undefined.
+
+
+<h3><a name="block">Blocks</a></h3>
+A <em>block</em> groups several declarations and statements into a single
+unit. A block can be used where only a single statement is expected. A block
+also introduces a new <a href="#declarations">scope</a>. Execution of a
+block causes sequential execution of the enclosed declarations and statements.
+<pre><font color=orangered>
+Block = '{' { Declaration | Statement } '}'.
+</font></pre>
+
+
+<h3><a name = "break">Break statements</a></h3>
+A <em>break</em> statement terminates the execution of the smallest
+enclosing <em>for</em>, <em>while</em>, or <em>switch</em> statement.
+break statements may not appear if there is no such enclosing statement or
+if there is a when statement between the break and the enclosing statement.
+Execution continues with the statement immediately following
+the terminated statement.
+<pre><font color=orangered>
+BreakStatement = 'break'.
+</font></pre>
+
+
+<h3><a name = "continue">Continue statements</a></h3>
+A <em>continue</em> statement causes control to continue at the
+the end of the loop's substatement of the smallest
+enclosing <em>do</em>, <em>for</em>, or <em>while</em> loop.
+continue statements may not appear if there is no such enclosing statement or
+if there is a when statement between the continue and the enclosing statement.
+<pre><font color=orangered>
+ContinueStatement = 'continue'.
+</font></pre>
+
+
+<h3><a name = "do">Do statements</a></h3>
+A <em>do</em> statement specifies conditional repetition. The substatement
+is executed as long as the expression (including side-effects) evaluates to
+<em>true</em>; but at least once. The substatement execution and expression
+evaluation is repeated as long as the expression evaluates to <em>true</em>.
+
+<pre><font color=orangered>
+DoStatement = 'do' Statement 'while' '(' BoolExpression ')' ';'.
+</font></pre>
+
+If the boolean expression has become undefined, the do statement
+is aborted and execution continues with the next statement.
+
+<h4>Example</h4>
+<pre>
+do
+  d++;
+while (d*d &lt; x);
+</pre>
+
+
+<h3><a name = "emit">Emit statements</a></h3>
+An <em>emit</em> statement specifies a value to be aggregated with
+a possibly indexed variable of
+<a href="#output_types">output type</a>. A <em>weight</em>
+may be specified for output types that require it. The indices,
+the value to be emitted, and the weight are evaluated, and possibly formatted
+as specified by the output type, and then
+transmitted to the language-external container specified by the variable.
+The evaluation order is not specified; in particular, a program that depends
+on a particular evaluation order is erroneous.
+
+<pre><font color=orangered>
+EmitStatement = 'emit' OutputDesignator '&lt;-' Expression ['weight' Expression] ';'.
+OutputDesignator = var_name {'[' Expression ']'}.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+emit stdout &lt;- "Hello World!";
+emit valuecount[values[somej]] &lt;- 1;
+</pre>
+
+
+<h3><a name = "expr">Expression statements</a></h3>
+An <em>expression</em> statement is an expression executed for its
+side-effects. If the expression specifies a variable, array element, or
+tuple field of type int, and the expression is followed by an <em>increment</em>
+<code>++</code>, or a <em>decrement</em> <code>--</code> operator,
+the variable, array element, or tuple field is incremented or decremented
+by 1.
+
+<pre><font color=orangered>
+ExprStatement = Expression [ '++' | '--' ] ';'.
+</font></pre>
+
+If an undefined value occurs during expression evaluation, expression evaluation
+is aborted and execution continues with the next statement.
+
+<h4>Examples</h4>
+<pre>
+i++;
+a[i]--;
+f(x, y);
+</pre>
+
+
+<h3><a name = "for">For statements</a></h3>
+A <em>for</em> statement specifies conditional repetition. The first expression
+is evaluated once and thus specifies initialization of the loop. The second
+expression must evaluate to a boolean value; it is evaluated before each
+iteration, and once it becomes false, the for loop is terminated. The third
+expression is evaluated after each iteration. Any of the expressions can
+be dropped. Omitting the second expression is equivalent to having the
+boolean constant <code>true</code> as second expression.
+<pre><font color=orangered>
+ForStatement =
+  'for' '(' [ForDeclExpr] ';' [BoolExpression] ';' [ForDeclExpr] ')' Statement.
+ForDeclExpr = Declaration | ExprStatement.
+</font></pre>
+
+A for statement of the form:
+<pre>
+for (expr1; cond; expr2) statement;
+</pre>
+
+is syntactic sugar for the block:
+<pre>
+{ expr1;
+  while (cond) {
+    statement;
+    expr2;
+  }
+}
+</pre>
+
+
+<h3><a name = "if">If statements</a></h3>
+An <em>if</em> statement specifies the conditional execution of statements.
+If the boolean expression evaluates (including side-effects) to <em>true</em>,
+the first statement is executed. If the boolean expression evaluates to <em>false</em>,
+the 2nd statement (following the <em>else</em> clause) is executed, if present.
+<pre><font color=orangered>
+IfStatement = 'if' '(' BoolExpression ')' Statement ['else' Statement].
+</font></pre>
+
+If the boolean expression is undefined, the if statement is ignored and
+execution continues with the next statement (following the if statement).
+
+
+<h3><a name = "result">Result statements</a></h3>
+A <em>result</em> statement produces a value for and exits the
+innermost statement expression containing the result statement.
+All the result statements within an statement expression must produce
+values of the same type.  It is an error if program execution
+reaches the end of a statement expression  without executing a
+result statement.
+<pre><font color=orangered>
+ResultStatement = 'result' Expression.
+</font></pre>
+
+A result statement cannot be used inside a function without an enclosing
+statement expression.
+<pre>
+e := ?{
+  j := function(): int { result 1; };  # compile-time error
+};
+</pre>
+
+
+<h3><a name = "return">Return statements</a></h3>
+A <em>return</em> statement exits the innermost function containing the
+return statement. If the function declaration specifies a return type, the return
+statement must specify an expression of the same type as that return type.
+It is a run-time error if program execution reaches the end of such a function
+without executing a return statement. If the return statement is not within a
+function, it terminates the program upon execution.
+<pre><font color=orangered>
+ReturnStatement = 'return' [ Expression ].
+</font></pre>
+
+If the return value is undefined, the function returns an undefined
+result. A return statement cannot be used inside a statement expression without
+an enclosing function.
+<pre>
+x := function(): int {
+  n := ?{
+    return 2;  # compile-time error
+  };
+};
+</pre>
+
+
+<h3><a name = "switch">Switch statements</a></h3>
+A <em>switch</em> statement specifies the selection of a sequence of
+statements depending on a <em>tag</em>. Note that the Sawzall switch
+statement differs from a C switch statement in a couple of ways: syntactically,
+more than one case can be mentioned per <code>case</code> keyword; and
+semantically, the tag value is compared with individual case values in order
+of appearance. Individual case values need not be compile-time constants.
+In particular, the Sawzall switch statement works also for tag types other then int.
+Furthermore, an implicit <em>break</em> statement is appended to each statement
+list per case (no fall through).
+
+<pre><font color=orangered>
+SwitchStatement = 'switch' '(' Expression ')' '{' { Case } Default '}'.
+Case = 'case' CaseLabelList ':' StatementList.
+CaseLabelList = Expression {',' Expression}.
+StatementList = Statement { Statement }.
+Default = 'default' ':' StatementList.
+</font></pre>
+
+A switch statement of the form:
+
+<pre>
+switch (tag) {
+  case a0, a1, ... an:
+    as;
+  case b0, b1, ... bn:
+    bs;
+  ...
+  case z0, z1, ... zn:
+    zs;
+  default:
+    s;
+}
+</pre>
+
+is syntactic sugar for the block (assuming no undefined values and
+<code>break</code> statements):
+
+<pre>
+{ $tag: typeof(tag) = tag;
+  if ($tag == a0 || $tag == a1 || ... $tag == an)
+    as;
+  else if ($tag == b0 || $tag == b1 || ... $tag == bn)
+    bs;
+  ...
+  else if ($tag == z0 || $tag == z1 || ... $tag == zn)
+    zs;
+  else
+    s;
+}
+</pre>
+
+If tag is undefined, the switch statement is ignored, and execution continues
+with the next statement. If any of the case labels
+is undefined, the effect is as if that case were not mentioned. Since this can
+lead to a potentially 'empty' switch statement, the default case is mandatory.
+Break statements can be used to exit a switch statement before the end of a
+statement list in a case (breaks are implicit at the end of each case).
+
+<h4>Implementation restriction</h4>
+The current implementation only supports tag values of basic types (including
+string, and bytes).
+
+
+<h3><a name = "when">When statements</a></h3>
+A <em>when</em> statement specifies the (potentially parallel) repeated
+execution of a statement for a set of <em>quantifier</em> values satisfying
+a condition. A quantifier variable is a variable
+declared within the when statement that is then evaluated
+within the condition.
+The quantifier variable assumes (is bound to) values that make the
+condition true.
+There are 3 kinds of quantifiers:
+<ul>
+<li><em>all</em> quantifiers that satisfy the condition for all possible values
+cause the statement to be executed exactly once. The quantifier value is
+undefined within the statement.
+<li><em>each</em> quantifiers are bound to all possible values that satisfy
+the condition and the statement is executed for each of those values with the
+quantifier bound to that value.
+<li><em>some</em> quantifiers are bound to any single value that satisfies
+the condition and the statement is executed exactly once with the
+quantifier bound to that value.
+</ul>
+The scope of quantifiers is the when statement. If there is more than one
+quantifier, the first quantifier is bound first, the 2nd quantifier is bound
+second, etc.; i.e., the set of possible values for a 2nd quantifier may depend
+on the bound value of the 1st quantifier. In particular, swapping the order of
+quantifiers may change the semantics of the when statement.
+
+<pre><font color=orangered>
+WhenStatement = 'when' '(' {QuantifierDecl} BoolExpression ')' Statement.
+QuantifierDecl = var_name ':' quantifier Type ';'.
+quantifier = 'all' | 'each' | 'some'.
+</font></pre>
+
+If the boolean expression is (or has become) undefined for all possible values
+of the quantifiers, the when statement is aborted and execution continues
+with the next statement.
+<p>
+break or continue statements are not permitted in a when
+statement unless the corresponding switch statement or loop is
+also in the when statement.
+
+<h4>Implementation restriction</h4>
+The current implementation requires that quantifiers are used as stand-alone
+indices (i.e., not as part of a more complex expression) in array or map subscripts.
+The arrays and maps subscripted by the quantifiers are used to determine the range
+of quantifier values. If such an array or map changes during the evaluation of the
+when statement, the results are unspecified.
+
+<h4>Example</h4>
+<pre>
+# Count the relevant values
+when (
+  somei: some int;
+  somej: some int;
+  lowercase(valuewords[somei]) == values[somej]
+)
+  emit valuecount[values[somej]] &lt;- 1;
+</pre>
+
+
+<h3><a name = "while">While statements</a></h3>
+A <em>while</em> statement specifies conditional repetition. If the boolean
+expression (including side-effects) evaluates to <em>true</em>, the substatement
+is executed. The expression evaluation and substatement execution is repeated
+as long as the expression evaluates to <em>true</em>.
+
+<pre><font color=orangered>
+WhileStatement = 'while' '(' BoolExpression ')' Statement.
+</font></pre>
+
+If the boolean expression is (or has become) undefined, the while statement
+is aborted and execution continues with the next statement.
+
+<h4>Example</h4>
+<pre>
+while (d*d &lt; x)
+  d++;
+</pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="expressions">Expressions</a>
+</h2>
+<h3>Expressions</h3>
+Expressions specify how values are computed by applying <a href="#operators">
+operators</a>
+on <a href="#factors">factors</a>. The syntax of expressions distinguishes
+between 5 classes of
+binary operands with different precedences (binding strengths) and 1 class
+of unary operators with highest precedence. Operators of the same
+precedence associate from left to right; for example, <code>x - y - z</code>
+stands for <code>(x - y) - z</code>.
+
+<pre><font color=orangered>
+Expression = Conjunction {('||' | 'or') Conjunction}.
+Conjunction = Comparison {('&amp;&amp;' | 'and') Comparison}.
+Comparison = SimpleExpr [relation SimpleExpr].
+relation = '==' | '!=' | '&lt;' | '&lt;=' | '&gt;' | '&gt;='.
+SimpleExpr = Term {add_operator Term}.
+add_operator = '+' | '-' | '|' | '^'.
+Term = Factor {mul_operator Factor}.
+mul_operator = '*' | '/' | '%' | '&lt;&lt;' | '&gt;&gt;' | '&amp;'.
+</font>
+</pre>
+
+<h3><a name="factors">Factors</a></h3>
+Factors are <em>operands</em>, possibly followed by a <em>selector</em>,
+<em>index</em> expression, or invoked as function call.
+
+<pre><font color=orangered>
+Factor = Operand { Selector | Index | Call | SawCall }.
+Selector = '.' field_name.
+field_name = identifier.
+Index = '[' Expression [':' Expression] ']'.
+Call = '(' ArgumentList ')'.
+SawCall =
+  '(' [IterationCount ','] InputString
+  ',' RegexpList [',' 'rest' Factor] ')'.
+IterationCount = Expression.
+InputString = Expression.
+saw_name = identifier.
+RegexpList = Regexp {',' Regexp}.
+Regexp = ['skip'] ['submatch'] string.
+</font>
+</pre>
+
+<h4><a name="member_selection">Member selection</a></h4>
+If the operand is a type identifier <code>T</code>, then <code>T.m</code>
+selects the tuple member <code>m</code>, and <code>m</code> must
+refer to the type name of a type declaration, or the variable name of a static
+variable declaration in the <a href="#tuple_types">tuple type</a> <code>T</code>.
+If the type of an operand <code>T</code> is a tuple, then
+<code>T.f</code> selects the field <code>f</code> of the tuple.
+
+<h4>Array indexing</h4>
+If the type of an operand <code>A</code> is an array,
+string, or bytes, then <code>A[i]</code> selects the element of <code>A</code> whose index corresponds
+to the current value of <code>i</code>.
+If the index <code>i</code> of <code>A[i]</code>
+is not within the bounds of the array, the expression <code>A[i]</code>
+becomes undefined.
+Furthermore, <code>A[i:j]</code> selects a <em>sub-array</em>
+or <em>slice</em> consisting of the elements <code>A[m]</code>, <code>A[m+1]</code>, ...
+<code>A[n-1]</code> with <code>m = max(0, i)</code>, and <code>n = min(len(A), j)</code>.
+Note that slices are never undefined, they simply become empty
+(i.e., their length is 0) if the range is entirely outside the array boundaries.
+
+<h4>Map indexing</h4>
+If the type of an operand <code>M</code> is a map, then <code>M[k]</code> selects the element of
+<code>M</code> whose key corresponds to the current value of <code>k</code>. If <code>M[k]</code>
+appears on the right-hand side of an assignment or in an expression, and there is no
+map element for the key <code>k</code>, then <code>M[k]</code> is undefined. If <code>M[k]</code>
+is the left-hand size of an assignment of the form <code>M[k] = v;</code>, then <code>v</code>
+becomes the value associated with the key <code>k</code>.
+
+<h4>Function calls</h4>
+If the type of an operand <code>F</code> is a function, then <code>F(p1, p2, ... pn)</code> expresses
+the call of <code>F</code> with parameters <code>p1</code>, <code>p2</code>, ... <code>pn</code>.
+The parameter expressions
+are evaluated and <a href="#assignment">assigned</a> to the formal function parameters before the call;
+no evaluation order is specified. In particular,
+a program that depends on a particular evaluation order of parameters is
+erroneous. If <code>F</code> is defined by the
+Sawzall program (i.e., it is not an <a href="#intrinsics">intrinsic</a> function),
+the number and types of the parameter expressions must correspond (by position)
+with the type of <code>F</code>. If <code>F</code> is an <em>intrinsic</em> function, function specific
+rules apply. In particular, if <code>F</code> specifies a saw call (one of <code>saw</code>,
+<code>sawn</code>, or <code>sawzall</code>), saw-specific syntax applies to
+the function call. If the operand <code>F</code> is a type name, then the call
+<code>F(x, arg1, arg2, ...)</code> is syntactic sugar for the call
+<code>convert(F, x, arg1, arg2, ...)</code>. Note that parameter passing is simply a special
+form of assignment; and thus is done <a href="#value_semantics">by value</a> in Sawzall.
+
+<h4><a name="conversions">Conversions</h4>
+If an operand <code>T</code> is an identifier designating a type, then <code>T(x, p1, ... pn)</code>
+is a shortcut for the conversion function call <code>convert(T, x, p1, ... pn)</code>, where
+<code>convert</code> is a special conversion intrinsic, <code>T</code> the type into which the
+value <code>x</code> is to be converted, and <code>p1</code>, <code>p2</code> ... <code>pn</code>,
+are (potentially missing) parameters specifying the conversion more precisely.
+For example,
+<code>int(x, 10)</code> is the same as <code>convert(int, x, 10)</code>. Conversions are defined between
+most basic types, and between some array types as well. Currently a detailed list of all
+implemented conversions is missing, but some additional information can be found in
+<a href="sawmill-language.html">
+Sawmill Language</a>.
+
+<h3>Operands</h3>
+Operands are type or variable<em> identifiers</em>, <em>literal</em> values,
+<em>composite</em> values, anonymous <em>functions</em> (closures),
+unary operators applied to other factors, <code>$</code> symbols,
+nested expressions,
+or statement expressions. A type identifier denotes the corresponding type. It
+does not have a value and must be followed by a
+<a href="#member_selection">member selector</a>,
+<a href="#conversions">conversion</a> call, or may be used as an argument for
+certain special intrinsics. A variable
+identifier stands for the current value of the variable. A literal value
+specifies a constant value. A <code>$</code> symbol must only be used within
+an index expression and it stands for current length of the subscripted array,
+string, or bytes value. Parentheses are used to specify different evaluation
+orders than defined by the operator precedences.
+
+<pre><font color=orangered>
+Operand =
+  identifier | literal | Composite | Function | unary_operator Factor |
+  '$' | StatementExpr | '(' Expression ')'.
+unary_operator = '+' | '-' | '~' | '!' | 'not'.
+</font>
+</pre>
+
+<h3>Composites</h3>
+A composite specifies an tuple, array, or map "literal". The value of the
+composite is computed by evaluating all the expressions within the composite.
+The evaluation order is not specified. In particular, a program that depends on
+a particular evaluation order is erroneous. Composite types are
+<em>target-typed</em>, i.e., their type depends not only on the types of
+the individual composite expressions, but also  where the composite occurs
+in the program:
+<ul>
+  <li>The type of a composite is equal to the type of a tuple T, if the number
+  of composite elements matches the number of tuple fields, and if the types
+  of the composite elements equal the corresponding (by position) field type.
+  <li>The type of a composite is equal to the type of an array, string, or bytes A,
+  if all composite elements have the same type and that type equals the
+  element type of array A. Alternatively, the type of an empty composite
+  <code>{}</code> is equal  to the type of any array, string, or bytes.
+  <li>The type of a composite is equal to the type of a map M, if the composite
+  elements are key, value pairs separated by <code>:</code>'s, and if the all key
+  types equal the type of the map key, and if all value types equal the type of
+  the map value. Alternatively, the type of an empty map <code>{:}</code> is
+  equal to the type of any map.
+</ul>
+
+<pre><font color=orangered>
+Composite = '{' [ExprList | PairList | ':'] '}'.
+PairList = Pair {',' Pair}.
+Pair = Expression ':' Expression.
+</font>
+</pre>
+
+If any expression in the composite is undefined, the value of the composite
+is undefined.
+
+
+<h4>Examples</h4>
+<pre>
+{}
+{:}
+{ 'a', 'b', 127 }
+{ 12, "hello", 3.14, {} }
+{ "foo" : 3, "bar" : 7 }
+</pre>
+
+<h3><a name="functions">Functions</h3>
+A function consists of a <a href="#function_types">function type</a>
+and a <a href="#block">block</a>. The function type
+specifies the parameters and result type, if any. The block contains
+<a href="#declarations">declarations</a> and <a href="#statements">
+statements</a>. The value of a function also binds the
+function's <em>context</em>, i.e., within the function, variables
+defined in scopes (usually other functions) surrounding the function
+are accessible. The function type may be explicitly specified or be
+the type name of a function type.
+
+<pre><font color=orangered>
+Function = Type Block.
+</font></pre>
+
+A function that is used as initialization expression for a static variable
+may not access non-static variables in surrounding scopes. Thus, such a function
+cannot produce any side-effects and its result depends only on the (global)
+state of static variables and the function arguments.
+
+
+<h4>Examples</h4>
+<pre>
+function() {}
+function(radius: float): float { return 2.0 * PI * radius; }
+Action { kill_bill(); }
+</pre>
+
+
+<h3><a name="intrinsics">Intrinsic functions</a></h3>
+The Sawzall implementation predefines a set of
+<em>intrinsic</em> functions; i.e., functions built into the system.
+Intrinsic functions may support variable length parameter
+lists (e.g., <code>format()</code>), optional parameters (e.g., <code>assert()</code>),
+and polymorphic parameter types (e.g., <code>min()</code>).
+The intrinsic functions can be roughly grouped into the following
+classes:
+<ul>
+<li>basic language support (<code>assert()</code>, <code>def()</code>, <code>convert()</code>,
+<code>format()</code>, <code>len()</code>,  <code>new()</code>,  etc.)</li>
+<li>mathematical functions (<code>max()</code>, <code>min()</code>, <code>ln()</code>,
+<code>exp()</code>, <code>rand()</code>, etc.)</li>
+<li>special types support (<code>haskey()</code>, <code>addday()</code>, <code>trunctoday()</code>,
+<code>now()</code>, etc.)</li>
+<li>regular expressions support (<code>regex()</code>, <code>saw()</code>, <code>sawn()</code>,
+<code>sawzall()</code>, <code>match()</code>, etc.)</li>
+</ul>
+Because many intrinsics are highly specific and may change over time,
+these functions are not described in this document in detail. Instead,
+the reader is referred to the
+<a href="_intrinsics.html">
+Manual for Sawzall Intrinsics</a> document.
+
+<h3><a name="statexprs">Statement Expressions</a></h3>
+A <em>statement expression</em> produces a value from the execution
+of an arbitrary sequence of statements, embedded in an in-line
+block.  The value of a statement expression is the value of the
+first result statement executed during its evaluation.
+
+<pre><font color=orangered>
+StatementExpr = '?' Block .
+</font>
+</pre>
+
+<h4>Examples</h4>
+<pre>
+# signum
+signum := ?{ switch(true) { case x < 0: result -1; case x > 0: result 1; default: result 0; };
+
+# array filtering
+a = ?{
+  aa: array of int = {};
+  when (i: each int; Test(a[i])) aa = aa + {a[i]};
+  result aa;
+};
+</pre>
+
+The block in a statement expression must contain at least one
+result statement, which determines the type of the statement expression.
+
+<h3><a name="operators">Arithmetic operators</a></h3>
+<pre>
+symbol	result
++	sum
+-	difference
+*	product
+/	quotient
+%	modulo
+&amp;	bitwise and
+|	bitwise or
+^	bitwise xor
+~	bitwise negation
+&lt;&lt;	shift left
+&gt;&gt;	shift right (logical)
+</pre>
+
+The behavior of shifts is unspecified if the shift count is greater than or
+equal to the word size.
+If an expression contains an integer division or modulo operation by 0,
+the expression becomes undefined.
+The operators <code>/</code> and <code>%</code> are related by the following formula:
+<pre>
+	x  =  (x / y) * y  +  (x % y)
+</pre>
+
+The operator <code>^</code> is related to the operators <code>&amp;</code>, <code>|</code>,
+and <code>~</code> as follows:
+<pre>
+	x ^ y = (x &amp; ~y) | (y &amp; ~x)
+</pre>
+
+
+<h3>Comparison operators</h3>
+<pre>
+symbol  comparison
+==	equal
+!=	not equal
+&lt;	less
+&lt;=	less or equal
+&gt;	greater
+&gt;=	greater or equal
+</pre>
+
+<h3>Boolean operators</h3>
+<pre>
+and	true if and only if both arguments are true; false otherwise (deprecated)
+or	false if and only if both arguments are false; true otherwise (deprecated)
+not	true if operand is false; false otherwise
+&amp;&amp;	like <code>and</code>, but evaluates rhs only if lhs is true
+||	like <code>or</code>, but evaluates rhs only if lhs is false
+!	same as <code>not</code>
+</pre>
+Note that <code>and</code> and <code>or</code> evaluate both arguments unconditionally.
+
+<h3>Array operators</h3>
+<pre>
+symbol	result
++	concatenation
+</pre>
+
+<h3>Operator Precedences</h3>
+Operator precedences and associativities are summarized in the table below.
+<p>
+<table border="1" width="80%">
+  <tbody>
+    <tr>
+      <td><b>Precedence</b></td>
+      <td><b>Category</b></td>
+      <td><b>Operators</b></td>
+      <td><b>Associativity</b></td>
+    </tr>
+
+    <tr>
+      <td>6 (highest)</td>
+      <td>unary</td>
+      <td><pre>+   -   ~   !   not</pre></td>
+      <td>right to left</td>
+    </tr>
+
+    <tr>
+      <td>5</td>
+      <td>multiplicative</td>
+      <td><pre>*   /   %   &lt;&lt;   &gt;&gt;   &amp;</pre></td>
+      <td>left to right</td>
+    </tr>
+
+    <tr>
+      <td>4</td>
+      <td>additive</td>
+      <td><pre>+   -   |   ^</pre></td>
+      <td>left to right</td
+    </tr>
+
+    <tr>
+      <td>3</td>
+      <td>comparison</td>
+      <td><pre>==   !=   &lt;   &lt;=   &gt;   &gt;=</pre></td>
+      <td>left to right</td>
+    </tr>
+
+    <tr>
+      <td>2</td>
+      <td>conjuction</td>
+      <td><pre>&amp;&amp;   and</pre></td>
+      <td>left to right </td>
+    </tr>
+
+    <tr>
+      <td>1 (lowest)</td>
+      <td>disjunction</td>
+      <td><pre>||   or</pre></td>
+      <td>left to right </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h4>Examples for expressions</h4>
+<pre>
+2003				# an int
+i + 1				# an int
+0b100 &lt;&lt; i			# an int
+(x - a) * (x + a)		# a float
+{&quot;the&quot;, &quot;answer&quot;, &quot;is&quot;, 42}	# a 4-tuple {string, string, string, int}
+{1.2, 2.3, 3.4, 4.5, 5.6}	# a 5-tuple and also an array of float holding 5 elements
+a[i % $]			# (i % len(a)).th element of array a
+x.f				# field f of tuple x
+{1, 2, 3, 4, 5}[i]		# i.th element of constructed array
+(0 &lt;= i) and (i &lt; n)		# true if i in [0, n)
+min(x, y)			# call of function min with arguments x and y
+a[i:j]				# the array (a[i], a[i+1], .. a[j-1])
+</pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="lexical">Lexical structure</a>
+</h2>
+
+The Sawzall language is the infinite set of sentences produced by the language
+syntax. Each sentence is called a Sawzall <em>program</em>. A program
+consists of a finite sequence of terminal (lexical) <em>symbols</em>.
+These symbols in turn are composed of finite sequences of characters.
+In the Sawzall language, terminal symbols can be classified into
+<em>identifiers</em>, <em>literals</em>, <em>operators</em>,
+and <em>delimiters</em>. Arbitrary amounts of white space, comments,
+and include clauses may appear between terminal symbols.
+
+<h3><a name="encodings">Encodings</a></h3>
+The program text is in the Unicode character set encoded using UTF-8
+(which is fully upwards compatible with 7-bit ASCII). String literals, character literals,
+and comments may therefore contain Unicode characters.
+
+<h3>Comments</h3>
+Comments start with a # and end at the end of a line.
+They may appear wherever white space may appear.
+Comments are treated like white space, and thus have
+no impact on the meaning of a program.
+
+<h4>Examples</h4>
+<pre>
+# Copyright 2010
+################
+</pre>
+
+<h3>Include clauses</h3>
+An include clause can be used to include the contents of another file.
+The effect is as if the include clause was replaced by the contents of
+the included file surrounded by white space (i.e., a symbol at the end
+of an included file cannot "continue" in the file containing the include
+clause).
+<pre><font color=orangered>
+Include = 'include' file_name.
+file_name = string.
+</font></pre>
+
+<h4>Platform-specific rules</h4>
+Under Linux and OS X, if <code>file_name</code> specifies a relative path (i.e., does not
+start with '/'), the directory location of the file is relative to the including
+file (i.e., the file containing the <code>include</code> clause), or relative to any
+number of directories specified as <em>include directories</em> via
+command line arguments; unless <code>file_name</code> starts with a '.' in
+which case it <em>must</em> be located relative to the including file.
+If other platforms are supported they do not necessarily follow this rule.
+<h4>Examples</h4>
+<pre>
+include "/home/szluser/stuff"
+include "lib/qsort.szl"
+</pre>
+
+<h3>Proto clauses</h3>
+A proto clause is similar to the include clause except that the file that is
+included is generated from the protocol buffer description mentioned in
+the proto clause. The file is generated by the protocol compiler using the
+--lang=sawzall command line flag.
+
+<pre><font color=orangered>
+Proto = 'proto' file_name.
+</font></pre>
+
+<h4>Platform-specific rules</h4>
+The same platform-specific rules apply as for include clauses.
+
+<h4>Example</h4>
+<pre>
+proto "/home/szluser/logfile.proto"
+</pre>
+
+
+<h2><a name="terminal_symbols">Terminal symbols</a></h2>
+
+<h3><a name="identifiers">Identifiers</h3>
+An identifier is a sequence of letters and digits. The first character must be
+a letter; the underscore '_' counts as a letter. Upper and lower case are
+distinct. Identifiers may have any length. Two identifers are equal if they
+have the same length and if they match character for character.
+<pre><font color=orangered>
+identifier = (letter | '_') {letter | '_' | digit}.
+letter = 'A' .. 'Z' | 'a' .. 'z'.
+digit = '0' .. '9'.
+</font></pre>
+
+Various identifiers are predefined. They refer to basic data types, intrinsic
+functions, incoming parameters, etc. The following is an incomplete list:
+<pre>
+int float string time bytes bool fingerprint output stdout stderr _undef_cnt
+_undef_details true false PI SECOND SEC MINUTE MIN HOUR HR DEBUG def
+convert new regex saw sawn sawzall fingerprintof format len haskey inproto
+keys lookup max min assert addday addmonth addweek addyear dayofmonth
+dayofweek dayofyear hourof minuteof monthof secondof yearof trunctoday
+trunctohour trunctominute trunctomonth trunctosecond trunctoyear now highbit
+load getenv lowercase uppercase match strfind strrfind strreplace matchposns
+matchstrs ln log10 exp pow ___raise_segv rand nrand tobase64 frombase64
+splitcsvline splitcsv
+</pre>
+
+<h4>Platform-specific predefined identifiers</h4>
+A list of all predefined
+identifiers can be obtained with the command:
+<code>szl --explain=</code>
+
+<h3>Literals</h3>
+Literals are symbols denoting constant values. There are <em>integer</em>,
+<em>unsigned integer</em>, <em>fingerprint</em>, <em>floating point</em>,
+<em>char</em>,
+<em>string</em>, and <em>time</em> literals.
+The literal syntax follows ANSI C literal syntax closely where possible.
+
+<pre><font color=orangered>
+literal = integer | unsigned_integer |
+          fingerprint | floating_point | char | string | time.
+</font></pre>
+
+<h4>Integer literals</h4>
+An integer literal can be specified in binary, octal, decimal, or
+hexadecimal form. Integers may be signed.
+<pre><font color=orangered>
+
+integer = ['-'] (binary_int | octal_int | decimal_int | hexadecimal_int).
+
+binary_int = '0' ('B' | 'b') bin_digit {bin_digit}.
+octal_int = '0' oct_digit {oct_digit}.
+decimal_int = dec_digit {dec_digit}.
+hexadecimal_int = '0' ('X' | 'x') hex_digit {hex_digit}.
+
+bin_digit = '0' .. '1'.
+oct_digit = '0' .. '7'.
+dec_digit = '0' .. '9'.
+hex_digit = '0' .. '9' | 'A' .. 'F' | 'a' .. 'f'.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+1		# = 1
+011		# = 9
+0b1010		# = 10
+42		# = 42
+0x7f		# = 127
+</pre>
+
+<h4>Implementation note</h4>
+The syntax for operands permits a unary operator <code>-</code> in front of
+an expression; thus a negative integer value can be written in two different
+ways. For instance, -3.14 can be written as <code>-3.14</code> (signed
+integer literal) or as <code>- 3.14</code> (<code>-</code> operator followed
+by unsigned integer literal). This apparent redundancy is required to permit
+the entry of the most negative integer value -0x8000000000000000 as a literal
+(the corresponding positive value 0x8000000000000000 is too large to be represented).
+
+<h4>Unsigned integer literals</h4>
+An unsigned integer literal looks like a regular integer literal except
+that it is not signed and must have a 'U' or 'u' suffix. An unsigned
+integer literal has type <code>uint</code>, not <code>int</code>.
+<pre><font color=orangered>
+
+unsigned_integer = (binary_int | octal_int | decimal_int | hexadecimal_int) ('U' | 'u').
+
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+1u		# = 1
+011u		# = 9
+0b1010U		# = 10
+42u		# = 42
+0x7fU		# = 127
+18446744073709551616U	# = largest possible 64-bit value
+</pre>
+
+<h4>Fingerprint literals</h4>
+A fingerprint literal consists of an integer literal immediately
+followed by a 'P' or 'p'. The value of the fingerprint is the
+value of the integer.
+<pre><font color=orangered>
+fingerprint = integer ('P' | 'p').
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+0p		# the fingerprint with value 0
+0x6347P		# the fingerprint with value 25415
+</pre>
+
+<h4>Floating point literals</h4>
+A floating point literal consists of an integer part,
+a decimal point, a fraction part, and an optional scale factor. The scale
+factor consists of an 'E' or 'e' followed by a possibly signed exponent.
+Either the integer or the fraction part (not both) may be missing; either
+the decimal point or the scale factor (not both), may be missing. Floating
+point numbers may be signed.
+<pre><font color=orangered>
+floating_point = ['-'] [integer_part]['.' [fraction_part]] [scale_factor].
+
+integer_part = decimal_int.
+fraction_part = decimal_int.
+scale_factor = ('E' | 'e') ['+'|'-'] exponent.
+exponent = decimal_int.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+.01		# = 0.01
+1e-3		# = 0.001
+2.		# = 2.0
+3.1415		# = 3.1415
+2.18E5		# = 218000.0
+</pre>
+
+<h4>Implementation note</h4>
+A negative floating point value can be written in two different ways:
+As a negative floating point literal or as a positive floating point
+literal preceded by a minus sign (see also the implementation note on
+integer literals). This syntactic redundancy has no
+effect on program semantics and is simply a side effect of the current
+implementation (which shares code for the lexical analysis of integer
+and floating point literals).
+
+
+<h4>Char literals</h4>
+A char literal consist of an ordinary (Unicode) character or an escaped
+character, enclosed in single quotes '. The value of an ordinary character
+is the integer corresponding to the Unicode code point of the character.
+The value of an escaped character matches the C definition.
+
+<pre><font color=orangered>
+char = ''' character '''.
+character = ordinary_character | escaped_character.
+escaped_character =
+  '\' oct_digit [oct_digit [oct_digit]] |
+  '\' 'x' hex_digit {hex_digit} |
+  '\' 'u' hex_digit hex_digit hex_digit hex_digit |
+  '\' 'U' hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit hex_digit |
+  '\' ('a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '&quot;') |
+  '\' ordinary_character.
+</font></pre>
+
+An ordinary character is any printable Unicode character except double quote
+&quot; or backslash \. The value of an ordinary character prefixed with '\' is
+the value of the ordinary character (e.g., '\c' == 'c').
+
+<h4>Examples</h4>
+<pre>
+'\n'		# = 10
+'A'		# = 65
+</pre>
+
+<h4>String literals</h4>
+A string literal is a sequence of characters enclosed in double quotes &quot;
+or back quotes `.
+The value of a string literal is an array of integers with the element values
+corresponding to the Unicode values of the string's characters. If the string
+is in double quotes, escaped characters are interpreted as for char literals.
+If the string is in back quotes, no escaping takes place. This is particularly
+useful for regular expressions.
+<pre><font color=orangered>
+string = '&quot;' {character} '&quot;' | '`' {character} '`'.
+</font></pre>
+<font size=-1>The above syntax for strings is somewhat simplified to
+facilitate reading.
+In particular, it doesn't exclude " or ' characters from the respective string
+definitions. To include a double quote character in a string enclosed by
+double quotes, escape the double quote character: <code>"\""</code>.
+Back quotes cannot be included directly in a string enclosed by back quotes
+since they cannot be escaped in such a string by definition.
+Instead, use something like: <code>`string1` + "`" + `string2`</code>.
+Also, it is illegal for to place a character with value 0 in a string literal.
+</font>
+
+<h4>Examples</h4>
+<pre>
+&quot;&quot;		# empty string
+&quot;Sawzall\n&quot;	# Sawzall followed by a newline character
+`&quot;Hello&quot;`       # "Hello" (including the &quot;&#39;s)
+</pre>
+
+<h4>Bytes literals</h4>
+There are two forms of bytes literals.
+The first comprises a string literal immediately
+prefixed by the letter 'B'.
+The value of such a bytes literal is the sequence of bytes
+generated by interpreting each character in the string as a
+single byte. It is erroneous if a character in the string literal
+has value larger than 255.
+Thus <tt>B"\xff"</tt>
+contains one byte (value 255) while the regular string <tt>"\xff"</tt>
+contains one character whose UTF-8 representation would require two bytes.
+The other form is a string literal prefixed by the letter 'X'.
+In this form the string must be an even number of hexadecimal digits.
+Each successive pair of digits represents one byte of the value.
+Note: it is illegal for a string constant to represent a character with
+value zero, but a bytes literal may contain bytes with value zero.
+<pre><font color=orangered>
+bytes = 'B' string | 'X' hex_string.
+hex_string = '&quot;' { hex_digit hex_digit } '&quot;' .
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+B&quot;&quot;         # empty bytes literal
+B&quot;hello&quot;    # five bytes
+B`&quot;`        # one byte, a double quote
+B&quot;\xff&quot;     # one byte, value 255
+X&quot;0011AB&quot;   # three bytes: 0x00 0x11 0xAB
+</pre>
+
+<h4>Time literals</h4>
+A time literal consists of an unsigned integer literal immediately followed
+by a 'T' or 't'. The value of the time literal is the value of the integer
+interpreted as microseconds. Alternatively, a date and time string
+in double quotes immediately preceded by a 'T' can be used to
+specify a time. The value of such a time string literal is the number
+of microseconds from Dec 31 16:00:00 PST 1969.
+<pre><font color=orangered>
+time = integer ('T' | 't') | 'T' string.
+</font></pre>
+
+<h4>Examples</h4>
+<pre>
+0t		# 0 microseconds
+1000000T	# 1 second
+T"Tue Jun  5 10:43:07 America/Los_Angeles 2007"
+T"Wed Feb  4 16:26:41 PST 2004"
+</pre>
+
+<p>Sawzall's time zone support is built upon the
+   <a href="http://icu-project.org/">ICU C++</a> code.  You
+   can use any time zone recognized by that code.  "America/Los_Angeles"-style
+   identifiers are encouraged.
+
+
+<h3>Operators and delimiters</h3>
+Operators and delimiters are special character sequences and
+<em>reserved words</em>. Reserved words cannot be used as identifiers
+(with the exception of <code>format</code> which is also the identifier for an
+intrinsic function).
+
+<pre>
++	-	*	/	%	&amp;	|	^
+&lt;&lt;	&gt;&gt;	==	!=	&lt;	&lt;=	&gt;	&gt;=
+(	)	[	]	{	}	&amp;&amp;	||
+~	!	.	,	;	:	=	&lt;-
+$	--	++
+
+all	and	array	break	case	continue	default	do	each
+else	emit	file	for	format	function	if	include	map
+not	of	or	parsedmessage	proc	proto	rest	result	return
+skip	some	static	submatch	switch	table	type	weight	when	while
+</pre>
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="appendix">Appendix</a>
+</h2>
+
+<h3>EBNF Syntax</h3>
+The syntax of EBNF can be described within EBNF:
+<pre><font color=orangered>
+Production = production_name '=' Expression '.'.
+Expression = Term { '|' Term }.
+Term = Factor { Factor }.
+Factor = production_name | symbol | Group | Option | Repetition.
+Group = '(' Expression ')'.
+Option = '[' Expression ']'.
+Repetition = '{' Expression '}'.
+production_name = identifier.
+</font></pre>
+
+
+<!----------------------------------------------------------------------------->
+<h2>
+  <a name="appendix">Acknowledgments</a>
+</h2>
+We have freely borrowed language and syntactical structure from
+the following sources:
+<ul>
+  <li>"The C Programming Language", 2nd edition. Brian W. Kernighan,
+  Dennis M. Ritchie.
+  <li><a href="http://www.google.com/url?sa=D&q=http://www.oberon.ethz.ch/oreport.html">
+  "The Oberon Language Report"</a>, revised edition 10/1/1990.
+  Niklaus Wirth.
+  <li><a href="http://www.google.com/url?sa=D&q=http://www.cs.bell-labs.com/who/rsc/thread/newsqueak.pdf">
+  "Newsqueak: A Language for Communicating with Mice"</a>. Rob Pike.
+</ul>
+
+
+<!----------------------------------------------------------------------------->
+<hr>
+</body>
+</html>
+

@@ -28,8 +28,8 @@
 This document is a semi-formal specification of the Sawzall language.
 It contains a formal definition of the language syntax with concise
 explanations of type and semantic rules. It accompanies the
-<a href="sawmill-language.html">
-Sawmill Language</a> document, which is a more informal but broader
+<a href="sawzall-language.html">
+Sawzall Language</a> document, which is a more informal but broader
 description of the language and the supporting environment.
 
 
@@ -96,13 +96,8 @@ to its type. For example, a <em>sum</em> aggregator, referred to via
 an output variable of <em>sum</em> output type, will add up all the
 values it receives. A <em>collection</em> aggregator will simply collect
 all the data, etc. The Sawzall language doesn't specify a particular
-implementation for aggregators, but within the context of the Sawmill
-project, aggregators are implemented via the <code>saw</code> application,
-which stores aggregated data in GFS files. Other programs are then
-used to retrieve the final results. Thus, a Sawzall program can be
-considered a filter for individual log entries: each entry is processed
-independently from all the others, and any potential results are
-aggregated via output variables.
+implementation for aggregators, but the Szl implementation does provide
+an implementation.
 <p>
 Processing of a large set of log entries may take a considerable
 amount of time even if they are processed in parallel. Furthermore,
@@ -1292,8 +1287,8 @@ For example,
 <code>int(x, 10)</code> is the same as <code>convert(int, x, 10)</code>. Conversions are defined between
 most basic types, and between some array types as well. Currently a detailed list of all
 implemented conversions is missing, but some additional information can be found in
-<a href="sawmill-language.html">
-Sawmill Language</a>.
+<a href="sawzall-language.html">
+Sawzall Language</a>.
 
 <h3>Operands</h3>
 Operands are type or variable<em> identifiers</em>, <em>literal</em> values,

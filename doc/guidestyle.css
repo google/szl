@@ -1,0 +1,58 @@
+
+body {
+  background-color: #ffffff;
+  color: black;
+  margin-right: 1in;
+  margin-left: 1in;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #3366ff;
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 18pt;
+}
+h2 {
+  margin-left: -0.5in;
+  margin-top: 0.5in;
+}
+h3 {
+  margin-left: -0.25in;
+}
+h4 {
+  margin-left: -0.125in;
+}
+hr {
+  margin-left: -1in;
+}
+
+.h2toc {
+  font-size: 12pt;
+  color: #3366ff;
+  font-weight: bold;
+  margin-left: 0.5in;
+  line-height: 200%;
+}
+
+.h3toc {
+  font-size: 11pt;
+  color: #3366ff;
+  font-weight: normal;
+  margin-left: 1in;
+}
+
+/* Use the <code> tag for bits of code and <var> for variables and objects. */
+code,pre,samp,var {
+  color: #006000;
+}
+
+.badcode {
+  color: #CC0000;
+}
+
+address {
+  text-align: right;
+}

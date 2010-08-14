@@ -1,0 +1,2919 @@
+<!doctype html public "-//w3c//dtd html 4.01 transitional//en">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Sawzall</title>
+<link type="text/css" rel="stylesheet" href="guidestyle.css">
+<style type="text/css">
+div.nav-2-columns td {width:50%}
+div.nav-2-columns table {width:100%}
+</style>
+</head>
+<body>
+
+<h1> <a name="title">Sawzall</a> </h1>
+<center>
+<img alt="Sawzall" src="sawzall.gif">
+</center>
+
+<h4>Contents</h4>
+
+
+<h2> <a name="introduction">Introduction</a></h2>
+
+Given large amounts of data that must be analyzed either as it is generated
+or by examining historical data, there is a need for an efficient process
+for doing the analysis and an appropriate language for expressing the
+programs that perform the analysis.  Sawzall, the language described informally
+by this document, is a notation for expressing such programs.
+
+This document describes the language; a formal syntax is provided
+in the <a href="sawzall-spec.html">Sawzall Specification document</a>.
+Finally, and perhaps most usefully, there is an academic
+<a href="http://labs.google.com/papers/sawzall.html">paper</a>
+that discusses the motivation, design, and implementation.
+
+
+<h2> <a name="overview">Overview</a></h2>
+
+One can model the Sawzall language as a kind of specialized
+distributed Awk.
+It is a <i>pattern</i>/<i>action</i> language:
+records are
+matched against a set of patterns; for each successful match,
+an associated action is performed.
+But unlike Awk, which has a restricted pattern matching language
+coupled to a general-purpose action language, Sawzall has
+only one notation for expressing the matching algorithms
+and the resulting actions.
+That notation is a fairly
+traditional procedural programming language.
+<p>
+The input to the language will usually be transactional data such as logs.
+Output from the language will be usually eventually be stored in
+a database that aggregates and stores statistics.
+Output is defined in terms of data structures
+that, like Awk associative arrays or Python
+dictionaries, synthesize new entries as new indices are mentioned.
+The language also supports some unusual forms of sampling
+data collectors to facilitate special functions such as creating
+`Top 10' lists and counting the number of unique events.
+<p>
+A motivation for the design is efficiency, particularly in the distributed case.
+If the data is scattered across many
+computers in a distributed file system,
+it should be possible to distribute the processing
+across many machines simultaneously for enormous speedups
+relative to a single machine scanning the data.
+<p>
+This goal of parallelism leads to several unusual properties of the language:
+<ul>
+<li>All the pattern/action statements may execute independently
+and in parallel on a given record.</li>
+<li>
+There is no guaranteed order in which the various input records will be seen
+by the processor; the order will depend on delivery rates from
+its distributed components.
+</li>
+<li>
+Programs do not modify the global internal state represented by the running program.
+(They do, of course, modify the external state such as saved output.)
+In particular, there is no inter-record memory;
+the program examines each record starting from the same initial state.
+</li>
+</ul>
+The rest of this document describes the elements of the language in more detail.
+
+<h2><a name="detailed_design">Detailed Design</a></h2>
+
+This is not a formal definition of the language, but an informal guide
+to serve as background for discussion of the design.
+
+<h3> Lexical conventions </h3>
+
+Input is free-form, with semicolons used to terminate statements, as in C.
+Source code is in UTF-8.
+
+<p>
+Comments are introduced by a <tt>#</tt> character
+and continue until end of line.
+
+<p>
+An <tt>include</tt> clause
+is replaced by the contents of the file
+it names, as in:
+<pre>
+include "/home/szluser/stuff"
+</pre>
+
+<p>
+A <tt>proto</tt> clause is similar to an <tt>include</tt>
+clause but is replaced by the translation into Sawzall of the
+protocol buffer specification in the named file, as in:
+<pre>
+proto "logdata.proto"
+</pre>
+
+<p>
+Identifiers are as in C: alphanumeric with underscores.
+
+<p>
+Numbers, strings, and other constants are a subset of those in C:
+<tt>23</tt>, <tt>0x7f</tt>, <tt>1.23e-4</tt>, <tt>"hello\n"</tt>, <tt>'x'</tt>, etc.
+The only signedness modifier for integer constants is a trailing <tt>u</tt> or <tt>U</tt>
+to indicate an unsigned integer (<tt>uint</tt>) constant (examples: <tt>0u</tt>,
+<tt>0x7FFU</tt>).
+Otherwise integers are always signed, characters are always positive <tt>ints</tt>,
+and the sizes are big enough for most practical purposes.
+String and character constants are interpreted as representations of Unicode characters
+and may contain C-like character escapes, including <tt>\u1234</tt> to represent
+Unicode code point U+1234 and <tt>\U00101234</tt> for code point U+101234.
+<p>
+A special syntax for strings is convenient when writing regular expressions.
+Since regular expressions often contain backslashes, writing them in C notation
+can be clumsy; one needs to double all the backslashes.
+The pattern <tt>\s*\+\d+</tt> (optional white space, literal plus sign, digits)
+must be written <tt>"\\s*\\+\\d+"</tt> and so on.
+The special syntax uses back quotes instead of double quotes; within a back quoted
+string, backslashes are uninterpreted.  Our example regular expression is cleaner;
+it's just the regular expression in backquotes: <tt>`\s*\+\d+`</tt>.
+(If you need a backquote in such a string, you can use string addition (described later)
+to create it. For instance, <tt>`abc` + "`" + `def`</tt> is the same string as <tt>"abc`def"</tt>.)
+Note that <tt>`\t`</tt> is a two-character string (backslash, t) while <tt>"\t"</tt> is a one-character string
+(tab).
+This notation still interprets the string as UTF-8; the only difference is the handling of
+backslash.
+<p>
+No string or character constant can straddle a newline and string concatenation is not
+implicit as it is in C and C++; use the <tt>+</tt> operator to concatenate strings.
+
+<h3> Basic types </h3>
+
+There are several basic types used throughout the language: <tt>bool</tt>, <tt>int</tt>,
+<tt>uint</tt>,
+<tt>float</tt>, <tt>bytes</tt>, <tt>string</tt>, <tt>time</tt>, and <tt>fingerprint</tt>.
+<p>
+The <tt>bool</tt> type is a boolean value.
+The <tt>bool</tt> constants <tt>true</tt> and <tt>false</tt> are predefined.
+<p>
+The <tt>int</tt> type is a 64-bit signed integer, while
+the <tt>uint</tt> type is a 64-bit unsigned integer.
+Although it might make sense to have various sizes of integers,
+integer processing is expected not to dominate the run-time of the language and
+it seems preferable to keep things simple.
+<p>
+The <tt>float</tt> type is a 64-bit IEEE floating point number.
+Again, in the interest of simplicity, there is only one floating-point type.
+<p>
+The <tt>string</tt> type stores an array of Unicode characters of unspecified representation.
+Indexing operations on the array will access individual characters and treat them as
+positive <tt>ints</tt>.
+<p>
+The <tt>bytes</tt> type stores an array of unsigned bytes.
+Indexing operations on the array will access individual bytes and treat them as <tt>ints</tt>.
+Bytes are always unsigned; setting an element of a bytes array to the value <tt>-1</tt>
+will silently yield a byte with value <tt>255</tt>.
+There are two types of <tt>bytes</tt> literal.
+The first is written as a string literal prefixed by a capital B: <tt>B&quot;hello&quot;</tt>;
+the individual characters represented in such a literal must each have value below 256.
+The second is written as a string literal prefixed by a capital X, with the string comprising
+pairs of hexadecimal digits representing the successive bytes of the constant:
+<tt>X&quot;0102AF&quot;</tt> holds the three bytes 0x01, 0x02, 0xAF.
+<p>
+The <tt>time</tt> type stores an integral representation of time, with microsecond
+resolution.
+It is separated from the <tt>int</tt> type to permit some special-purpose operations.
+A time literal is written as an integer literal with an (upper case or lower case) <tt>T</tt>
+appended, like this: <tt>0T</tt>.
+Also, a valid date, written as a string with a <tt>T</tt> <i>prefixed</i> to the string,
+is also a way to specify a string literal, like this:
+<pre>
+T"Mon Feb  9 14:55:44.5 PST 2004"
+</pre>
+<p>
+The <tt>fingerprint</tt> type stores a hash value computed with an implementation-defined
+hash function.
+A fingerprint literal is written as an integer literal with an (upper case or lower case) <tt>P</tt>
+appended, like this: <tt>0P</tt>.
+<p>
+The <tt>time</tt> and <tt>fingerprint</tt> types also implement some integer operations
+but retain their different type under such operations.
+
+<h3> Compound types </h3>
+
+Through various mechanisms, one can derive compound types analogous
+to structures and arrays in C.
+The way these objects are derived and the ways they can be (and cannot be)
+used are somewhat different from C, however, as will become apparent.
+
+<h4> Tuples </h4>
+The Sawzall analog to a C <tt>struct</tt> is called a tuple.
+A later section describes how to declare a tuple, but for now
+just consider a tuple to be a compound data structure with
+fields addressable using the dot notation <tt>a.b</tt>, just as in C:
+<pre>
+t.an_int = 1;
+t.a_float = 22./7.;
+</pre>
+(The arrow notation <tt>p-&gt;b</tt> does not appear).
+<p>
+Unlike in C, tuple expressions are common in Sawzall.
+For instance, a brace-enclosed, comma separated list of expressions represents
+a tuple value that may be treated as a unit.
+For instance, given the tuple <tt>t</tt> mentioned above, which contains an
+<tt>int</tt> and a <tt>float</tt>, one may assign to <tt>t</tt> like this:
+<pre>
+t = { 1, 22./7. };
+</pre>
+We will explore tuples in more detail later in the document.
+
+<h4> Arrays </h4>
+In expressions, the syntax of arrays is identical to that in C.
+(The declaration syntax, described in a later section, is different.)
+Arrays are always indexed by integers starting from 0,
+just like in C.
+Arrays are indexed using square brackets <tt>[]</tt> while
+multi-dimensional arrays are indexed like this: <tt>[][]</tt>.
+For example, if <tt>a</tt> is an array of integers and <tt>aa</tt>
+is a two-dimensional array of integers, one may write these
+statements:
+<pre>
+a[0] = 10;
+aa[1] = a;
+aa[1][2] = a[1];
+</pre>
+<p>
+Arrays may be initialized by assignment
+to an elementwise-compatible tuple expression, like this:
+<pre>
+a = { 1&lt;&lt;0, 1&lt;&lt;1, 1&lt;&lt;2 };
+</pre>
+Arrays cannot be resized dynamically, but after creation a subsequent
+assignment may change its size (and replace all its elements). After the previous assignment,
+one may reassign the array:
+<pre>
+a = { 1, 2, 3, 4, 5 };
+</pre>
+Moreover, the subarrays of a multidimensional
+array may have different sizes, including zero:
+<pre>
+aa[0] = { };
+aa[1] = { 0 };
+aa[2] = { 0, 1 };
+aa[3] = { 0, 1, 2 };
+</pre>
+<p>
+Another way to control the size of an array is to use the addition operator,
+which concatenates two arrays; the following statements all produce the
+same result:
+<pre>
+a = { 1, 2, 3, 4, 5 };
+a = { 1, 2, 3 } + { 4, 5 };
+a = { 1 } + { 2 } + { 3 } + { 4 } + { 5 };
+</pre>
+<p>
+By analogy with Python,
+arrays may be `sliced' using the <i>array</i><tt>[min:max]</tt> notation,
+which represents a subarray from index <tt>min</tt> through <tt>max-1</tt> inclusive.
+Within an index expression or slice, the character <tt>$</tt> represents the size of
+the array at that dimension.  Thus <tt>a[0:$]</tt> represents the entire array while
+<tt>a[$-1]</tt> represents the final element.
+<p>
+One can insert subarrays of different size using <i>slice assignment</i>, that is,
+an assignment with a slice on the left hand side, like this:
+<pre>
+a[2:4] = { 11, 12, 13, 14, 15 ,16, 17 }
+</pre>
+<p>
+For arrays, byte arrays, and strings, the function <tt>len(</tt><i>array</i><tt>)</tt>
+yields the number of elements of the array, which may be zero.
+For byte arrays, <tt>len</tt> will recover the number of bytes in the byte array.
+For strings, <tt>len</tt> will recover the number of Unicode characters,
+not the number of bytes in a byte-level representation of those characters.
+
+<h4> Maps </h4>
+Maps are analogous to dictionaries in Python or associative arrays in Awk.
+They are a way to store key-value pairs: store a value under a key, retrieve
+it later by indexing the map with the key.
+Unlike arrays, maps can be indexed by arbitrary types, not just integers, the
+indices can be sparse, and they are allocated dynamically so they may grow
+as you insert elements.
+Like arrays, however, the key and the value of a given map
+are each of a single type, such as a map from strings to integers or from
+floats to arrays of strings.
+<p>
+Map literals are created with a special notation that identifies
+the key-value pairs.
+Each element of the map literal contains the key, a colon, and a value, like this
+example mapping strings to integers:
+<pre>
+numbers = { "one": 1, "two": 2, "three": 3, "four": 4 }
+</pre>
+As a special case, one can create a map with nothing in it (yet) using
+the special notation:
+<pre>
+numbers = {:};
+</pre>
+The colon between the braces distinguishes a map literal from an array literal.
+<p>
+Syntactically, maps look like arrays: the key-value pairs are accessed
+using indexing operations with square brackets
+<tt>[]</tt>.
+(There is no slicing operation for maps.)
+The <tt>numbers</tt> map is indexed like this:
+<pre>
+numbers["one"]
+numbers["two"]
+</pre>
+and so on.
+Indexing a key that is not present in the map results in an `undefined' value,
+which is described in more detail in the section on <i>Failures and default values</i>.
+<p>
+The function <tt>len(</tt><i>map</i><tt>)</tt>
+yields the number of key-value pairs present.
+
+<h3> Basic operations </h3>
+
+There are a number of built-in operations available for various types in the
+language; this set will evolve.
+
+<p>
+Numeric types have the usual C-like operations.
+<p>
+Arrays, including the <tt>string</tt> and <tt>bytes</tt> types, overload addition to mean
+concatenation.
+<p>
+The <tt>fingerprint</tt> type overloads addition to mean concatenation,
+that is, the mixing of two fingerprints to yield a new fingerprint.
+
+<h4>Conversions</h4>
+
+<p>
+There are also a number of conversions to transform objects from one
+type to another.  The most general conversion is of the form
+<tt>convert(</tt><i>type</i><tt>,</tt> <i>value</i><tt>,</tt>
+<i>parameters</i><tt>)</tt>.  The case-insensitive parameters, which may
+be omitted, vary with the actual conversion and represent things like
+the base for integer-string conversion and the character encoding for
+bytes-string conversion.  They are described in more detail below.
+For instance, <tt>convert(string, num_events, 16)</tt> converts the
+integer <tt>num_events</tt> to its hexadecimal representation.  If the
+type is a single word, such as a basic type or defined type name, the
+syntax may be compressed by using the type name as the `function', as
+in <tt>string("800e4", 16)</tt> or <tt>time("Wed Jul 30 23:49:55 PDT
+2003")</tt>.  Note these are conversions, not casts: they can change
+the value, not just the type.
+
+<p>
+Strings can be converted to and from byte arrays.  By default, this
+operation interprets the byte array as a UTF-8 representation of the
+string being converted.  That is, <tt>s = string(bytesarray)</tt>
+stores in <tt>s</tt> the character string represented by the UTF-8
+bytes in <tt>bytesarray</tt>, while <tt>b = bytes(s)</tt> converts it
+back.
+
+<p>
+Some of the conversion operators accept extra parameters.  The numeric
+conversions accept a base: <tt>i = int("123", 16)</tt> or <tt>s =
+string(i, 16)</tt>.  A missing base defaults to 0, which, as in
+<tt>strtol</tt>, indicates that the string should be interpreted like
+string constants in C: a leading <tt>0</tt> means octal, <tt>0x</tt>
+means hexadecimal.  To avoid surprises, it's best to specify a base,
+even if it's 0; using 0 explicitly indicates that the choice is
+deliberate.
+
+<p>
+Conversion operators between strings and byte arrays accept a string
+that identifies the character encoding to use (default UTF-8).
+Supported parameters include <tt>"UTF-8"</tt>, <tt>"latin-1"</tt>,
+<tt>"array-literal"</tt>, <tt>"hex"</tt>, and <tt>"unicode"</tt>.  For
+example <tt>s = string(bytesvar, "latin-1")</tt> interprets
+<tt>bytesvar</tt> as a Latin-1 sequence and converts it to a Unicode
+string while <tt>b = bytes(str, "latin-1")</tt> inverts that
+transformation.
+
+<p>
+Similarly, the conversion parameter <tt>"unicode"</tt> allows one to
+convert an array of integers representing Unicode code points to a
+string, and <i>vice versa</i>.
+
+<pre>
+s: string = convert(string, { 0x65e5, 0x672c, 0x8a9e }, "unicode");
+# s is now "日本語"
+a: array of int = convert(array of int, s, "unicode");
+# a is now { 0x65e5, 0x672c, 0x8a9e }
+</pre>
+
+<p>
+Other <tt>bytes</tt>-to-<tt>string</tt> (and reverse) conversions
+include <tt>"hex"</tt> which converts the bytes to a single
+hexadecimal string suitable for pickling binary data and
+<tt>"array-literal"</tt> which turns a string into a Sawzall
+expression for an array literal whose elements are the individual
+bytes of the input.  This program,
+
+<pre>
+b = bytes("fooe\u00FF");  # FF is y-umlaut
+a = string(b, "array-literal");
+</pre>
+
+stores in <tt>a</tt> the string
+
+<pre>
+"{ 0x66, 0x6f, 0x6f, 0x65, 0xc3, 0xbf }"
+</pre>
+
+(Note the UTF-8 encoding in the last two bytes.)
+
+<p>
+Integers, both signed and unsigned, can also be converted to and from byte
+arrays.  The conversion takes a required parameter specifying how the integer
+values are encoded into bytes.  Supported parameters include "fixed32-big",
+"fixed32-little", "fixed64-big", "fixed64-little", "saw", "varint", and
+"zigzag".
+
+<p>
+The conversion parameters "fixed32-big", "fixed32-little", "fixed64-big", and
+"fixed64-little" encode 32- or 64-bit integers into 4 or 8 bytes, respectively,
+using a big or little-endian encoding.  The parameter "saw" is an alias for
+"fixed64-big" (64-bit big-endian encoding), and is the format saw uses for
+storing integers in sstable output tables.
+
+<p>
+The "varint" encoding is a variable-length encoding also used by protocol
+buffers for storing integer values. The "zigzag" encoding is a variant of the
+varint encoding which encodes negative values more efficiently. It is used in
+protocol buffer version 2.
+
+<pre>
+i = convert(int, B"\x00\x00\x00\x01", "fixed32-big");
+# i is now 1
+b = convert(bytes, 2, "fixed64-little");
+# b is now B"\x02\x00\x00\x00\x00\x00\x00\x00"
+v = convert(int, B"\x80\x01", "varint");
+# v is now 128
+</pre>
+
+<p>
+Fingerprints act like integers in conversion, but yield unsigned 64-bit numbers.
+Also, they may be converted to and from bytes, in a way that yields a packed
+8-byte representation of a 64-bit integer, suitable for loading and unloading string
+variables in protocol buffers.
+<p>
+Not all conversions are defined but all types (including compound types
+such as arrays and tuples) can be converted to strings and most can
+be converted from string representations of their value.
+<p>
+Except when initializing a variable in its declaration,
+conversion is never implicit in the language; all types must match
+in expressions.
+
+<h4> Operations on time </h4>
+
+<p>
+Time is represented by a numeric type different from <tt>int</tt> or <tt>float</tt>.
+Converting a <tt>time</tt> variable to a <tt>string</tt> produces a
+textual representation of the time in the manner of the
+C function <i>ctime</i>.
+Converting a <tt>string</tt> to a <tt>time</tt>
+reverses the transformation while forgiving some sloppiness in the input format.
+When converting <i>from</i> a string, the seconds value may be expressed with
+decimal fractions of a second, to specify precision down to a microsecond.
+The time zone, a string with default value "PST8PDT",
+may be supplied as a second argument to the
+conversion operator when converting from time to string,
+or from string to time when the string does not mention the time zone.
+<a href="http://wiki/Main/IIIHowTo#using_time_zones">Olson identifiers are
+preferred</a>.
+
+The output accounts for Daylight Saving time.
+<p>
+Predefined constants <tt>SECOND</tt>,
+<tt>MINUTE</tt>, and
+<tt>HOUR</tt>
+represent the corresponding interval.
+Because they tend to appear often, shorter versions are also defined:
+<tt>SEC</tt>, <tt>MIN</tt>, <tt>HR</tt>.
+Days, weeks, months and years have variant lengths due to leap seconds and leap days,
+so a simple constant isn't sufficient
+for those intervals.
+Instead, the functions <tt>addday</tt>, <tt>addweek</tt> etc.
+navigate forwards and backwards from a given
+time.
+For instance,
+<pre>
+t = addyear(t, 1);
+</pre>
+advances <tt>t</tt> one year.  The second argument is an integer
+and may be negative; <tt>addyear(t, -1)</tt> backs up a year.
+
+<p>
+Another set of functions extract the components of a time, as integers.
+The functions <tt>secondof</tt>, <tt>minuteof</tt>, <tt>hourof(t)</tt>, <tt>monthof(t)</tt> and <tt>yearof(t)</tt> extract the numeric
+hour, month, or year,
+while <tt>dayofweek(t)</tt>, <tt>dayofmonth(t)</tt> and <tt>dayofyear(t)</tt> do the equivalent
+for the day.
+(Monday is day 1, while Sunday is day 7).
+All these are 1-origin except <tt>secondof</tt>, <tt>minuteof</tt> and <tt>hourof</tt>,
+which are by convention 0-indexed (midnight is 00:00:00).
+
+<p>
+For indexing purposes, it's often useful to truncate a time to some boundary
+to define an hour or day in which the time occurs.
+For an hourly interval, one could write <tt>t-(t%HOUR)</tt> to move a time
+back to the start of the hour, but this is clumsy and will not work for months
+or years.
+A set of functions performs this truncation: <tt>trunctosecond</tt>,
+<tt>trunctominute</tt>, <tt>trunctohour</tt>, <tt>trunctoday</tt>,
+<tt>trunctoweek</tt>, <tt>trunctomonth</tt>, and <tt>trunctoyear</tt>.
+The return type of these functions is still a <tt>time</tt>, so it may still
+be compared with other time values.
+For instance,
+<pre>
+string(trunctoday(time("Sun Feb  2 23:40:08 PST 2003")))
+</pre>
+will yield the string
+<pre>
+Sun Feb  2 00:00:00 PST 2003
+</pre>
+By analogy with the conversion operators, a time zone may be specified
+for the truncation; the default is <tt>"PST8PDT"</tt> (which may generate
+a time in PST or PDT depending on the time of year).
+For instance, if we make the time zone <tt>"America/New_York"</tt>
+explicit in the truncation above,
+<pre>
+trunctoday(time("Sun Feb  2 23:40:08 PST 2003"), "America/New_York")
+</pre>
+the resulting time is
+<pre>
+Sun Feb  2 21:00:00 PST 2003
+</pre>
+All the time-modifying functions accept an optional time zone for interpreting
+the result.
+The same applies to the <tt>add<i>X</i></tt> and <tt>X<i>of</i></tt>
+functions for time as well. The general rule: the time
+value is converted to local time, the operation performed, and then
+(if necessary) the time value is converted back to the epoch.
+Sawzall's time zone support is based on
+<a href="http://wiki/Main/TimeZones#ICU">ICU</a>.  You can use any
+ICU-supported time zone name but the "America/Los_Angeles" style
+is <a href="http://wiki/Main/IIIHowTo#using_time_zones">preferred</a>.
+
+<p>
+Finally, the function <tt>now()</tt> returns the time at the instant it is called.
+
+<h4>Intrinsics</h4>
+There are a variety of built-in functions that
+operate on basic types, things such as <tt>min</tt> and <tt>max</tt>.
+One unusual operation is available for strings:
+<tt>load(file)</tt> evaluates to the contents of the named file as a single byte array.
+A list of basic intrinsics appears below; more detail -- with more intrinsics --
+is available in <a href="sawzall-intrinsics.html">another document</a>.
+Also, the <tt>--explain</tt> option to the Sawzall interpreter prints useful information about the intrinsic
+named by its argument, or lists all the intrinsics if given an explicitly empty argument (<tt>--explain=</tt>).
+<p>
+In the following table, the notation <tt>[,TZ]</tt> is shorthand
+for an optional string-valued time zone specifier, written
+either in the Olson <tt>"America/Los_Angeles"</tt> style
+(<a href="http://wiki/Main/IIIHowTo#using_time_zones">encouraged</a>),
+traditional <tt>"EST"</tt> style, the Unix <tt>"EST5EDT"</tt> style,
+or the offset <tt>"-500"</tt> style.
+
+<table border width="90%" summary="basic builtin functions">
+<tr>
+  <th colspan=3>Basic builtin functions</th>
+</tr>
+<tr>
+  <td width="30%"><b>Signature</b></td>
+  <td width="20%"><b>Return type</b></td>
+  <td width="50%"><b>Description</b></td>
+</tr>
+<tr>
+  <td><tt>abs(i:int (or float))</tt></td>
+  <td><tt>int (or float)</tt></td>
+  <td>return absolute value</td>
+</tr>
+<tr>
+  <td><tt>addday(t: time, i: int [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>advance <tt>t</tt> by <tt>i</tt> (possibly negative) days</td>
+</tr>
+<tr>
+  <td><tt>addmonth(t: time, i: int [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>advance <tt>t</tt> by <tt>i</tt> (possibly negative) months</td>
+</tr>
+<tr>
+  <td><tt>addweek(t: time, i: int [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>advance <tt>t</tt> by <tt>i</tt> (possibly negative) weeks</td>
+</tr>
+<tr>
+  <td><tt>addyear(t: time, i: int [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>advance <tt>t</tt> by <tt>i</tt> (possibly negative) years</td>
+</tr>
+<tr>
+  <td><tt>assert(cond: bool [, s: string])</tt></td>
+  <td><tt>N/A</tt></td>
+  <td>if <tt>cond</tt> is false, exit with an informative message incorporating <tt>s</tt> if present</td>
+</tr>
+<tr>
+  <td><tt>bytesfind(lit: bytes, byt: bytes)</tt></td>
+  <td><tt>int</tt></td>
+  <td>return the position of the first match of <tt>lit</tt>; -1 for no match.</td>
+</tr>
+<tr>
+  <td><tt>bytesrfind(lit: bytes, byt: bytes)</tt></td>
+  <td><tt>int</tt></td>
+  <td>return the position of the last match of <tt>lit</tt>; -1 for no match.</td>
+</tr>
+<tr>
+  <td><tt>dayofmonth(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return day of month, 1-indexed</td>
+</tr>
+<tr>
+  <td><tt>dayofweek(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return day of week; Monday is 1, Sunday is 7</td>
+</tr>
+<tr>
+  <td><tt>dayofyear(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return day of year, January 1 is 1</td>
+</tr>
+<tr>
+  <td><tt>fingerprintof(x: T)</tt></td>
+  <td><tt>fingerprint</tt></td>
+  <td>return the fingerprint of <i>x</i>, which may be of any type</td>
+</tr>
+<tr>
+  <td><tt>format(fmt: string, ...)</tt></td>
+  <td><tt>string</tt></td>
+  <td>formatted print in the manner of <tt>smprintf(fmt, ...)</tt></td>
+</tr>
+<tr>
+  <td><tt>getenv(v: string)</tt></td>
+  <td><tt>string</tt></td>
+  <td>the value of the environment variable named by <tt>v</tt>; undef if variable does not exist</td>
+</tr>
+<tr>
+  <td><tt>getresourcestats()</tt></td>
+  <td><tt>resourcestats</tt></td>
+  <td>report resource usage statistics for the program. Run <tt>szl --explain resourcestats</tt> and <tt>szl --explain getresourcestats</tt> for details.
+</td>
+</tr>
+<tr>
+  <td><tt>haskey(m: map[T1] of T2, key: T1)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>return a bool indicating whether the key is present in the map</td>
+</tr>
+<tr>
+  <td><tt>highbit(x: int)</tt></td>
+  <td><tt>int</tt></td>
+  <td>return the bit position of the most-significant bit, starting from 1. <tt>highbit(0)</tt> is 0</td>
+</tr>
+<tr>
+  <td><tt>hourof(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return hour within the day; midnight is 0</td>
+</tr>
+<tr>
+  <td><tt>inproto(field: T)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>return a bool indicating whether <tt>field</tt> was present in
+the original proto buffer.</td>
+</tr>
+<tr>
+  <td><tt>keys(m: map[T1] of T2)</tt></td>
+  <td><tt>array of T1</tt></td>
+  <td>return an array containing all the keys present in the map.</td>
+</tr>
+<tr>
+  <td><tt>len(array of T)</tt></td>
+  <td><tt>int</tt></td>
+  <td>number of elements of array, characters in <tt>string</tt>,
+      bytes in <tt>bytes</tt>, keys in <tt>map</tt>
+  </td>
+</tr>
+<tr>
+  <td><tt>load(file: string)</tt></td>
+  <td><tt>bytes</tt></td>
+  <td>return contents of named <tt>file</tt></td>
+</tr>
+<tr>
+  <td><tt>lookup(m: map[T1] of T2, key: T1, default_value: T2)</tt></td>
+  <td><tt>T2</tt></td>
+  <td>return the map element indexed by the key; if there is no such element, return the indicated default value </td>
+</tr>
+<tr>
+  <td><tt>lowercase(s: string)</tt></td>
+  <td><tt>string</tt></td>
+  <td>return <tt>s</tt> with upper case characters converted to lower case; handles Unicode</td>
+</tr>
+<tr>
+  <td><tt>match(pat: string, str: string)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>does <tt>str</tt> match regular expression <tt>pat</tt>?</td>
+</tr>
+<tr>
+  <td><tt>matchposns(pat: string, str: string)</tt></td>
+  <td><tt>array of int</tt></td>
+  <td>return array of positions of matches to <tt>pat</tt> as pairs of indices; [0] and [1] are match of entire string; subsequent pairs describe parenthesized subexpressions; empty array is no match</td>
+</tr>
+<tr>
+  <td><tt>matchstrs(pat: string, str: string)</tt></td>
+  <td><tt>array of string</tt></td>
+  <td>return array of strings matched by <tt>pat</tt>; [0] is match of entire string; subsequent strings describe parenthesized subexpressions; empty array is no match</td>
+</tr>
+<tr>
+  <td><tt>max(a: T, b: T)</tt></td>
+  <td><tt>T</tt></td>
+  <td>maximum of <tt>a</tt> and <tt>b</tt> (<tt>T</tt> is any basic type)</td>
+</tr>
+<tr>
+  <td><tt>min(a: T, b: T)</tt></td>
+  <td><tt>T</tt></td>
+  <td>minimum of <tt>a</tt> and <tt>b</tt> (<tt>T</tt> is any basic type)</td>
+</tr>
+<tr>
+  <td><tt>minuteof(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return minute within the hour, range is 0-59</td>
+</tr>
+<tr>
+  <td><tt>monthof(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return month within the year; January is 1</td>
+</tr>
+<tr>
+  <td><tt>nrand(n: int)</tt></td>
+  <td><tt>int</tt></td>
+  <td>random integer in the range <tt>0 &lt;=x&lt;=n-1</tt></td>
+</tr>
+<tr>
+  <td><tt>now()</tt></td>
+  <td><tt>time</tt></td>
+  <td>return current time</td>
+</tr>
+<tr>
+  <td><tt>rand()</tt></td>
+  <td><tt>float</tt></td>
+  <td>random floating point number in the range <tt>0.0&lt;=x&lt;1.0</tt></td>
+</tr>
+<tr>
+  <td><tt>secondof(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return second within the minute, range is 0-59</td>
+</tr>
+<tr>
+  <td><tt>sort(a: array of basic_type)</tt></td>
+  <td><tt>array of basic_type</tt></td>
+  <td>return the sorted version of an array. Only scalar values can be
+      sorted. Values will be arranged in increasing order.</td>
+</tr>
+<tr>
+  <td><tt>sortx(a: array of basic_type)</tt></td>
+  <td><tt>array of int</tt></td>
+  <td>return the index vector that sorts an array. Only scalar values
+      can be sorted. The index vector arranges array values in increasing
+      order.</td>
+</tr>
+<tr>
+  <td><tt>splitcsv(csv: bytes, fields: array of int)</tt></td>
+  <td><tt>array of bytes</tt></td>
+  <td>return a list of requested fields from each comma-separated line of the
+      specified string (represented as bytes); for example,
+      splitcsv(B"a,b,c\naa,bb,cc", { 1, 3 }) returns
+      { B"a", B"c", B"aa", B"cc" }</td>
+</tr>
+<tr>
+  <td><tt>splitcsvline(csv: bytes)</tt></td>
+  <td><tt>array of bytes</tt></td>
+  <td>splits the comma-separated string (represented as bytes); for example,
+      splitcsvline(B"a,b,c") returns{ B"a", B"b", B"c" }</td>
+</tr>
+<tr>
+  <td><tt>strfind(lit: string, str: string)</tt></td>
+  <td><tt>int</tt></td>
+  <td>return the position of the first match of <tt>lit</tt>; -1 for no match.</td>
+</tr>
+<tr>
+  <td><tt>strrfind(lit: string, str: string)</tt></td>
+  <td><tt>int</tt></td>
+  <td>return the position of the last match of <tt>lit</tt>; -1 for no match.</td>
+</tr>
+<tr>
+  <td><tt>strreplace(str: string, lit: string, rep: string, replace_all: bool)</tt></td>
+  <td><tt>string</tt></td>
+  <td>return a copy of string <tt>str</tt>, with non-overlapping instances of
+  <tt>lit</tt> replaced by <tt>rep</tt>; if <tt>replace_all</tt> is
+  false, only the first found instance is replaced.</td>
+</tr>
+<tr>
+  <td><tt>trunctoday(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of day</td>
+</tr>
+<tr>
+  <td><tt>trunctohour(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of hour</td>
+</tr>
+<tr>
+  <td><tt>trunctominute(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of minute</td>
+</tr>
+<tr>
+  <td><tt>trunctomonth(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of month</td>
+</tr>
+<tr>
+  <td><tt>trunctosecond(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of second</td>
+</tr>
+<tr>
+  <td><tt>trunctoyear(t: time [,TZ])</tt></td>
+  <td><tt>time</tt></td>
+  <td>truncate to start of year</td>
+</tr>
+<tr>
+  <td><tt>uppercase(s: string)</tt></td>
+  <td><tt>string</tt></td>
+  <td>return <tt>s</tt> with lower case characters converted to upper case; handles Unicode</td>
+</tr>
+<tr>
+  <td><tt>yearof(t: time [,TZ])</tt></td>
+  <td><tt>int</tt></td>
+  <td>return year</td>
+</tr>
+</table>
+
+<table border width="90%" summary="floating point math builtin functions">
+<tr>
+  <th colspan=3>Floating point math builtin functions</th>
+</tr>
+<tr>
+  <td width="30%"><b>Signature</b></td>
+  <td width="20%"><b>Return type</b></td>
+  <td width="50%"><b>Description</b></td>
+</tr>
+<tr>
+  <td><tt>ln: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the natural logarithm function</td>
+</tr>
+<tr>
+  <td><tt>log10: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the logarithm base 10 function</td>
+</tr>
+<tr>
+  <td><tt>exp: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>return <i>e</i><sup><tt>x</tt></sup></td>
+</tr>
+<tr>
+  <td><tt>sqrt: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the square root function</td>
+</tr>
+<tr>
+  <td><tt>pow: function(x: float, y: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>The exponential, base <tt>x</tt>, of <tt>y</tt></td>
+</tr>
+<tr>
+  <td><tt>sin: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the sine function, argument in radians</td>
+</tr>
+<tr>
+  <td><tt>cos: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the cosine function, argument in radians</td>
+</tr>
+<tr>
+  <td><tt>tan: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the tangent function, argument in radians</td>
+</tr>
+<tr>
+  <td><tt>asin: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the arc sine function</td>
+</tr>
+<tr>
+  <td><tt>acos: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the arc cosine function</td>
+</tr>
+<tr>
+  <td><tt>atan: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the arc tangent function</td>
+</tr>
+<tr>
+  <td><tt>atan2: function(x: float, y: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the arc tangent of <tt>y</tt>/<tt>x</tt></td>
+</tr>
+<tr>
+  <td><tt>cosh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic cosine function</td>
+</tr>
+<tr>
+  <td><tt>sinh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic sine function</td>
+</tr>
+<tr>
+  <td><tt>tanh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic tangent function</td>
+</tr>
+<tr>
+  <td><tt>acosh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic arc cosine function</td>
+</tr>
+<tr>
+  <td><tt>asinh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic arc sine function</td>
+</tr>
+<tr>
+  <td><tt>atanh: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the hyperbolic arc tangent function</td>
+</tr>
+<tr>
+  <td><tt>fabs: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>the absolute value function</td>
+</tr>
+<tr>
+  <td><tt>ceil: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>round x up to the nearest integer</td>
+</tr>
+<tr>
+  <td><tt>floor: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>round x down to the nearest integer</td>
+</tr>
+<tr>
+  <td><tt>round: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>round x to the nearest integer, but round halfway cases away from zero</td>
+</tr>
+<tr>
+  <td><tt>trunc: function(x: float)</tt></td>
+  <td><tt>float</tt></td>
+  <td>round x to the nearest integer not larger in absolute value</td>
+</tr>
+<tr>
+  <td><tt>isnan: function(x: float)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>tests if a float value is an IEEE NaN</td>
+</tr>
+<tr>
+  <td><tt>isinf: function(x: float)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>tests if a float value is an IEEE Inf</td>
+</tr>
+<tr>
+  <td><tt>isfinite: function(x: float)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>tests if a float value is not +-Inf or NaN</td>
+</tr>
+<tr>
+  <td><tt>isnormal: function(x: float)</tt></td>
+  <td><tt>bool</tt></td>
+  <td>tests if a float value is neither zero, subnormal, Inf, nor NaN</td>
+</tr>
+</table>
+
+<h4> Formatted output </h4>
+There are several mechanisms in the language to produce formatted output,
+in the manner of C's <tt>printf()</tt> function.
+Although in principle one could use <tt>convert(string, value)</tt> to generate
+such output, the <tt>printf</tt> style allows more flexibility and convenience.
+<p>
+The formatted print operator in Sawzall is called <tt>format</tt> and it produces
+a string; it does not directly write output to a file (more on that in a moment).
+Its behavior is very much like an <tt>sprintf</tt> that allocates its own storage;
+it returns the string as a value.
+Here is an example:
+<pre>
+str = format("Hello, world in the year %d\n", yearof(now()));
+</pre>
+To write to a file, use the <tt>emit</tt> statement, which is described in detail
+later in this document.
+For writing to standard output or standard error,
+the predefined variables <tt>stdout</tt> and <tt>stderr</tt>
+can be used:
+<pre>
+emit stdout &lt;- format("Hello, world in the year %d", yearof(now()));
+</pre>
+(No terminal newline is necessary since
+<tt>emit</tt> to <tt>stdout</tt> adds a newline automatically.)
+<p>
+The syntax of the format string is similar to that of ANSI C's <tt>printf</tt> - for complete documentation see <tt>szl --explain format</tt>.
+
+<h3> Simple declarations </h3>
+There are several places in a program where variables and type names must
+be declared.
+This section describes the basic syntax from which the various forms of
+declaration derive.
+
+<p>
+A fully qualified declaration includes the name of the object being declared,
+a colon, and a type specifier.  The simplest type specifier is a basic type,
+so a declaration of a integer variable would look like this:
+
+<pre>
+i: int;
+</pre>
+
+An array or other indexed object is introduced using the appropriate keyword
+(<tt>array</tt>, <tt>sum</tt>, <tt>collection</tt>,
+<tt>top</tt>, or <tt>unique</tt>) and with the indexing and value types explicit.
+For instance,
+<pre>
+a: table sum[string] of int;
+</pre>
+declares a variable <tt>a</tt> to be an aggregator of integers, indexed by strings.
+In such a declaration, it may be helpful to give names to the indices and value,
+like this:
+<pre>
+a: table sum[value: string] of count: int;
+</pre>
+Such names are just commentary, however
+and are not defined for use outside the declaration statement itself
+(the only exception being some modifiers for output types described below).
+Therefore, these two versions
+of the declaration of <tt>a</tt> are equivalent.
+<p>
+A few more points about indexed types.
+The <tt>array</tt> type is a fairly ordinary array data type,
+basically like that in C.
+It may be indexed by integers only.
+The other indexed types (<tt>sum</tt>, <tt>collection</tt>,
+<tt>top</tt>, <tt>unique</tt>) are forms of output variables and
+have very different semantics, as described below.
+Output variables may be indexed by any basic type.
+<p>
+Arrays are declared without an explicit size, although a size may be
+set by the initializer, to be described shortly.
+Here are a couple of simple array declarations:
+<pre>
+a: array of int;
+aa: array of array of int;
+</pre>
+Note that a multidimensional array is literally and explicitly an array of arrays.
+<p>
+Map types are declared by specifying the type of both the key and the value, like this:
+<pre>
+zipcodemap: map[city: string] of zipcodes: array of string;
+</pre>
+As always, the names of the key and value are optional in the declaration.
+<p>
+A tuple type is declared by zero or more types gathered together in braces.
+An example:
+<pre>
+t: { int, float };
+</pre>
+<p>
+Tuple components are called <i>fields</i> and can be given names
+<pre>
+t: { count: int, revenue: float };
+</pre>
+to be used to access the fields (<tt>t.count</tt>, <tt>t.revenue</tt>).
+<p>
+For convenience, one may define and use type names.
+This example is analogous to the declaration of <tt>t</tt> above:
+<pre>
+type Info = { count: int, revenue: float };
+t: Info;
+</pre>
+<p>
+With the exception that arrays can only be indexed by <tt>ints</tt>,
+a tuple can be used as the element or index of any indexed type.
+Thus one may declare an output table like this:
+<pre>
+adcount: table sum[creative: string][{ hour: time, tz: string }] of
+         { count: int, revenue: float };
+</pre>
+<p>
+Tuple types can nest:
+<pre>
+tt: { a: int, b: { c: float } };
+</pre>
+This declaration creates a tuple with fields
+<tt>tt.a</tt>, <tt>tt.b</tt> and the nested field <tt>tt.b.c</tt>.
+<p>
+We can also declare a nested type within a named tuple:
+<pre>
+type Data = { tag: string, type Info = { count: int, revenue: float }, i: Info };
+</pre>
+After this declaration, one can declare variables
+outside the tuple using the type name <tt>Data.Info</tt>.
+Note that to access a nested type, we name the subfield
+of the <i>type</i> (such as <tt>Data.Info</tt>), while to access a nested value, we name
+the subfield of a <i>value</i> (such as <tt>tt.a</tt>).
+(The surrounding tuple type must have a name so the nested type
+can itself be named.)
+<p>
+Tuples can therefore serve as name spaces.
+<p>
+Type equivalence is defined as follows.
+Two basic types are equivalent if they are identical.
+Two array types are equivalent if their element types are equivalent.
+Two maps types are equivalent if their key types and value types are equivalent.
+Two function types are equivalent if their parameter types and return types are equivalent.
+Two tuple types are equivalent if their field types are equivalent
+and the corresponding fields in the two tuples are named the same.
+
+<h4> Initializations </h4>
+
+Variables may be initialized when they are declared:
+<pre>
+twoplustwo: int = 5;
+PI: float = 3.14159265358979;
+pi_str: string = string(PI);
+</pre>
+As a convenience, to avoid
+Java-like stuttering of type names, Sawzall injects an implicit conversion
+if the initializing expression is of a different
+type and can be converted.
+Thus the third declaration above could be equivalently written,
+<pre>
+pi_str: string = PI;
+</pre>
+To initialize arrays, tuples, and maps, use a list of expressions in braces:
+<pre>
+a: array of int = { 1, 2, 3, 4 };
+aa: array of array of int = { a, { 5, 6, 7, 8 }, a[0:2] };
+t: { i: int, f: float, s: string } = { 3, 3.0, "three" };
+m: map[string] of array of string = { "us": { "en" }, "ca": { "en", "fr" } };
+</pre>
+<p>
+There is another convenience.
+If the type of the initializer is the same as the type of the variable
+to be declared, the type
+can be elided from the initialization.
+The idiom is to use the <tt>:=</tt> notation, as in these initializations:
+<pre>
+i := 0;
+f := 3.14159;
+t := now();
+</pre>
+Note that these are declarations with initialization, not assignments,
+despite the lexical similarity to the <tt>:=</tt> operator in Pascal.
+This form of initialization is only available if the expression is
+of unambiguous type. For instance, this declaration is illegal:
+<pre>
+a := { 1, 2, 3, 4 }
+</pre>
+because it is unclear whether the expression is an array or a tuple.
+<p>
+
+As we explore more of the language, we'll see that
+initializations play a larger part in Sawzall than they do in most languages.
+
+<h3> Input declarations </h3>
+
+
+The execution of a Sawzall program takes each input record, either a protocol
+buffer or a line of text, matches it against a set of patterns, and performs actions
+according to successful matches.
+A program usually begins with a set of input declarations to define the format
+of the input records and how its components are to be interpreted during
+the execution of the program.
+These declarations break the input record into parsed components
+that are assigned to the variables named in the declarations.
+The input declarations therefore serve as a sort of parser for the input record,
+breaking it into pieces that are assigned to variables that can be used elsewhere
+in the program.
+The values of these variables are defined anew for each input record processed
+by the program.
+<p>
+A common starting point, if the input is in protocol buffer format, is to define
+a type by importing the description of the protocol buffer into a Sawzall type.
+There are two ways to achieve this: a <tt>proto</tt> directive, or a
+declaration that imports the definition from the protocol database.
+
+<h4> The proto directive </h4>
+
+The <tt>proto</tt> directive is a variant of an <tt>include</tt> directive
+and looks like this:
+<pre>
+proto "szluser/logdata.proto"
+</pre>
+The result of such a directive is to define types and constants
+describing the contents of the protocol buffer, usually as a tuple.
+In fact, what happens is that the directive is replaced by the output of running
+the protocol compiler on the named file, requesting Sawzall output..
+The names of the types are found in the <tt>.proto</tt> file, so it may be
+necessary to examine it to see what names to use.
+If there are multiple protocol buffers named in the <tt>.proto</tt> file, all the
+types will be defined.
+
+<h4> Values in protocol buffers </h4>
+
+The types of the tuple fields are extracted as Sawzall types corresponding
+to the C++ types in the protocol buffers: <tt>int</tt>, <tt>bytes</tt>, etc.
+In particular, strings in protocol buffers become byte arrays when imported; it is
+necessary to convert them to Sawzall <tt>string</tt> variables explicitly
+because Sawzall <tt>strings</tt> are Unicode and the protocol buffers
+do not define the character encoding.
+<p>
+After the declaration listed above, one may declare a new variable, say
+<tt>logrecord</tt>,
+with type <tt>LogDataProto</tt>, and initialize it to the predefined byte array <tt>input</tt>
+in order to extract the fields of the input record:
+<pre>
+logrecord: LogDataProto = LogDataProto(input);
+</pre>
+After this declaration, for each input record, the fields of <tt>logrecord</tt> are
+set to the fields of the input record.  For instance, if <tt>LogDataProto</tt>
+contains a field <tt>value</tt> that is a string,
+it is stored in the byte array <tt>logrecord.value</tt> automatically.
+(As with <tt>.proto</tt> specs translated into C++, field variables become lower case.)
+
+<p>
+In initializations the conversion operator can be elided since the type
+of the variable being declared is explicit, so this declaration could
+be written in the shorter form
+<pre>
+logrecord: LogDataProto = input;
+</pre>
+We may wish to regard the value as a regular string containing Unicode characters.
+The data imported from the protocol buffer is just an array of bytes, but the
+<tt>value</tt>
+field of <tt>LogDataProto</tt> is always the UTF-8 representation of the
+Unicode characters in the data for <tt>value</tt> in the protocol buffer.
+We can therefore convert the byte array <tt>logrecord.value</tt> into a
+Unicode Sawzall string variable by converting it explicitly in another input declaration, like this:
+<pre>
+unicodevalue: string = string(logrecord.value, "UTF-8");
+</pre>
+Because UTF-8 is the default input encoding and because initializations implement conversions
+automatically, we could write this in shorter form:
+<pre>
+unicodevalue: string = logrecord.value;
+</pre>
+or equivalently
+<pre>
+unicodevalue := string(logrecord.value);
+</pre>
+If some other field were in a different character encoding, it would be necessary to define
+the encoding.
+For instance, imagine that there was another field, <tt>logrecord.nativevalue</tt> in the native
+encoding defined by <tt>logrecord.nativeencoding</tt>; one could write
+<pre>
+unicodevalue := string(logrecord.nativevalue, string(logrecord.nativeencoding));
+</pre>
+
+<p>
+If the input format is not defined by a <tt>.proto</tt> file, it is still possible
+to represent the format using a Sawzall type declaration.
+For instance, we could define the <tt>LogDataProto</tt> type explicitly, like this
+(omitting the parts not used above):
+<pre>
+type LogDataProto = {
+  value: bytes,
+  nativevalue: bytes,
+  nativeencoding: bytes
+};
+</pre>
+The <tt>proto</tt> directive is just an automatic way to construct such a type
+from the external <tt>.proto</tt> definition.
+
+<h4> Promotion to proto </h4>
+
+In Sawzall, a protocol buffer type is just a tuple with some internal
+annotations to specify how it is to be imported and exported. For the
+most part, these are invisible to the programmer.  To see what these
+annotations look like, run the protocol compiler with the Sawzall plugin
+on a <tt>.proto</tt> file; the details are beyond the scope of this
+document.
+
+<p>
+Sometimes it is useful to create a new tuple type and treat it as a
+protocol buffer. To do this, use the keyword <tt>proto</tt> yet again:
+<pre>
+type T = { a: int, b: float };
+type protoT = proto T;
+</pre>
+or just
+<pre>
+type protoT = proto { a: int, b: float };
+</pre>
+If the type is already has protocol buffer annotations, this construct
+adds nothing new; <tt>proto</tt> is idempotent.
+
+<p>
+This program will illustrate some of the mechanism; we leave its
+interpretation as an exercise for the curious reader.
+<pre>
+type T = { a: int, b: float };
+type protoT = proto T;
+
+t: T = { 0, 0.0 };
+protot: protoT = { 0, 0.0 };
+
+emit stdout &lt;- format("%#T", t);
+emit stdout &lt;- format("%#T", protot);
+</pre>
+
+<h3>The saw operation</h3>
+
+Suppose the <tt>value</tt> field string in a LogDataProto record could consist of several words separated by plus signs.
+We can use an input declaration to parse  field into its constituent words.
+To see how, we need to explore a language operation called <i>saw</i> that slices a string into
+pieces according to a sequence of regular expressions that match successive
+pieces of the string.
+<p>
+In its simplest form, <tt>saw</tt> is a function that takes as arguments a string to slice and
+a series of regular expressions to use to find the pieces to slice out, and returns an <tt>array of string</tt>
+containing the matched substrings.  After this statement,
+<pre>
+a := saw("abcdef", "...", "..", ".");
+</pre>
+<tt>len(a)</tt> is 3 and
+<tt>a[0]</tt> contains <tt>"abc"</tt>, <tt>a[1]</tt> contains <tt>"de"</tt>, and <tt>a[2]</tt> contains <tt>"f"</tt>.
+Sawzall uses <a href="http://www.pcre.org/">
+Perl Compatible Regular Expressions (PCRE)</a>.
+<p>
+If the patterns are insufficient to span the entire string, the returned array will contain only those
+substrings that matched.  For instance, after
+<pre>
+a := saw("abcdef", "abc", "de", "g");
+</pre>
+<tt>a</tt> will have only two elements, <tt>"abc"</tt> and <tt>"de"</tt>.
+As a result, not only one can use the length of the return value to determine
+the success of the operation, one can use <tt>saw</tt> speculatively.
+<p>
+The substrings matched by a <tt>saw</tt> do not necessarily abut, that is,
+the regular expressions search for the next match as well as extract it.
+For example,
+<pre>
+a := saw("abcdef", "abc", "e", "f");
+</pre>
+will return three substrings and skip the <tt>d</tt>.
+If you want the regular expressions to match abutting substrings with no gaps, `anchor' the search
+using the regular expression <tt>^</tt> operator.
+Compare the previous example with this one,
+<pre>
+a := saw("abcdef", "abc", "^e", "f");
+</pre>
+which will only return one substring, <tt>"abc"</tt>, because the character after <tt>"abc"</tt> is not <tt>'e'</tt>.
+<p>
+One way to think of how <tt>saw</tt> works is that, for each pattern, it searches from the current
+point in the string until it finds a match, slices out the substring that matches, and advances the current point.
+<p>
+As a more interesting example, we could break apart a string
+which has airport codes as three colon-separated subfields,
+something like <tt>"SFO:SJC:BOS"</tt>.
+This could be sawn into pieces:
+<pre>
+strs := saw(language, `[^:]+`, `[^:]+`, `[^:]+`);
+</pre>
+(Note the use of the <tt>``</tt> quote characters; it's a good idea to use them
+for regular expressions to avoid surprises with backslashes.)
+The result is a 3-element array, each element containing an element of the
+string, <tt>"SFO"</tt>,
+<tt>"SJC"</tt>, <tt>"BOS"</tt>.
+We can guarantee that the string parses absolutely correctly by anchoring the searches and
+including the colons:
+<pre>
+strs := saw(language, `^[^:]+`, `^:`, `^[^:]+`, `^:`, `^[^:]+$`);
+if (len(strs) != 5) error...
+</pre>
+(The regular expression syntax can be a little cryptic; here <tt>^</tt> means two
+different things, anchoring the match and complementing a character class.
+For the rest of this document, it is assumed you understand RE syntax; if you
+need a refresher course, see the appropriate <a href="http://www.perldoc.com/perl5.8.0/pod/perlre.html">
+man page</a>.)
+In such cases, it's annoying to have the colons appear in the destination string,
+since they're just separators.  We can tell <tt>saw</tt> to avoid copying them
+into the destination array, while still requiring that they parse correctly,
+by placing the <tt>skip</tt> keyword before the separator patterns:
+<pre>
+strs := saw(language, `^[^:]+`, skip `^:`, `^[^:]+`, skip `^:`, `^[^:]+`);
+if (len(strs) != 3) error...
+</pre>
+<p>
+As another example, imagine we had a string <tt>nums</tt> that consisted of a couple of integers
+separated by a space.
+We could pull out the integers like this:
+<pre>
+strs: array of string = saw(str, `[0-9]+`, skip ` `, `[0-9]+`);
+x: { i: int, j: int } = { int(strs[0]), int(strs[1]) };
+</pre>
+This is a little clumsy,
+but initializations provide the necessary type conversions, and the <tt>saw</tt>
+operation will skip the blank while scanning for the second number, so
+we could abbreviate this process considerably:
+<pre>
+x: { i: int, j: int } = saw(str, `[0-9]+`, `[0-9]+`);
+</pre>
+(The next section explains what happens to <tt>x</tt> in this example if the
+<tt>saw</tt> returns fewer than two elements.)
+<p>
+Regular expressions can contain parenthesized subexpressions, and although
+by default the entire string matched by the expression is extracted by <tt>saw</tt>,
+sometimes it's useful to pull out the subexpressions instead.
+To do this, prefix the pattern with the word <tt>submatch</tt>, as in this example
+to parse a line of a CSV file consisting of two fields per line, the first of which may contain
+embedded commas in a quoted string:
+<pre>
+saw(s, submatch `(.*),`, `.*`)
+</pre>
+In this example, the idea is that the <tt>.*</tt> pattern in the first expression
+will be greedy and absorb all commas, but the final comma in the pattern
+forces it to stop there; using the parenthesized subexpression allows us to
+extract the string up to but not including the final comma on the line.
+(But see the <tt>splitcsvline</tt> builtin to handle nested quotes.)
+<p>
+To clarify parsing of basic types, the intrinsic operator <tt>regex</tt>
+produces a regular expression that matches a type.
+Thus we could match an integer and a float like this:
+<pre>
+x: { i: int, x: float } = saw(str, regex(int), regex(float));
+</pre>
+With <tt>array of string</tt> as the destination type, of course, anything matches, so it is almost always
+necessary to provide explicit separators or unambiguous patterns when cutting strings into strings, as in the
+language example above.
+When the destination type is <tt>int</tt>, an optional numeric base may be supplied, as in
+<tt>regex(int, 16)</tt>; the default is 0, which uses the ANSI C rules for recognizing
+integer constants.
+<p>
+The <tt>saw</tt> operation consumes only as much of the input string as is required to match
+the pattern.
+There are two looping variants of <tt>saw</tt>.
+The first, <tt>sawn</tt>,
+takes a count that specifies how many times to run through the parameter list.
+We could use it for the language example like this:
+<pre>
+sawn(3, language, `[^:]+`, skip ":");
+</pre>
+On the last run of the loop, a final <tt>skip</tt> parameter needn't be matched,
+so <tt>sawn</tt> can be applied to text, like the language field, that is split by
+separators rather than terminators.
+<p>
+The second variant, <tt>sawzall</tt>, loops through the patterns until it runs out of input.
+For instance, to break up a line of integers, we could use
+<pre>
+sawzall(line, regex(int))
+</pre>
+and to split tab-separated fields
+<pre>
+sawzall(line, "[^\t]+")
+</pre>
+(Note: this one needs double quotes.)
+<p>
+[Empty result strings cause some complications.
+You can skip this paragraph if you avoid regular expressions
+that generate empty strings; as the next paragraph says, that's almost always possible.
+Some comments about empty result strings:
+First, when a <tt>saw</tt> makes no progress advancing across the string, it returns an empty array.
+For instance,
+<pre>
+x: array of string = saw("XYZ", `Z*`, `Z*`, `Z*`);
+</pre>
+will return an empty array, even though all the patterns match, because they all match
+at the beginning of the string. This property is a safety check against looping on bad data
+and it provides a termination condition to <tt>sawzall</tt> when it reaches the end of the input.
+For similar reasons,
+<tt>sawn</tt> (with a count greater than 1) and <tt>sawzall</tt>
+treat empty result strings specially.
+If an empty string is matched at the same location as the end of the previous
+match, it is discarded, the position in the input string is advanced one character,
+and scanning resumes.
+A couple of examples:
+<pre>
+x: array of string = sawzall("XYZ", `Z*`);
+</pre>
+will return three matches (empty at 0, empty at 1, <tt>"Z"</tt>); as will
+<pre>
+x: array of string = saw("XYZ", `Z*`, `Z*`, `Z`);
+</pre>
+(but they are: empty at 0, empty at <i>0</i> (not 1), <tt>"Z"</tt>).]
+<p>
+Your best bet is to avoid empty matches when possible, which it usually is.
+Use the <tt>+</tt> closure (one or more) rather than the <tt>*</tt> closure (zero or more)
+when appropriate, or make sure your arguments contain at least some literal data.
+For example, to match an integer, write <tt>"[0-9]+"</tt> or <tt>"\\d+"</tt> or <tt>`\d+`</tt>
+(using the Perl
+digit operator; in double quoted strings it's necessary
+to protect the backslash)
+or <tt>regex(int)</tt>, not <tt>`[0-9]*`</tt>,
+which can match the empty string and confuse the parsing of erroneous input.
+To break a string into lines, use <tt>sawzall(str, ".*\n")</tt> or <tt>sawzall(str, `.*`, skip "\n")</tt>,
+not <tt>sawzall(str, `.*`)</tt>.
+For fields separated by spaces, use <tt>"[\t&nbsp;]+"</tt> or <tt>`\s+`</tt> (the Perl
+white space operator) rather
+than <tt>"[\t&nbsp;]*"</tt>.
+
+<p>
+Sometimes it's useful to grab the remainder of the string after splitting
+off some piece.
+To do this, add as a `pattern' the name of a pre-declared variable preceded by the
+keyword, <tt>rest</tt>.
+For instance, to extract three integers from the front of <tt>str</tt> and
+advance <tt>str</tt>, we could write
+<pre>
+sawn(3, str, regex(int), rest str);
+</pre>
+A <tt>rest</tt> may appear anywhere in a <tt>saw</tt>
+operation but may only be the final pattern in a <tt>sawn</tt> or <tt>sawzall</tt>;
+for these looping operators, the string is saved after the rest of the processing is done.
+
+<p>
+It's worth being precise about the way <tt>sawn</tt> and <tt>sawzall</tt> work,
+and now that we have the <tt>rest</tt> notion we can express their behavior more carefully.
+The <tt>sawn</tt> operation works schematically as follows.
+Imagine the operation is written <tt>sawn(</tt><i>n</i><tt>, </tt><i>str</i><tt>, </tt><i>X</i><tt>, rest </tt><i>r</i><tt>)</tt>, where <i>X</i> represents the patterns of the expression.
+This is equivalent to
+<tt>saw(</tt><i>str</i><tt>, </tt><i>XXXX</i>(<i>n</i> times)<tt>, rest </tt><i>r</i><tt>)</tt>,
+with the proviso that a final <tt>skip</tt> parameter may be ignored in the rewrite.
+Because <tt>sawzall</tt> does not have a fixed count, it cannot be implemented this way.
+Instead, it works iteratively as long as it makes progress, something like this:
+<pre>
+tempstr = str;
+while (making progress)
+  append to array the result of saw(tempstr, X, rest tempstr);
+r = tempstr;
+</pre>
+
+<p>
+Returning to our airport code example, we can use <tt>saw</tt> to do the work.
+To make things clear, let's define a type:
+<pre>
+type Codes = array of string;
+</pre>
+and use it in conjunction with an invocation of <tt>sawzall</tt>:
+<pre>
+airports: Codes = sawzall(airportcodes_field, "[^+]+");
+</pre>
+
+
+<h3>Failures and default values </h3>
+<tt>Saw</tt> operations may not find a match.
+Numerical errors may cause zero division or overflow.
+Array indices may fall out-of-bounds.
+Map keys may be not present in the map.
+These and other problems will result in conditions
+for which the value of variables may be unspecified.
+The Sawzall language
+defines the behavior of the system in such cases.
+
+<p>
+The approach is for the system to track, for each input record,
+which variables have well-defined values.
+This definedness property propagates through the various
+input declarations, expressions, and other statements as they execute.
+Whenever a declaration or pattern/action group depends on undefined
+values, it is ignored, with the exception of variable declarations,
+function return values, and arguments to the built-in function
+<code>def()</code> (see below). If an undefined value is used to
+initialize a variable in its declaration, the variable is marked as
+undefined (i.e., the assignment is ignored). If the return
+value of a function is undefined, the result of the function call
+is undefined.
+In effect, the property of ignoring undefined values
+means that for each input record,
+the Sawzall program is trimmed to the subset of its
+execution that can be defined, given the input.
+
+<p>
+The granularity of the trimming is that, within the block that
+evaluates an undefined variable or expression,
+all subsequent top-level statements whose execution could depend
+on that variable are elided.
+
+<p>
+Although intended primarily to make processing of large data sets
+robust in the face of ill-formed data,
+this property can be exploited for the programmer's convenience.
+One could write a variety of speculative input declarations, only
+some of which would ever be valid for a given input record,
+without any need for error checking or bookkeeping.
+The actions they trigger will only be executed if the speculation
+was successful.
+
+<p>
+Since this behavior can mask bugs, there is a global flag
+(<tt>ignore_undefs</tt>) to the interpreter to enable it.
+When not set, undefined values trigger a run-time error.
+
+<p>
+For occasions when one wants more fine-grained control, there is a boolean primitive
+<tt>def(</tt><i>expression</i><tt>)</tt> to check whether an expression has
+well-defined value.  This primitive `protects' the inner expression from needing
+to be valid for its surrounding block to be executed.
+As a simple example, given a map <tt>m</tt>, the <tt>if</tt> statement
+<pre>
+if (def(m[key])) ...
+</pre>
+tests whether <tt>key</tt> is present in the map
+(although it's faster to use the <tt>haskey</tt> or <tt>lookup</tt> builtin for this).
+Functions often return undefined values to indicate errors. As an example,
+<tt>getenv()</tt> returns undefined if the named shell variable does not exist
+in the environment.  One may therefore test whether a variable exists by writing
+<pre>
+if (def(getenv("VARIABLE"))) ...
+</pre>
+
+<h4> Initializers and static values </h4>
+
+So far, most of the examples we've looked at derive from the input line.
+It is often useful, however, to define variables whose values do
+not depend on the input.
+Syntactically, it's just the same:
+<pre>
+message: string = "Hello, world\n";
+</pre>
+or
+<pre>
+message := "Hello, world\n";
+</pre>
+The values of such initialized data will be evaluated,
+just like regular input variables, once for each record.
+For true constants, define the data to be statically determined:
+<pre>
+static kPowersOf2: array of int = { 1, 2, 4, 8 };
+</pre>
+The <tt>static</tt> keyword states that the variable will be
+created and evaluated once at the start of execution;
+not once for each record.
+Of course, the data involved in a static definition must also be statically determined
+or an error will result.
+<p>
+We can construct static parses of data, as in this silly example:
+<pre>
+static kPowersOf2: array of int = sawzall("1 2 4 8", regex(int));
+</pre>
+This mechanism provides a way to initialize a table from
+a free-format table of input.
+This example initializes a table from a list of names, one per line:
+<pre>
+static kDivas := sawzall(load("/home/szlusers/divas"), `.+`);
+</pre>
+(The period regular expression metacharacter does not match a newline.)
+<p>
+Static variables may be initialized only by expressions, not for instance by
+statements such as for loops, but those expressions
+can represent arbitrarily complex calculations because they may include function
+calls.
+Functions used in static initializers must themselves be declared as static,
+as explained below.
+<p>
+It is legal to create a static variable as a field of a named tuple type:
+<pre>
+type Buffer = { data: string, static kSize := 1024 };
+</pre>
+Such a variable is considered part of the type, so outside the tuple
+it would be named <tt>Buffer.SIZE</tt>.  It is not part of a value of
+that type, so if we had a variable <tt>buf</tt> of type <tt>Buffer</tt>,
+we could write <tt>Buffer.SIZE</tt> but not <tt>buf.SIZE</tt>.
+
+<h3> Output declarations </h3>
+
+Output variables are variables of an output type. They aggregate
+the data produced by the execution of the program. Output types are introduced
+with the <tt>table</tt> keyword followed by a name identifying the kind of
+output type desired. Sawzall is extensible with respect to output
+types.
+Each output type aggregates, according to its individual definition,
+the data that is output to that table. Sawzall currently supports:
+<ol>
+<li><tt>collection</tt>: A simple collection or concatenation of the data.</li>
+<li><tt>sample</tt>: A statistical sampling of <i>N</i> items.</li>
+<li><tt>sum</tt>: An arithmetic sum of the data.</li>
+<li><tt>top</tt>: Statistical samplings that record the `top <i>N</i>' data items.</li>
+<li><tt>maximum</tt>: A precise sample of the <i>N</i> highest-weighted data items.</li>
+<li><tt>minimum</tt>: A precise sample of the <i>N</i> lowest-weighted data items.</li>
+<li><tt>unique</tt>: Statistical estimators for the total number of unique data items.</li>
+<li><tt>set</tt>: A set of size at most <i>N</i>.  Larger sets are
+discarded.</li>
+<li><tt>quantile</tt>: Approximate <a
+href="http://www.google.com/url?sa=D&amp;q=http://mathworld.wolfram.com/Quantile.html"> quantiles </a>
+(actually <i>N</i>-tiles) for data
+items from an ordered domain.</li>
+<li><tt>distinctsample</tt>: A uniform sample of a given size from a set of all values seen.</li>
+<li><tt>inversehistogram</tt>: An approximate histogram of unique values.</li>
+<li><tt>weightedsample</tt>: A sample of a given size from a set of all values seen, biased towards values with higher weights.</li>
+<li><tt>recordio</tt>: An unindexed collection written directly to a binary file.</li>
+<li><tt>text</tt>: An unindexed collection written directly to a plain file.</li>
+<li><tt>mrcounter</tt>: An integer counter that can be used to provide an
+accumulated count (e.g. a progress indicator) to a C++ program invoking the
+Sawzall interpreter.</li>
+</ol>
+<p>
+The basic idea behind all the output types is that they gather and process data and store
+the result in
+pigeonholes indexed by the indices of each type.
+If an output variable has no indices, it represents
+a singleton.
+Unlike regular arrays, indexed output variables must have the type of the index
+defined explicitly in the declaration (it's always <tt>int</tt> for arrays).  For example,
+<pre>
+numdivasfans: table sum[string] of int;
+</pre>
+is an output variable indexed by strings. Each entry stores an integer.
+Each time an index is mentioned, the cell to store its value will be created
+if it does not exist,
+much like an Awk associative array or Python dictionary.
+Subsequently (by mechanisms outside the language; see the
+mapreduce_demo_unittest example program)
+the data for, say, index <tt>"britney"</tt> can be recovered again by accessing
+<tt>numdivafans["britney"]</tt>.
+On the other hand,
+<pre>
+numbritney: table sum of int;
+</pre>
+represents a single value, accessed by <tt>numbritney</tt> with no index.
+<p>
+Here are some suggestive examples.
+The declaration syntax is straightforward,
+except that some tables
+take parameters and some take a special <tt>weight</tt> attribute.
+These are described in the sections that follow.
+<pre>
+# Collect all the divas into a single stream.
+alldivas: table collection of string;
+
+# Count the number of times each diva is seen.
+numdivas: table sum[diva: string] of count: int;
+
+# Record the top 10 divas (by fan count) for each state
+topdivas: table top(10)[state: string] of diva: string weight count: int;
+
+# Record the ten best selling divas
+bigmoney: table maximum(10) of diva: string weight sales: float;
+
+# Count how many unique lyric phrases using an (internal) sampled table of
+# 10000 entries to estimate the distribution:
+uniquephrases: table unique(10000) of phrase: string;
+
+# Gather song titles for those divas for which there are not more than
+# 10 distinct titles
+session: table set(10)[diva: string] of title: string;
+
+# For every diva, gather approximate quantiles for the ages of the fans
+fanagequantiles: table quantile(10)[diva: string] of fan_age: int;
+
+</pre>
+<p>
+In the current implementation,
+the elements of output variables may be tuples but may not be arrays or contain arrays.
+For instance, the following is not supported:
+<pre>
+s: table sum[int] of array of float;  # unsupported
+</pre>
+
+The next sections describe the output types in more detail,
+but first we need to see how they are used.
+
+<h3> Actions 1: The <tt>emit</tt> statement </h3>
+
+The only thing one may do to an output variable is to use it in an <tt>emit</tt>
+statement in an action.  The syntax of an <tt>emit</tt> statement is simple:
+the keyword <tt>emit</tt> followed by a fully-indexed output variable
+reference, followed by an arrow and the complete value to record there, like this:
+<pre>
+emit numdivafans["britney"] &lt;- 1;
+</pre>
+This statement says to aggregate the integer 1 to the table <tt>numdivasfans</tt>
+indexed by the string <tt>"britney"</tt>.
+Since <tt>numdivafans</tt> is a <tt>sum</tt>,
+the effect is to add <tt>1</tt> to the count of <tt>"britney"</tt> fans.
+Other values may be worth aggregating in this fashion, for example:
+<pre>
+sales: table sum[int] of float;
+...
+emit sales[diva] &lt;- 0.25;
+</pre>
+or even tuples:
+<pre>
+fileoffans: table collection[decade: int] of { string, string };
+...
+emit fileoffans[fan_age / 10] &lt;- { diva, song };
+</pre>
+Now let's examine the various output types in more detail.
+
+<h4> Collection </h4>
+
+A <tt>collection</tt> variable aggregates each data item under its index into a continuous
+stream of data.
+The result is a historical record of the values emitted under each index,
+but without any order guarantees.
+
+<h4> Sum </h4>
+
+A <tt>sum</tt> variable accumulates the arithmetic sum of each of its components,
+elementwise.
+The elements may be only <tt>int</tt> or <tt>float</tt> or tuples created from them.
+This declaration defines an hourly count of number of albums and sales,
+indexed by diva and seller:
+<pre>
+salesperhour: table sum[diva: string][seller: string][hour: time]
+  of { count: int, sales: float };
+</pre>
+
+<h4> Top </h4>
+
+A <tt>top</tt> gathers an approximate list of the most popular items.
+The size of the list must be defined in the declaration,
+along with the 'weight' used to decide which entries are the `top'.
+For example,
+<pre>
+top100songs: table top(100) of song: string weight int;
+</pre>
+This example estimates the most popular song titles based on the
+number of times each distinct title is emitted to the object, assuming
+the corresponding <tt>emit</tt> statement uses a <tt>weight</tt> of one:
+<pre>
+emit top100songtitles &lt;- title weight 1;
+</pre>
+<p>
+We may weight by something that is not a constant,
+such as the number of times a song is played as logged in a given record:
+<pre>
+top100songs: table top(100) of song_id: int weight playcount: int;
+</pre>
+<p>
+Note that <tt>top</tt> guesses the most popular items and estimates their weights.
+To compute the exact answer, run two programs,
+the first computing the totals using a <tt>sum</tt>,
+and the second selecting the items using a <tt>maximum</tt>.
+For example, one can find the 100 most popular songs exactly.
+First run
+program 1:
+<pre>
+playcounts: table sum[song: string] of count: int;
+...
+emit playcounts[song] &lt;- 1;
+</pre>
+then apply program 2 to the output of program 1:
+<pre>
+top100songs: table max(100) of song: string weight int;
+# song and count retrieved from playcounts in program 1.
+emit top100songs &lt;- song weight count;
+</pre>
+The result will be the precisely tabulated top 100,
+but requires producing a large intermediate table of exact counts.
+<p>
+The quality of the estimates generated by <tt>top</tt> depends on the
+distribution of items in the input, and is hard to predict in advance.
+It was designed to work well for zipfian distributions,
+but will perform poorly for flat distributions.
+In addition, merging multiple runs of a <tt>top</tt> table may
+give slightly inferior results to running on the entire data set.
+The output for a top table includes the item values and weights,
+along with an estimated deviation of the weights.
+If the deviation is significantly smaller than the weights,
+then the answers are probably reasonably accurate.
+However, if the deviation is large, the answers may be wildly off.
+<p>
+The implementation of <tt>top</tt> is limited to 1000 items.
+
+<h4> Maximum and Minimum </h4>
+
+A <tt>maximum</tt> records the values that have the highest weight.
+It is syntactically similar to a <tt>top</tt>,
+but unlike a <tt>top</tt> table, <tt>maximum</tt> is precise, not statistical,
+and makes its selection based on individual values and their weights,
+rather than by summed counts over a set of related values.
+For instance,
+<pre>
+t: table top(10) of song: string weight int;
+</pre>
+will estimate which are the 10 most popular songs based on how many times they appear,
+but
+<pre>
+m: table maximum(10) of song: string weight int;
+</pre>
+will look at the list of songs, weighted by their integer weight, and store
+the ten song names whose individual weight (count) was the largest.
+The same song emitted multiple times to a <tt>top</tt> will climb in the rankings,
+but the only way a song in a <tt>maximum</tt> table will get to the top is if some
+single <tt>emit</tt> statement with that value has a very large weight.
+<p>
+A <tt>minimum</tt> table is equivalent to a <tt>maximum</tt> table with
+inverted weights.
+
+<h4> Unique </h4>
+
+A <tt>unique</tt> uses a statistical algorithm to estimate how many unique
+items occur.
+They are evaluated by examining the density of a sampling table whose
+size must be provided as a parameter.
+<pre>
+uniquephrases: table unique(1000000) of phrase: string;
+</pre>
+The value stored in a <tt>unique</tt> is just an integer representing the estimate
+of the number.
+If the value is a tuple, the entire tuple must be unique to count as a separate value:
+<pre>
+uniquedivaphrase: table unique(10000) of { diva: string, phrase: string };
+</pre>
+
+<h4>Set</h4>
+
+A <tt>set</tt> records up to <i>N</i> distinct values for each index.
+If an index would have more than <i>N</i> elements, it and its values
+are discarded, so sets of more than <i>N</i> elements are ignored.
+This design avoids deciding which elements to keep if the set is large.
+For a statistical sample of <i>N</i> elements, a sample table or
+top table would be more appropriate.
+<pre>
+songs: table set(120)[diva: string] of { song: string, length: int };
+</pre>
+accumulates the songs for each diva, but only if there are no more
+than 120.
+
+<h4>Quantile</h4>
+
+Quantiles provide a way to represent the underlying data distribution in
+a succinct manner. If there are <i> M </i> data elements (emits to
+an index in the table) their
+<i>N</i>-tiles (<i>N&gt;</i>1) are <i> N </i>
+elements with ranks 1,<i> M/(N-</i>1<i>), </i>2<i>*M/(N-</i>1<i>), ..., (N-</i>3<i>)*M/(N-</i>1<i>),
+(N-</i>2<i>)*M/(N-</i>1<i>), M  </i> in the sorted list of all the elements.
+However, the quantile table in Szl computes an approximate version
+of these <i>N</i>-tiles. Let <i> X1, X2, ... XN </i> be the elements
+output by the quantile table. The first and last elements (<i> X1, XN
+</i>) are accurate and represent elements at rank 1 (min) and
+<i> M </i> (max) respectively, where <i> M </i>, as before, is the
+total number of emits to the index. However, all other elements may
+have ranks (in the sorted list) off by at most <i> M/(N</i>-1)
+relative to their
+desired rank. More precisely, the <i>I</i>th element (1 <i> &lt; I &lt; N
+</i>) <i> XI </i> has rank <i> I*M/(N-</i>1<i>) +/- M/(N-</i>1<i>) </i> when ideally
+it should have a rank <i> I*M/(N-</i>1<i>) </i>. The output of the quantile
+table is guaranteed to be in sorted order. For example,
+<pre>
+fanagequantile: table quantile(5)[diva: string] of age: int;
+</pre>
+
+computes approximate quantiles of the number of
+fans logged for each divas.
+
+<h4>DistinctSample</h4>
+
+The table <i>distinctsample</i> takes a uniform sample of a given size
+from the set of all values seen. Conceptually that means first
+removing duplicate copies of all values that occur more than once in
+the input, and then taking a sample without replacement from the
+resulting duplicate-free data set. For example,
+
+<pre>
+my_sample: table distinctsample(100) of phrase: string weight int; emit
+my_sample &lt;- logrecord.phrase weight 1;
+</pre>
+
+picks a sample of 100 song phrases, each phrase being chosen with
+equal probability, regardless of its multiplicity. In addition, the
+distinctsample aggregator keeps track of the number of times each
+sampled phrase appears in the data set.
+
+<h4>InverseHistogram</h4>
+
+The <i>inversehistogram</i> aggregator produces an inverse histogram,
+that is, a table saying how many values occur with aggregate weight 1,
+2, 3, ... and so on. The inverse histogram is approximate, with
+accuracy specified by a parameter.  The numerical parameter is how
+many samples to use to generate the histogram.  For example,
+
+<pre>
+my_histogram: table inversehistogram(50000) of phrases: string weight count: int;
+
+if (<i>some condition</i>) {
+  my_histogram &lt;- logrecord.phrase weight 1;
+}
+</pre>
+
+might produce output that looks like this:
+
+<pre>
+my_histogram[] = 0, 257610.69575674
+my_histogram[] = 1, 0.86072
+my_histogram[] = 2, 0.11002
+my_histogram[] = 3, 0.01918
+my_histogram[] = 4, 0.0052
+my_histogram[] = 5, 0.00228
+my_histogram[] = 6, 0.00092
+my_histogram[] = 7, 0.00054
+my_histogram[] = 8, 0.00038
+my_histogram[] = 9, 0.00018
+my_histogram[] = 10, 0.00012
+...
+</pre>
+
+The <i>0-th</i> entry is an estimate of the number of unique elements
+it the data set.
+
+<p>
+
+For <i>i = 1, 2, ...,</i> the result is the fraction of unique items
+that appeared exactly <i>i</i> times.  That is, 86% data items occur
+only once, 11% of items occur twice, 1.2% of items occur 3 times etc.
+
+<p>
+
+The frequencies should add up to (approx.) 1.0, give or take something
+for approximation.
+
+<h4>WeightedSample</h4>
+
+The table <i>weightedsample</i> takes a sample of a given size
+from the set of all values seen.  The sample is biased towards the
+values with higher weights.  For example,
+
+<pre>
+x: table weightedsample(2) of x_i: string weight w_i: float;
+emit x &lt;- "a" weight -1.0;  # definitely not chosen
+emit x &lt;- "b" weight 0.0;  # definitely not chosen
+emit x &lt;- "c" weight 1.0;  # unlikely to be chosen
+emit x &lt;- "d" weight 100.0;  # likely to be chosen
+emit x &lt;- "e" weight inf;  # definitely chosen, unless more than 2 (table parameter) inputs have weight = inf
+</pre>
+
+picks a sample of 2 strings.  The input "d" is more likely to be chosen
+than "c" because its weight is much higher.  The probability to be chosen is
+generally not proportional to the weight.
+When all
+weights are the same, the table is a rigorously uniform random sample,
+regardless of how the inputs are sharded.
+
+The table does not remove duplicated inputs or sum the weights for each distinct
+input.  If you emit "x" twice, with weights 1 and 2, respectively, both of them
+may get into the table, so it is different from emitting a single "x" with
+weight 3.
+
+<h4> Direct output tables </h4>
+
+The output of an <tt>emit</tt> statement is usually saved by the invoking
+programfor
+aggregation and statistics gathering.
+Sometimes, though, the results are more usefully saved in a file for later
+analysis by other tools.
+To this end, Sawzall supports some tables that write results directly to a
+file in formats easily read by other tools.
+Integral types are written as 64-bit big-endian ints,
+floats as little-endian 64-bit IEEE floats,
+and bytes and strings are unencoded.
+
+<h4> Recordio </h4>
+
+A <tt>recordio</tt> is a direct output table that writes its emitted
+elements directly to a binary file.  Each record begins with the length of the
+data (not counting the length part itself) encoded in varint form.
+There cannot be an index for a <tt>recordio</tt> table.
+The element may be a <tt>bool</tt>, <tt>int</tt>,
+<tt>fingerprint</tt>, <tt>time</tt>, <tt>bytes</tt>, <tt>string</tt>
+or <tt>float</tt>.
+The parameter gives the compression block size for the file in bytes;
+zero implies uncompressed output.  (Not implemented; all recordio files are
+uncompressed.)
+This declaration defines an uncompressed recordio output for fingerprints:
+<pre>
+prints: table recordio(0) of fingerprint;
+</pre>
+
+<h4> Text </h4>
+
+A <tt>text</tt> is a direct output table that writes its emitted
+elements directly to a file as text.
+There cannot be an index for a <tt>text</tt> table,
+and the element type must be a <tt>string</tt> or a <tt>bytes</tt>.
+Output is not modified by the table before writing to the file;
+in particular, newlines are not added.
+This declaration defines a text output for songs:
+<pre>
+songs: table text of string;
+</pre>
+
+<h4> Mrcounter </h4>
+
+A <tt>mrcounter</tt> is counter that is only maintained internally
+instead of being written to a user-specified destination. This table is
+usually used for monitoring and debugging. It cannot be indexed and accepts
+only integer elements. For example:
+
+<pre>
+input_count: table mrcounter of int;
+emit input_count <- int(def(input));
+</pre>
+
+A C++ program using the szl library to execute a Sawzall program can access
+the counter value; a typical use would be to update progress information.
+
+<h4> Formats </h4>
+
+By default, the output generated by an <tt>emit</tt> statement is transmitted
+in an internal encoding for use by the underlying data processor.
+For output to plain files, or to organize data into more
+tractable form, any output variable (except <tt>sum</tt> or <tt>mrcounter</tt>
+that expect addable elements) may be declared with
+a <tt>format</tt> expression.
+This format is attached at the end of the declaration and can be applied to
+table <i>elements</i>.
+Here is a simple example:
+<pre>
+allsongs: table collection of s: string format("%s\n", s);
+</pre>
+Note how the element is named (<tt>s</tt>) in order
+to identify it in the <tt>format</tt> expression.
+A more complex example might look like this:
+<pre>
+
+fileoffans: table collection[decade: int] of F: { diva: string, song: string }
+  format("%s\t%s\n", F.diva, F.song);
+</pre>
+<p>
+The elements stored in an output variable with a <tt>format</tt>
+expression are always strings (generated by the output of the format),
+not the type in the declaration, while the variables in the <tt>format</tt>
+directive are defined by the declaration.
+
+<h4> Files </h4>
+
+In addition to direct output tables like <tt>recordio</tt>,
+the language has a mechanism to decorate the declaration of collection
+output variables with the name of a file into which results will be written.
+The syntax is similar to the <tt>format</tt> syntax, but in this case
+the relevant input is the <i>indices</i> rather than <i>elements</i>.
+Note that when using <tt>file</tt> attributes, table values must be of type
+bytes or decorated with <tt>format</tt>.
+For example, the declaration
+<pre>
+songsbydiva: table collection[diva: string] of song: string
+  file("/tmp/song.%s", diva) format("%s\n", song);
+</pre>
+uses the <tt>diva</tt> to distinguish file names.
+<p>
+In this example the file name is a constant.
+<pre>
+songs: table collection of song: string
+  file("/tmp/song") format("%s\n", song);
+</pre>
+
+<h4> Procs </h4>
+
+A <tt>proc</tt> is analogous to a <tt>file</tt> but instead of emitting data to a file,
+it sends data to a dynamically created external (Unix) process.
+Note that when using <tt>proc</tt> attribute, table values must be of type
+bytes or decorated with <tt>format</tt>.
+<pre>
+echobydiva: table collection[diva: string] of song: string
+  proc("echo %s", diva) format("%s\n");
+</pre>
+The <tt>proc</tt> clause specifies the arguments to a new process created
+for each <it>unique</it> index value.
+
+<h3> Patterns </h3>
+
+Sawzall defines a special statement, called a <tt>when</tt> statement, that expresses a pattern
+to match in the input record and an associated action.  Its basic syntax is
+<pre>
+when (<i>pattern</i>) <i>action</i>
+</pre>
+A <tt>when</tt> statement is much like an <tt>if</tt> statement
+except that its pattern language is more powerful and, potentially, more efficient.
+This section and the following describe the <tt>when</tt> pattern language.
+
+<p>
+In its simplest form, a pattern is a single boolean expression
+composed from operators such as string and numerical comparison and is usually applied to
+input variables and constants.
+
+<p>
+Since patterns are just boolean expressions,
+they can contain all the available operations for manipulating
+strings, numerical, values, etc.
+Also, there are helpful intrinsic functions
+such as regular expression matching to aid in constructing patterns.
+
+<p>
+Here is a simple example that uses the <tt>match</tt> intrinsic function,
+which returns a boolean recording whether the second argument, a string,
+matches the regular expression defined by the first argument (the arguments
+are in the same order as in <tt>grep</tt>):
+<pre>
+match("^Britney", diva) &amp;&amp; !match("^Why ", song)
+</pre>
+or
+<pre>
+sales > 1000000 || match("girl", song)
+</pre>
+
+<p>
+A note about the logical operators.
+The various patterns in a Sawzall program
+may be executed in parallel.
+Moreover, where possible, the components within each pattern expression
+may also be evaluated in parallel in some circumstances.
+However, the C <tt>&amp;&amp;</tt> and <tt>||</tt>
+operators define an order of evaluation that precludes
+such parallel processing.
+Therefore,
+Sawzall also includes regular
+keywords (<tt>and</tt>, <tt>or</tt>) for logical operators that do not define evaluation order;
+judicious use of these operators may result in more efficient execution.
+Beware, though, that it is not always safe to replace <tt>&amp;&amp;</tt> by <tt>and</tt>.
+
+<h4> Quantifiers </h4>
+
+<p>
+To discover certain patterns in data,
+it is useful to ask questions of the form: Do all these data items
+satisfy some condition? Or: Which element of an array satisfies some condition?
+These questions are analogous to the "for all" and "there exists" quantifiers in logic.
+For this purpose, the language introduces special pattern
+variables called quantifiers.
+Each quantifier must be declared within a pattern
+and is local to that pattern and its associated action.
+<p>
+Quantifiers come in several forms.
+The simplest is called a <tt>some</tt> variable and works as follows.
+The pattern
+<pre>
+x: some int;
+lyricword[x] == "foo"
+</pre>
+succeeds if, for some value of <tt>x</tt>, the expression <tt>lyricword[x] == "foo"</tt>
+is true.  Moreover, it binds the value of <tt>x</tt> to that index, so it can be used in the
+action associated with the pattern.
+Thus this pattern can be read, "for some <tt>x</tt>, the <tt>lyricword</tt> array indexed by <tt>x</tt> is
+the string foo".
+<p>
+If the pattern can be satisfied by several values of the <tt>some</tt>
+variable <tt>x</tt>, the action will be executed only once, for some arbitrarily chosen value.
+(Hence the name, <tt>some</tt>.)
+It can also be useful to have an action execute once for each possible value;
+for this purpose, use a different quantifier called an <tt>each</tt> variable.
+For example, the pattern
+<pre>
+y: each int;
+lyricword[y] == "foo"
+</pre>
+succeeds and causes execution of its associated action for <i>each</i> value of <tt>y</tt>
+that satisfies the condition, that is, for each element of <tt>lyricword</tt> equal to <tt>"foo"</tt>.
+<p>
+When multiple quantifiers occur in a pattern, the binding of quantifiers to values
+follows the rule that the variables are bound in the order in which they are declared.
+For instance, the pattern
+<pre>
+x: some int;
+y: each int;
+lyricword[x] == foo[y]
+</pre>
+will succeed if there is some pair of values for <tt>x</tt> and <tt>y</tt> that satisfy
+the condition.  If so, <tt>x</tt> is fixed to some successful value and
+<tt>y</tt> is bound, sequentially, to each possible value for which the
+condition is satisfied for that fixed value of <tt>x</tt>.
+If multiple values of <tt>x</tt> would satisfy the condition,
+only one is chosen, arbitrarily, subject to the constraint that <tt>y</tt> also
+can be bound to at least one value.
+<p>
+To aid in readability, it helps to prefix quantifier
+variable names with the appropriate term.
+By this convention, the previous example would be written:
+<pre>
+somex: some int;
+eachy: each int;
+lyricword[somex] == foo[eachy]
+</pre>
+
+
+<p>
+The final type of quantifier is an <tt>all</tt> variable; it requires that the expression
+succeed for all possible values of the variable.
+For instance,
+<pre>
+allx: all int;
+lyricword[allx] == "foo"
+</pre>
+succeeds if every element of <tt>lyricword</tt> has the value "foo".
+Unlike <tt>some</tt> and <tt>each</tt> variables, <tt>all</tt> variables
+are not bound to a specific value for the execution of the pattern; their
+value is implicit in the evaluation of the pattern only.
+
+<p>
+Quantifiers are defined so that they must be assignable a value, so if
+in the above examples the arrays had no elements, all the patterns would fail.
+This condition arises because if the array were empty, we could not bind
+<tt>some</tt> and <tt>each</tt>
+variables and thus could not execute the action.
+This constraint does not apply to <tt>all</tt> variables;
+<pre>
+lyricword[allx] != "foo"
+</pre>
+will succeed if <tt>lyricword</tt> is empty.
+To require a non-empty array, be explicit:
+<pre>
+len(lyricword) &gt; 0 and lyricword[allx] != "foo"
+</pre>
+
+<p>
+For a pattern to succeed, it must be possible to assign a consistent set of values to
+all the quantifiers that appear within it, subject to usual logical rules.
+Moreover, the value of a quantifier must be the same throughout the pattern.
+For instance,
+<pre>
+allx: all int;
+foo[allx] == bar[allx]
+</pre>
+succeeds iff <tt>foo</tt> and <tt>bar</tt> have the same (even zero) number of elements
+and if the corresponding elements have the same value.
+By contrast,
+<pre>
+allx, ally: all int;
+foo[allx] == bar[ally]
+</pre>
+does not require that the arrays have the same dimension but does require
+that all the elements of both arrays have the same unique value, since <tt>allx</tt>
+and <tt>ally</tt> will range over their indices independently.
+
+<p>
+For now, quantifier expressions must contain an indexed array or map
+to define the range of values for the quantifier variable.
+
+<p>
+Here are a few illustrative examples.
+Give the quantifiers
+<pre>
+somex, somey: some int;
+allz: all int;
+</pre>
+the expression
+<pre>
+foo[somex] == bar[somex]
+</pre>
+finds <tt>somex</tt> such that the corresponding elements of <tt>foo</tt> and <tt>bar</tt>
+are equal.
+The expression
+<pre>
+foo[somex] == foo[somey] &amp;&amp; somex != somey
+</pre>
+finds whether there are two different equal elements of <tt>foo</tt>.
+Finally, the expression
+<pre>
+baz[somex].elem[allz] == "hello"
+</pre>
+finds a value of <tt>somex</tt> such that all the elements of the <tt>elem</tt>
+subarray of <tt>baz</tt> have value "hello".
+
+<p>
+In general, expressions like the last one could be ambiguous: does it check whether
+there is a particular value of <tt>somex</tt> for which all the subelements match,
+or whether for all subelements
+there is some, possibly different, value of <tt>somex</tt>?
+(In logic, it's a difference of binding order: for all <i>z</i> there exists an <i>x</i> such that ...
+versus there exists an <i>x</i> such that for all <i>z</i>... .)
+In this language, however, we require the pattern to bind quantifiers uniquely
+and in order in a given evaluation of the pattern, so the interpretation
+is unambiguous.
+
+<h3> Why quantifiers? </h3>
+
+The existence of quantifiers in the language may seem an unusual decision,
+but they serve a purpose.
+Consider the pattern and action
+<pre>
+when (
+  somex: some int;
+  foo[somex] == bar[somex]
+) {
+  emit ...
+}
+</pre>
+This sequence is semantically equivalent to something like
+<pre>
+{ len = min(foo.len, bar.len);
+  for (somex = 0; somex &lt; len &amp;&amp; foo[somex] != bar[somex]; somex++) ;
+  # somex &gt;= len || foo[somex] == bar[somex]
+  if (somex &lt; len) {
+    # foo[somex] == bar[somex]
+    emit ...
+  }
+}
+</pre>
+Obviously, quantifiers provide some notational parsimony.
+But the more important difference between these examples
+is that it is much easier to analyze the pattern in the first example for purposes of
+optimization and, particularly, parallelization.
+It would require considerable sophistication for the Sawzall compiler
+to extract the meaning of the data selection being made in the <tt>for</tt>
+loop, and even more sophistication to combine its evaluation with other
+statements in the program.
+
+<p>
+In brief, by making the looping over data implicit rather than explicit,
+it is much easier to optimize the evaluation of the pattern language by
+automatic compile-time and run-time examination.
+Also, by restricting the pattern language, we hope to expose more opportunities
+for optimization.
+
+<h3> Actions 2: The action language </h3>
+
+The rest of the action language is straightforward and doesn't deserve much
+elaboration here.
+
+<p>
+The expression language is much like that of C, with the same operators but no <tt>?:</tt> expression
+(but see the next section).
+Assignment is a statement, not an expression.
+Also, increment and decrement operators <tt>++</tt> and <tt>--</tt> are postfix only and their use is regarded
+as an assignment and therefore a statement, not an expression.
+<p>
+Other than the addition of a <tt>when</tt> statement, which is like an <tt>if</tt>
+with quantifiers,
+and the ability to declare variables anywhere in a block,
+the control structures are much like C's:
+<ul>
+<li>Statements are terminated by a semicolon.</li>
+<li>Blocks are surrounded by braces {} and define an internal scope.</li>
+<li>The <tt>if</tt> statement is the same as in C.</li>
+<li>The <tt>while</tt> statement is the same as in C.</li>
+<li>The <tt>do-while</tt> statement is the same as in C.</li>
+<li>The <tt>break</tt> and <tt>continue</tt> statements are the same as in C.</li>
+<li>The <tt>for</tt> statement is the same as in C with the addition that one may declare a local
+loop variable in the opening clause, as in:
+<pre>
+for (i: int = 0; i &lt; 10; i++) ...
+</pre>
+or the more idiomatic
+<pre>
+for (i := 0; i &lt; 10; i++) ...
+</pre></li>
+<li>The <tt>switch</tt> statement looks like the one in C, but the <tt>case</tt>
+markers are true separators, not merely labels, so there is no fall-through between cases
+and the <tt>break</tt> statement at the end of the case may be omitted.
+In fact, the implementation is equivalent to an <tt>if-else</tt> chain, so as a consequence:
+<ul>
+<li>The switched-on expression and case labels may be of any type, such as <tt>string</tt>.
+<li>The <tt>default</tt> case must be present and must be the last one.
+</ul></li>
+</ul>
+
+<p>
+As with any other control structure, <tt>when</tt> statements can be nested, so one may
+use one high-level pattern to select lines, then bring other aspects of the
+language to bear on a subset of the input, perhaps like this:
+<pre>
+when (some rare condition) {
+  when (some related condition) {
+    for (i = 0; i &lt; N; i++)
+      emit output &lt;- f(i);
+  }
+}
+</pre>
+
+<h4>Statement expressions</h4>
+Sawzall does not have C's <tt>?:</tt> expression but it does have a more general
+construct called a <em>statement expression</em>.
+<p>
+A statement expression looks like a regular block of statements with a question
+mark <tt>?</tt> preceding it.  The statements in the block are executed, and the
+value of the statement expression is the value of the first <tt>result</tt>
+statement executed within.  This example shows how to write the equivalent
+of a <tt>?:</tt> expression:
+
+<pre>
+a := ?{ if (x > y) result x; else result y; };
+</pre>
+
+The values of all the <tt>result</tt> statements in the block must have the same type.
+<p>
+Any statements can appear inside the block. <tt>return</tt> statements cannot
+appear in the block without an enclosing function.
+
+<pre>
+# good
+sign := ?{ switch (true) { case x < 0: result -1; case x > 0: result 1; default: result 0; } };
+
+# bad
+x := function(): int {
+  n := ?{
+    return 2;  # compile-time error
+  };
+};
+</pre>
+
+Here is a more complex example that puts a statement expression in the condition
+of a <tt>when</tt> statement, including a declaration and debugging print:
+
+<pre>
+when(x: each int; ?{
+		static kWeekend: array of string = { "Saturday", "Sunday" };
+		emit stdout <- format("try %s", string(t));
+		result t.day[x] == kWeekend[x];
+	}
+) {
+	WeekendWarrior(t);
+}
+</pre>
+
+When the <tt>result</tt> is encountered, execution of the rest of
+the block is skipped, analogous to returning from a function.
+Similarly, it is an error if execution reaches the end of the block
+without executing a <tt>result</tt> statement.
+
+<h3> Memory </h3>
+
+The memory model is generally straightforward but there are a few differences
+when compared to that of most languages.
+They derive from the unusual execution model, which is designed for
+efficient parallel processing of huge amounts of record-oriented data.
+<ul>
+<li>
+Sawzall is a <i>by-value</i> language: there are no references and all assignments
+act as if the values are copied rather than shared.
+This design has some odd properties -- functions
+that wish to modify their arguments must instead return the modified values to the caller,
+for instance -- but the lack of aliasing makes the language safer and easier to parallelize.
+The implementation uses copy-on-write so the overhead of this memory model is small.
+In particular, it is efficient to slice and copy arrays and strings.</li>
+<li>
+Variables fall into three classes: static variables that are initialized
+at program invocation, survive throughout execution, and cannot be modified;
+`regular' variables that are recreated and re-evaluated for each input line and maybe
+modified at will;
+and output variables, which are write-only from the viewpoint of Sawzall,
+only accessible using <tt>emit</tt> statements.</li>
+<li>
+As described above, undefined variables are treated unusually:
+they elide the execution of the block that contains them when
+the command-line flag <tt>ignore_undefs</tt> is set.</li>
+<li>
+Variables defined with the <tt>static</tt> keyword are evaluated when the program
+is initialized and may not be modified during execution.
+All other variables are evaluated from the initial (post-<tt>static</tt>) state for
+each input record, and at the end of processing for each input record,
+all values are discarded.
+For this reason,
+<pre>
+numrecords: int = 0;
+numrecords++;
+</pre>
+will not count the number of records processed;
+<tt>numrecords</tt> will be reset to zero before processing each input record.
+Declaring the variable <tt>static</tt> does not fix this program because it is illegal to modify
+a static variable after initialization.
+This peculiar behavior allows the Sawzall implementation to do aggressive parallelization of the program.
+(If you need to count, use a <tt>sum</tt> variable.)</li>
+</ul>
+
+<h4> Array allocation </h4>
+
+Arrays in Sawzall are often created by an initializer or expression
+that defines their size and contents, but sometimes one wants to create an array of a given
+size for later use.  In C, one would use <tt>malloc</tt> for this; in Sawzall, there is an array creation
+operator <tt>new</tt>.
+It takes three arguments: the type of the array, the number of elements, and an initializer
+expression that is used to set the value of <i>all</i> elements of the array upon creation.
+The syntax is straightforward.
+Here's an example that creates an array of ten integers, each set to zero:
+<pre>
+a: array of int = new(array of int, 10, 0);
+</pre>
+To create multidimensional arrays, cascade the <tt>new</tt> operators:
+<pre>
+aa: array of array of string =
+  new(array of array of string, 3, new(array of string, 3, ""));
+</pre>
+<p>
+One must always provide an initializer expression to guarantee
+all array elements are defined and thereby protect the
+execution of the program from undefined values.
+<p>
+On the other hand, if one wants an empty array, one can write the literal
+expression <tt>{}</tt> rather than <tt>new(array of int, 0, 0)</tt>.
+
+<h4> Map allocation </h4>
+
+Unlike arrays, maps are of dynamic size; they grow as elements are added.
+(At present, there is no way to delete a key from a map, although one can
+change the value associated with a key.)
+The <tt>new</tt> operator can also be used to create a map, except that the
+resulting map is always empty and therefore one need not specify the size or
+initializer:
+<pre>
+m: map[int] of int = new(map[int] of int);
+</pre>
+If one knows the final size of the map, though, it may be more efficient
+to provide an explicit size; this trick avoids reallocation
+as the map grows:
+<pre>
+squares := new(map[int] of int, 1000);
+for (i := 0; i &lt; len(squares); i++)
+  squares[i] = i * i;
+</pre>
+Usually, it is sufficient and easier just to use
+a map literal, as in:
+<pre>
+m: map[int] of int = {:};
+</pre>
+Note that, as with arrays, one cannot store entries in a map until it has been
+created; an empty map is not the same as an uninitialized one.
+
+<h3> Functions </h3>
+
+Sawzall permits the programmer to define functions.
+This example, a recursive Fibonacci function, demonstrates the syntax:
+<pre>
+Fibo := function(n: int): int {
+  if (n &gt; 2)
+    return Fibo(n-1) + Fibo(n-2);
+  else
+    return n;
+};
+</pre>
+Note that the syntax is analogous to that of initializing a variable, with the name,
+the type (usually derived from the initializer), and the initializer.
+(For compatibility with old code, the equals sign can be omitted but that
+style is deprecated.)
+The function type itself contains the keyword <tt>function</tt>,
+a parenthesized parameter list, another colon, the return type, while
+the initializer is the function
+body in braces.
+Note the semicolon after the final brace.
+<p>
+The <tt>return</tt> statement returns the function value. If the function has no
+return value (<tt>void</tt> in C terminology), just leave out
+the return type in the declaration and the value in the <tt>return</tt>
+statement as illustrated in the following example:
+<pre>
+Prime := function(x: int): bool {
+  # returns true if x is a prime number, returns false otherwise
+};
+
+PrintPrime := function(beg: int, end: int) {
+  for (x: int = beg; x &lt; end; x++)
+    if (Prime(x)) {
+      emit stdout &lt;- format("%d is prime", x);
+      return;
+    }
+};
+</pre>
+The function <tt>printprime</tt> prints a prime number in the interval [beg, end), if there is any, and does nothing otherwise.
+The final <tt>return</tt> statement is omitted altogether since the function will return automatically.
+<p>
+Functions may be declared anywhere, not just at the top level of the program.
+Nested functions may access
+local variables in the surrounding scopes as well. For instance, the previous example could have been written
+with nesting:
+<pre>
+PrintPrime := function(beg: int, end: int) {
+  x: int = beg;
+
+  Prime := function(): bool {
+    # returns true if x is a prime number, returns false otherwise
+  };
+
+  while (x &lt; end) {
+    if (Prime()) {
+      emit stdout &lt;- format("%d is prime", x);
+      return;
+    }
+    x++;
+  }
+};
+</pre>
+In this case, the nested function <tt>prime</tt> accesses the
+variable <tt>x</tt> defined in the surrounding scope. Note that
+functions are stored in variables like any other value: The <tt>prime</tt>
+"function" is just a variable named <tt>prime</tt> with the body of a function
+as its value. Thus, functions (or more precisely: function values) may be
+assigned to variables like any other value.
+However, in contrast to ordinary variable values, functions must not <em>escape</em> the surrounding scope:
+A function itself may be passed as parameter to other functions,
+but it cannot
+be assigned to variables that survive the lifetime of the surrounding scope
+(because the function might access variables defined in the surrounding scope
+when the corresponding surrounding function invocation doesn't exist anymore).
+
+<p>
+Functions called in initialization expressions for static variables must be <i>static functions</i>,
+that is, they must be declared to be static, as in this initialization code:
+<pre>
+static MakeMap := function(n: int): map[key: int] of value: string {
+  m: map[int] of string = {:};
+  for (i := 0; i &lt; n; i++)
+    m[i] = string(i);
+  return m;
+};
+
+static num_map := MakeMap(100);
+</pre>
+This facility allows one to execute complex calculations statically, that is,
+once before all input processing begins.  However, a function can be declared static
+only if it depends only on static data such as constants and other static variables.
+In other words, a static function must be computable at static execution time.
+(It is fine to invoke a static function with non-static data as arguments,
+but not in order to initialize a static variable.)
+<p>
+Most builtin functions are static.
+
+<h3> Programs </h3>
+
+A program consists of its input definition, its output definition, and then one or
+more pattern/action sets, in the following syntax:
+
+<pre>
+<i>input declarations</i>
+<i>output declarations </i>
+
+when (<i>pattern</i>) {
+  <i>action statements</i>
+}
+
+when ...
+
+</pre>
+This at least is the conceptual model for programming in the Sawzall language.
+In general, the format is more flexible than this,
+since a program is really just a sequence of statements,
+<tt>when</tt> clauses can be nested, and so on.
+But for the purpose of organization, it is good style to
+express as much of the pattern matching/filtering
+as possible in the top level, as this schematic program illustrates.
+
+<p>
+Each input line is parsed according to the input rules and then passed
+to the program, which executes from top to bottom.
+The implementation may choose to execute <tt>when</tt>
+statements in parallel.
+
+<p>
+Some of the language's unusual features are there to make this parallelism feasible.
+Each pattern/action set may run independently; there is no state (variables,
+etc.) shared between them other than the input variables, which are
+read-only, and the output variables, which are write-only.
+The order of execution of <tt>emit</tt> statements in different action
+blocks is undefined; the program behaves as if all the pattern/action
+blocks execute in parallel and finish execution in arbitrary order.
+This is exactly what <i>will</i> happen in the off-line case when
+the execution is distributed over many machines.
+For similar reasons, the language does not guarantee that the same <tt>emit</tt>
+statement executing on different records will generate results in input order.
+
+<h2><a name="examples">Examples</a></h2>
+
+This first example is a filter that just selects output lines and
+emits them in their original (protocol buffer) form if they originate on a particular machine:
+
+<pre>
+# Input is custom logs in protocol buffer format
+log_record: proto LogRecordProto = input;
+
+# singleton output stream
+output: table collection of bytes;
+
+# Select the relevant records
+when (log_record.diva == "Britney")
+  emit output &lt;- input;
+</pre>
+
+Here is the Sawzall equivalent of the Unix <tt>wc</tt>.
+
+<pre>
+nlines: table sum of int;  # Lines
+nwords: table sum of int;  # White-space separated tokens
+nchars: table sum of int;  # Unicode characters
+nbytes: table sum of int;  # Raw bytes
+
+emit nlines &lt;- 1;
+emit nwords &lt;- len(sawzall(string(input), "[^ \t]+"));
+emit nchars &lt;- len(string(input));
+emit nbytes &lt;- len(input);
+</pre>
+
+The next example is part of a regression test for the <tt>regex</tt> operator.  It demonstrates
+the use of an initialized array.
+
+<pre>
+ftab: array of { s: string, f: float, ok: bool } = {
+  { "1", 1.0, true },
+  { "-1", -1.0, true },
+  { "+1", 1.0, true },
+  { "1.0", 1.0, true },
+  { ".02E+3", .02E+3, true },  # and so on
+
+  { "-", 1.0, false },
+  { "+", 1.0, false },
+  { " abc ", 1.0, false }  # and so on
+};
+
+for (i := 0; i &lt; len(ftab); i++){
+  # anchor the regex result to force match of whole string
+  v: array of float = saw(ftab[i].s, "^"+regex(float)+"$");
+  if ((len(v) == 1) != ftab[i].ok)
+    emit stdout &lt;-
+      format("float[%d] FAIL (validity) for %s\n", i, ftab[i].s);
+  else if (ftab[i].ok &amp;&amp; v[0] != ftab[i].f)
+    emit stdout &lt;-
+      format("float[%d] FAIL (value) for %s: %g\n", i, ftab[i].s, ftab[i].f);
+}
+</pre>
+
+Here is a more typical example that counts references about pop stars.
+
+<pre>
+proto "LogRecordProto.proto"
+
+# Words of the news article are separated by plus signs
+type WordType = array of string;
+
+# Interpret input using our record type
+log_record: LogRecordProto = input;
+
+# Split article into words
+articlewords: WordType = sawzall(string(log_record.article), "[^+]+");
+
+# Read table of divas from a file
+static divas: array of string = sawzall(load("/home/szluser/divas"), ".+");
+
+# count of all articles that mention any diva
+articlecount: table sum[article: string] of int;
+
+# count of how many times each diva appears
+divacount: table sum[diva: string] of int;
+
+# Count the relevant articles
+when (
+  somei: some int;
+  somej: some int;
+  lowercase(articlewords[somei]) == divas[somej]
+)
+  emit articlecount[log_record.article] &lt;- 1;
+
+# Count the divas individually
+when (
+  eachi: each int;
+  eachj: each int;
+  lowercase(articlewords[eachi]) == divas[eachj]
+)
+  emit divacount[divas[eachj]] &lt;- 1;
+</pre>
+
+A full scan of the list of divas for each input line would be expensive;
+the implementation could recognize that <tt>divas</tt> is a
+static table and construct an efficient lookup structure for use in
+this example.
+
+<p>
+
+Of course, not all pop stars have single-word names.
+We can rewrite the first pattern to handle two-word names such as
+<tt>christina aguilera</tt>:
+<pre>
+# Count the relevant articles
+when (
+  somei: some int;
+  somej: some int;
+  lowercase(articlewords[somei] + " " + articlewords[somei+1]) == divas[somej]
+)
+  emit articlecount[divas[somej]] &lt;- 1;
+</pre>
+Because a pattern that indexes outside an array implicitly but silently fails,
+there is no need to
+prefix the pattern with a predicate to make sure the array has those elements.
+If it does not, the pattern will fail silently, as it should.
+
+<p>
+Some data files store their components as comma separated
+values with quoting rules, as in this example:
+<pre>
+1966,4, "Mamas and the Papas", "Monday, Monday"
+1968,9, """Mama Cass"" Elliot", "Dream a little dream"
+</pre>
+
+In such cases one might write something like:
+
+<pre>
+static songs: map[title: string] of artist: string =
+  splitcsv(load("/home/google/top40.csv"), { 4, 3 });
+</pre>
+
+If the CSV is being read on input, then
+one can split it apart like this:
+
+<pre>
+fields: array of string = splitcsvline(input);
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+#summary Sawzall Table Types
+
+== Sawzall Table Types ==
+
+In the Sawzall programming language you output data by emitting it to a `table`.  There are a few kinds of table; each type aggregates input in a different way.
+
+Declaration syntax (EBNF):
+{{{
+OutputDecl = table_name: OutputType ';'.
+OutputType = 'table' table_kind [Param] [Indices] 'of' Element [Weight] [File|Proc] [Format].
+table_name = identifier.
+table_kind = identifier.
+Param = '(' N ')'.                             
+Indices = { '[' Component ']' }.
+Element = Component.
+Weight = 'weight' Component.
+Component = [identifier ':'] Type.             
+File = 'file' '(' ArgumentList ')'.
+Proc = 'proc' '(' ArgumentList ')'.            
+Format = 'format' '(' ArgumentList ')'.        
+ArgumentList = StringLiteral {',' Expression}.
+}}}
+
+With the semantic restrictions:
+ * In Param, N can only be const uint
+ * In Component, Type cannot be 'function' or 'table'.
+ * In File and Proc, ArgumentList can reference identifiable Indices, Element must be bytes or used with Format.
+ * In Format, ArgumentList can reference identifiable Element.
+
+|| *Type* || *Description* || *Param<br> `(N)` * || *Indices<br> `i`,,1,,`: T`,,1,, ... `i`,,n,,`: T`,,n,, * || *Element<br> `of T` * || *Weight<br> `weight T` * || *Format<br>`format(...)`* || *File/Proc<br> `file(...)` <br> `proc(...)` * ||
+|| collection || A simple collection or concatenation of the data. || no || n <= 0, T = basic, composite || T = basic, composite || no || yes || yes ||
+|| maximum || A precise sample of the <var>N</var> highest-weighted data items. || yes || n <= 0, T = basic, composite || T = basic, composite || T = basic or tuple, proto || yes || no ||
+|| minimum || A precise sample of the <var>N</var> lowest-weighted data items. || yes || n <= 0, T = basic, composite || T = basic, composite || T = basic or tuple, proto || yes || no ||
+|| recordio || An unindexed collection written directly to a recordio file. || yes || n = 0 || T = basic || no || yes || no ||
+|| sample || A statistical sampling of <var>N</var> items. || yes || n <= 0, T = basic, composite || T = basic, composite || no || yes || no ||
+|| sum || An arithmetic sum of the data. || no || n <= 0, T = basic, composite || T = int, float, time or map, tuple, proto thereof || no || no || no ||
+|| top || Statistical samplings that record the 'top <var>N</var>' data items. || no || n <= 0, T = basic, composite || T = basic, composite || T = int, float or tuple, proto thereof || yes || no ||
+|| unique || Statistical estimators for the total number of unique data items. || yes || n <= 0, T = basic, composite || T = basic, composite || no || yes || no ||
+|| set || A set of size at most <var>N</var>. Larger sets are discarded. || yes || n <= 0, T = basic, composite || T = basic, composite || no || yes || no ||
+|| quantile || Approximate [http://mathworld.wolfram.com/Quantile.html N-tiles] for data items from an ordered domain. || yes || n <= 0, T = basic, composite || T = basic, tuple, proto || no || yes || no ||
+|| distinctsample || A uniform sample of a given size from a set of all values seen. || yes || n <= 0, T = basic, composite || T = basic, composite || T = int, float, time or tuple, proto thereof || yes || no ||
+|| inversehistogram || An approximate histogram of unique values. || yes || n <= 0, T = basic, composite || T = basic, composite || T = int, float, time or tuple, proto thereof || yes || no ||
+|| weightedsample || A statistical sampling of <var>N</var> items biased by weights. || yes || n <= 0, T = basic, composite || T = basic, composite || T = int or float || yes || no ||
+|| text || An unindexed collection written directly to a plain file. || no || n = 0 || T = string, bytes || no || yes || no ||
+|| mrcounter || An integer counter available to the invoking program. || no || n = 0 || T = int || no || no || no ||

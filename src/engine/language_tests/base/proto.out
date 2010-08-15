@@ -63,10 +63,10 @@ assert(convert(string, r2) == "{ 42, 3.1415, \"Thu Jul 23 07:43:06 PDT 1970\", X
 assert(convert(string, r3) == "{ 42, 3.1415, \"Wed Dec 31 16:00:00 PST 1969\", X\"010203\", false, { 21, 2.718 } }");
 assert(convert(string, r4) == "{ 42, 3.1415, \"Wed Dec 31 16:00:00 PST 1969\", B\"\", false, { 21, -1.2 } }");
 assert(convert(string, r5) == "{ 24, 3.1415, \"Wed Dec 31 16:00:00 PST 1969\", B\"\", true, { -5, 2.718 } }");
-type TestEQ = parsedmessage {type Proto1Message = parsedmessage {type NestedMessage = parsedmessage {a: int @ 1 : int64, b: int @ 2 : fixed32, c: int @ 3 : fixed32}, value: TestEQ.Proto1Message.NestedMessage @ 4}, type Message2 = {message1: TestEQ.Proto1Message @ 1}, event: array of TestEQ.Message2 @ 2};
-type TestNE = {type Proto1Message = {type NestedMessage = {a: int @ 1 : int64, b: int @ 2 : fixed32, c: int @ 3 : fixed32}, value: TestNE.Proto1Message.NestedMessage @ 4}, type Message2 = {message1: TestNE.Proto1Message @ 1}, event: array of TestNE.Message2 @ 2};
-session_bytes: bytes = X"130A0E220C080D151A0000001D2700000014130A0E220C081115220000001D3300000014";
-session_eq: TestEQ = convert(TestEQ, session_bytes);
-assert(!(session_eq.event[0].message1.value == session_eq.event[1].message1.value), "Tuples should not be equal");
-session_ne: TestNE = convert(TestNE, session_bytes);
-assert(session_ne.event[0].message1.value != session_ne.event[1].message1.value, "Tuples should not be equal");
+type TestEQ = parsedmessage {type Proto1Message = parsedmessage {type NestedMessage = parsedmessage {a: int @ 1 : int64, b: int @ 2 : fixed32, c: int @ 3 : fixed32}, value: TestEQ.Proto1Message.NestedMessage @ 4}, type Message2 = {message1: TestEQ.Proto1Message @ 1}, item: array of TestEQ.Message2 @ 2};
+type TestNE = {type Proto1Message = {type NestedMessage = {a: int @ 1 : int64, b: int @ 2 : fixed32, c: int @ 3 : fixed32}, value: TestNE.Proto1Message.NestedMessage @ 4}, type Message2 = {message1: TestNE.Proto1Message @ 1}, item: array of TestNE.Message2 @ 2};
+object_bytes: bytes = X"130A0E220C080D151A0000001D2700000014130A0E220C081115220000001D3300000014";
+object_eq: TestEQ = convert(TestEQ, object_bytes);
+assert(!(object_eq.item[0].message1.value == object_eq.item[1].message1.value), "Tuples should not be equal");
+object_ne: TestNE = convert(TestNE, object_bytes);
+assert(object_ne.item[0].message1.value != object_ne.item[1].message1.value, "Tuples should not be equal");

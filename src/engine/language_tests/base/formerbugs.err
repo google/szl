@@ -17,7 +17,7 @@ base/formerbugs.szl:53: field type {x: int, s: string} for field f1 must be a pr
 base/formerbugs.szl:58: field type T1 for field f1 must be a proto type
 base/formerbugs.szl:75: no parameters allowed for conversion convert(T, convert(bytes, ""))
 base/formerbugs.szl:76: no parameters allowed for conversion convert(bytes, p)
-base/formerbugs.szl:81: EventIdMessage undeclared
-base/formerbugs.szl:82: SlimImpressionMessage undeclared
+base/formerbugs.szl:81: ValueIdMessage undeclared
+base/formerbugs.szl:82: OtherMessage undeclared
 base/formerbugs.szl:90: 'rest' clause must be last entry in sawzall() call
 base/formerbugs.szl:91: 'rest' clause must be last entry in sawn() call

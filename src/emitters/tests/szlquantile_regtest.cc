@@ -13,7 +13,7 @@
 // limitations under the License.
 // ------------------------------------------------------------------------
 
-// Unittest for quantile table implementation (sawquantile.cc) in saw.
+// Unittest for quantile table implementation (sawquantile.cc) in szl.
 
 #include <stdio.h>
 #include <math.h>
@@ -51,7 +51,7 @@ static void TestQuantiles(const int N, const int num_quantiles) {
 
   SzlTabWriter* swr = SzlTabWriter::CreateSzlTabWriter(t, &error);
   CHECK(swr != NULL) << ": " << error;
-  // Create saw tab entries by the table swr.
+  // Create szl tab entries by the table swr.
   SzlTabEntry* quant = swr->CreateEntry("");
   CHECK(quant != NULL);
 

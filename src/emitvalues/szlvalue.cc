@@ -596,7 +596,7 @@ void SzlOps::PutTime(uint64 t, int pos, SzlValue* d) const {
 void SzlOps::PutString(const char* s, int len, int pos, SzlValue* d) const {
   d = SzlFlatValueAt(pos, d, SzlType::STRING);
 
-  // Internally, saw strings must be null terminated,
+  // Internally, szl strings must be null terminated,
   // and empty strings must have length 0.
   if (len == 0) {
     delete[] d->s.buf;
@@ -1244,7 +1244,7 @@ static inline bool SzlOpsDoDecode(SzlType::Kind kind,
         string str;
         if (!dec->GetString(&str))
           return false;
-        // Internally, saw strings must be null terminated,
+        // Internally, szl strings must be null terminated,
         // and empty strings must have length 0.
         if (str.size() == 0) {
           delete[] val->s.buf;

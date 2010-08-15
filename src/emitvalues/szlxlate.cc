@@ -75,7 +75,7 @@ void SzlXlate::TranslateValue(const SzlType& type,
       CHECK(dec->GetBool(&b));
       v = b;
     } else {
-      LOG(ERROR) << "can't translate saw type kind " << kind;
+      LOG(ERROR) << "can't translate szl type kind " << kind;
     }
 
     // Integer keyed tables get sharded by key.

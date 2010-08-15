@@ -89,21 +89,21 @@ MakeTuple: function(): {b: bool, ai: array of int} {
 ;
 t: {b: bool, ai: array of int} = MakeTuple();
 assert(t.ai[0] == 0);
-type Pageview = parsedmessage {url: bytes @ 1 : string, user_agent: bytes @ 2 : string, ad_group_creative_id: int @ 3 : int32};
-type PageviewContainer = parsedmessage {pageview: Pageview @ 1};
-type PageviewAndCount = {pageview: Pageview, count: int};
-static ProcessPageview: function(pageview: Pageview, emitter: function(pv: PageviewAndCount)) {
-	pageview_and_count: PageviewAndCount = {pageview, 33};
-	emitter(pageview_and_count);
+type TestTuple = parsedmessage {xxx: bytes @ 1 : string, yyy: bytes @ 2 : string, zzz: int @ 3 : int32};
+type TestTupleContainer = parsedmessage {testtuple: TestTuple @ 1};
+type TestTupleAndCount = {testtuple: TestTuple, count: int};
+static ProcessTestTuple: function(testtuple: TestTuple, emitter: function(pv: TestTupleAndCount)) {
+	testtuple_and_count: TestTupleAndCount = {testtuple, 33};
+	emitter(testtuple_and_count);
 }
 ;
-pageview_events: table collection of pageview: PageviewAndCount;
-PageviewEmit: function(pageview: PageviewAndCount) {
-	emit pageview_events <- pageview;
+testtuple_list: table collection of testtuple: TestTupleAndCount;
+TestTupleEmit: function(testtuple: TestTupleAndCount) {
+	emit testtuple_list <- testtuple;
 }
 ;
-container: PageviewContainer = convert(PageviewContainer, input);
-ProcessPageview(container.pageview, PageviewEmit);
+container: TestTupleContainer = convert(TestTupleContainer, input);
+ProcessTestTuple(container.testtuple, TestTupleEmit);
 type TCInner = {a: int @ 1 : int32, b: float @ 2};
 type TCOuter = {t: TCInner @ 1};
 {
@@ -780,21 +780,21 @@ Fields referenced in tuple "TCOuter":
 Fields referenced in tuple "TCInner":
   "a"
   "b"
-Fields referenced in tuple "PageviewAndCount":
-  "pageview"
-  "pageview.url"
-  "pageview.user_agent"
-  "pageview.ad_group_creative_id"
+Fields referenced in tuple "TestTupleAndCount":
+  "testtuple"
+  "testtuple.xxx"
+  "testtuple.yyy"
+  "testtuple.zzz"
   "count"
-Fields referenced in tuple "PageviewContainer":
-  "pageview"
-  "pageview.url"
-  "pageview.user_agent"
-  "pageview.ad_group_creative_id"
-Fields referenced in tuple "Pageview":
-  "url"
-  "user_agent"
-  "ad_group_creative_id"
+Fields referenced in tuple "TestTupleContainer":
+  "testtuple"
+  "testtuple.xxx"
+  "testtuple.yyy"
+  "testtuple.zzz"
+Fields referenced in tuple "TestTuple":
+  "xxx"
+  "yyy"
+  "zzz"
 Fields referenced in tuple "HasWriteOnlyField":
   "do_not_elim"
   "do_not_elim.is_read"
@@ -883,7 +883,7 @@ A Night at the Opera
 0
 emit _undef_cnt <- 1;
 emit _undef_details["unreachable/unused_fields.szl:115: undef_window.title = B\"A Day at the Races\"; (probably because \"undef_window\" had not been defined)"] <- 1;
-emit pageview_events <- {{bytes({}), bytes({}), 0}, 33};
+emit testtuple_list <- {{bytes({}), bytes({}), 0}, 33};
 emit tuple_table[{{12345, 67.89}}] <- 1;
 emit array_table[{{{12345, 67.89}}, {{12345, 67.89}}, {{12345, 67.89}}}] <- 1;
 emit map_table[{{{12345, 67.89}}: 1}] <- 1;

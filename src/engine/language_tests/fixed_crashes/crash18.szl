@@ -21,9 +21,9 @@
 
 # This program is simple enough to trigger the bug in the pre-fixed code if
 # we first do
-#	export SAW_ARG="--pattern=グーグル"
+#	export SZL_ARG="--pattern=グーグル"
 # and then run szl over a simple file of text.
 
-static saw_arg: string = getenv("SAW_ARG");
-a := string(saw_arg[0]);
-b := string(saw_arg[1]);
+static szl_arg: string = getenv("SZL_ARG");
+a := string(szl_arg[0]);
+b := string(szl_arg[1]);

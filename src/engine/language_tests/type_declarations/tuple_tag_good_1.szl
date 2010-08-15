@@ -18,8 +18,8 @@
 #desc:  Tuple declaration with tag fields
 
 type MyTuple = {
-    ip:int @ 1,
-    query:bytes @ 2,
-    timestamp:time @ 3
+    xx:int @ 1,
+    value:bytes @ 2,
+    timeofday:time @ 3
 };
 

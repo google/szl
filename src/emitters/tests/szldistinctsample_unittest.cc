@@ -40,7 +40,7 @@
 
 namespace sawzall {
 
-// Retrieve the results from a saw tabentry.
+// Retrieve the results from a szl tabentry.
 static void GetResults(const SzlType& type, SzlTabEntry* tab,
                         vector<string>* ret) {
   string error;

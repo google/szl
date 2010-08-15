@@ -17,7 +17,7 @@
 
 class SzlType;
 
-// An interface for translating saw values into a format understandable by
+// An interface for translating szl values into a format understandable by
 // other tools.
 
 class SzlXlate {

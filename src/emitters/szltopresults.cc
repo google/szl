@@ -164,7 +164,7 @@ class SzlTopResults: public SzlResults {
       string s;
       CHECK(dec.GetBytes(&s));
 
-      // Need to combine the value and weight into one saw encoded string.
+      // Need to combine the value and weight into one szl encoded string.
       // The weight is already encoded; just copy it.
       // Also tack on an error.
       unsigned const char* p = dec.position();

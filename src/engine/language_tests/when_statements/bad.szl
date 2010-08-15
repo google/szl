@@ -19,16 +19,16 @@
 
 # When statements that cause compile-time errors
 
-query_string: string = "";
+value_string: string = "";
 
 when (somex: some int;
-      query_string[somex] == "") {
+      value_string[somex] == "") {
 }
 
 # Since allx can't be bound to specific value,
 # we have an undefined value of allx in the body of when.
 when (allx: all int;
-      query_string[allx] != 'f') {
+      value_string[allx] != 'f') {
   allx;
 }
 
@@ -66,7 +66,7 @@ when () {
 }
 
 when (allx: all int
-      query_string[allx] == 'a') {
+      value_string[allx] == 'a') {
 }
 
 # This test with a missing } case must be last, so EOF is detected

@@ -48,7 +48,7 @@ Several tests are written as example programs, including an example of the use o
 
   * [http://szl.googlecode.com/svn/doc/sawzall-spec.html Sawzall language specification]
   * [http://szl.googlecode.com/svn/doc/sawzall-language.html Informal Sawzall language description]
-  * [Sawzall_Style_Guide Coding style guide]
+  * [http://szl.googlecode.com/svn/doc/sawzall-style-guide.html Coding style guide]
   * [http://szl.googlecode.com/svn/doc/sawzall-intrinsics.html Intrinsic functions]
   * [Sawzall_Table_Types Table (aggregator) types]
   * [Sawzall_Undef_Notes Discussion of undefined values and def() checks]

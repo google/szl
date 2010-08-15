@@ -477,7 +477,7 @@ The time zone, a string with default value "PST8PDT",
 may be supplied as a second argument to the
 conversion operator when converting from time to string,
 or from string to time when the string does not mention the time zone.
-<a href="http://wiki/Main/IIIHowTo#using_time_zones">Olson identifiers are
+<a href="http://code.google.com/p/tzdata/">Olson identifiers are
 preferred</a>.
 
 The output accounts for Daylight Saving time.
@@ -549,9 +549,9 @@ functions for time as well. The general rule: the time
 value is converted to local time, the operation performed, and then
 (if necessary) the time value is converted back to the epoch.
 Sawzall's time zone support is based on
-<a href="http://wiki/Main/TimeZones#ICU">ICU</a>.  You can use any
+<a href="http://icu-project.org/">ICU</a>.  You can use any
 ICU-supported time zone name but the "America/Los_Angeles" style
-is <a href="http://wiki/Main/IIIHowTo#using_time_zones">preferred</a>.
+is <a href="http://code.google.com/p/tzdata/">preferred</a>.
 
 <p>
 Finally, the function <tt>now()</tt> returns the time at the instant it is called.

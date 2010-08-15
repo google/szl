@@ -51,5 +51,5 @@ Several tests are written as example programs, including an example of the use o
   * [Sawzall_Style_Guide Coding style guide]
   * [http://szl.googlecode.com/svn/doc/sawzall-intrinsics.html Intrinsic functions]
   * [Sawzall_Table_Types Table (aggregator) types]
-  * [Sawzall_Undef_Notes] Discussion of undefined values and def() checks
+  * [Sawzall_Undef_Notes Discussion of undefined values and def() checks]
   * [Sawzall_Performance_Tips Performance tips]

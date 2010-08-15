@@ -1,12 +1,21 @@
 #summary Sawzall output from the protocol compiler.
 
-[Top_Level_Statements Top-Level Statements]
+The Sawzall parser invokes the protocol compiler as a child process for each `.proto` file included into a `.szl` program using `proto` clauses.
+The protocol compiler takes a `.proto` file and generates the Sawzall code for it. It can be invoked directly like so:
+
+{{{
+Usage: protoc --plugin=/full/path/to/protoc-gen-szl --szl_out=. [--import_path=PATH] PROTO_FILE.proto
+}}}
+
+Below is the mapping between the proto syntax and the corresponding Sawzall syntax for the protocol buffer format.
+
+[#Top_Level_Statements Top-Level Statements]
       * Imports
       * Messages
       * Packages
       * Enums
 
-[Fields]
+[#Fields Fields]
       * Semantic Labels
       * Options
       * Scalar Types
@@ -14,16 +23,7 @@
       * Message Types
       * Enums
 
-
-The Sawzall parser invokes the protocol compiler as a child process for each `.proto` file included into a `.szl` program using `proto` clauses.
-The protocol compiler takes a `.proto` file and generates the Sawzall code for it. It can be invoked directly like so:
-
-{{{
-Usage: protoc --plugin=/full/path/to/protoc-gen-szl --szl_out=. [--import_path=PATH] PROTO_FILE
-}}}
-
-Below is the mapping between the proto syntax and the corresponding Sawzall syntax for the protocol buffer format.
-
+<br>
 
 === Top Level Statements ===
 
@@ -38,6 +38,8 @@ Below is the mapping between the proto syntax and the corresponding Sawzall synt
 || *Enums* || ||
 || `enum Enum {`<br>`  FOO = 1;`<br>`  BAR = 2;`<br>`  BAZ = 3;`<br>`};`<br><br><br><br><br><br><br>`|| `type Enum = parsedmessage {`<br>`  type Enum = int,`<br><br>`  static FOO: Enum = 1,`<br>`  static BAR: Enum = 2,`<br>`  static BAZ: Enum = 3,`<br><br>`  static Enum_names: map[enum_value: int] `<br>`    of enum_name: string = {`<br>`    3: "BAZ",`<br>`    2: "BAR",`<br>`    1: "FOO",`<br>`  },`<br>`};`<br>`||
 ||`message Baz {`<br>`  required Enum required_enum = 1;`<br><br>`  optional Enum optional_enum = 2 [default = FOO];`<br><br>`  repeated Enum repeated_enum = 3;`<br><br>`};`||`type Baz = parsedmessage {`<br>`  required_enum:`<br>`    Enum @ 3: int32,`<br>`  optional_enum:`<br>`    Enum = 1 @ 4: int32`<br>`  repeated_enum: array of`<br>`    Enum @ 3: int32`<br>`};`||
+
+<br>
 
 === Fields ===
 

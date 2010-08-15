@@ -8,12 +8,12 @@ The concept of the "definedness" of an expression or variable in Sawzall is an i
 
 *Expressions* can have undefined values.
 
-*Non-static variables* can have undefined values in these caes:
+*Non-static variables* can have undefined values in these cases:
   * The declaration does not contain an initializer.
   * The initialization failed (informally, the initializer was undefined).
   * The right side of an assignment failed (informally, the right side was undefined) and the `--ignore_undefs` command line option is in effect.
 
-*Static variables* cannot have undefined values.  An attempt to initialize a static variable with an undefined value causes the program to terminate.
+*Static variables* cannot have undefined values.  An attempt to initialize a static variable with an undefined value causes the program to terminate, even with `--ignore_undefs`.
 
 *Tuple fields, array elements, map keys and map values* cannot have undefined values; if such an entity would have been undefined, then the entire tuple, array or map is itself undefined.
 
@@ -31,9 +31,9 @@ Any use of an undefined variable or function result terminates evaluation of the
   * A `return` statement, the function result is undefined.
   * A call to `def()`, the result of the call is `false`.
   * An expression used in a statement other than `return`, the program terminates unless `--ignore_undefs` is in effect, in which case execution of the statement terminates.  This includes the special case of an _expression statement_.  Note that other expressions in the statement may have been successfully evaluated before this expression.
-  * An assignment statement - in addition to the above, under `--ignore_undefs`, the variable on the left side is made undefined.  When the left side is an array element, map element or tuple field, the array, map or tuple variable is made undefined.
+  * An assignment statement - in addition to the above, under `--ignore_undefs`, the variable on the left side is made undefined.  When the left side is an array element, map element or tuple field, the variable holding the array, map or tuple is made undefined.
 
-Even when the evaluation of an expression is terminated because of an attempt to use an undefined value, other parts of the expression may already have been evaluated.  In the following example, `f()` may be evaluated before the undefined value occurs:
+Even when the evaluation of an expression is terminated because of an attempt to use an undefined value, other parts of the expression may already have been evaluated.  In the following example, `f()` may be evaluated before evaluation is terminated:
 {{{
    x = f() + y;  # when y is undefined
 }}}
@@ -65,7 +65,7 @@ When input may have corrupt data, the `def()` intrinsic can be used to compensat
 
 == Function and Intrinsic Function Results ==
 
-Intrinsic functions can return undefined values to indicate failure.  The [http://szl.googlecode.com/svn/doc/sawzall-intrinsics.html guide to intrinsic functions] says which intrinsic function can return undefined.
+Intrinsic functions can return undefined values to indicate failure.  The [http://szl.googlecode.com/svn/doc/sawzall-intrinsics.html guide to intrinsic functions] says which intrinsic functions can return undefined.
 
 Ordinary functions can also return undefined values.  As with intrinsics, this is typically used deliberately as a way to indicate failure.
 
@@ -104,4 +104,3 @@ Since the compiler does limited constant folding and value propagation, some exp
    }
 }}}
 Many programs with defensive use of `def()` to check for errors will produce warnings.  It takes some practice to recognize when `def()` is needed and when it is not needed.
-

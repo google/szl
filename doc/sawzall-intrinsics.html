@@ -1,0 +1,1255 @@
+<!doctype html public "-//w3c//dtd html 4.01 transitional//en">
+<html>
+<head>
+<title>A Manual for the Sawzall Intrinsics</title>
+<link rel="stylesheet" href="docstyle.css">
+</head>
+<body>
+
+<h1> <a name="title">A Manual for the Sawzall Intrinsics</a> </h1>
+
+<p>This document describes the properties of the most important
+pre-defined identifiers ("intrinsics") in the Sawzall language.
+
+<p>
+The starting point for this document was the result of running the Sawzall
+interpreter <tt>szl</tt> with the <tt>--explain</tt> option, like this:
+<pre>
+	for i in $(szl --explain=)
+	do
+		szl --explain=$i
+	done
+</pre>
+That script will always provide up to date, if rudimentary, information.
+<p>
+Throughout this document, the term <i>undef</i> refers to the explicitly
+undefined value created by various incorrect or incalculable operations,
+such as dividing by zero or the contents of a non-existent file.
+
+<br><br>
+<h2> <a name="types">Basic Data Types</a> </h2>
+These are the basic data types defined by Sawzall.
+Although `basic', some of them (<tt>string</tt>, <tt>bytes</tt>) have
+array-like structure.
+
+<br><br><hr><pre><font color=green>
+type int = int;  # basic type
+</font></pre>
+The <tt>int</tt> type represents a signed 64-bit quantity.
+
+<br><br><hr><pre><font color=green>
+type uint = uint;  # basic type
+</font></pre>
+The <tt>uint</tt> type represents an unsigned 64-bit quantity.
+
+<br><br><hr><pre><font color=green>
+type float = float;  # basic type
+</font></pre>
+In the current implementation, the <tt>float</tt> type represents
+a 64-bit IEEE floating-point value.
+
+<br><br><hr><pre><font color=green>
+type string = string;  # basic type
+</font></pre>
+In the current implementation, the <tt>string</tt> type represents a string
+of 16-bit Unicode characters.  Individual characters may be accessed
+(read or written) using indexing, exactly as if the string were an array of
+unsigned 16-bit integers.
+
+<br><br><hr><pre><font color=green>
+type time = time;  # basic type
+</font></pre>
+In the current implementation, the <tt>time</tt> type represents
+an unsigned 64-bit quantity
+recording microseconds since the Unix epoch of January 1 1970 00:00 GMT.
+
+<br><br><hr><pre><font color=green>
+type bytes = bytes;  # basic type
+</font></pre>
+The <tt>bytes</tt> type represents a string of 8-bit
+unsigned bytes.
+Individual bytes may be accessed (read or written) using
+indexing, exactly as if the <tt>bytes</tt> object were an array of unsigned
+8-bit integers.
+
+<br><br><hr><pre><font color=green>
+type bool = bool;  # basic type
+</font></pre>
+The <tt>bool</tt> type represents a Boolean value.
+
+<br><br><hr><pre><font color=green>
+type fingerprint = fingerprint;  # basic type
+</font></pre>
+The <tt>fingerprint</tt> type represents
+an unsigned 64-bit quantity
+calculated using an implementation-dependent hash function.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="i/o">I/O Variables</a> </h2>
+
+<hr><pre><font color=green>
+input: bytes;
+</font></pre>
+The <tt>input</tt> variable is set to the raw byte-level representation
+of each successive input record.
+
+<br><br><hr><pre><font color=green>
+stdout: table collection of s: string file("/dev/stdout") format("%s\n", s);
+</font></pre>
+The <tt>stdout</tt> variable provides a convenient destination for
+formatted output.  <tt>Emit</tt> statements that send text to
+<tt>stdout</tt> will print the text to standard output (file descriptor 1).
+A newline is added automatically to each string emitted.
+
+<br><br><hr><pre><font color=green>
+stderr: table collection of s: string file("/dev/stderr") format("%s\n", s);
+</font></pre>
+The <tt>stderr</tt> variable provides a convenient destination for
+formatted debugging output.  <tt>Emit</tt> statements that send text to
+<tt>stderr</tt> will print the text to standard error (file descriptor 2).
+A newline is added automatically to each string emitted.
+
+<br><br><hr><pre><font color=green>
+output: table collection of bytes file("/dev/stdout");
+</font></pre>
+The <tt>output</tt> variable provides a convenient destination for
+<tt>emit</tt> statements that write to standard output.
+The data sent to <tt>output</tt> is unmodified and uninterpreted.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="constants">Named Constants</a> </h2>
+Many are self-explanatory or familiar.
+
+<br><br><hr><pre><font color=green>
+static true: bool = true;  # literal
+</font></pre>
+
+<br><hr><pre><font color=green>
+static false: bool = false;  # literal
+</font></pre>
+
+<br><hr><pre><font color=green>
+static PI: float = 3.1415926535897931;  # literal
+</font></pre>
+A floating-point approximation of Pi.
+
+<br><br><hr><pre><font color=green>
+static Inf: float = Inf;  # literal
+static inf: float = Inf;  # literal
+</font></pre>
+IEEE 754 infinity.
+
+<br><br><hr><pre><font color=green>
+static NaN: float = NaN;  # literal
+static nan: float = NaN;  # literal
+</font></pre>
+IEEE 754 not a number.
+
+<br><br><hr><pre><font color=green>
+static SECOND: time = SECOND;  # literal
+</font></pre>
+A million microseconds.
+
+<br><br><hr><pre><font color=green>
+static SEC: time = SEC;  # literal
+</font></pre>
+Synonym for <tt>SECOND</tt>.
+
+<br><br><hr><pre><font color=green>
+static MINUTE: time = MINUTE;  # literal
+</font></pre>
+Sixty <tt>SECONDS</tt>.
+
+<br><br><hr><pre><font color=green>
+static MIN: time = MIN;  # literal
+</font></pre>
+Synonym for <tt>MINUTE</tt>.
+
+<br><br><hr><pre><font color=green>
+static HOUR: time = HOUR;  # literal
+</font></pre>
+Sixty <tt>MINUTES</tt>.
+
+<br><br><hr><pre><font color=green>
+static HR: time = HR;  # literal
+</font></pre>
+Synonym for <tt>HOUR</tt>.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="special">Special Functions</a> </h2>
+
+These functions have special properties, such as variable types,
+variable numbers of parameters,
+or parameters that are types rather than values.  Some of the syntax
+used to describe them, e.g. "...", default arguments and overloading,
+is not part of the Sawzall language.
+
+<br><br><hr><pre><font color=green>
+abs: function(v: int);
+abs: function(v: float);
+</font></pre>
+Return the absolute value of the argument. The type must be one of int or float.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+assert: function(condition: bool [, message: string] );
+</font></pre>
+If <tt>condition</tt> is false, print the <tt>message</tt> to standard
+error, with the prefix <tt>assertion failed:</tt>, and exit.
+The message may be empty or absent altogether.
+
+<br><br><hr><pre><font color=green>
+def: function(v: <i>type</i>): bool;
+</font></pre>
+The <tt>def</tt> function returns a boolean value according to whether <tt>v</tt>
+has a defined value.  It can serve as a guard to protect code against undefined values.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+fingerprintof: function(v: <i>type</i>): fingerprint;
+</font></pre>
+The <tt>fingerprintof</tt> function
+returns the 64-bit fingerprint of the argument, which may be of any type.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+inproto: function(f: <i>type</i>): bool;
+</font></pre>
+The <tt>inproto</tt> function tests whether the field <tt>f</tt> was present
+in the proto buffer converted into the proto tuple containing the field <tt>f</tt>. <tt>f</tt> must be of the form
+<i>proto_tuple_var</i><tt>.</tt><i>field_name</i>. Consequently,
+<tt>inproto</tt> must only be applied to fields of proto tuples. If the
+proto tuple field was set explicitly (e.g. via an assignment to that
+field) or by conversion from a proto buffer that contains an explicit value for
+that field, <tt>inproto</tt> returns <tt>true</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+inprotocount: function(f: <i>type</i>): bool;
+</font></pre>
+
+Returns the number of fields in a proto tuple that have the inproto bit set.
+Fields in nested tuples are taken into account. In the case of an array of
+nested tuples, the fields in each tuple get counted.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+clearproto: function(f: <i>type</i>): bool;
+</font></pre>
+The clearproto function clears a field in the proto buffer converted into the
+proto tuple containing the field f.f must be of the form
+proto_tuple_var.field_name. Consequently, clearproto must only be applied to
+fields of proto tuples. clearproto will make a subsequent <tt>inproto()</tt> on
+the same field return false. However, the memory for this field will not be
+freed until the whole protocol buffer goes out of scope.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+new: function(array of <i>type</i>, n: int, v: <i>type</i>): array of <i>type</i>;
+</font></pre>
+In this form, the <tt>new</tt> function creates an array of <tt>n</tt> elements
+of the specified <i>type</i>, all initialized to the value <tt>v</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+new: function(string, n: int, v: int): string;
+</font></pre>
+In this form, the <tt>new</tt> function creates a string of <tt>n</tt>
+copies of the character specified by the value <tt>v</tt>, which must not be
+zero.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+new: function(bytes, n: int, v: int): bytes;
+</font></pre>
+In this form, the <tt>new</tt> function creates a bytes value consisting of
+<tt>n</tt> copies of the least significant byte of the value <tt>v</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+new: function(<i>maptype</i>): <i>maptype</i>;
+</font></pre>
+In this form, the <tt>new</tt> function creates an empty map of
+the specified <i>maptype</i>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+regex: function(<i>type</i> [, <i>base</i>] ): string;
+</font></pre>
+The <tt>regex</tt> function returns a string holding a regular expression
+suitable for matching text representing values of the specified <i>type</i>.
+For example, <tt>regex(int)</tt> generates a string to match integer constants
+as represented in Sawzall or C++ programs (<tt>-23</tt>, <tt>0x1f</tt>, etc.).
+The implemention is rudimentary; at the moment, only <tt>int</tt> and <tt>float</tt>
+types are supported.
+When the type is <tt>int</tt>, an optional numerical base may be specified
+for the conversion.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+saw: function(s: string, r: regex, ...): array of string;
+sawn: function(n: int, s: string, r: regex, ...): array of string;
+sawzall: function(s: string, r: regex, ...): array of string;
+</font></pre>
+These functions slice string <tt>s</tt> into pieces according to subsequent
+matches of the regular expressions.
+The <tt>saw</tt> function is the simplest; it runs along the list of regular
+expressions exactly once, while <tt>sawn</tt> does it at most <tt>n</tt>
+times and <tt>sawzall</tt> continues until the input string is exhausted.
+More detail should appear in this document, but for now please refer
+to the <a href="sawmill-language.html">Sawzall language design document</a> for more information.
+<br>These functions return <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+haskey: function(m: map[<i>keytype</i>] of <i>valuetype</i>, key: <i>keytype</i>): bool;
+</font></pre>
+Return a boolean reporting whether the key is present in the map.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+keys: function(m: map[<i>keytype</i>] of <i>valuetype</i>): array of <i>keytype</i>;
+</font></pre>
+Return an array holding, in no particular order, the set of keys present in the map <tt>m</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+len: function(v: <i>type</i>): int;
+</font></pre>
+Return the number of elements in <tt>v</tt>, which must be an array or map
+or of type <tt>string</tt> or <tt>bytes</tt>.
+<br>If <tt>string</tt>, the value is the number of Unicode characters in the string;
+<br>if <tt>bytes</tt>, the number of bytes.
+<br>If a map, the value is the number of distinct keys present.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+lookup: function(m: map[<i>keytype</i>] of <i>valuetype</i>, key: <i>keytype</i>, value: <i>valuetype</i>): <i>valuetype</i>;
+</font></pre>
+Return the element of the map indexed by the key or, if there is no such element, the specified default value.
+Assuming the map, key, and value are defined, equivalent to (using C <tt>?:</tt>
+  notation): <tt>def(m[key])? m[key] : value</tt>, but more efficient.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+max: function(v1: <i>type</i>, v2: <i>type</i>): <i>type</i>;
+</font></pre>
+Return the maximum of <tt>v1</tt> and <tt>v2</tt>.
+The <i>type</i> must be one of <tt>int</tt>, <tt>time</tt>, <tt>string</tt>, or <tt>float</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+min: function(v1: <i>type</i>, v2: <i>type</i>): <i>type</i>;
+</font></pre>
+Return the minimum of <tt>v1</tt> and <tt>v2</tt>.
+The <i>type</i> must be one of <tt>int</tt>, <tt>time</tt>, <tt>string</tt>, or <tt>float</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+sort(array of basic_type): array of basic_type;
+</font></pre>
+Return the sorted version of an array. Only scalar values can be sorted.
+Values will be arranged in increasing order. (An optional comparison
+function, which takes two elements and returns int {-,0,+}, is accepted
+as a second argument, but it is ignored.)
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+sortx(array of basic_type): array of int;
+</font></pre>
+Return the index vector that sorts an array. Only scalar values can be
+sorted. The index vector arranges array values in increasing order.
+(An optional comparison function, which takes two elements and returns
+int {-,0,+}, is accepted as a second argument, but it is ignored.)
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+DEBUG: function(): int;
+</font></pre>
+(Obsolete) This function is for use by the implementers only.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="convert">Conversions</a> </h2>
+
+<hr><pre><font color=green>
+convert: function(<i>type1</i>, v: <i>type2</i>, parameters: <i>type3</i>, ...): <i>type1</i>;
+</font></pre>
+The <tt>convert</tt> operator converts value <tt>v</tt>, of type <i>type2</i>, into
+the corresponding value of type <i>type1</i>.
+The parameters depend on the particular types being converted.
+For instance, <tt>convert(int, "23", 16);</tt> interprets the string <tt>"23"</tt>
+as a hexadecimal number.
+<br>Returns <i>undef</i> only if an error occurs.
+<p>
+The following basic conversions are supported; each row is a "from" type and each column is a "to" type.  Parameter values are allowed only as
+noted, and are always optional.
+<p>
+<table border=1 cellpadding=4>
+  <th>
+    <td><tt><b>bool</b></tt></td>
+    <td><tt><b>int</b></tt></td>
+    <td><tt><b>float</b></tt></td>
+    <td><tt><b>time</b></tt></td>
+    <td><tt><b>fingerprint</b></tt></td>
+    <td><tt><b>string</b></tt></td>
+    <td><tt><b>bytes</b></tt></td>
+    <td><tt><b>uint</b></tt></td>
+  </th>
+  <tr>
+    <td><tt><b>bool</b></tt></td>
+    <td>identity</td>
+    <td>0 and 1</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>"false" and "true"</td>
+    <td>&nbsp;</td>
+    <td>0 and 1</td>
+  </tr>
+  <tr>
+    <td><tt><b>int</b></tt></td>
+    <td>&nbsp;</td>
+    <td>identity</td>
+    <td>as in C++</td>
+    <td>reinterpret</td>
+    <td>reinterpret</td>
+    <td><i>param</i>: base</td>
+    <td><i>param</i>: encoding format</td>
+    <td>bitwise identity</td>
+  </tr>
+  <tr>
+    <td><tt><b>float</b></tt></td>
+    <td>&nbsp;</td>
+    <td>as in C++</td>
+    <td>identity</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>as in C++</td>
+    <td>&nbsp;</td>
+    <td>as in C++</td>
+  </tr>
+  <tr>
+    <td><tt><b>time</b></tt></td>
+    <td>&nbsp;</td>
+    <td>reinterpret</td>
+    <td>&nbsp;</td>
+    <td>identity</td>
+    <td>&nbsp;</td>
+    <td><i>param</i>: time zone</td>
+    <td>&nbsp;</td>
+    <td>reinterpret</td>
+  </tr>
+  <tr>
+    <td><tt><b>fingerprint</b></tt></td>
+    <td>&nbsp;</td>
+    <td>reinterpret</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>identity</td>
+    <td>as <tt>0x%016xp</tt></td>
+    <td>unpack</td>
+    <td>reinterpret</td>
+  </tr>
+  <tr>
+    <td><tt><b>string</b></tt></td>
+    <td>matches <tt>^[Tt]</tt></td>
+    <td><i>param</i>: base</td>
+    <td>as in C++</td>
+    <td><i>param</i>: time zone</td>
+    <td><i>param</i>: base</td>
+    <td>identity</td>
+    <td><i>param</i>: string encoding</td>
+    <td><i>param</i>: base</td>
+  </tr>
+  <tr>
+    <td><tt><b>bytes</b></tt></td>
+    <td>&nbsp;</td>
+    <td><i>param</i>: encoding format</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>pack</td>
+    <td><i>param</i>: string encoding</td>
+    <td>identity</td>
+    <td><i>param</i>: encoding format</td>
+  </tr>
+  <tr>
+    <td><tt><b>uint</b></tt></td>
+    <td>&nbsp;</td>
+    <td>bitwise identity</td>
+    <td>as in C++</td>
+    <td>reinterpret</td>
+    <td>reinterpret</td>
+    <td><i>param</i>: base</td>
+    <td><i>param</i>: encoding format</td>
+    <td>identity</td>
+  </tr>
+</table>
+<p>
+Notes:
+<ul>
+  <li>
+    Reinterpreted values are based on 64-bit signed or unsigned
+    underlying values.
+  </li>
+  <li>
+    Supported string encodings include "UTF-8" (the default), "latin-1",
+    and "hex" (each byte is represented as two characters in hexadecimal).
+    Conversion of bytes to string also accepts "array-literal", which yields
+    a string suitable for use as a bytes value in a Sawzall program.  The
+    exact format of this string may depend on whether any of the bytes have
+    a value outside the range of printable ASCII characters.
+  </li>
+  <li>
+    Bases from 2 to 36 are supported (see <tt>strtol</tt>); the default output
+    base is 10; the default input base is 10 unless it is overridden by a
+    leading "<tt>0x</tt>" for hex or "<tt>0</tt>" for octal.  An explicit input
+    base of 0 is the same as omitting the base.
+  </li>
+  <li>
+    Unpacked fingerprints are exactly eight bytes long; order is big-endian.
+  </li>
+  <li>
+    Time zones are RFC822 (e.g. <tt>"CDT"</tt>, <tt>"EST5EDT"</tt>, or
+    <tt>"GMT"</tt>) or Olson identifiers (e.g. <tt>"America/Los_Angeles"</tt>);
+    the default time zone is PST8PDT.
+    <a href="http://code.google.com/p/tzdata/">Olson identifiers are
+    preferred</a>.
+  </li>
+  <li>
+    Supported int encoding formats for conversion between bytes and int are
+    "fixed32-big", "fixed32-little", "fixed64-big", "fixed64-little" (32- and
+    64-bit big- and little-endian packed bytes), "saw" (an alias of
+    "fixed64-big", "varint" (64-bit
+    run-length-encoded format used in protocol buffers), and "zigzag" (a variant
+    of "varint" which uses the ZigZag encoding to encode negative numbers
+    efficiently).  The encoding parameter is required.
+  </li>
+  <li>
+    When converting from string to int, if you fail to specify a base,
+    the base used for the conversion is determined by the appearance
+    of the input. C-like rules are followed (as for C's <tt>strtol</tt>
+    function), meaning that for example "08" fails to convert
+    because 8 is not a valid octal digit.  Specify an explicit
+    base to avoid this problem.  If you want to use base 0, document
+    your choice by making the base explicit.
+  </li>
+</ul>
+
+A limited number of conversions are supported on compound types:
+<ul>
+  <li>
+    array to array: an array may be converted to a different array type
+    if the conversion of the element types is one of these:
+    <ul>
+      <li> any of the above basic conversions.  The additional parameters are
+           allowed or required exactly as in the corresponding non-array
+           conversions and have the same meaning.
+      <li> proto tuple to bytes, as descibed below.
+      <li> bytes to proto tuple, as descibed below.
+      <li> tuple to tuple, as descibed below.
+    </ul>
+  </li>
+  <br>
+  <li>
+    array to map: an array with an even number of elements may be converted
+    to a map if the array element type is either the same as or convertible
+    (using a basic conversion) to the key type and the array element type is
+    either the same as or convertible (using a basic conversion) to the value
+    type; except that conversions from bytes to int or uint, and from int or
+    uint to bytes, are not allowed because there is no default value for the
+    encoding parameter.
+    <p>
+    It is not possible to supply additional parameters for the base, encoding
+    or time zone.  The conversions from the type of an array element to the
+    key type and from the type of an array element to the value type always
+    use the corresponding default value for any optional parameter.  See the
+    notes above regarding the default values.
+  </li>
+  <br>
+  <li>
+    array, map or tuple to string: returns a text representation of the value
+    (except when converting array of int to string with "unicode"; see below).
+  </li>
+  <li>
+    function to string: returns the function name, a text representation of the
+    function or a string indicating that the value is anonymous.
+  </li>
+  <br>
+  <li>
+    proto tuple to bytes: returns the encoded protocol buffer byte
+    stream.
+  </li>
+  <li>
+    bytes to proto tuple: treats the bytes value as an encoded protocol buffer
+    byte stream and returns the decoded value.
+  </li>
+  <br>
+  <li>
+    tuple to tuple: returns the corresponding value; a value of tuple type may
+    be converted to a different but structurally equivalent tuple type.
+  </li>
+  <br>
+  <li>
+    string to array of int: each array element gets the code point value
+    of a single character of the string; the parameter must be present and
+    must have the value <tt>"unicode"</tt>.
+  </li>
+  <li>
+    array of int to string, when the parameter is present and has the value
+    <tt>"unicode"</tt>: each array element supplies the code point value
+    of a single character of the string.
+  </li>
+  <br>
+  <li>
+    array to tuple: an array may be converted to a tuple if there is one array
+    element for each tuple field and each array element can be converted
+    to the corresponding field.  Conversions from bytes to int or uint, and
+    from int or uint to bytes, are not allowed because there is no default
+    value for the encoding parameter.  All other supported conversions are
+    allowed including conversions on compound types.
+    <p>
+    It is not possible to supply additional parameters for the base, encoding
+    or time zone.  The conversion from the type of an array element to the
+    type of a field always uses the corresponding default value for any
+    optional parameter.  See the notes above regarding the default values.
+  </li>
+</ul>
+<br><hr>
+
+<br>
+<h2 id="time">Time</h2>
+These functions manipulate time values.
+Although one may do simple arithmetic to add a minute, say,
+because of daylight saving time, leap years, and other inconveniences many
+such operations require more sophistication, which these functions
+provide.
+<p>
+Most time functions accept an optional argument indicating the time zone; the
+default time zone is PST8PDT.
+
+<br><br><hr><pre><font color=green>
+addday: function(t: time, n: int [, tz: string] ): time;
+</font></pre>
+Return the time <tt>n</tt> days after <tt>t</tt>.
+The value of <tt>n</tt> may be negative, or <tt>n</tt>
+may be absent altogether (<tt>addday(t)</tt>), in which
+case <tt>n</tt> defaults to 1.
+An optional third argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+addmonth: function(t: time, n: int [, tz: string] ): time;
+</font></pre>
+Like <tt>addday</tt>, but for months.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+addweek: function(t: time, n: int [, tz: string] ): time;
+</font></pre>
+Like <tt>addday</tt>, but for weeks.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+addyear: function(t: time, n: int [, tz: string] ): time;
+</font></pre>
+Like <tt>addday</tt>, but for years.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+dayofmonth: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric day of the month; for January 17, return 17, etc.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+dayofweek: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric day of the week, from Monday=1 to Sunday=7.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+dayofyear: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric day of the year.  January 1 is day 1.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+hourof: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric hour of the day, from 0 to 23.  Midnight is 0, 1AM is 1, etc.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+minuteof: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric minute of the hour, from 0 to 59.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+monthof: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric month of the year.  January is 1.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+secondof: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric second of the minute, from 0 to 59.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+yearof: function(t: time [, tz: string] ): int;
+</font></pre>
+The numeric year value, such as 2003.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctoday: function(t: time [, tz: string] ): time;
+</font></pre>
+Truncate <tt>t</tt> to the zeroth microsecond of the day.
+Useful when creating variables indexed to a particular day, since
+all times in the day truncated with <tt>trunctoday</tt> will fold to
+the same value, which is the first time value in that day.
+An optional second argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctohour: function(t: time [, tz: string] ): time;
+</font></pre>
+Like <tt>trunctoday</tt>, but truncate to the start of the hour.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctominute: function(t: time [, tz: string] ): time;
+</font></pre>
+Like <tt>trunctoday</tt>, but truncate to the start of the minute.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctomonth: function(t: time [, tz: string] ): time;
+</font></pre>
+Like <tt>trunctoday</tt>, but truncate to the start of the month.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctosecond: function(t: time [, tz: string] ): time;
+</font></pre>
+Like <tt>trunctoday</tt>, but truncate to the start of the second.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+trunctoyear: function(t: time [, tz: string] ): time;
+</font></pre>
+Like <tt>trunctoday</tt>, but truncate to the start of the year.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+now: function(): time;
+</font></pre>
+Return the current time at the moment of execution.  Note that the <tt>time</tt>
+value returned does not depend on a time zone.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+formattime: function(formatstring: string, t: time [, tz: string]): string;
+</font></pre>
+Return a string containing the time argument formatted according to the format
+string fmt. The syntax of the format string is the same as in ANSI C strftime.
+An optional third argument, a string, names a time zone.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="files">Files and other OS resources</a> </h2>
+
+<hr><pre><font color=green>
+load: function(file: string): bytes;
+</font></pre>
+Return the entire contents of the named <tt>file</tt> as an uninterpreted byte stream.
+<br>Returns <i>undef</i> only if the file cannot be opened or read.
+
+
+<br><br><hr><pre><font color=green>
+getenv: function(variable: string): string;
+</font></pre>
+Return the contents of the named environment
+<tt>variable</tt> as a string.  The raw data is interpreted as UTF-8 in the
+same manner as the default conversion from bytes to string.
+<br>Returns <i>undef</i> only if the variable does not exist.
+
+<br><br><hr><pre><font color=green>
+getadditionalinput: function(variable: string): bytes;
+</font></pre>
+A map of strings to bytes may be provided to Proc by the process running
+szl.  Return the bytes mapped to by the argument.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+setadditionalinput: function(label: string, value: bytes);
+</font></pre>
+Stores a (label, value) pair.
+<br>Never returns <i>undef</i>.
+
+
+<br><br><hr><pre><font color=green>
+lockadditionalinput: function();
+</font></pre>
+Prevents further calls to setadditionalinput for this record.
+<br>Never returns <i>undef</i>.
+
+
+<br><br><hr><pre><font color=green>
+type resourcestats = {
+  initializedavailablemem: int,
+  initializedallocatedmem: int,
+  initializedusertime: time,
+  initializedsystemtime: time,
+  availablemem: int,
+  allocatedmem: int,
+  usertime: time,
+  systemtime: time
+};
+</font></pre>
+
+<pre><font color=green>
+getresourcestats: function(): resourcestats;
+</font></pre>
+
+Return a tuple of type resourcestats containing resource usage statistics.  The
+f
+irst set of numbers reports the statistics after static initialization.  The
+second set reports the values consumed by processing the current input record.
+The availablemem figure reports total size of the heap; allocatedmem is the
+amount in use on the heap.  Memory is measured in bytes, and time is measured
+in microseconds.  Availability and accuracy of these values is implementation
+dependent.
+<br>Never returns <i>undef</i>.
+
+
+<hr>
+<br>
+<i>The database intrinsics are not implemented.  They are provided
+as a recommendation for the any future implementation of database access.</i>
+<pre><font color=green>
+type SQL_DB = int;  # basic type
+
+dbconnect: function(dbspec: string, defaultspec: string): int;
+</font></pre>
+Connects to a database with the dbspecs and returns a db object.  It is
+recommended to declare the db object as static so only one connection is made per
+worker.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<pre><font color=green>
+dbquery: function(db: int, query: string): array of array of string;
+</font></pre>
+Executes a sql query on the given database object.  Returns an array of array
+of string, each array of string representing one row of results.  For most
+queries such as SELECT statements, the results can be declared as static to
+avoid excessive queries on the database.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="strings">String Manipulation</a> </h2>
+
+<hr><pre><font color=green>
+lowercase: function(s: string): string;
+</font></pre>
+Return the string <tt>s</tt> with all characters converted to lower case,
+as defined by Unicode.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+uppercase: function(s: string): string;
+</font></pre>
+Return the string <tt>s</tt> with all characters converted to upper case,
+as defined by Unicode.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+strfind: function(p: string, s: string): int;
+</font></pre>
+Search for the first occurrence of the literal string <tt>p</tt>
+within <tt>s</tt> and return the integer index of its first character,
+or <tt>-1</tt> if it does not occur.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+strrfind: function(p: string, s: string): int;
+</font></pre>
+Search for the last occurrence of the literal string <tt>p</tt>
+within <tt>s</tt> and return the integer index of its first character,
+or <tt>-1</tt> if it does not occur.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+bytesfind: function(p: bytes, b: bytes): int;
+</font></pre>
+Search for the first occurrence of the literal bytes <tt>p</tt>
+within <tt>b</tt> and return the integer index of its first byte,
+or <tt>-1</tt> if it does not occur.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+bytesrfind: function(p: bytes, b: bytes): int;
+</font></pre>
+Search for the last occurrence of the literal bytes <tt>p</tt>
+within <tt>b</tt> and return the integer index of its first byte,
+or <tt>-1</tt> if it does not occur.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+strreplace: function(str: string, lit: string, rep: string, replace_all: bool): string; </font></pre>
+Return a copy of string <tt>str</tt>, with non-overlapping instances of
+<tt>lit</tt> replaced by <tt>rep</tt>. If <tt>replace_all</tt> is
+false, only the first found instance is replaced.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+match: function(r: string, s: string): bool;
+</font></pre>
+Search for a match of the regular expression <tt>r</tt> within <tt>s</tt>,
+and return a boolean value indicating whether a match was found.
+(The regular expression syntax is that of
+<a href="http://www.pcre.org/">PCRE</a>.)
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+matchposns: function(r: string, s: string): array of int;
+</font></pre>
+Search for a match of the regular expression <tt>r</tt> within <tt>s</tt>,
+and return an array consisting of character positions within <tt>s</tt>
+defined by the match.  Positions 0 and 1 of the array report the location
+of the match of the entire expression, subsequent pairs report the location
+of matches of successive parenthesized subexpressions.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+matchstrs: function(r: string, s: string): array of string;
+</font></pre>
+Search for a match of the regular expression <tt>r</tt> within <tt>s</tt>,
+and return an array of strings consisting of matched substrings of <tt>s</tt>.
+The 0th string is the entire match; following elements of the array hold
+matches of successive parenthesized subexpressions.
+This function is equivalent to using <tt>matchposns</tt> to find successive
+locations of matches and created array slices of <tt>s</tt> with the indices returned.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+splitcsvline: function(line: bytes): array of bytes;
+</font></pre>
+The function splitcsvline takes a line of UTF-8 bytes and splits it
+at the commas.  It returns the array of fields produced.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+splitcsv: function(lines: bytes, fields: array of int): array of bytes;
+</font></pre>
+The function splitcsv takes an array of UTF-8 bytes containing lines of text,
+such as that produced by the load() builtin. It splits each line as if by
+<tt>splitcsvline</tt>, and then selects the fields
+indicated by the second argument (numbered starting at 1).
+The return value is a flat array of the collected fields.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+format: function(fmt: string, ...): string;
+</font></pre>
+Return a string containing the arguments formatted according to the format
+string fmt. The syntax of the format string is essentially that of ANSI C with
+the following differences:
+<ul>
+  <li><tt>%b</tt> prints a boolean, "true" or "false".</li>
+  <li><tt>%c</tt> prints a (u)int as a Unicode character in UTF-8.</li>
+  <li><tt>%k</tt> like <tt>%c</tt> with single quotes and backslash escapes for special characters.</li>
+  <li><tt>%s</tt> prints a Sawzall string as UTF-8.</li>
+  <li><tt>%q</tt> like <tt>%s</tt> with double quotes and backslash escapes for special characters.</li>
+  <li><tt>%p</tt> prints a fingerprint, in the format <tt>0x%.16x</tt>.</li>
+  <li><tt>%t</tt> prints a time, in the format of the Unix function ctime without a newline.</li>
+  <li><tt>%T</tt> prints a Sawzall type of the argument; <tt>%#T</tt> expands user-defined types.</li>
+  <li><tt>%d</tt> / <tt>%i</tt> / <tt>%o</tt> / <tt>%u</tt> / <tt>%x</tt> /
+  <tt>%X</tt> apply to a Sawzall (u)int and have no '<tt>l</tt>' or '<tt>h</tt>' modifiers.</li>
+  <li><tt>%e</tt> / <tt>%f</tt> / <tt>%g</tt> / <tt>%E</tt> / <tt>%G</tt> apply
+  to a Sawzall float and have no '<tt>l</tt>' or '<tt>h</tt>' modifiers.</li>
+  <li>format verbs '<tt>n</tt>' and '<tt>*</tt>' are not supported.</li>
+</ul>
+Never returns <i>undef</i>.
+
+<br><br><hr>
+
+<br>
+<h2> <a name="arithmetic">Arithmetic</a> </h2>
+
+<hr><pre><font color=green>
+highbit: function(n: int): int;
+</font></pre>
+Return an integer representing the bit position of the
+highest one bit in <tt>n</tt>.
+If <tt>n</tt> is zero, the result is 0; if <tt>n</tt> is 1, the result is 1,
+if <tt>n</tt> is 15, the result is 4, etc.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+rand: function(): float;
+</font></pre>
+Return a random floating point number in the range 0.0&lt;=<i>x</i>&lt;1.0.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+nrand: function(n: int): int;
+</font></pre>
+Return a random integer in the range 0&lt;=<i>x</i>&lt;<tt>n</tt>.
+Returns <i>undef</i> if <tt>n</tt> is negative or zero.
+<br>Never returns <i>undef</i>.
+
+<hr>
+<br>
+The intrinsics <tt>__undefine</tt>, <tt>__raise_segv</tt>,
+<tt>__addressof</tt> and <tt>__heapcheck</tt> are for testing purposes only.
+
+<br><br><hr>
+
+<br>
+<h2><a name="floatingpoint">Floating Point Math Functions</a> </h2>
+
+These functions are wrappers for the corresponding
+ones in <tt>math.h</tt>.  Instead of checking domain
+and range we just return whatever the underlying library
+does.  The value <tt>errno</tt> is not available nor checked.
+In general you'll have to check the results using
+<tt>isfinite()</tt>.
+
+<br><br><hr><pre><font color=green>
+ln: function(x: float): float;
+</font></pre>
+The natural logarithm of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+log10: function(x: float): float;
+</font></pre>
+The logarithm base 10 of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+exp: function(x: float): float;
+</font></pre>
+The exponential, base <i>e</i>, of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+sqrt: function(x: float): float;
+</font></pre>
+The square root of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+pow: function(x: float, y: float): float;
+</font></pre>
+The exponential, base <tt>x</tt>, of <tt>y</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+sin: function(x: float): float;
+</font></pre>
+The sine of <tt>x</tt>, where <tt>x</tt> is in radians.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+cos: function(x: float): float;
+</font></pre>
+The cosine of <tt>x</tt>, where <tt>x</tt> is in radians.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+tan: function(x: float): float;
+</font></pre>
+The tangent of <tt>x</tt>, where <tt>x</tt> is in radians.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+asin: function(x: float): float;
+</font></pre>
+The arc sine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+acos: function(x: float): float;
+</font></pre>
+The arc cosine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+atan: function(x: float): float;
+</font></pre>
+The arc tangent of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+atan2: function(x: float, y: float): float;
+</font></pre>
+The arc tangent of <tt>y</tt>/<tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+cosh: function(x: float): float;
+</font></pre>
+The hyperbolic cosine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+sinh: function(x: float): float;
+</font></pre>
+The hyperbolic sine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+tanh: function(x: float): float;
+</font></pre>
+The hyperbolic tangent of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+acosh: function(x: float): float;
+</font></pre>
+The hyperbolic arc cosine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+asinh: function(x: float): float;
+</font></pre>
+The hyperbolic arc sine of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+atanh: function(x: float): float;
+</font></pre>
+The hyperbolic arc tangent of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+fabs: function(x: float): float;
+</font></pre>
+The absolute value of <tt>x</tt>.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+ceil: function(x: float): float;
+</font></pre>
+Round <tt>x</tt> up to the nearest integer.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+floor: function(x: float): float;
+</font></pre>
+Round <tt>x</tt> down to the nearest integer.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+round: function(x: float): float;
+</font></pre>
+Round <tt>x</tt> to the nearest integer, but round halfway cases away from zero.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+trunc: function(x: float): float;
+</font></pre>
+Round <tt>x</tt> to the nearest integer not larger in absolute value.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+isnan: function(x: float): bool;
+</font></pre>
+Tests if a float value is an IEEE NaN
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+isinf: function(x: float): bool;
+</font></pre>
+Tests if a float value is an IEEE Inf
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+isfinite: function(x: float): bool;
+</font></pre>
+Tests if a float value is not +-Inf or NaN
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+isnormal: function(x: float): bool;
+</font></pre>
+Tests if a float value is neither zero, subnormal, Inf, nor NaN
+<br>Never returns <i>undef</i>.
+
+<br><br><hr>
+
+<br>
+<h2 id="encryptencode">Encryption and encoding functions</h2>
+
+<hr><pre><font color=green>
+tobase64: function(input: bytes, websafe: bool): bytes;
+</font></pre>
+The function tobase64 takes an input bytes array and returns a bytes array
+containing its base64 encoding.  The boolean flag, if set, invokes the
+web-safe encoding that maps + to - and / to _ and does not pad the output
+with =.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+frombase64: function(input: bytes, websafe: bool): bytes;
+</font></pre>
+The function frombase64 takes an input bytes array and returns a bytes array
+containing its base64 decoding.  The boolean flag, if set, invokes the
+web-safe decoding that maps + to - and / to _.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+gunzip: function(compressed_data: bytes): bytes;
+</font></pre>
+Decompress gzip compressed data. The data must contain a valid gzip header and
+footer (as in a .gz file), but data after the footer is ignored.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+gzip: function(uncompressed_data: bytes): bytes;
+</font></pre>
+Compress data using gzip.
+<br>Never returns <i>undef</i>.
+
+<br><br><hr><pre><font color=green>
+zlibuncompress: function(compressed_data: bytes, skip_header: bool): bytes;
+</font></pre>
+Uncompresses the zipped data using zlib, and returns the uncompressed data.
+Extra data past the valid zlib data results in an error. Optional parameter gives
+intermediate buffer size for decompression in bytes (default 8192)
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr><pre><font color=green>
+zlibcompress: function(uncompressed_data: bytes, skip_header: bool): bytes;
+</font></pre>
+Compresses the zipped data using zlib, and returns the compressed data.
+<br>Returns <i>undef</i> only if an error occurs.
+
+<br><br><hr>
+
+</body>
+</html>

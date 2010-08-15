@@ -54,3 +54,4 @@ Several tests are written as example programs, including an example of the use o
   * [Sawzall_Undef_Notes Discussion of undefined values and def() checks]
   * [Sawzall_Performance_Tips Performance tips]
   * [Sawzall_Proto_Translation Proto-to-Sawzall Translation]
+  * [Interpreting_the_Data Abstract (and link) of a technical paper discussing Sawzall]

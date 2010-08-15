@@ -1,0 +1,845 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/REC-html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="docstyle.css">
+    <title>Sawzall Style Guide</title>
+    <style type="text/css"><!--
+       th { background-color: #ddd; }
+      //--></style>
+  </head>
+
+  <body>
+    <h1>Sawzall Style Guide</h1>
+
+    <p>
+      This is a collection of style and usage recommendations
+      that tend to make Sawzall programs more robust, more readable
+      and easier to maintain.  Many of the recommendations are accompanied
+      by a brief discussion of why the given style was chosen.
+    </p>
+
+    <p>You should read the <a href="sawzall-language.html">
+      informal language description</a> first.
+    </p>
+
+    <h2>Summary: Sawzall Language Style</h2>
+
+    <p>
+      This is a summary of the recommended style for the use of
+      Sawzall language features.  You
+      can click on any rule to explore this rule in more detail. For a formal
+      description of the Sawzall Language see the
+      <a href="sawzall-spec.html"> Sawzall Language Specification</a>.
+    </p>
+
+    <ol>
+       <li> <a href="#include">Include Clauses</a>: any .szl file</li>
+       <li> <a href="#conditionals">Conditionals</a>: use <code>when
+         some</code> and <code>when all</code> if possible</li>
+       <li> <a href="#loops">Loops</a>: use <code>when each</code>
+         as a shorthand for for-if logic if order is unimportant</li>
+       <li> <a href="#undef">Undefined</a>: check <code>def</code> after
+         conversion </li>
+       <li> <a href="#static">Static Declarations</a>: maps, constants</li>
+       <li> <a href="#implicit_types">Implicit Types in Variable Declarations:</a>
+            use to avoid type repetition</li>
+       <li> <a href="#nested_tuples">Protocol Buffer Package and Enum Naming:</a>
+            use nested-tuples syntax</li>
+    </ol>
+
+    <h2>Summary: Sawzall Code Formatting Style</h2>
+
+    <p>
+      Programs are much easier to maintain when all files have a
+      consistent style.  Here is the recommended Sawzall style.
+    </p>
+
+    <ol>
+      <li> <a href="#linelen">Line length</a>: 80 characters</li>
+      <li> <a href="#indentation">Indentation</a>: 2 spaces for new blocks, 4 spaces or align inside parentheses for wrapping lines (no tabs)</li>
+      <li> <a href="#spacing">Spacing</a></li>
+      <li> <a href="#curly">Curly Braces</a>: first on same line, last on own
+           line</li>
+      <li> <a href="#return">Return Statements</a>: on own line</li>
+      <li> <a href="#layout">General Layout and Ordering</a>:
+        <code>proto</code>s, <code>include</code>s,
+        tables (output spec), input, functions, variable declarations</li>
+      <li> <a href="#comments">Comments</a>: file headers, block, inline</li>
+      <li> <a href="#todo">TODO style</a>: <code>TODO(szluser): Verify that
+        size &gt; 0.</code></li>
+      <li> <a href="#naming">Naming</a>: variable_names, FunctionNames,
+        TypeNames, kConstantNames</li>
+<!--       <li> <a href="#topic">New Topic</a>: ?? </li> -->
+      <li> <a href="#consistency">Conclusion</a>: Look at what's around
+        you!</li>
+    </ol>
+
+    <h2>Sawzall Language Style</h2>
+
+    <h3 id="include">Include Clauses</h3>
+
+    <p>
+      <b>What it is:</b> External libraries can be included with an
+      <code>include</code> clause. In fact, any <code>.szl</code> file
+      can be included.
+    </p>
+
+    <p>
+      <b>Pros:</b> Allows lots of versatility and encourages reuse of code.
+    </p>
+
+    <p>
+      <b>Cons:</b> Allows circular and redundant inclusion.
+      (<code>saw</code> will report a warning for multiple inclusions
+      of the same <code>.proto</code> file.)  Watch out for multiple
+      definitions of the same function or variable.
+    </p>
+
+    <p>
+      <b>Decision:</b> All <code>include</code> clauses should occur
+      at the top of the file:
+    </p>
+    <pre>include "/home/szluser/examples/join.szl"
+    </pre>
+    <p>
+      Be verbose with variable and function names and careful about
+      which files you include.  Always check what's included in the
+      files you include.
+    </p>
+    <p>
+      Although it's best to put <code>include</code> clauses at the
+      top of the file, sometimes it makes more sense to put them later
+      in the file.  Only do so if necessary.
+    </p>
+
+    <h3 id="conditionals">Conditionals</h3>
+
+    <p>
+      <b>What it is:</b> In addition to Sawzall's <code>if</code> and 
+      loop statements, there is also the <code>when</code> statement, 
+      which is useful when processing arrays and maps. There 
+      are three quantifiers for a <code>when</code> statement: 
+      <code>some</code> and <code>all</code> execute the body at most 
+      one time if some/all elements satisfy the condition, and 
+      <code>each</code> executes the body for each element that satisfies 
+      the condition (see <a href="#loops">Loops Section</a>).
+    </p>
+
+    <p> Instead of having a traditional loop that sets a condition flag
+        if some/all elements pass followed by an if statement that checks 
+        that flag before executing the condition body, you should do
+
+    <pre>
+when (i: some int; my_array[i] &gt; 0) {
+  emit stdout <- format("At least this element passed: i = %d", i);
+}</pre>
+
+    if you just want to check that at least one element makes the condition
+    true and
+    
+
+    <pre>
+when (s: all string; my_map[s] &gt; 0) {
+  emit stdout <- "All elements passed";
+}</pre>
+
+    if you want to check that all elements make the condition true.
+    </p>
+
+    <p>
+      <b>Pros:</b> A <code>when some/all</code> statement can make 
+         the code simpler, especially when it comes to maps.
+    </p>
+
+    <p>
+      <b>Cons:</b> Does not work with some non-trivial conditions 
+      (e.g. <code>a[i % 2] > 0</code>). 
+      Cannot iterate in one loop over multiple variables if they are 
+      nested in an expression (e.g. <code>a[i].b[j] &lt; 12</code>).
+    </p>
+
+    <p>
+      <b>Decision:</b> Use <code>when some/all</code> statement for cases when
+        qualifiers work and make code simpler.
+    </p>
+
+    <h3 id="loops">Loops</h3>
+
+    <p>
+      <b>What it is:</b> In addition to the familiar <code>for</code>,
+      <code>while</code> and <code>do</code> loops, there is also the 
+      <code>when each</code> loop. The <code>when each</code> loop will 
+      execute the body for each element that makes the condition true. 
+      Instead of
+    </p>
+    <pre>
+for (i := 0; i &lt; len(my_array); i++) { 
+  if (my_array[i] == "x") { 
+    f(my_array[i]); 
+  }
+}</pre>
+    you can do
+    <pre>
+when (i: each int; my_array[i] == "x") { 
+  f(my_array[i]);
+}</pre>
+    <p>
+      Aside from the simpler syntax, the difference is that a 
+      <code>when</code> loop may not process the elements in order, but in 
+      parallel instead. This is not currently implemented, but is a part of 
+      the original language design.
+    </p>
+    <p>
+      <b>Pros:</b> A <code>when each</code> statement can make the code simpler.
+    </p>
+
+    <p>
+      <b>Cons:</b> Might not process the elements in order, so does not work 
+         for loops where iterations cannot be executed independently because 
+         some iterations depend on the result of other iterations. 
+    </p>
+
+    <p>
+      <b>Decision:</b> Use <code>when each</code> if it makes the code simpler 
+         and elements do not have to be processed in order. (One way to test 
+         this is to check if the results will be the same if you run 
+         the loop backwards.)
+    </p>
+
+    <h3 id="undef">Undefined</h3>
+
+    <p>
+      <b>What it is:</b> An undefined value can be returned by a
+      function or intrinsic, and can be the result of various
+      incorrect or incalculable operations including the failure to
+      initialize a variable.
+    </p>
+
+    <p>
+      <b>Pros:</b> Default values are not necessary.
+    </p>
+
+    <p>
+      <b>Cons:</b> Accessing a value which is undefined will cause
+        the execution of the program to fail.
+    </p>
+
+    <p>
+      <b>Decision:</b> After any type conversion, calling a function
+      that can return an undefined value, or other likely failure
+      location you should check that the value is defined.  Although
+      the <code>--ignore_undefs</code> flag will protect you against
+      undefined values, your program should not require that the flag
+      be set in order to work with reasonable, even slightly erroneous
+      input.  Use the flag only to protect against unforeseen
+      problems.
+    </p>
+<pre>log_record: LogrecordProto = input;
+
+# The input can be undefined.  We could check for that here.
+# In this example, we instead let a later (necessary) def() check catch it:
+
+value: string = log_record.value;  # This is a conversion because
+                                   # log_record.value has type 'bytes'.
+if (!def(value))
+  return;
+
+result_int := int(string(log_record.args[value]));  # Many conversions.
+if (def(result_int))
+  return result_int;</pre>
+
+    <p>
+      Note that undefined values can only be assigned on variable
+      initialization.  Any other use of undefined values will
+      fail.  So, borrowing from the last example above:
+    </p>
+<pre><span style="color:red">result_int: int;</span>
+<span style="color:red">result_int = int(string(log_record.args[value]));</span>
+# If this conversion fails, it will crash the program.  The following
+# def() check will never be reached.
+if (def(result_int))
+  return result_int;</pre>
+
+    <p>
+      You do not need to check each field of a tuple. If the entire
+      tuple is defined, each field will be as well.  Type conversions
+      of these fields, however, may fail.
+    </p>
+<pre>log_record: LogRecordProto = input;
+if (!def(log_record)) {
+  emit undefined_input_count &lt;- 1;
+  return;
+}
+<span style="color:red">if (def(log_record.value)) {</span>
+  # This is not necessary because log_record.value is defined iff log is defined.
+<span style="color:red">  emit stdout &lt;- string(log_record.value);  # BAD, conversion may have failed.</span>
+}
+</pre>
+    <p>
+      <b>Exception:</b> A conversion to type <code>string</code> will always
+      succeed unless the result cannot be expressed correctly.
+    </p>
+    <p>
+      <b>Exception to exception:</b> Such failure can occur when
+      converting from a <code>bytes</code> value using an encoding
+      such as UTF-8, which is the default.  In that case, a
+      <code>NUL</code> byte or other encoding error can result in an
+      undefined value. Therefore, conversions from <code>bytes</code>
+      values or complex values containing <code>bytes</code> values
+      should be checked unless they are known to be safe. (Safety can
+      be guaranteed by the encoding ("hex" is always safe) or by the
+      provenance of the value.)
+    </p>
+    <pre>value: string = log_record.value;  # implicit conversion bytes to string
+assert(def(value), "Failed to convert bytes to string");
+
+counter := 0;
+emit stdout &lt;- string(counter);  # conversion int to string always defined
+
+log_str := string(input);
+assert(def(log_str), "Failed to convert some bytes field to string");</pre>
+
+    <h3 id="static">Static Declarations</h3>
+
+    <p>
+      <b>What it is:</b> A <code>static</code> variable will be
+      created only once for each invocation of the Sawzall engine
+      unlike non-static variables
+      which are created once per record. It must be initialized to a
+      static value.  Once initialized, the value of a
+      <code>static</code> variable cannot change.  Literals are
+      considered static.
+    </p>
+    
+    <p>
+      When a Sawzall computation is split across multiple executions
+      (e.g. in map-reduce) care should be take to ensure that any
+      environmental data (e.g. <tt>getenv</tt> results) will be the
+      same across all executions, so that all static variables will
+      have the same value in all executions.
+    </p>
+
+    <p>
+      Functions that make no use of per-instance variables from outside the
+      function can also be declared <code>static</code>.  (More accurately,
+      such function values can be used to initialize static variables of
+      function type.)  Static variables
+      can be initialized to the value returned by static functions.
+    </p>
+
+    <p>
+      <b>Pros:</b> It is better to initialize a variable once per
+      worker than once per record. If the value can't be changed there
+      are no synchronization issues.
+    </p>
+
+    <p>
+      <b>Cons:</b> Sometimes, values need to vary per-instance.  Also,
+      implementation issues can prevent the use of static initialization.
+    </p>
+
+    <p>
+      <b>Decision:</b> Whenever possible, a variable should be
+      declared <code>static</code>.
+      Functions should be declared
+      <code>static</code> when they could be used for initializing static
+      variables. 
+    </p>
+    <pre>
+static kTextFile := "/home/szluser/airport_codes";
+static kAirports: map[string] of int =
+    sawzall(string(load(kTextFile)),
+            `[^\t]+`, skip `\t`, `[^\n]+`, skip `\n`);
+</pre>
+
+    <h3 id="implicit_types">Implicit Types in Variable Declarations</h3>
+
+    <p>
+      <b>What it is:</b> In a declaration with an initializer,
+         the type may be implicit or explicit. The following groups of
+         statements are equivalent:
+    </p>
+
+    <pre>
+Eby2: float = 2.71828182845905 / 2.0;
+Eby2 := 2.71828182845905 / 2.0;
+    </pre>
+
+    <pre>
+log_record: LogRecordProto = LogRecordProto(input);
+log_record: LogRecordProto = input;  # Implicit conversion
+log := LogRecordProto(input);
+    </pre>
+
+    <pre>
+MathIsPi: function(n: float): bool = function(n: float): bool { ...
+MathIsPi := function(n: float): bool { ...
+MathIsPi: function(n: float): bool { ... # Old syntax: equal sign omitted
+    </pre>
+
+    <p>
+      <b>Pros:</b> Useful for shortening obvious declarations (e.g.,
+      index in a for-loop). Permits initialization via type
+      conversions without repeating the type twice in the same
+      statement. Using <code>:=</code> allows users to be consistent
+      when declaring variables and functions (which are just another
+      variable type).
+    </p>
+
+    <p>
+      <b>Cons:</b> Different syntax than for declarations without an
+      initializer. Also, there are now two almost identical shortcuts
+      for functions.  Some users find the new <code>:=</code> notation
+      unusual, while the old one is inconsistent with variable
+      declarations.  Finally, since the type is sometimes not
+      explicitly specified, the actual type of a variable initialized
+      with <code>:=</code> might not be obvious from inspecting the
+      code.
+    </p>
+
+    <p>
+      <b>Decision:</b> Use shorthand notation to avoid type
+      repetition.  In initializations where the type of the expression
+      is unclear or unusual, it is best to name the type explicitly.
+      In general, either notation is acceptable as long as it is used
+      consistently throughout the code (e.g., <code>:=</code> for all
+      basic variable initializations, <code>=</code> for all
+      initializations with implicit conversions, and <code>:</code>
+      for all functions).
+    </p>
+
+    <h3 id="nested_tuples">Protocol Buffer Package and Enum Naming</h3>
+
+    <p>
+      <b>What it is:</b> Sawzall allows types to be nested within other types
+      with hierarchical naming.  The protocol buffer compiler for Sawzall
+      supports this language feature.  With the following protocol buffer
+      declaration, 
+    </p>
+
+    <pre>
+package mypkg;
+parsed message Foo {
+  enum ID {
+     BAR = 0,
+     NUM_IDS = 1,
+  };
+  optional ID id = 1;
+  optional group G = 2 {
+    optional int32 x = 3;
+  };
+};
+</pre>
+
+    <p>
+      you can access the elements of the protocol buffer as follows:
+    </p>
+
+    <pre>
+foo: mypkg.Foo = B"";    # Protocol buffer types with packages are named as "package.Protocol"
+
+type T = mypkg.Foo.ID;   # Nested types are fields of the type
+i := mypkg.Foo.BAR;      # Nested static variables are fields of the type
+g: mypkg.Foo.G = foo.g;  # The types of nested groups are fields of the type
+j := g.x;                # Nested regular variables are still fields of the value
+</pre>
+
+    <p>
+      <b>Pros:</b> Far more natural than the earlier underscore-delimited
+      syntax.
+    </p>
+
+    <p>
+      <b>Cons:</b> None
+    </p>
+
+    <p>
+      <b>Decision:</b> Use nested-tuple syntax when naming enum types, enum
+      values, and group types nested within protos, and when naming proto types
+      declared within packages.
+    </p>
+
+<!--
+    <h3 id="topic">topic</h3>
+
+    <p>
+      <b>What it is:</b>
+    </p>
+
+    <p>
+      <b>Pros:</b>
+    </p>
+
+    <p>
+      <b>Cons:</b>
+    </p>
+
+    <p>
+      <b>Decision:</b>
+
+    </p>
+    <pre>sample code
+    </pre>
+    <p>
+    </p>
+-->
+
+    <h2>Sawzall Code Formatting Style</h2>
+
+    <h3 id="linelen">Line Length</h3>
+
+    <p>
+      Maximum line length is <b>80 characters</b>.
+    </p>
+
+    <p>
+      Although it is best not to end a line in the middle of a statement,
+      sometimes it is necessary.  It is acceptable to place a line break after
+      any boolean operator or after a comma in a function argument list.
+    </p>
+
+    <pre>
+if (my_very_long_boolean_variable ||
+    (some_numeric_variable &gt; another_numeric_operator)) { ...
+}
+
+static kCategories: map[string] of int = sawzall(string(load("odp")),
+                                                 `[^\t]+`, skip `\t`,
+                                                 `[^\n]+`, skip `\n`);</pre>
+
+    <h3 id="indentation">Indentation</h3>
+
+    <p>
+      Use spaces, not tabs, to indent.
+    </p>
+
+    <h4>Block Level</h4>
+
+    <p>
+      Indent your code with <b>2 spaces</b> when starting a new code block.
+    </p>
+
+<pre>
+MathIsLarge: function(number: float): bool {
+  return number &gt; 6.022e23;
+};
+</pre>
+
+    <h4>Wrapping Lines</h4>
+    <p>
+      Indent your code with <b>4 spaces</b> when breaking a single code line
+      anywhere other than in the middle of the code in parentheses. When a
+      break occurs after a comma or an operator in the middle of the
+      parentheses, align the continuation of the statement with the first
+      character inside of the parentheses.
+    </p>
+
+<pre>
+population: map[city: string] of count: int =
+    sawzall(data_file_text, `[^\t]+`, skip `\t`, `[^\n]+`, skip `\n`);
+</pre>
+
+<p>or</p>
+
+<pre>
+population: map[city: string] of count: int = sawzall(
+    data_file_text, `[^\t]+`, skip `\t`, `[^\n]+`, skip `\n`);
+</pre>
+
+<p>or</p>
+<pre>
+population: map[city: string] of count: int = sawzall(data_file_text,
+                                                      `[^\t]+`, skip `\t`,
+                                                      `[^\n]+`, skip `\n`);
+</pre>
+
+    <h3 id="spacing">Spacing</h3>
+
+    <p>DO NOT put a space before a semicolon.
+    </p>
+
+    <h4>Conditionals and Loops</h4>
+
+    <p>DO put a space between <code>if</code>, <code>for</code>,
+      <code>while</code>, <code>when</code> and the first parenthesis.
+    </p>
+    <p>DO put a space between the last parenthesis and the first curly brace.
+    </p>
+    <pre>when (i: each int;
+      TronLogVersionIsAtLeast(record.list[i].version, 1)) {</pre>
+
+    <h4>Variable Declarations</h4>
+    <p>
+      DO put a space between colon and type.
+    </p>
+
+    <pre>log_record: LogRecordProto;</pre>
+
+    <p>
+      DO NOT put a space between an identifier and a colon in a declaration.
+    </p>
+
+    <pre>static kWeekendDays: array of string = { "Sat", "Sun" };</pre>
+
+    <p>
+      DO put a space before <code>:=</code>.
+    </p>
+    <pre>
+i := 0;
+
+ValueIsDuplicate := function(new_value: bytes, old_value: bytes): bool {
+...
+};
+    </pre>
+
+    <h4>Binary Operators</h4>
+
+    <p>DO put a space before and after each binary operator.
+    </p>
+
+    <pre>total_weight: string = base_weight + supplemental_weight;
+emit stdout &lt;- "Hello world!";</pre>
+
+    <h4>Functions</h4>
+
+    <p>DO put a space between a comma and the next parameter.
+    </p>
+    <p>DO NOT put a space before a comma.
+    </p>
+    <p>DO NOT put a space between a parameter list's last parenthesis and the
+      colon.
+    </p>
+    <p>DO put a space between the colon and the return type.
+    <p>DO NOT put a space between a function call and the first parenthesis.
+    </p>
+
+    <pre>
+ValueIsDuplicate: function(new_value: bytes, old_value: bytes): bool {
+...
+};
+
+if (ValueIsDuplicate(log_record.list[i].value,
+                     log_record.list[j].value)) {
+    </pre>
+
+
+    <h4>Curly Braces, Square Brackets and Parentheses</h4>
+
+    <p>DO NOT put spaces around code in parentheses ().
+
+    <p>DO NOT put spaces around identifiers in square brackets [].
+
+    <p>DO put spaces around one-line arrays, maps or tuples delimited by curly braces {} unless they are empty ({}, {:}).
+
+    <p>DO put a space after commas separating elements within parentheses () or curly braces {}.
+
+    <pre>for (i := 0; i &lt; size; i++)</pre>
+    <pre>current_entry = list[i];</pre>
+    <pre>holidays_in_december: array of int = { 24, 25, 31 };</pre>
+
+    <h3 id="curly">Curly Braces</h3>
+
+    <p>When using curly braces to define the body of a function,
+      <code>if</code> statement, or loop, put the first curly brace on the
+      same line and and last on a line by itself.  However, you may omit the
+      curly braces if the body is just one line.  Whether you choose to use
+      them in this case or not, you must be consistent.
+    </p>
+
+    <pre>if (!def(value) || !ValueIsGood(value)) {
+  return;
+}</pre>
+    <p>
+      xor (but not both)
+    </p>
+    <pre>if (!def(value) || !ValueIsGood(value))
+  return;</pre>
+
+    <p>Always begin the body on a new line.
+    </p>
+
+    <pre># This is BAD.
+<span style="color:red">if (!def(value)) return; # Very, very bad!</span>
+<span style="color:red">if (len(record.value) &lt; 2) { return; } # Horrid.</span></pre>
+
+    <h3 id="return">Return Statements</h3>
+
+    <p>
+      Put a return statement on its own line.
+    </p>
+
+    <pre>if (!result.empty &amp;&amp; !result.has_errors) {
+  return false;
+}</pre>
+
+
+    <h3 id="layout">General Layout and Ordering</h3>
+
+    <p>
+      If everyone follows the same general layout, we'll easily understand one
+      another's scripts.  It's much easier to help someone debug a script if
+      you know where to find all the key parts.  However, these are just
+      suggestions, not rules.
+    </p>
+
+    <ol>
+      <li>Copyright info comment</li>
+      <li>Author comment</li>
+      <li>File description comment</li>
+      <li><code>proto</code> statements</li>
+      <li><code>include</code> statements</li>
+      <li>Output table declarations</li>
+      <li>Input statement: including input <code>def</code> check</li>
+      <li>Function declarations</li>
+      <li>Script body: Declare variables and types near first use.</li>
+    </ol>
+
+    <h3 id="comments">Comments</h3>
+
+    <p>Comments in Sawzall run from a <code>#</code> character to the end of
+      the line. Although not necessary, it's a good idea to have a space
+      between the <code>#</code> and the first character of the comment.
+    </p>
+    <pre><span style="color:red">#BAD comment</span>
+# Good comment.</pre>
+
+    <h4>File headers</h4>
+
+    <p>The beginning of every Sawzall file should have a header that includes
+      copyright info, authors, a short description of the file and its
+      usage, e.g., a sample command line.
+    </p>
+
+    <pre># Copyright 2010 Encom Inc.
+# All Rights Reserved.
+#
+# Author: kflynn@encom.com (Kevin Flynn)
+#
+# diva_script.szl:
+#   Counts the number of occurrences of each diva in tron logs.
+#
+</pre>
+
+    <h4>Functions</h4>
+
+    <p>Every function definition should be preceded by a short
+    description of the purpose and definitions of parameters.  Longer
+    or more complex functions should also have declarations of
+    preconditions and postconditions.
+    </p>
+
+    <pre>
+# Determine if this entry is logged from a tron run with a version at least
+# minver.
+# For a discussion of what fields are available in different versions of
+# the tron log see:
+# https://www.encom.html/tronlogs.html
+TronLogVersionIsAtLeast := function(entry: TronRecordProto,
+                                    minver: string): bool {
+  ...
+};</pre>
+
+    <h4>Inline</h4>
+
+    <p>You must put two spaces before an inline comment.
+    </p>
+    <pre>
+x := 27 - bar;  # This line definitely needs a good comment.
+    </pre>
+
+    <h4 id="todo">TODO</h4>
+
+    <p>It is best not to publish code with TODO comments.  However, if it
+      becomes necessary, you should attach your user name to it along with an
+      explicit description of the action to be taken.
+    </p>
+
+    <pre># TODO(szluser): Check if is it possible for size &lt; 0.</pre>
+
+    <h3 id="naming">Naming</h3>
+
+    <p>All identifiers consist of letters, digits and underscores and must
+      begin with a character or underscore. They should be named according to
+      the following conventions:
+    </p>
+    <ul>
+      <li><code>variable_names </code> (global, local, including function args)</li>
+      <li><code>FunctionNames</code></li>
+      <li><code>TypeNames</code></li>
+      <li><code>kConstantNames</code></li>
+      <li><code>intrinsicfunctionnames</code></li>
+      <li><code>INTRINSIC_CONSTANTS</code></li>
+    </ul>
+
+    <h4>Reserved Words</h4>
+
+    <p>Sawzall keywords are reserved and cannot be used as identifiers.  Also,
+      Sawzall includes many intrinsic functions and other names that should not
+      be overridden. As a rule, if the Sawzall compiler complains that you have
+      hidden a global definition, rename the offending variable.
+    </p>
+
+   <h4>Indices and Elements</h4>
+
+    <p>
+      Although it is not necessary to give named identifiers to
+      indices and elements for arrays, maps, and tables, it is stylistically
+      recommended because it helps comment your code. Also, the
+      identifiers given to the parts of an output table are saved
+      in the type information that can be exported for use by other
+      tools.
+    </p>
+
+    <pre>diva_stats: table sum[diva: string] of { rating: float, fan_count: int };</pre>
+    <p>Furthermore, if you assign the keys of a map to an
+      array, all the index identifiers must match.
+    </p>
+
+    <pre>divas: map[name: { first: string,
+                            last: string }] of fan_count: int = {:};
+...
+# Parameters must not only be in the same order, but their identifiers must
+# also match.
+diva_names: array of name: { first: string,
+                             last: string } = keys(divas);</pre>
+
+    <h4>Library Functions</h4>
+
+    <p>Since Sawzall doesn't have packages or namespaces, you should use
+      explicit identifiers to avoid collisions.  When writing a library you
+      should preface each function with a name describing that library.
+    </p>
+
+    <pre>GetStreet: function(address: AddressProto): string; # BAD name
+AddressGetStreet: function (address: AddressProto): string; # Good name</pre>
+
+    <h3 id="consistency">Conclusion</h3>
+
+    <p>
+      <strong>BE CONSISTENT</strong>.
+    </p>
+
+    <p>
+      If you're editing code, take a few minutes to look at the code
+      around you and determine its style.  If they use braces with
+      their <code>if</code> clauses, you should too.  If their function
+      comments individually describe each parameter and return value,
+      make your comments do so too.
+    </p>
+
+    <p>
+      The point of having style guidelines is to have a common
+      vocabulary of coding so people can concentrate on what you're
+      saying rather than on how you're saying it.  We present global
+      style rules here so people know the vocabulary, but local style
+      is also important.  If code you add to a file looks
+      drastically different from the existing code around it, it
+      throws readers out of their rhythm when they go to read it.
+      Avoid this.
+    </p>
+
+    <hr>
+  </body>
+</html>

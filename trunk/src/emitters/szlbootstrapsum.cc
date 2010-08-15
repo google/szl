@@ -347,7 +347,7 @@ AddWeightedElem(const string& elem, const SzlValue& weight) {
     mem += sizeof(Summable) * row_size;
   }
 
-  // Unpack the saw value into the summable array.
+  // Unpack the szl value into the summable array.
   SzlValue elemv;
   CHECK(element_ops_.ParseFromArray(elem.data(), elem.size(), &elemv));
   int pos_integer = PackSzlValue(element_ops_, elemv, packed_);

@@ -35,8 +35,7 @@
 #       - if adding more tests, please add them to print_all_good as well
 
 #------------------------------------------------------------------------------
-# Tables that work with saw and have aggregation support with
-# --table_output in szl.
+# Tables that have aggregation support with --table_output in szl.
 #------------------------------------------------------------------------------
 
 #----------------------------------------------------
@@ -1154,7 +1153,7 @@ OWEfmM: table weightedsample(10) of M: map[string] of int weight w: float format
 emit OWEfmM <- {:} weight inf;
 
 #------------------------------------------------------------------------------
-# Tables that work with saw, but don't have aggregation support with
+# Tables that don't have aggregation support with
 # --table_output in szl and fall-back to print emitters instead.
 #------------------------------------------------------------------------------
 

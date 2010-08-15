@@ -29,7 +29,7 @@
 type OCs = table collection of word:string
                file("non_unique_words") format("%s\n", word);
 
-type OCsi = table collection [query:string] of numchars: int
+type OCsi = table collection [value:string] of numchars: int
               file("unique_word_count") format("%d ", numchars);
 
 #inst: Getting a collection of unique words and non-unique words

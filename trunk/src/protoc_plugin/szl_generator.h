@@ -13,14 +13,6 @@
 // limitations under the License.
 // ------------------------------------------------------------------------
 
-// Copyright 2009 Google Inc. All Rights Reserved.
-// Author: lianglin@google.com (Liang Lin)
-//
-// Adapted from the generator from Python by Will Robinson.
-//
-// Generates Python code for a given .proto file.
-
-
 #ifndef _GENERATOR_H_
 #define _GENERATOR_H_
 

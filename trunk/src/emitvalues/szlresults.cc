@@ -57,7 +57,7 @@ SzlResultsRegisterer::SzlResultsRegisterer(const char* kind,
     creators = new SzlResultsCreators;
 
   CHECK(creators->find(kind) == creators->end())
-    << ": multiple registrations of the same saw results type kind " << kind;
+    << ": multiple registrations of the same szl results type kind " << kind;
 
   (*creators)[kind].creator = creator;
   (*creators)[kind].validate = validate;
@@ -70,7 +70,7 @@ SzlResults* SzlResults::CreateSzlResults(const SzlType& t, string* error) {
   CHECK(t.kind() == SzlType::TABLE);
   SzlResultsCreators::iterator creator = creators->find(t.table());
   if (creator == creators->end()) {
-    *error = "unknown saw results type";
+    *error = "unknown szl results type";
     return NULL;
   }
 
@@ -95,7 +95,7 @@ bool SzlResults::IsValid(const SzlType& t, string* error) {
   CHECK(t.kind() == SzlType::TABLE);
   SzlResultsCreators::iterator creator = creators->find(t.table());
   if (creator == creators->end()) {
-    *error = "unknown saw type ";
+    *error = "unknown szl type ";
     return false;
   }
   return (*creator->second.validate)(t, error);

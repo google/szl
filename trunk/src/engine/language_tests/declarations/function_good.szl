@@ -178,7 +178,7 @@ x24: function(a000: bool,
 type OC0 = table collection of string;
 x25: function(x: OC0);
 x26: function(x: table collection of string);
-x27: function(x: table collection [query: string] of { cputime: float });
+x27: function(x: table collection [value: string] of { cputime: float });
 
 # Sum output types
 type OSM0 = table sum of int;
@@ -188,10 +188,10 @@ x30: function(x: table sum [country: string] of { revenue: float });
 
 # Sample output types
 x31: function(x: table sample(100)[country: string]
-              of { query: string, revenue: float });
+              of { value: string, revenue: float });
 
 # Function declarations using unique output types
-x32: function(x: table unique(1000) of { query: string });
+x32: function(x: table unique(1000) of { value: string });
 
 # Function declarations using top output types
 x33: function(x: table top(10) of { model: string, rank: float } weight int);

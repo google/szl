@@ -29,29 +29,29 @@ when (i: each int; def(a[i]))
 # Some and each must bind to specific values, while all is not bound.
 #
 
-queryString: string = "";
+valueString: string = "";
 
 when (somex: some int;
-      queryString[somex] != 'f') {
+      valueString[somex] != 'f') {
   assert(false,
-         format("For some somex = %d, query = %s, queryString[somex] != 'f'\n",
-                somex, queryString));
+         format("For some somex = %d, value = %s, valueString[somex] != 'f'\n",
+                somex, valueString));
 }
 
 when (eachx: each int;
-      queryString[eachx] != 'f') {
+      valueString[eachx] != 'f') {
   assert(false,
-         format("For each eachx = %d, query = %s, queryString[eachx] != 'f'\n",
-                eachx, queryString));
+         format("For each eachx = %d, value = %s, valueString[eachx] != 'f'\n",
+                eachx, valueString));
 }
 
 entered := 0;
 when (allx: all int;
-      queryString[allx] != 'f') {
+      valueString[allx] != 'f') {
   entered++;
 }
 assert(entered == 1,
-       format("For query = %s, queryString[allx] != 'f'\n", queryString));
+       format("For value = %s, valueString[allx] != 'f'\n", valueString));
 
 #
 # Two all quantifiers
@@ -60,18 +60,18 @@ assert(entered == 1,
 # Both spaces should have same dimension and same unique set of values.
 #
 
-query1: string = "aaaaaa";
-query2: string = "aaaaaa";
+value1: string = "aaaaaa";
+value2: string = "aaaaaa";
 
 success: bool = false;
 when (allx: all int;
-      query1[allx] == query2[allx]
+      value1[allx] == value2[allx]
       ) {
   success = true;
 }
 assert(success,
-       format("For query1=%s and query2=%s ==> query1[allx] == query2[allx]\n",
-              query1, query2));
+       format("For value1=%s and value2=%s ==> value1[allx] == value2[allx]\n",
+              value1, value2));
 
 
 #
@@ -79,23 +79,23 @@ assert(success,
 # from array of strings..
 #
 
-queryWords1: array of string = {"test", "case", "creation", "for",
+valueWords1: array of string = {"test", "case", "creation", "for",
                                 "the", "Sawzall", "Language", "and",
                                 "Interpreter"};
 
-queryWords2: array of string = {"the", "test", "case", "within", "a",
+valueWords2: array of string = {"the", "test", "case", "within", "a",
                                 "category", "will", "include", "tests", "of",
                                 "the", "following", "types"};
 
-queryWords3: array of string = {"test", "test", "test"};
+valueWords3: array of string = {"test", "test", "test"};
 
 
 entered = 0;
 when (eachx: each int;
-      queryWords2[eachx] == "the"
+      valueWords2[eachx] == "the"
       ) {
   assert(eachx == 0 || eachx == 10,
-         format("For eachx = %d, queryWords3[eachx] == \"the\"\n", eachx));
+         format("For eachx = %d, valueWords3[eachx] == \"the\"\n", eachx));
   entered++;
 }
 assert(entered == 2);
@@ -103,10 +103,10 @@ assert(entered == 2);
 
 entered = 0;
 when (somex: some int;
-      queryWords1[somex] == "test"
+      valueWords1[somex] == "test"
       ) {
   assert(somex == 0,
-         format("For somex = %d, queryWords3[somex] == \"test\"\n", somex));
+         format("For somex = %d, valueWords3[somex] == \"test\"\n", somex));
   entered++;
 }
 assert(entered == 1);
@@ -114,8 +114,8 @@ assert(entered == 1);
 
 entered = 0;
 when (allx: all int;
-      queryWords3[allx] == queryWords3[0]
+      valueWords3[allx] == valueWords3[0]
       ) {
   entered++;
 }
-assert(entered == 1, format("queryWords3[allx] == queryWords3[0]\n"));
+assert(entered == 1, format("valueWords3[allx] == valueWords3[0]\n"));

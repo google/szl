@@ -172,7 +172,7 @@ assert(string(r5) == `{ 24, 3.1415, "Wed Dec 31 16:00:00 PST 1969", B"", true, {
 # The bug was that a mere == or != expression involving a tuple did not cause
 # the tuple's fields to be used.  In order to test both == and !=, we need two
 # distinct types that don't share fields, so we use two structurally identical
-# types containing a subset of fields from sessions.
+# types containing a subset of fields from another test case.
 type TestEQ = parsedmessage {
   type Proto1Message = parsedmessage {
     type NestedMessage = parsedmessage {
@@ -186,7 +186,7 @@ type TestEQ = parsedmessage {
   type Message2 = {
     message1: TestEQ.Proto1Message @ 1
   },
-  event: array of TestEQ.Message2 @ 2
+  item: array of TestEQ.Message2 @ 2
 };
 
 type TestNE = proto {
@@ -203,12 +203,12 @@ type TestNE = proto {
   type Message2 = {
     message1: TestNE.Proto1Message @ 1
   },
-  event: array of TestNE.Message2 @ 2
+  item: array of TestNE.Message2 @ 2
 };
 
-# The byte string below encodes the following session with two distinct
-# events.  A bug in treatment of the equality operator makes causes
-# Sawzall to say that the events are equal.
+# The byte string below encodes the following object with two distinct
+# items.  A bug in treatment of the equality operator makes causes
+# Sawzall to say that the items are equal.
 #
 # value1: Test*.Proto1Message.NestedMessage = { 13, 26, 39 };
 # entry1: Test*.Proto1Message = { value1 };
@@ -216,28 +216,28 @@ type TestNE = proto {
 # value2: Test*.Proto1Message.NestedMessage = { 17, 34, 51 };
 # entry2: Test*.Proto1Message = { value2 };
 #
-# event: array of Test*.Message2 = { { entry1 }, { entry2 } };
+# item: array of Test*.Message2 = { { entry1 }, { entry2 } };
 #
-# session: Test* = { event };
+# object: Test* = { item };
 
-session_bytes: bytes =
+object_bytes: bytes =
     X"130a0e220c080d151a0000001d2700000014130a0e220c081115220000001d3300000014";
 
 # Test for operator ==.
 
-session_eq: TestEQ = session_bytes;
+object_eq: TestEQ = object_bytes;
 
 # The values should not be equal, but they are if all fields are unused.
-assert(!(session_eq.event[0].message1.value ==
-         session_eq.event[1].message1.value),
+assert(!(object_eq.item[0].message1.value ==
+         object_eq.item[1].message1.value),
        "Tuples should not be equal");
 
 
 # Test for !=.
 
-session_ne: TestNE = session_bytes;
+object_ne: TestNE = object_bytes;
 
 # The values should not be equal, but they are if all fields are unused.
-assert(session_ne.event[0].message1.value !=
-       session_ne.event[1].message1.value,
+assert(object_ne.item[0].message1.value !=
+       object_ne.item[1].message1.value,
        "Tuples should not be equal");

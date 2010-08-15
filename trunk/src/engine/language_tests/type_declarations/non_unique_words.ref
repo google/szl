@@ -72,7 +72,7 @@ OCsi
 =
 table
 collection
-[query:string]
+[value:string]
 of
 numchars:
 int

@@ -99,7 +99,7 @@ class SzlTopTest {
   }
 
  private:
-  // Retrieve the results from a saw tabentry.
+  // Retrieve the results from a szl tabentry.
   // Check if top table tab has a reasonably good (or exact) answer.
   // The actual summed weights are in vals.
   void CheckTopMatch(const SzlType& type, SzlTabEntry* tab,
@@ -184,7 +184,7 @@ void SzlTopTest::SetUp() {
 }
 
 
-// Retrieve the results from a saw tabentry.
+// Retrieve the results from a szl tabentry.
 // Check if top table tab got a reasonably good (or exact) answer.
 // The actual summed weights are in vals.
 void SzlTopTest::CheckTopMatch(const SzlType& type, SzlTabEntry* tab,

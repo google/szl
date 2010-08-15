@@ -77,9 +77,9 @@ bytes(p, {});  # no parameters allowed error
 
 # buggy (proto) tuple declarations caused the type system to crash
 # when building default proto tuples and related data structures.
-type SlimQueryEventMessage = proto {
-  query_id: EventIdMessage,
-  impression_set: array of SlimImpressionMessage,
+type SlimMessage = proto {
+  value_id: ValueIdMessage,
+  value_set: array of OtherMessage,
 };
 
 # if sawzall() or sawn() had a 'rest' clause anywhere but last,

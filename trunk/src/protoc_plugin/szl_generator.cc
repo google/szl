@@ -322,13 +322,7 @@ void SzlGenerator::PrintHeader(const string& filename) const {
 void SzlGenerator::PrintImports() const {
   for (int i = 0; i < file_->dependency_count(); ++i) {
     string filename = file_->dependency(i)->name();
-    // sawzall_message_set.proto will allow proto containing MessageSet to be
-    // processed with Sawzall. For details, refer to the comments in the file.
-    if (filename == "net/proto2/bridge/proto/message_set.proto") {
-      filename = "net/proto/sawzall_message_set.proto";
-    }
-    printer_->Print("proto \"$filename$\"\n",
-                    "filename", filename);
+    printer_->Print("proto \"$filename$\"\n", "filename", filename);
   }
 }
 

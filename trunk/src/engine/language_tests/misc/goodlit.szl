@@ -65,7 +65,7 @@ c = '\'';
 
 # strings
 s: string;
-s = "query.proto";
+s = "value.proto";
 s = "Hello World! Καλημέρα κόσμε! こんにちは 世界!";
 s = "\a\b\f\n\r\t\v\\\"";
 s = "hello \"\t\x0030\041world\n";

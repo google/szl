@@ -42,7 +42,7 @@ function fail() {
 # Modes for multiple runs can be specified via a comma-separated list.
 #
 # If no MODE is specified, we run 2 optimized out of 4 possible options
-# because szl/saw set --optimize_sawzall_code to true by default.
+# because szl set --optimize_sawzall_code to true by default.
 # Running all of the options takes too long and likely to be unnecessary.
 # It is astronomically unlikely that turning on optimization will fix a bug
 # that is present if you do not optimize.

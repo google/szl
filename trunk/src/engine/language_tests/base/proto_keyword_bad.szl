@@ -29,7 +29,7 @@ proto ""
 proto notproto;
 proto: function() { };
 proto i;
-proto GWSLogNewSession;
+proto LogRecordProto;
 
 #
 # Inside of a statement 'proto' is treated as a proto tuple keyword.

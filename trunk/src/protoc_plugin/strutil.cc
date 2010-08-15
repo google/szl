@@ -79,8 +79,8 @@ string SimpleDtoa(double d) { return CommonFDtoa(d, "%.*lg"); }
 // ----------------------------------------------------------------------
 // CEscape()
 //    Copies 'src' to result, escaping dangerous characters using
-//    C-style escape sequences. This is very useful for preparing query
-//    flags. 'src' and 'dest' should not overlap. The 'Hex' version
+//    C-style escape sequences.
+//    'src' and 'dest' should not overlap. The 'Hex' version
 //    hexadecimal rather than octal sequences.
 //
 //    Currently only \n, \r, \t, ", ', \ and !isprint() chars are escaped.

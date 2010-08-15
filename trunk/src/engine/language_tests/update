@@ -102,7 +102,7 @@ for i in $args; do
       # Suppress warnings about multiple inclusion caused by .proto files.
       flags="$flags --noshow_multiple_inclusion_warnings"
 
-      export SAW_ARG=""
+      export SZL_ARG=""
 
       sources=$i
       files=''
@@ -245,6 +245,9 @@ for i in $args; do
         fixed_crashes/crash7.szl)
           flags="$flags --memory_limit=50"
           ;;
+	fixed_crashes/crash18.szl)
+	  export SZL_ARG="--pattern=グーグル"
+	  ;;
         fixed_crashes/crash21.szl)
           # verify that ELF file generation succeeds
           flags="$flags --gen_elf=/dev/null"

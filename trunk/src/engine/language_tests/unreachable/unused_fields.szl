@@ -312,30 +312,30 @@ assert(t.ai[0] == 0);
 
 # This bug seems to require a proto tuple and a regular tuple that both
 # contain the same proto tuple as a field.
-type Pageview = parsedmessage { url: bytes @ 1: string,
-                                user_agent: bytes @ 2: string,
-                                ad_group_creative_id: int @ 3: int32 };
-type PageviewContainer = parsedmessage { pageview: Pageview @ 1};
-type PageviewAndCount = {pageview: Pageview, count: int};
+type TestTuple = parsedmessage { xxx: bytes @ 1: string,
+                                yyy: bytes @ 2: string,
+                                zzz: int @ 3: int32 };
+type TestTupleContainer = parsedmessage { testtuple: TestTuple @ 1};
+type TestTupleAndCount = {testtuple: TestTuple, count: int};
 
-# Analyzing this function sets top-level fields of PageviewAndCount read.
-static ProcessPageview: function(pageview: Pageview,
-                                 emitter: function(pv: PageviewAndCount)) {
-  pageview_and_count: PageviewAndCount = {pageview, 33};
-  emitter(pageview_and_count);
+# Analyzing this function sets top-level fields of TestTupleAndCount read.
+static ProcessTestTuple: function(testtuple: TestTuple,
+                                 emitter: function(pv: TestTupleAndCount)) {
+  testtuple_and_count: TestTupleAndCount = {testtuple, 33};
+  emitter(testtuple_and_count);
 };
 
-# Analyzing this function SHOULD set all nested fields of PageviewAndCount read.
-static pageview_events: table collection of pageview: PageviewAndCount;
-PageviewEmit: function(pageview: PageviewAndCount) {
-  emit pageview_events <- pageview;
+# Analyzing this function SHOULD set all nested fields of TestTupleAndCount read.
+static testtuple_list: table collection of testtuple: TestTupleAndCount;
+TestTupleEmit: function(testtuple: TestTupleAndCount) {
+  emit testtuple_list <- testtuple;
 };
 
 
 # Initialize the proto tuple via conversion from bytes, then copy the
 # field to the non-proto tuple.
-container: PageviewContainer = input;
-ProcessPageview(container.pageview, PageviewEmit);
+container: TestTupleContainer = input;
+ProcessTestTuple(container.testtuple, TestTupleEmit);
 
 # Tuple comparison sets all fields read.
 type TCInner = proto {

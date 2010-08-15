@@ -118,7 +118,7 @@ class SzlDistinctSampleResults: public SzlResults {
       string s;
       CHECK(dec.GetBytes(&s));
 
-      // Need to combine the value and weight into one saw encoded string.
+      // Need to combine the value and weight into one szl encoded string.
       // The weight is already encoded; just copy it.
       unsigned const char* p = dec.position();
       CHECK(ops_.Skip(&dec));

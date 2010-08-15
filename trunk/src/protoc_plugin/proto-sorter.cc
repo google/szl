@@ -13,9 +13,6 @@
 // limitations under the License.
 // ------------------------------------------------------------------------
 
-// Copyright 2009 Google Inc.  All rights reserved.
-// Author: mikejones@google.com (Mike Jones)
-//
 // This file contains functions for sorting the messages within a
 // proto2::FileDescriptor instance so that, if message X depends on message Y,
 // message Y appears first in the output .szl file: a requirement of Sawzall,

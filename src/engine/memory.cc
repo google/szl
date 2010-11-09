@@ -18,7 +18,7 @@
 #include <time.h>
 #include <config.h>
 
-#ifdef HAVE_MALLINGO
+#ifdef HAVE_MALLINFO
 #include <malloc.h>   // for mallinfo()
 #endif
 

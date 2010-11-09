@@ -1943,26 +1943,17 @@ static void CombineKeys(Proc* proc, Val**& sp) {
   // that requires another round of allocation, so we just sort it all.
   sort(key_array->base(), key_array->end(), ValCompare(proc));
   // There may be duplicates, so cast them out.
-  int from = 0;  // destination location of the copy pass
-  int to = 0;  // source location of the copy pass
+  int from = 0;  // from scans the entire array and skips over duplicates
+  int to = 0;  // to marks the copying destination frontier
   while (from < num_keys) {
-    // Invariants:
-    //  - 'to' needs to be placed at 'from' (although it may already be there)
-    //  - there is >= 1 equal values sequentially at 'from'
-    //  - 'from' is the first such value
-    //  - only one will be transferred
-    if (from == to) {  // only copy if not the same location
-      to++;
-    } else {
-      key_array->at(to)->dec_ref();
-      key_array->at(to++) = key_array->at(from);
-    }
+    key_array->at(to++) = key_array->at(from);
+    // skip elements like the one we just copied
     szl_fingerprint fprint = key_array->at(from++)->Fingerprint(proc);
     while(from < num_keys && fprint == key_array->at(from)->Fingerprint(proc))
-      from++;
+      key_array->at(from++)->dec_ref();
   }
   if (to < num_keys) {
-    // The rest of the array has been copied down, so NULL out the tail of the array.
+    // The rest of the array has been copied down; NULL out the tail.
     for (int i = to; i < num_keys; i++)
       key_array->at(i) = NULL;
     // slice will overwrite key_array

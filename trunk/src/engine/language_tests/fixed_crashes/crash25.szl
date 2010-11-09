@@ -1,0 +1,36 @@
+# Copyright 2010 Google Inc.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
+
+# Nested whens over maps triggered a reference counting bug
+# in $combinekeys.  This test will cause assertions when built
+# without NDEBUG defined (dbg mode) and with --nonative before
+# the fix.
+
+type map_of_map = map[int] of map[bytes] of int;
+
+static bytestr: function(i: int): bytes {
+  return bytes(format("%d", i));
+};
+
+m: map_of_map = { 0: { bytestr(1): 1,
+                       bytestr(2): 2,
+                       bytestr(3): 3,
+                       bytestr(4): 4 } };
+
+when (i1: each int; def(m[i1])) {
+  when (b2: each bytes; def(m[i1][b2]) && m[i1][b2] >= 1) {
+    # nothing
+  }
+}

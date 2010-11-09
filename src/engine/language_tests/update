@@ -256,6 +256,10 @@ for i in $args; do
           flags="$flags --ignore_undefs"
           files=fixed_crashes/crash23.in
           ;;
+        fixed_crashes/crash25.szl)
+          # assert occurs without NDEBUG and --nonative
+          flags="$flags --nonative"
+          ;;
         type_declarations/outputType_good.szl)
           # print the source with table parameters folded
           flags="$flags --print_source"

@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "fmt/fmt.h"
 #include "fmt/nan.h"
@@ -196,6 +197,52 @@ void trynan() {
 		fprintf(stderr, "error: 'nan' != '%s'\n", buf);
 		exitcode = 1;
 	}
+	Fmt::snprint(buf, sizeof(buf), "%G", nan);
+	if (strcmp(buf, "NAN")) {
+		fprintf(stderr, "error: 'NAN' != '%s'\n", buf);
+		exitcode = 1;
+	}
+}
+
+void tryinf() {
+	static double big = 1e300;
+	static double inf = big*big;
+	static double ninf = -inf;
+
+	if (!Fmt::__isInf(inf, 1)) {
+		fprintf(stderr, "error: !__isInf()\n");
+		exitcode = 1;
+	}
+	if (!Fmt::__isInf(ninf, -1)) {
+		fprintf(stderr, "error: !__isInf()\n");
+		exitcode = 1;
+	}
+	if (!Fmt::__isInf(ninf, 0)) {
+		fprintf(stderr, "error: !__isInf()\n");
+		exitcode = 1;
+	}
+	char buf[256], ref[256], *tmp;
+	const char* refvals[] = { "inf", "+inf", " inf",
+				"-inf", "-inf", "-inf" };
+	const double dblvals[] = { inf, inf, inf, ninf, ninf, ninf };
+	const char* fmts[] = { "%g", "%+g", "% g", "%G", "%+G", "% G"}, *fmt;
+	for (int i = 0; i < sizeof(refvals) / sizeof(refvals[0]); i++) {
+		strcpy(ref, refvals[i]);
+		fmt = fmts[i%3];
+		Fmt::snprint(buf, sizeof(buf), fmt, dblvals[i]);
+		if (strcmp(buf, ref)) {
+			fprintf(stderr, "error: '%s' != '%s'\n", ref, buf);
+			exitcode = 1;
+		}
+		tmp = ref;
+		do { *tmp = toupper(*tmp); } while(*++tmp);
+		fmt = fmts[3+(i%3)];
+		Fmt::snprint(buf, sizeof(buf), fmt, dblvals[i]);
+		if (strcmp(buf, ref)) {
+			fprintf(stderr, "error: '%s' != '%s'\n", ref, buf);
+			exitcode = 1;
+		}
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -211,6 +258,6 @@ int main(int argc, char* argv[]) {
 		doit(just, plus, alt, zero, width, prec, spec);
 
 	trynan();
-        puts(exitcode ? "FAIL" : "PASS");
+	tryinf();
 	return exitcode;
 }

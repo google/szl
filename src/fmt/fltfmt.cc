@@ -415,7 +415,7 @@ int
 __efgfmt(State *fmt)
 {
 	double f;
-	char s1[NSIGNIF+10];
+	char s1[NSIGNIF+10], *p;
 	int e, d, n;
 	int c1, c2, c3, c4, ucase, sign, chr, prec, fl;
 
@@ -445,15 +445,22 @@ __efgfmt(State *fmt)
 	xdodtoa(s1, f, chr, prec, &e, &sign);
 	e--;
 	if(*s1 == 'i' || *s1 == 'n'){
+		p = s1;
+		if(*s1 == 'i' && (sign || (fl & (FmtSign | FmtSpace)))){
+			*s1 = sign ? '-' : (fl & FmtSign) ? '+' : ' ';
+			++p;
+			strcpy(p, "inf");
+		}
+		n = p - s1 + 3;
 		if(ucase){
-			if(*s1 == 'i'){
-				strcpy(s1, "INF");
-			}else{
-				strcpy(s1, "NAN");
+			if(*p == 'i'){
+				strcpy(p, "INF");
+			}else {
+				strcpy(p, "NAN");
 			}
 		}
 		fmt->flags = fl & (FmtWidth|FmtLeft);
-		return __fmtcpy(fmt, (const void*)s1, 3, 3);
+		return __fmtcpy(fmt, (const void*)s1, n, n);
 	}
 
 	/*

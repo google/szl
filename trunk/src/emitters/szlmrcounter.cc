@@ -59,7 +59,7 @@ class SzlMrCounter: public SzlTabWriter {
 };
 
 
-// REGISTER_SZL_TAB_WRITER(mrcounter, SzlMrCounter);
+REGISTER_SZL_TAB_WRITER(mrcounter, SzlMrCounter);
 
 // we don't write to the mill, so no SzlResults, so register checking code
 REGISTER_SZL_NON_MILL_RESULTS(mrcounter,

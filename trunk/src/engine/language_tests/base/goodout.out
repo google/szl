@@ -752,7 +752,6 @@ hello world!
 hello world again!
 *1*emit tTE <- "1";
 emit tTEfm <- "*1*";
-emit tMR <- 1;
 emit tRE <- 1;
 emit tREfm <- "*1*";
 i = 0
@@ -780,7 +779,6 @@ j=6
 j=6
 j=6
 emit tTEe <- "1";
-emit tMRe <- 1;
 emit tREe <- 1;
 emit tTEefm <- "*1*";
 emit tREefm <- "*1*";
@@ -789,8 +787,10 @@ emit tREefm <- "*1*";
 to be or not to be, that is the question
 tCO[] = 1
 tCOfm[] = *1*
+tMR[] = 1
 tCO[] = 1
 tCOe[1, ] = 1
+tMRe[] = 1
 tCOefm[] = *1*
 tCOefm[] = *10*
 tCOnf[1, ] = 1

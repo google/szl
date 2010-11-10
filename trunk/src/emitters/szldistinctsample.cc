@@ -64,6 +64,9 @@ class SzlDistinctSample: public SzlTabWriter {
     if (!SzlOps::IsAddable(type.weight()->type())) {
       *error = "The weights must be addable (ints, floats, or tuples thereof)";
       return NULL;
+    } else if (!SzlOps::IsOrdered(type.weight()->type())) {
+      *error = "can't compare weights";
+      return NULL;
     }
     return new SzlDistinctSample(type);
   }
@@ -357,6 +360,9 @@ class SzlInverseHistogram : public SzlDistinctSample {
       LOG(ERROR) << "Internal error - inversehistogram table without weight";
     if (!SzlOps::IsAddable(type.weight()->type())) {
       *error = "The weights must be addable (ints, floats, or tuples thereof)";
+      return NULL;
+    } else if (!SzlOps::IsOrdered(type.weight()->type())) {
+      *error = "can't compare weights";
       return NULL;
     }
     return new SzlInverseHistogram(type);

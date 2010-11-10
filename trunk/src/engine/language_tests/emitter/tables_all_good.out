@@ -1,4 +1,3 @@
-emit OMRei <- 0;
 emit OREpl <- 0;
 emit OREpv <- 0;
 emit OREpe <- 0;
@@ -68,6 +67,7 @@ OCOfmT[] = {s: string, i: int, f: float}
 OCOfmP[] = proto {b: bytes, i: int, f: float}
 OCOfmA[] = array of int
 OCOfmM[] = map [string] of int
+OMRei[] = 0
 OBOis[] = 0
 OBOii[0] = 0
 OBOif[0] = 0

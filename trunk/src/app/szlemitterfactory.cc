@@ -78,8 +78,8 @@ sawzall::Emitter* SzlEmitterFactory::NewSzlEmitter(
                                                                 &type_error);
     if (tab_writer != NULL && tab_writer->WritesToMill())
       emitter = new SzlEmitter(name, tab_writer, is_vocal_szl_emitter(name));
-    else
-       emitter = new PrintEmitter(name, f_, is_vocal_szl_emitter(name));
+    else if (type_error.empty())
+      emitter = new PrintEmitter(name, f_, is_vocal_szl_emitter(name));
   }
   if (emitter == NULL) {
     CHECK(!type_error.empty());

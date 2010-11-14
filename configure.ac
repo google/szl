@@ -82,6 +82,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
+AC_TYPE_UINTPTR_T
 AC_CHECK_TYPES([ptrdiff_t])
 
 # Checks for library functions.

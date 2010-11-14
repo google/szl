@@ -48,7 +48,6 @@ typedef uint64_t uint64;
 
 typedef signed char schar;
 
-typedef unsigned long uintptr_t;
 typedef long sword_t;
 typedef unsigned long uword_t;
 

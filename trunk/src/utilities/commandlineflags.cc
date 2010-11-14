@@ -136,7 +136,7 @@ void ProcessCommandLineArguments(int& argc, char**& argv) {
             errno = 0;
             char* end;
             *flag.ptr_int32 = strtol(q, &end, 0);
-            if (errno != 0 || *end != '\0') {
+            if (errno != 0 || *q == '\0' || *end != '\0') {
               fprintf(stderr,
                       "Invalid value '%s' specified for int32 flag  '%s'\n",
                       q, flag.name);
@@ -146,7 +146,7 @@ void ProcessCommandLineArguments(int& argc, char**& argv) {
             errno = 0;
             char* end;
             *flag.ptr_int64 = strtoll(q, &end, 0);
-            if (errno != 0 || *end != '\0') {
+            if (errno != 0 || *q == '\0' || *end != '\0') {
               fprintf(stderr,
                       "Invalid value '%s' specified for int64 flag  '%s'\n",
                       q, flag.name);

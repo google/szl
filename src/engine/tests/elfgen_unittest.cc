@@ -93,8 +93,15 @@ static void ELFGenTest() {
   if (startofline == string::npos)
     startofline = 0;
   string actual = string(disassembly, startofline+1, 17);
-  char expected[18];
-  sprintf(expected, "%016llx ", reinterpret_cast<uint64>(code + prologue));
+  size_t delimit = actual.find(' ');
+  if (delimit != string::npos)
+    actual.erase(actual.begin() + delimit, actual.end());
+  char expected[18] = {0};
+  if (delimit == 16) {
+    sprintf(expected, "%016llx", reinterpret_cast<uint64>(code + prologue));
+  } else if (delimit == 8) {
+    sprintf(expected, "%08lx", reinterpret_cast<uint64>(code + prologue));
+  }
   CHECK_EQ(actual, expected);
 
   printf("done\n");

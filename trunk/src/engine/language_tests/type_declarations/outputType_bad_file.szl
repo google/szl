@@ -23,7 +23,7 @@
 
 ocs: table collection of bytes 
 #format("%s ") 
-           file("/usr/local/bin/temp.txt");
+           file("/no/such/path/should/exist/on/the/file/system/temp.txt");
 
 emit ocs <- bytes("One");
 

@@ -27,6 +27,7 @@
 namespace sawzall {
 
 static const int kDefaultRandomSeed = 301;
+static const double kEpsilon = 0.000000001;
 
 // Extract default flag values from environment.
 static int GetTestRandomSeed() {
@@ -137,14 +138,14 @@ void RunTest2() {
   int offset = 0;
   CHECK_EQ(original[offset + 0].integer + update[0].integer,
             table[offset + 0].integer);
-  CHECK(original[offset + 1].real + update[1].real ==
-                  table[offset + 1].real);
+  CHECK_LT(fabs(original[offset + 1].real + update[1].real - 
+                table[offset + 1].real), kEpsilon);
   for (int r = 1; r < kNumRows; ++r) {
     offset += kRowSize;
     CHECK_EQ(original[offset + 0].integer + (r - 1) * update[0].integer,
               table[offset + 0].integer);
-    CHECK(original[offset + 1].real + (r - 1) * update[1].real ==
-                    table[offset + 1].real);
+    CHECK_LT(fabs(original[offset + 1].real + (r - 1) * update[1].real -
+                  table[offset + 1].real), kEpsilon);
   }
 }
 
@@ -218,10 +219,10 @@ void RunTest4() {
   CHECK(dec.GetInt(&count));
   CHECK_EQ(1, count);
   CHECK(element_ops.Decode(&dec, &value));
-  CHECK(3.14 ==  value.s.vals[0].f);
+  CHECK_LT(fabs(3.14 - value.s.vals[0].f), kEpsilon);
   CHECK_EQ(7, value.s.vals[1].i);
   CHECK(element_ops.Decode(&dec, &value));
-  CHECK(2 * 3.14 == value.s.vals[0].f);
+  CHECK_LT(fabs((2 * 3.14) - value.s.vals[0].f), kEpsilon);
   CHECK_EQ(2 * 7, value.s.vals[1].i);
   CHECK(dec.done());
 

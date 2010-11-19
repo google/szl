@@ -17,13 +17,13 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_PROG_CXX
 AC_LANG([C++])
-ACX_USE_SYSTEM_EXTENSIONS
+AC_USE_SYSTEM_EXTENSIONS
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
 
 AC_MSG_CHECKING([C++ compiler flags...])
 AS_IF([test "x${ac_cv_env_CXXFLAGS_set}" = "x"],[
   AS_IF([test "$GCC" = "yes"],[
-    SZL_OPT_FLAG="-O2"
+    SZL_OPT_FLAG="-O2 -fno-strict-aliasing"
     WARN_FLAGS="-Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare"
     CXXFLAGS="${CXXFLAGS} -g ${WARN_FLAGS}"
   ])

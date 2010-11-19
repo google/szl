@@ -4770,7 +4770,7 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-ACX_USE_SYSTEM_EXTENSIONS
+AC_USE_SYSTEM_EXTENSIONS
  if test "$GCC" = yes; then
   GCC_TRUE=
   GCC_FALSE='#'
@@ -4788,7 +4788,8 @@ if test "x${ac_cv_env_CXXFLAGS_set}" = "x"; then :
 
     SZL_OPT_FLAG="-O2"
     WARN_FLAGS="-Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare"
-    CXXFLAGS="${CXXFLAGS} -g ${WARN_FLAGS}"
+    OPT_FLAGS="-fno-strict-aliasing"
+    CXXFLAGS="${CXXFLAGS} -g ${WARN_FLAGS} ${OPT_FLAGS}"
 
 fi
 

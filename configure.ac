@@ -1,10 +1,10 @@
 ## Process this file with autoconf to produce configure.
 ## In general, the safest way to proceed is to run ./autogen.sh
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.64)
 
 # Note: if you change the version, you must also update it in public/porting.h
-AC_INIT([Szl],[1.0],[szl@googlegroups.com],[szl])
+AC_INIT([Szl],[1.0],[szl-users@googlegroups.com],[szl])
 AC_CONFIG_SRCDIR(src/app/szl.cc)
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -40,6 +40,12 @@ AS_IF([test "x${ac_cv_env_CXXFLAGS_set}" = "x"],[
 ])
 
 AC_SUBST(SZL_OPT_FLAG)
+
+SZL_EXTRA_LDFLAGS="";
+AX_CHECK_LINKER_FLAGS([-Wl,--no-as-needed],
+        [SZL_EXTRA_LDFLAGS="-Wl,--no-as-needed"], [])
+AC_SUBST([SZL_EXTRA_LDFLAGS])
+ 
 
 AC_PROG_LN_S
 AC_PROG_MAKE_SET

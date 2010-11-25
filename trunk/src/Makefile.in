@@ -49,6 +49,7 @@ DIST_COMMON = $(dist_noinst_DATA) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
+	$(top_srcdir)/m4/ax_check_linker_flags.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/stl_hash.m4 \
@@ -386,7 +387,6 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
@@ -444,6 +444,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 SZL_DEFINES = @SZL_DEFINES@
+SZL_EXTRA_LDFLAGS = @SZL_EXTRA_LDFLAGS@
 SZL_OPT_FLAG = @SZL_OPT_FLAG@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -505,7 +506,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CXXFLAGS = $(CXXFLAGS) $(PTHREAD_CFLAGS) $(SZL_OPT_FLAG) $(SZL_DEFINES) -g -O1
-AM_LDFLAGS = $(PTHREAD_CFLAGS)
+AM_LDFLAGS = $(PTHREAD_CFLAGS) $(SZL_EXTRA_LDFLAGS)
 CLEANFILES = $(protoc_outputs)
 MAINTAINERCLEANFILES = \
   Makefile.in

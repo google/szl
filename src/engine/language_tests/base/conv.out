@@ -92,7 +92,7 @@ assert(convert(string, X"FCFDFE", "latin-1") == "üýþ");
 assert(convert(string, X"E697A5E69CACE8AA9E") == "日本語");
 assert(convert(string, X"E697A5E69CACE8AA9E", "utf-8") == "日本語");
 assert(!def(convert(string, B"", "bad encoding")));
-assert(convert(string, 0x0000000000000000P) == "0x0000000000000000p");
+assert(convert(string, 0x0000000000000000P) == "0x0000000000000000P");
 assert(convert(string, 27000.0) == "27000.0");
 assert(convert(string, 171) == "171");
 assert(convert(string, 171) == "171");

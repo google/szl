@@ -111,7 +111,7 @@ assert(s == "Value of first argument is 17");
 
 fg0: fingerprint;
 fg0 = f2(fingerprint(10));
-assert(string(fg0) == "0x000000000000000ap");
+assert(string(fg0) == "0x000000000000000aP");
 fg0 = f2(fingerprintof("Quick Brown Fox"));
 if (fg0 != f2(fingerprintof("Quick Brown Fox")))
   assert(false, "Error in fingerprint");

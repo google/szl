@@ -215,7 +215,7 @@ Val* UIntForm::NewValBasic64(Proc* proc, Type* type, uint64 bits) {
 
 
 int UIntForm::Format(Proc* proc, Fmt::State* f, Val* v) const {
-  return F.fmtprint(f, "%lluU", v->as_uint()->val());
+  return F.fmtprint(f, SZL_UINT_FMT, v->as_uint()->val());
 }
 
 
@@ -283,7 +283,7 @@ Val* FingerprintForm::Cmp(Val* v1, Val* v2) const {
 
 
 int FingerprintForm::Format(Proc* proc, Fmt::State* f, Val* v) const {
-  return F.fmtprint(f, "0x%.16llxP", v->as_fingerprint()->val());
+  return F.fmtprint(f, SZL_FINGERPRINT_FMT, v->as_fingerprint()->val());
 }
 
 

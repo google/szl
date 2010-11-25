@@ -578,7 +578,7 @@ static const char* Bytes2Str(Proc* proc, CvtArgs* args, Val* val,
 inline const char* Fpr2Str(Proc* proc, CvtArgs* args, Val* val, Val** result) {
   szl_fingerprint fp = val->as_fingerprint()->val();
   char str[64];
-  int len = F.snprint(str, sizeof str, "0x%.16llxp", fp);
+  int len = F.snprint(str, sizeof str, SZL_FINGERPRINT_FMT, fp);
   // known to be ASCII, one byte per rune
   *result = Factory::NewStringBytes(proc, len, str);
   return NULL;

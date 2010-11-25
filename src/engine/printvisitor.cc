@@ -463,7 +463,7 @@ void PrintNodeVisitor::DoUnary(Binary* x) {
 void PrintNodeVisitor::DoLiteral(Literal* x) {
   if (x->is_anonymous())
     if (x->type()->is_time())  // remain compatible with old code
-      P("%lluT", x->as_time()->val());
+      P(SZL_TIME_FMT, x->as_time()->val());
     else
       P("%V", NULL, x->val());  // no proc, but we only need one for functions
   else

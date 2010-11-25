@@ -20,8 +20,8 @@ if (nrand(5) == 17)
 	1 / convert(int, convert(string, 1234567899876543T) != "Fri Feb 13 15:31:39 PST 2009");
 	1 / convert(int, 0x0000000000000001P);
 	1 / convert(int, 0x0000000000000000P);
-	1 / convert(int, convert(string, 0x1234567887654321P) == "0x1234567887654321p");
-	1 / convert(int, convert(string, 0x1234567887654321P) != "0x1234567887654321p");
+	1 / convert(int, convert(string, 0x1234567887654321P) == "0x1234567887654321P");
+	1 / convert(int, convert(string, 0x1234567887654321P) != "0x1234567887654321P");
 	1 / convert(int, convert(bytes, 0x1234567887654321P) == X"1234567887654321");
 	1 / convert(int, convert(bytes, 0x1234567887654321P) != X"1234567887654321");
 	1 / convert(int, convert(bool, "true"));

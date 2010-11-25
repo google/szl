@@ -17,7 +17,7 @@ conversion to string
 10
 Hello
 true
-0x0000000000000064p
+0x0000000000000064P
 10.32
 
 
@@ -30,7 +30,7 @@ hello world!
 hello world!
 
 conversion to fingerprint
-0x000000000000000ap
+0x000000000000000aP
 1193046
 723685415333072913
 100

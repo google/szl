@@ -26,7 +26,7 @@ assert(string(b) == `bytes`);
 assert(string(i) == `17`);
 assert(string(f) == `2.3`);
 assert(string(t) == `Thu Oct  9 00:44:37 PDT 2003`);
-assert(string(p) == `0x0000000000012345p`);
+assert(string(p) == `0x0000000000012345P`);
 
 ai: array of int = { 1, 2, 3, -4 };
 assert(string(ai) == `{ 1, 2, 3, -4 }`);

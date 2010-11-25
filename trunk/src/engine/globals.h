@@ -256,4 +256,9 @@ const int kMaxFormatLen = 32 ;  // Plenty big enough to store %23.2
 // String generated when formatting a bad time value.
 extern const char kStringForInvalidTime[];
 
+// Canonical format strings for Sawzall datatypes
+#define SZL_FINGERPRINT_FMT "0x%.16llxP"
+#define SZL_TIME_FMT "%lluT"
+#define SZL_UINT_FMT "%lluU"
+
 }  // namespace sawzall

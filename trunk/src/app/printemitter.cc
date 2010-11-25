@@ -183,7 +183,7 @@ void PrintEmitter::EmitFloat(double f) {
 
 void PrintEmitter::PutFingerprint(uint64 fp) {
   Prologue();
-  P("0x%.16llxP", fp);
+  P("0x%.16llxP", fp);  // see engine/globals.h for canonical format string
   Epilogue();
 }
 
@@ -197,7 +197,7 @@ void PrintEmitter::PutString(const char* s, int len) {
 
 void PrintEmitter::PutTime(uint64 t) {
   Prologue();
-  P("%lluT", t);
+  P("%lluT", t);  // see engine/globals.h for canonical format string
   Epilogue();
 }
 

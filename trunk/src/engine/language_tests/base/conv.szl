@@ -192,7 +192,7 @@ assert(string(X"E697A5E69CACE8AA9E") == "日本語");
 assert(string(X"E697A5E69CACE8AA9E", "utf-8") == "日本語");
 assert(!def(string(B"", "bad encoding")));
 # from fingerprint - as 0x%016xp
-assert(string(0p) == "0x0000000000000000p");
+assert(string(0p) == "0x0000000000000000P");
 # from float       - as in C++
 assert(string(2.7e4) == "27000.0");
 # from int         - optional param: base (default: 0 == auto-detect)

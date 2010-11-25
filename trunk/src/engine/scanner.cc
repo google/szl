@@ -570,11 +570,11 @@ const char* Scanner::PrintSymbol(Symbol sym) {
     case INT:
       return proc_->PrintString("'%d'", int_value());
     case FINGERPRINT:
-      return proc_->PrintString("'0x%.16llxP'", int_value());
+      return proc_->PrintString("'" SZL_FINGERPRINT_FMT "'", int_value());
     case TIME:
-      return proc_->PrintString("'%lluT'", int_value());
+      return proc_->PrintString("'" SZL_TIME_FMT "'", int_value());
     case UINT:
-      return proc_->PrintString("'%uU'", int_value());
+      return proc_->PrintString("'" SZL_UINT_FMT "'", int_value());
     case STRING:
       return proc_->PrintString("%q", string_value());
     case FLOAT:

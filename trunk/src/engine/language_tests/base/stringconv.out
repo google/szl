@@ -8,7 +8,7 @@ assert(convert(string, b) == "bytes");
 assert(convert(string, i) == "17");
 assert(convert(string, f) == "2.3");
 assert(convert(string, t) == "Thu Oct  9 00:44:37 PDT 2003");
-assert(convert(string, p) == "0x0000000000012345p");
+assert(convert(string, p) == "0x0000000000012345P");
 ai: array of int = {1, 2, 3, -4};
 assert(convert(string, ai) == "{ 1, 2, 3, -4 }");
 af: array of float = {0.1, 0.2, 0.3, -0.4};

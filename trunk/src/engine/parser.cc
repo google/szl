@@ -1497,15 +1497,15 @@ bool Parser::CompatiblePrintArgs(StringVal* fmt_val, List<Expr*>* args, int argn
       return false;
     }
 
-    Rune r;
-    fmt += chartorune(&r, fmt);  // do it right so we print good errors
+    Rune fmt_rune;
+    fmt += chartorune(&fmt_rune, fmt);  // do it right so we print good errors
     Type* type = NULL;
     bool uint_ok = false;  // integer formats accept int or uint expressions
     // NOTE: if you expand this list of supported formats, please update
     // format() doc string in intrinsic.cc
-    switch (r) {
+    switch (fmt_rune) {
       default:
-        Error("unknown print format character %k", r);
+        Error("unknown print format character %k", fmt_rune);
         return false;
 
       case '%':
@@ -1514,12 +1514,12 @@ bool Parser::CompatiblePrintArgs(StringVal* fmt_val, List<Expr*>* args, int argn
 
        case '*':
        case 'n':
-        Error("format verb %k not available in sawzall programs", r);
+        Error("format verb %k not available in sawzall programs", fmt_rune);
         return false;
 
       case 'h':
       case 'l':
-        Error("format modifier %k meaningless in sawzall", r);
+        Error("format modifier %k meaningless in sawzall", fmt_rune);
         return false;
 
       case 'b':
@@ -1578,6 +1578,10 @@ bool Parser::CompatiblePrintArgs(StringVal* fmt_val, List<Expr*>* args, int argn
       // special case for uint: if uint is allowed, make a one-off test before complaining
       if (!(uint_ok && IR::IsCompatibleExpr(proc_, SymbolTable::uint_type(), arg))) {
         Error("print expression %N (type %T) not compatible with format %.*s", arg, arg->type(), fmt-start, start);
+        return false;
+      } else if (fmt_rune == 'T' && arg->type()->is_incomplete()) {
+        // here we cannot resolve an incomplete type from the context
+        Error("illegal format argument: %N has incomplete type", arg);
         return false;
       }
     }

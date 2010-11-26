@@ -150,3 +150,6 @@ intrinsics/format_bad_01.szl:211: format() argument must be a string constant ex
 intrinsics/format_bad_01.szl:213: format() argument must be a string constant expression
 intrinsics/format_bad_01.szl:215: format() argument must be a string constant expression
 intrinsics/format_bad_01.szl:217: format() argument must be a string constant expression
+intrinsics/format_bad_01.szl:222: illegal format argument: {"foo", 1} has incomplete type
+intrinsics/format_bad_01.szl:223: illegal format argument: {"foo": 3, "bar": 7} has incomplete type
+intrinsics/format_bad_01.szl:224: illegal format argument: {0, 1} has incomplete type

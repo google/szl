@@ -1579,11 +1579,11 @@ bool Parser::CompatiblePrintArgs(StringVal* fmt_val, List<Expr*>* args, int argn
       if (!(uint_ok && IR::IsCompatibleExpr(proc_, SymbolTable::uint_type(), arg))) {
         Error("print expression %N (type %T) not compatible with format %.*s", arg, arg->type(), fmt-start, start);
         return false;
-      } else if (fmt_rune == 'T' && arg->type()->is_incomplete()) {
-        // here we cannot resolve an incomplete type from the context
-        Error("illegal format argument: %N has incomplete type", arg);
-        return false;
-      }
+      } 
+    } else if (fmt_rune == 'T' && arg->type()->is_incomplete()) {
+      // here we cannot resolve an incomplete type from the context
+      Error("illegal format argument: %N has incomplete type", arg);
+      return false;
     }
     argno++;
   }

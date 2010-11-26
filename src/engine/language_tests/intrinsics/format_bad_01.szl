@@ -215,3 +215,10 @@ var4 := new(string, 5, 'i');
 emit stdout <- format(var4);
 var5 := "abcde"[2:4];
 emit stdout <- format(var5);
+
+# printing the type of composite literals -- this behaves the same
+# as initialization with incomplete types when the variable type is
+# not explicit in declaration (var_decl_bad.szl)
+format("%T", { "foo", 1 });
+format("%T", { "foo" : 3, "bar" : 7 });
+format("%T", { 0, 1 });

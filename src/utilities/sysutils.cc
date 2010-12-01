@@ -76,7 +76,7 @@ static uint64 PhysicalMemInternal(void) {
   // Maybe this should use sysinfo().
   const char kFieldName[] = "MemTotal:";
   int fd = open("/proc/meminfo", O_RDONLY);
-  CHECK_GE(fd, 0);
+  CHECK_GE(fd, 0) << ": failed to open /proc/meminfo.  Is proc mounted?";
   char buffer[kMaxProcFileSize];
   CHECK_GT(read(fd, buffer, sizeof(buffer)), 0);
   char* p = strstr(buffer, kFieldName);

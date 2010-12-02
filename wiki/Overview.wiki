@@ -46,7 +46,7 @@ Several tests are written as example programs, including an example of the use o
 
 = Documentation =
 
-  * [http://szl.googlecode.com/svn/doc/sawzall-spec.html Sawzall language specification]
+  * [Interpreting_the_Data Abstract (and link) of a technical paper discussing Sawzall]  * [http://szl.googlecode.com/svn/doc/sawzall-spec.html Sawzall language specification]
   * [http://szl.googlecode.com/svn/doc/sawzall-language.html Informal Sawzall language description]
   * [http://szl.googlecode.com/svn/doc/sawzall-style-guide.html Coding style guide]
   * [http://szl.googlecode.com/svn/doc/sawzall-intrinsics.html Intrinsic functions]
@@ -54,4 +54,3 @@ Several tests are written as example programs, including an example of the use o
   * [Sawzall_Undef_Notes Discussion of undefined values and def() checks]
   * [Sawzall_Performance_Tips Performance tips]
   * [Sawzall_Proto_Translation Proto-to-Sawzall Translation]
-  * [Interpreting_the_Data Abstract (and link) of a technical paper discussing Sawzall]

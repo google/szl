@@ -40,7 +40,7 @@ Download: [http://research.google.com/archive/sawzall.html PDF Version]
 URL (Final): [http://iospress.metapress.com/openurl.asp?genre=article&issn=1058-9244&volume=13&issue=4&spage=277" Journal link]
 
 Animation: The paper references
-[http://labs.google.com/papers/sawzall-20030814.gif this movie]
+[http://research.google.com/archive/sawzall-20030814.gif this movie]
 showing how the distribution of requests to [http://www.google.com google.com]
 around the world changed through the day
 on [http://www.google.com/search?q=August+14,+2003 August 14, 2003].

@@ -35,7 +35,7 @@ _Scientific Programming Journal_<br>
 Special Issue on Grids and Worldwide Computing
 Programming Models and Infrastructure *13*:_4_, pp. 227-298.
 
-Download: [http://labs.google.com/papers/sawzall.html PDF Version]
+Download: [http://research.google.com/archive/sawzall.html PDF Version]
 
 URL (Final): [http://iospress.metapress.com/openurl.asp?genre=article&issn=1058-9244&volume=13&issue=4&spage=277" Journal link]
 
